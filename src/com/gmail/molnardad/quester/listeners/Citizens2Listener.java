@@ -25,6 +25,7 @@ public class Citizens2Listener implements Listener {
 			event.getNPC().getTrait(QuesterTrait.class).check();
 			QuestManager qm = Quester.qMan;
 			Player player = event.getClicker();
+			// If player has perms and holds blaze rod
 			boolean isOp = player.isOp() || Quester.perms.has(player, QuestData.MODIFY_PERM);
 			if(isOp) {
 				if(player.getItemInHand().getTypeId() == 369) {
@@ -80,6 +81,7 @@ public class Citizens2Listener implements Listener {
 			event.getNPC().getTrait(QuesterTrait.class).check();
 			QuestManager qm = Quester.qMan;
 			Player player = event.getClicker();
+			// If player has perms and holds blaze rod
 			if(player.isOp() || Quester.perms.has(player, QuestData.MODIFY_PERM)) {
 				if(player.getItemInHand().getTypeId() == 369) {
 					String sel = qm.getSelectedName(player.getName());
@@ -95,10 +97,12 @@ public class Citizens2Listener implements Listener {
 			String selected = event.getNPC().getTrait(QuesterTrait.class).getSelectedName();
 			ArrayList<String> qsts = event.getNPC().getTrait(QuesterTrait.class).getQuests();
 			String quest = qm.getPlayerQuest(player.getName()) == null ? "" : qm.getPlayerQuest(player.getName()).getName();
+			// player has quest and quest giver does not accept this quest
 			if(quest != "" && !qsts.contains(quest.toLowerCase())) {
 				player.sendMessage(ChatColor.RED + "You already have quest.");
 				return;
 			}
+			// player has quest and quest giver accepts this quest
 			if(quest != "" && qsts.contains(quest.toLowerCase())) {
 				try {
 					qm.completeQuest(player);
@@ -107,6 +111,7 @@ public class Citizens2Listener implements Listener {
 				}
 				return;
 			}
+			// player doesn't have quest
 			if(qm.isQuestActive(selected)) {
 				try {
 					qm.startQuest(player, selected);

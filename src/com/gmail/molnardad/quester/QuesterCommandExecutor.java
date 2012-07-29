@@ -306,6 +306,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									Material mat;
 									int amt = 1;
 									int dat = 0;
+									sender.sendMessage(args[3].split(":"));
 									try {
 										int[] itm = parseItem(args[3]);
 										mat = Material.getMaterial(itm[0]);
@@ -404,7 +405,8 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												sender.sendMessage(e.message());
 											}
 										} else {
-											sender.sendMessage(ChatColor.RED + "Location 'here' requires player context.");
+											sender.sendMessage(ChatColor.RED + "This command requires player context."
+													+ "Use /quest reward add tele [X] [Y] [Z] [world].");
 										}
 										return true;
 									}
@@ -720,7 +722,6 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									try {
 										qm.addQuestObjective(sender.getName(), new DeathObjective(amt, loc, rng));
-										sender.sendMessage(ChatColor.GREEN + "Death objective added.");
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
