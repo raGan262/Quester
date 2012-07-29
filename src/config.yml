@@ -1,0 +1,10 @@
+general:
+  verbose-logging: true
+  save-interval: 15
+  debug-info: false
+objectives:
+  break:
+    no-drops: false
+quests:
+  only-first: true
+  show-objectives: true
