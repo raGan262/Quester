@@ -38,7 +38,7 @@ public final class MobKillObjective implements Objective {
 	@Override
 	public String progress(int progress) {
 		String mob = entity == null ? "any mob" : entity.getName();
-		return "Kill " + mob + " - " + amount + "x";
+		return "Kill " + mob + " - " + (amount - progress) + "x";
 	}
 	
 	@Override

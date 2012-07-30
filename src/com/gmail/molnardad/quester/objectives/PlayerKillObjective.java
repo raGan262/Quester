@@ -37,7 +37,7 @@ public final class PlayerKillObjective implements Objective {
 	@Override
 	public String progress(int progress) {
 		String player = playerName.equals("") ? "any player" : "player named " + playerName;
-		return "Kill " + player + " - " + (amount-progress) + "x";
+		return "Kill " + player + " - " + (amount - progress) + "x";
 	}
 	
 	@Override
