@@ -139,6 +139,9 @@ public class QuestManager {
 	}
 
 	public boolean isQuest(String questName) {
+		if(questName == null) {
+			return false;
+		}
 		return allQuests.containsKey(questName.toLowerCase());
 	}
 	

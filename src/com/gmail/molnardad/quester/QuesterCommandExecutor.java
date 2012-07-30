@@ -3,8 +3,6 @@ package com.gmail.molnardad.quester;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.milkbowl.vault.permission.Permission;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,17 +20,20 @@ import com.avaje.ebeaninternal.server.lib.util.InvalidDataException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.objectives.*;
 import com.gmail.molnardad.quester.rewards.*;
-import com.gmail.molnardad.quester.utils.Util;
+import static com.gmail.molnardad.quester.utils.Util.getLoc;
+import static com.gmail.molnardad.quester.utils.Util.sconcat;
+import static com.gmail.molnardad.quester.utils.Util.permCheck;
+import static com.gmail.molnardad.quester.utils.Util.parseEnchants;
+import static com.gmail.molnardad.quester.utils.Util.parseItem;
+import static com.gmail.molnardad.quester.utils.Util.line;
 
 public class QuesterCommandExecutor implements CommandExecutor {
 
 	Player player = null;
 	QuestManager qm = null;
-	Permission perms = null;
 	
 	public QuesterCommandExecutor() {
 		qm = Quester.qMan;
-		perms = Quester.perms;
 	}
 	
 	@Override
@@ -49,7 +50,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 				
 				// QUEST HELP
 				if(args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")) {
-					sender.sendMessage(Util.line(ChatColor.BLUE, "Quester help", ChatColor.GOLD));
+					sender.sendMessage(line(ChatColor.BLUE, "Quester help", ChatColor.GOLD));
 					sender.sendMessage(ChatColor.GOLD + "/quest help/? " + ChatColor.GRAY + "- this");
 					sender.sendMessage(ChatColor.GOLD + "/quest info [name] " + ChatColor.GRAY + "- shows info about quest");
 					sender.sendMessage(ChatColor.GOLD + "/quest show [name] " + ChatColor.GRAY + "- shows info about quest");
@@ -57,7 +58,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					sender.sendMessage(ChatColor.GOLD + "/quest cancel " + ChatColor.GRAY + "- cancels current quest");
 					sender.sendMessage(ChatColor.GOLD + "/quest done " + ChatColor.GRAY + "- completes current quest");
 					sender.sendMessage(ChatColor.GOLD + "/quest progress " + ChatColor.GRAY + "- shows current quest progress");
-					sender.sendMessage(Util.line(ChatColor.BLUE));
+					sender.sendMessage(line(ChatColor.BLUE));
 					return true;
 				}
 				
@@ -876,7 +877,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						return true;
 					}
 					if(QuestData.disUseCmds) {
-						sender.sendMessage(ChatColor.RED + "Quest start/done commands are disabled.");
+						sender.sendMessage(Quester.LABEL + "Quest start/done commands are disabled.");
 						return true;
 					}
 					try {
@@ -918,7 +919,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						return true;
 					}
 					if(QuestData.disUseCmds) {
-						sender.sendMessage(ChatColor.RED + "Quest start/done commands are disabled.");
+						sender.sendMessage(Quester.LABEL + "Quest start/done commands are disabled.");
 						return true;
 					}
 					if(player == null) {
@@ -1031,91 +1032,5 @@ public class QuesterCommandExecutor implements CommandExecutor {
 	}
 
 	// UTILITY
-	private Location getLoc(CommandSender sender, String[] args, int i) throws NumberFormatException {
-		if(args.length > i+3){
-			double x = Double.parseDouble(args[i]);
-			double y = Double.parseDouble(args[i+1]);
-			double z = Double.parseDouble(args[i+2]);
-			if(y < 0) {
-				throw new NumberFormatException();
-			}
-			Location loc;
-			if(player != null && args[i+3].equalsIgnoreCase("this")) {
-				loc = new Location(player.getWorld(), x, y, z);
-			} else {
-				World world = Quester.plugin.getServer().getWorld(args[i+3]);
-				if(world == null) {
-					return null;
-				}
-				loc = new Location(world, x, y, z);
-			}
-			return loc;
-		} else 
-			return null;
-	}
 	
-	private String sconcat(String[] strs, int start) {
-		String result = "";
-		for(int i = start; i < strs.length; i++) {
-			result = result + " " + strs[i];
-		}
-		return result.trim();
-	}
-	
-	private boolean permCheck(CommandSender sender, String perm, boolean message) {
-		if(sender.isOp() || perms.has(sender, perm)) {
-			return true;
-		}
-		if(message)
-			sender.sendMessage(ChatColor.RED + "You don't have permission for this.");
-		return false;
-	}
-	
-	private Map<Integer, Integer> parseEnchants(String[] args, int id) throws NumberFormatException, InvalidDataException {
-		Map<Integer, Integer> enchs = new HashMap<Integer, Integer>();
-		for(int i = id; i < args.length; i++) {
-			Enchantment en = null;
-			int lvl = 0;
-			String[] s = args[i].split(":");
-			if(s.length != 2) {
-				throw new InvalidDataException("");
-			}
-			en = Enchantment.getByName(s[0].toUpperCase());
-			if(en == null) {
-				en = Enchantment.getById(Integer.parseInt(s[0]));
-			}
-			if(en == null)
-				throw new InvalidDataException("");
-			lvl = Integer.parseInt(s[1]);
-			if(lvl < 1) {
-				throw new NumberFormatException();
-			}
-			
-			enchs.put(en.getId(), lvl);
-		}
-			
-		return enchs;
-	}
-	
-	private int[] parseItem(String arg) throws NumberFormatException, InvalidDataException {
-		int[] itm = new int[2];
-		String[] s = arg.split(":");
-		if(s.length > 2) {
-			throw new InvalidDataException("");
-		}
-		Material mat = Material.getMaterial(s[0].toUpperCase());
-		if(mat == null) {
-			itm[0] = Integer.parseInt(s[0]);
-			if(Material.getMaterial(itm[0]) == null)
-				throw new InvalidDataException("");
-		} else {
-			itm[0] = mat.getId();
-		}
-		if(s.length < 2) {
-			itm[1] = -1;
-		} else {
-			itm[1] = Integer.parseInt(s[1]);
-		}
-		return itm;
-	}
 }

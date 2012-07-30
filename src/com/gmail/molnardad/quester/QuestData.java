@@ -19,9 +19,9 @@ public class QuestData {
 	public static boolean showObjs = true;
 	public static boolean disUseCmds = false;
 
-	public static String USE_PERM = "quester.use";
-	public static String MODIFY_PERM = "quester.modify";
-	public static String ADMIN_PERM = "quester.admin";
+	public static final String USE_PERM = "quester.use";
+	public static final String MODIFY_PERM = "quester.modify";
+	public static final String ADMIN_PERM = "quester.admin";
 	
 	// <QuestName, Quest>
 	public static HashMap<String, Quest> allQuests = new HashMap<String, Quest>(); 
