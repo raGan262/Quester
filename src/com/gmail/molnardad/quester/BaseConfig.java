@@ -24,7 +24,7 @@ public class BaseConfig extends CustomConfig {
 
 		// SAVE INTERVAL
 		path = "general.save-interval";
-		if(this.config.getInt(path) < 1) {
+		if(this.config.getInt(path) < 0) {
 			this.config.set(path, 15);
 			wrongConfig(path);
 		}
@@ -37,6 +37,13 @@ public class BaseConfig extends CustomConfig {
 			wrongConfig(path);
 		}
 		QuestData.debug = this.config.getBoolean(path);
+		
+		path = "general.disable-usecmds";
+		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
+			this.config.set(path, false);
+			wrongConfig(path);
+		}
+		QuestData.disUseCmds = this.config.getBoolean(path);
 		
 		// NO DROPS
 		path = "objectives.break.no-drops";

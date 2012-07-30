@@ -2,6 +2,7 @@ package com.gmail.molnardad.quester;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -142,7 +143,11 @@ public class QuestManager {
 	}
 	
 	public String getSelectedName(String name) {
-		return selectedQuest.get(name.toLowerCase());
+		if(isQuest(selectedQuest.get(name.toLowerCase()))) {
+			return selectedQuest.get(name.toLowerCase());
+		} else {
+			return "";
+		}
 	}
 
 	// Quest modification methods
@@ -175,6 +180,7 @@ public class QuestManager {
 		}
 		allQuests.put(questName.toLowerCase(), new Quest(questName));
 		selectQuest(changer, questName);
+		QuestData.saveQuests();
 	}
 	
 	public void removeQuest(String changer, String questName) throws QuestExistenceException, QuestModificationException {
@@ -185,6 +191,7 @@ public class QuestManager {
 			throw new QuestModificationException("removeQuest()", false);
 		}
 		allQuests.remove(questName.toLowerCase());
+		QuestData.saveQuests();
 	}
 	
 	public void activateQuest(String questName) throws QuestExistenceException {
@@ -192,6 +199,7 @@ public class QuestManager {
 			throw new QuestExistenceException("activateQuest()", false);
 		}
 		getQuest(questName).activate();
+		QuestData.saveQuests();
 	}
 	
 	public void deactivateQuest(String questName) throws QuestExistenceException {
@@ -199,6 +207,7 @@ public class QuestManager {
 			throw new QuestExistenceException("deactivateQuest()", false);
 		}
 		getQuest(questName).deactivate();
+		QuestData.saveQuests();
 		if(currentQuests.containsValue(questName.toLowerCase())) {
 			for(String playerNameKey: currentQuests.keySet()) {
 				if(currentQuests.get(playerNameKey).equalsIgnoreCase(questName)) {
@@ -213,7 +222,7 @@ public class QuestManager {
 		}
 	}
 	public void toggleQuest(CommandSender changer) throws QuestModificationException, QuestExistenceException {
-		if(selectedQuest == null){
+		if(getSelected(changer.getName()) == null){
 			throw new QuestModificationException("toggleQuest()", true);
 		}
 		toggleQuest(getSelected(changer.getName()).getName());
@@ -243,6 +252,7 @@ public class QuestManager {
 		allQuests.remove(getSelected(changer).getName().toLowerCase());
 		getSelected(changer).setName(newName);
 		allQuests.put(getSelected(changer).getName().toLowerCase(), getSelected(changer));
+		QuestData.saveQuests();
 	}
 	
 	public void setQuestDescription(String changer, String newDesc) throws QuestModificationException {
@@ -253,6 +263,7 @@ public class QuestManager {
 			throw new QuestModificationException("setQuestDescription() 1", false);
 		}
 		getSelected(changer).setDescription(newDesc);
+		QuestData.saveQuests();
 	}
 	
 	public void addQuestDescription(String changer, String descToAdd) throws QuestModificationException {
@@ -263,6 +274,7 @@ public class QuestManager {
 			throw new QuestModificationException("addQuestDescription() 1", false);
 		}
 		getSelected(changer).addDescription(descToAdd);
+		QuestData.saveQuests();
 	}
 	
 	public void addQuestReward(String changer, Reward newReward) throws QuestModificationException {
@@ -273,6 +285,7 @@ public class QuestManager {
 			throw new QuestModificationException("addQuestReward() 1", false);
 		}
 		getSelected(changer).addReward(newReward);
+		QuestData.saveQuests();
 	}
 	
 	public void removeQuestReward(String changer, int id) throws QuestModificationException, QuestExistenceException {
@@ -284,6 +297,8 @@ public class QuestManager {
 		}
 		if(!getSelected(changer).removeReward(id)){
 			throw new QuestExistenceException("removeQuestReward()", false);
+		} else {
+			QuestData.saveQuests();
 		}
 	}
 	
@@ -295,6 +310,7 @@ public class QuestManager {
 			throw new QuestModificationException("addQuestObjective() 1", false);
 		}
 		getSelected(changer).addObjective(newObjective);
+		QuestData.saveQuests();
 	}
 	
 	public void removeQuestObjective(String changer, int id) throws QuestModificationException, QuestExistenceException {
@@ -306,6 +322,8 @@ public class QuestManager {
 		}
 		if(!getSelected(changer).removeObjective(id)){
 			throw new QuestExistenceException("removeQuestObjective()", false);
+		} else {
+			QuestData.saveQuests();
 		}
 	}
 	
@@ -326,6 +344,7 @@ public class QuestManager {
 		if(QuestData.verbose) {
 			Quester.log.info(player.getName() + " started quest '" + getQuest(questName).getName() + "'.");
 		}
+		QuestData.saveProfiles();
 	}
 	
 	public void startRandomQuest(Player player) throws QuestAssignmentException, QuestAvailabilityException, QuestExistenceException {
@@ -355,6 +374,7 @@ public class QuestManager {
 		player.sendMessage(Quester.LABEL + "Quest " + ChatColor.GOLD + questName + ChatColor.BLUE + " cancelled.");
 		unassignQuest(player.getName());
 		removeProgress(player.getName());
+		QuestData.saveProfiles();
 	}
 	
 	public void completeQuest(Player player) throws QuestAssignmentException, QuestCompletionException, QuestExistenceException {
@@ -376,6 +396,14 @@ public class QuestManager {
 		player.sendMessage(Quester.LABEL + "Quest " + ChatColor.GOLD + getPlayerQuest(player.getName()).getName() + ChatColor.BLUE + " was completed by " + player.getName() + ".");
 		unassignQuest(player.getName());
 		removeProgress(player.getName());
+		if(QuestData.completedQuests.get(player.getName().toLowerCase()) != null) {
+			QuestData.completedQuests.get(player.getName().toLowerCase()).add(questName.toLowerCase());
+		} else {
+			HashSet<String> completed = new HashSet<String>();
+			completed.add(questName.toLowerCase());
+			QuestData.completedQuests.put(player.getName().toLowerCase(), completed);
+		}
+		QuestData.saveProfiles();
 		if(QuestData.onlyFirst) {
 			deactivateQuest(questName);
 		}
@@ -387,6 +415,7 @@ public class QuestManager {
 		getProgress(playerName).set(id, newValue);
 		if(getPlayerQuest(playerName).getObjectives().get(id).getTargetAmount() == newValue) {
 			player.sendMessage(Quester.LABEL + "You completed a quest objective.");
+			QuestData.saveProfiles();
 		} 
 	}
 	

@@ -2,6 +2,7 @@ general:
   verbose-logging: true
   save-interval: 15
   debug-info: false
+  disable-usecmds: false
 objectives:
   break:
     no-drops: false

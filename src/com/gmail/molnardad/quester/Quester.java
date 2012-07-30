@@ -57,7 +57,8 @@ public class Quester extends JavaPlugin {
 				log.info("Citizens 2 found and hooked...");
 			}
 			
-			QuestData.loadData();
+			QuestData.loadQuests();
+			QuestData.loadProfiles();
 			
 			this.setupListeners();
 			
@@ -72,7 +73,11 @@ public class Quester extends JavaPlugin {
 		public void onDisable() {
 			if(loaded) {
 				stopSaving();
-				QuestData.saveData();
+				QuestData.saveQuests();
+				QuestData.saveProfiles();
+				if(QuestData.verbose) {
+					log.info("Quester data saved.");
+				}
 			}
 			QuestData.wipeData();
 			plugin = null;
@@ -139,13 +144,15 @@ public class Quester extends JavaPlugin {
 		
 		public boolean startSaving() {
 			if(saveID == 0) {
-				saveID = getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-					
-					@Override
-					public void run() {
-						QuestData.saveData();
-					}
-				}, QuestData.saveInterval * 20L * 60L, QuestData.saveInterval * 20L * 60L);
+				if(QuestData.saveInterval > 0) {
+					saveID = getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+						
+						@Override
+						public void run() {
+							QuestData.saveProfiles();
+						}
+					}, QuestData.saveInterval * 20L * 60L, QuestData.saveInterval * 20L * 60L);
+				}
 				return true;
 			}
 			return false;

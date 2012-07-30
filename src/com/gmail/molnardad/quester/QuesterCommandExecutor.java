@@ -158,7 +158,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 				}
 				
 				// QUEST SELECT
-				if(args[0].equalsIgnoreCase("select")) {
+				if(args[0].equalsIgnoreCase("select") || args[0].equalsIgnoreCase("sel")) {
 					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
 						return true;
 					}
@@ -875,6 +875,10 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						sender.sendMessage(ChatColor.RED + "This command can only be run by player.");
 						return true;
 					}
+					if(QuestData.disUseCmds) {
+						sender.sendMessage(ChatColor.RED + "Quest start/done commands are disabled.");
+						return true;
+					}
 					try {
 						if(args.length > 1){
 							String questName = sconcat(args, 1);
@@ -913,14 +917,22 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					if(!permCheck(sender, QuestData.USE_PERM, true)) {
 						return true;
 					}
+					if(QuestData.disUseCmds) {
+						sender.sendMessage(ChatColor.RED + "Quest start/done commands are disabled.");
+						return true;
+					}
 					if(player == null) {
 						sender.sendMessage(ChatColor.RED + "This command can only be run by player.");
-					} else {
-						try {
-							qm.completeQuest(player);
-						} catch (QuesterException e) {
-							sender.sendMessage(e.message());
-						}
+						return true;
+					}
+					if(QuestData.disUseCmds) {
+						sender.sendMessage(ChatColor.RED + "Quest start/done commands are disabled.");
+						return true;
+					}
+					try {
+						qm.completeQuest(player);
+					} catch (QuesterException e) {
+						sender.sendMessage(e.message());
 					}
 					return true;
 				}
@@ -947,14 +959,18 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					if(!permCheck(sender, QuestData.ADMIN_PERM, true)) {
 						return true;
 					}
-					QuestData.saveData();
-					sender.sendMessage(ChatColor.GREEN + "Quest data saved.");
+					QuestData.saveProfiles();
+					sender.sendMessage(ChatColor.GREEN + "Profiles saved.");
 					return true;
 				}
 				
-				// QUEST STOP SAVE
+				// QUEST START SAVE
 				if(args[0].equalsIgnoreCase("startsave")) {
 					if(!permCheck(sender, QuestData.ADMIN_PERM, true)) {
+						return true;
+					}
+					if(QuestData.saveInterval == 0) {
+						sender.sendMessage(ChatColor.RED + "AutoSaving is disabled in config.");
 						return true;
 					}
 					if(Quester.plugin.startSaving()) {
@@ -965,9 +981,13 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				
-				// QUEST START SAVE
+				// QUEST STOP SAVE
 				if(args[0].equalsIgnoreCase("stopsave")) {
 					if(!permCheck(sender, QuestData.ADMIN_PERM, true)) {
+						return true;
+					}
+					if(QuestData.saveInterval == 0) {
+						sender.sendMessage(ChatColor.RED + "AutoSaving is disabled in config.");
 						return true;
 					}
 					if(Quester.plugin.stopSaving()) {
@@ -985,6 +1005,19 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					}
 					Quester.plugin.initializeConfig();
 					sender.sendMessage(ChatColor.GREEN + "Quest config reloaded.");
+					return true;
+				}
+				
+				// QUEST LOADOLD
+				if(args[0].equalsIgnoreCase("loadold")) {
+					if(!permCheck(sender, QuestData.ADMIN_PERM, true)) {
+						return true;
+					}
+					if(QuestData.loadOldData()) {
+						sender.sendMessage(ChatColor.GREEN + "Old quest data loaded, now you may stop server to save data new way.");
+					} else {
+						sender.sendMessage(ChatColor.RED + "Error while loading old data. Check console.");
+					}
 					return true;
 				}
 				
