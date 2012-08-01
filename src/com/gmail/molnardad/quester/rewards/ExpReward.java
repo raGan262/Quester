@@ -1,12 +1,16 @@
 package com.gmail.molnardad.quester.rewards;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.utils.ExpManager;
 
+@SerializableAs("QuesterExpReward")
 public final class ExpReward implements Reward {
 
-	private static final long serialVersionUID = 13601L;
 	private final String TYPE = "EXPERIENCE";
 	private final int amount;
 	
@@ -46,4 +50,24 @@ public final class ExpReward implements Reward {
 		return TYPE+": "+String.valueOf(amount);
 	}
 
+	@Override
+	public Map<String, Object> serialize() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		map.put("amount", amount);
+		
+		return map;
+	}
+
+	public static ExpReward deserialize(Map<String, Object> map) {
+		int amt;
+		
+		try {
+			amt = (Integer) map.get("amount");
+		} catch (Exception e) {
+			return null;
+		}
+		
+		return new ExpReward(amt);
+	}
 }

@@ -307,7 +307,6 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									Material mat;
 									int amt = 1;
 									int dat = 0;
-									sender.sendMessage(args[3].split(":"));
 									try {
 										int[] itm = parseItem(args[3]);
 										mat = Material.getMaterial(itm[0]);
@@ -585,10 +584,12 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								if(args.length > 3) {
 									try {
 										int amt = Integer.parseInt(args[3]);
+										if(amt < 1)
+											throw new NumberFormatException();
 										qm.addQuestObjective(sender.getName(), new ExpObjective(amt));
 										sender.sendMessage(ChatColor.GREEN + "Experience objective added.");
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be number. (negative to subtract)");
+										sender.sendMessage(ChatColor.RED + "Amount must be positive number.");
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
@@ -723,6 +724,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									try {
 										qm.addQuestObjective(sender.getName(), new DeathObjective(amt, loc, rng));
+										sender.sendMessage(ChatColor.GREEN + "Death objective added.");
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}

@@ -199,6 +199,7 @@ public class QuestManager {
 			throw new QuestModificationException("removeQuest()", false);
 		}
 		allQuests.remove(questName.toLowerCase());
+		Quester.questConfig.getConfig().set(questName.toLowerCase(), null);
 		QuestData.saveQuests();
 	}
 	

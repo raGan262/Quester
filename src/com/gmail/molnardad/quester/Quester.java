@@ -14,11 +14,9 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.gmail.molnardad.quester.listeners.BreakListener;
-import com.gmail.molnardad.quester.listeners.Citizens2Listener;
-import com.gmail.molnardad.quester.listeners.DeathListener;
-import com.gmail.molnardad.quester.listeners.MobKillListener;
-import com.gmail.molnardad.quester.listeners.MoveListener;
+import com.gmail.molnardad.quester.listeners.*;
+import com.gmail.molnardad.quester.objectives.*;
+import com.gmail.molnardad.quester.rewards.*;
 
 public class Quester extends JavaPlugin {
 	
@@ -29,6 +27,7 @@ public class Quester extends JavaPlugin {
 		public static QuestManager qMan = null;
 		public static boolean citizens2 = false;
 		public static ProfileConfig profileConfig;
+		public static QuestConfig questConfig;
 		private boolean loaded = false;
 		private int saveID = 0;
 
@@ -40,6 +39,20 @@ public class Quester extends JavaPlugin {
 			super();
 			plugin = this;
 			ConfigurationSerialization.registerClass(PlayerProfile.class);
+			ConfigurationSerialization.registerClass(Quest.class);
+			ConfigurationSerialization.registerClass(BreakObjective.class);
+			ConfigurationSerialization.registerClass(DeathObjective.class);
+			ConfigurationSerialization.registerClass(ExpObjective.class);
+			ConfigurationSerialization.registerClass(ItemObjective.class);
+			ConfigurationSerialization.registerClass(LocObjective.class);
+			ConfigurationSerialization.registerClass(MobKillObjective.class);
+			ConfigurationSerialization.registerClass(PlayerKillObjective.class);
+			ConfigurationSerialization.registerClass(WorldObjective.class);
+			ConfigurationSerialization.registerClass(EffectReward.class);
+			ConfigurationSerialization.registerClass(ExpReward.class);
+			ConfigurationSerialization.registerClass(ItemReward.class);
+			ConfigurationSerialization.registerClass(MoneyReward.class);
+			ConfigurationSerialization.registerClass(TeleportReward.class);
 		}
 		
 		@Override
@@ -48,6 +61,7 @@ public class Quester extends JavaPlugin {
 			log = this.getLogger();
 			qMan = new QuestManager();
 			profileConfig = new ProfileConfig("profiles.yml");
+			questConfig = new QuestConfig("quests.yml");
 			
 			if(!this.setupEconomy()) {
 				return;

@@ -1,10 +1,9 @@
 package com.gmail.molnardad.quester.rewards;
 
-import java.io.Serializable;
-
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
-public interface Reward extends Serializable{
+public interface Reward extends ConfigurationSerializable{
 
 		public String getType();
 		public boolean checkReward(Player player);

@@ -1,16 +1,18 @@
 package com.gmail.molnardad.quester.objectives;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+@SerializableAs("QuesterItemObjective")
 public final class ItemObjective implements Objective {
 
-	private static final long serialVersionUID = 13503L;
 	private final String TYPE = "ITEM";
 	private final Material material;
 	private final short data;
@@ -161,5 +163,39 @@ public final class ItemObjective implements Objective {
 		}
 		return result;
 	}
+
+	@Override
+	public Map<String, Object> serialize() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		map.put("material", material.getId());
+		map.put("data", data);
+		map.put("amount", amount);
+		map.put("enchants", enchants);
+		
+		return map;
+	}
 	
+	@SuppressWarnings("unchecked")
+	public static ItemObjective deserialize(Map<String, Object> map) {
+		Material mat;
+		int dat, amt;
+		Map<Integer, Integer> enchs = new HashMap<Integer, Integer>();
+		
+		try {
+			mat = Material.getMaterial((Integer) map.get("material"));
+			if(mat == null)
+				return null;
+			dat = (Integer) map.get("data");
+			amt = (Integer) map.get("amount");
+			if(amt < 1)
+				return null;
+			if(map.get("enchants") != null)
+				enchs = (Map<Integer, Integer>) map.get("enchants");
+			
+			return new ItemObjective(mat, amt, dat, enchs);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 }

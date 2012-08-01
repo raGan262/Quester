@@ -1,13 +1,17 @@
 package com.gmail.molnardad.quester.rewards;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+@SerializableAs("QuesterEffectReward")
 public final class EffectReward implements Reward {
 
-	private static final long serialVersionUID = 13600L;
-	private final String TYPE = "EFFECT";
+	public static final String TYPE = "EFFECT";
 	private final int effect;
 	private final int duration;
 	private final int amplifier;
@@ -50,4 +54,33 @@ public final class EffectReward implements Reward {
 		return TYPE+": "+PotionEffectType.getById(effect).getName()+dur+power;
 	}
 
+	@Override
+	public Map<String, Object> serialize() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		map.put("effect", effect);
+		map.put("duration", duration);
+		map.put("amplifier", amplifier);
+		
+		return map;
+	}
+
+	public static EffectReward deserialize(Map<String, Object> map) {
+		int eff, dur, amp;
+		
+		try {
+			eff = (Integer) map.get("effect");
+			if(PotionEffectType.getById(eff) == null)
+				return null;
+			dur = (Integer) map.get("duration");
+			if(dur < 0)
+				return null;
+			amp = (Integer) map.get("amplifier");
+			if(amp < 0)
+				return null;
+			return new EffectReward(eff, dur, amp);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 }

@@ -1,14 +1,18 @@
 package com.gmail.molnardad.quester.rewards;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.milkbowl.vault.economy.EconomyResponse;
 
+import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
 
+@SerializableAs("QuesterMoneyReward")
 public final class MoneyReward implements Reward {
 
-	private static final long serialVersionUID = 13603L;
 	private final String TYPE = "MONEY";
 	private final double amount;
 	
@@ -54,6 +58,26 @@ public final class MoneyReward implements Reward {
 	
 	public String giveErrorMessage() {
 		return "Error occured while trying to pay money reward.";
+	}
+
+	@Override
+	public Map<String, Object> serialize() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		map.put("amount", amount);
+		
+		return map;
+	}
+
+	public static MoneyReward deserialize(Map<String, Object> map) {
+		double amt;
+		
+		try {
+			amt = (Double) map.get("amount");
+			return new MoneyReward(amt);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 }

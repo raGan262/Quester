@@ -1,20 +1,23 @@
 package com.gmail.molnardad.quester;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.SerializableAs;
 
 import com.gmail.molnardad.quester.objectives.Objective;
 import com.gmail.molnardad.quester.rewards.Reward;
 
-public class Quest implements Serializable{
+@SerializableAs("QeusterQuest")
+public class Quest implements ConfigurationSerializable{
 
-	private static final long serialVersionUID = 3193159778020746517L;
 	private ArrayList<Objective> objectives = null;
 	private ArrayList<Reward> rewards = null;
 	private String description = null;
 	private String name = null;
 	private boolean active = false;
-	private String permission = "";
 	
 	
 	public Quest(String name) {
@@ -121,9 +124,65 @@ public class Quest implements Serializable{
 	public void addReward(Reward newReward) {
 		rewards.add(newReward);
 	}
+
+	@Override
+	public Map<String, Object> serialize() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map<Integer, Objective> objs = new HashMap<Integer, Objective>();
+		Map<Integer, Reward> rews = new HashMap<Integer, Reward>();
+		
+		for(int i=0; i<objectives.size(); i++) {
+			objs.put(i, objectives.get(i));
+		}
+		for(int i=0; i<rewards.size(); i++) {
+			rews.put(i, rewards.get(i));
+		}
+		
+		map.put("name", name);
+		map.put("description", description);
+		map.put("active", active);
+		map.put("objectives", objs);
+		map.put("rewards", rews);
+		
+		return map;
+	}
 	
-	public String getPermission() {
-		//TODO
-		return permission;
+	@SuppressWarnings("unchecked")
+	public static Quest deserialize(Map<String, Object> map) {
+		Quest quest;
+		try {
+			String name = (String) map.get("name");
+			if(name != null)
+				quest = new Quest(name);
+			else
+				return null;
+			
+			quest.setDescription((String) map.get("description"));
+			
+			if((Boolean) map.get("active"))
+				quest.activate();
+			
+			Map<Integer, Objective> objs = new HashMap<Integer, Objective>();
+			if(map.get("objectives") != null) {
+				objs = (Map<Integer, Objective>) map.get("objectives");
+				for(int i=0; i<objs.size(); i++) {
+					quest.addObjective(objs.get(i));
+				}
+			}
+			
+			Map<Integer, Reward> rews = new HashMap<Integer, Reward>();
+			if(map.get("objectives") != null) {
+				rews = (Map<Integer, Reward>) map.get("rewards");
+				for(int i=0; i<rews.size(); i++) {
+					quest.addReward(rews.get(i));
+				}
+			}
+			
+		} catch (Exception e) {
+			return null;
+		}
+		
+		
+		return quest;
 	}
 }

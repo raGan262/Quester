@@ -2,10 +2,9 @@ package com.gmail.molnardad.quester;
 
 import java.io.IOException;
 
-public final class ProfileConfig extends CustomConfig {
+public final class QuestConfig extends CustomConfig {
 
-	
-	public ProfileConfig(String fileName) {
+	public QuestConfig(String fileName) {
 		super(Quester.plugin, fileName);
 	}
 
@@ -17,11 +16,11 @@ public final class ProfileConfig extends CustomConfig {
 	public boolean validate() {
 		return true;
 	}
-	
+
 	@Override
 	public void saveConfig() {
-		for(String key : QuestData.profiles.keySet()) {
-			config.set(key, QuestData.profiles.get(key));
+		for(String key : QuestData.allQuests.keySet()) {
+			config.set(key, QuestData.allQuests.get(key));
 		}
 		try {
 			config.save(conFile);

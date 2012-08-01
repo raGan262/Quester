@@ -1,12 +1,16 @@
 package com.gmail.molnardad.quester.objectives;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.utils.ExpManager;
 
+@SerializableAs("QuesterExpObjective")
 public final class ExpObjective implements Objective {
 
-	private static final long serialVersionUID = 13502L;
 	private final String TYPE = "EXPERIENCE";
 	private final int amount;
 	
@@ -50,4 +54,26 @@ public final class ExpObjective implements Objective {
 		return amt - amount;
 	}
 
+	@Override
+	public Map<String, Object> serialize() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		map.put("amount", amount);
+		
+		return map;
+	}
+
+	public static ExpObjective deserialize(Map<String, Object> map) {
+		int amt;
+		
+		try {
+			amt = (Integer) map.get("amount");
+			if(amt < 1)
+				return null;
+		} catch (Exception e) {
+			return null;
+		}
+		
+		return new ExpObjective(amt);
+	}
 }

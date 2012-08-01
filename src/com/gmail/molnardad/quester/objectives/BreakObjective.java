@@ -1,11 +1,15 @@
 package com.gmail.molnardad.quester.objectives;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.Material;
+import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
+@SerializableAs("QuesterBreakObjective")
 public final class BreakObjective implements Objective {
 
-	private static final long serialVersionUID = 13500L;
 	private final String TYPE = "BREAK";
 	private final Material material;
 	private final byte data;
@@ -57,4 +61,33 @@ public final class BreakObjective implements Objective {
 		return true;
 	}
 
+	@Override
+	public Map<String, Object> serialize() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		map.put("material", material.getId());
+		map.put("data", data);
+		map.put("amount", amount);
+		
+		return map;
+	}
+
+	public static BreakObjective deserialize(Map<String, Object> map) {
+		Material mat;
+		int dat, amt;
+		
+		try {
+			mat = Material.getMaterial((Integer) map.get("material"));
+			if(mat == null)
+				return null;
+			dat = (Integer) map.get("data");
+			amt = (Integer) map.get("amount");
+			if(amt < 1)
+				return null;
+			
+			return new BreakObjective(amt, mat, (byte)dat);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 }

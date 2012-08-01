@@ -1,10 +1,9 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.io.Serializable;
-
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
-public interface Objective extends Serializable{
+public interface Objective extends ConfigurationSerializable{
 
 		public String getType();
 		public int getTargetAmount();

@@ -1,11 +1,15 @@
 package com.gmail.molnardad.quester.objectives;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
+@SerializableAs("QuesterMobKillObjective")
 public final class MobKillObjective implements Objective {
 
-	private static final long serialVersionUID = 13506L;
 	private final String TYPE = "MOBKILL";
 	private final EntityType entity;
 	private final int amount;
@@ -55,4 +59,31 @@ public final class MobKillObjective implements Objective {
 		}
 	}
 
+	@Override
+	public Map<String, Object> serialize() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		map.put("amount", amount);
+		if(entity == null)
+			map.put("entity", -1);
+		else
+			map.put("entity", entity.getTypeId());
+		
+		return map;
+	}
+
+	public static MobKillObjective deserialize(Map<String, Object> map) {
+		int amt;
+		EntityType ent = null;
+		try {
+			amt = (Integer) map.get("amount");
+			if(amt < 1)
+				return null;
+			ent = EntityType.fromId((Integer) map.get("entity"));
+			
+			return new MobKillObjective(amt, ent);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 }
