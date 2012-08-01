@@ -3,9 +3,10 @@ package com.gmail.molnardad.quester;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map;
+
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.gmail.molnardad.quester.utils.Util;
 
@@ -22,76 +23,63 @@ public class QuestData {
 	public static final String USE_PERM = "quester.use";
 	public static final String MODIFY_PERM = "quester.modify";
 	public static final String ADMIN_PERM = "quester.admin";
-	
-	// <QuestName, Quest>
-	public static HashMap<String, Quest> allQuests = new HashMap<String, Quest>(); 
-	// <PlayerName, QuestName>
-	public static HashMap<String, String> currentQuests = new HashMap<String, String>(); 
-	// <PlayerName, <ObjectiveIndex, Amount>>
-	public static HashMap<String, ArrayList<Integer>> objectiveProgress = new HashMap<String, ArrayList<Integer>>();
-	// <PlayerName, HashSet<CompletedQuests>>
-	public static HashMap<String, HashSet<String>> completedQuests = new HashMap<String, HashSet<String>>();
 
-	public static HashMap<String, String> selectedQuest = new HashMap<String, String>(); 
-	
-	private static void resetData() {
-		currentQuests = new HashMap<String, String>(); 
-		objectiveProgress = new HashMap<String, ArrayList<Integer>>(); 
-	}
+
+	public static Map<String, Quest> allQuests = new HashMap<String, Quest>();
+	public static Map<String, PlayerProfile> profiles = new HashMap<String, PlayerProfile>();
+
 	
 	static void wipeData(){
 		allQuests = null;
-		currentQuests = null;
-		objectiveProgress = null;
+		profiles = null;
 	}
 	
 	static void saveProfiles(){
-		ArrayList<Object> data = new ArrayList<Object>();
-		data.add(currentQuests);
-		data.add(objectiveProgress);
-		data.add(completedQuests);
-		try {
-			Util.saveObject(data, Quester.plugin.getDataFolder(), "Profiles.qd");
-		} catch (IOException e) {
-			Quester.log.severe("Error while saving profiles.");
-			if(debug) {
-				e.printStackTrace();
-			}
-			return;
-		}
+		Quester.profileConfig.saveConfig();
 	}
 
-	@SuppressWarnings("unchecked")
-	static void loadProfiles(){
-		ArrayList<Object> data = null;
+	static void loadProfiles() {
 		try {
-			data = (ArrayList<Object>) Util.loadObject(Quester.plugin.getDataFolder(), "Profiles.qd");
-			if(data != null) {
-				currentQuests = (HashMap<String, String>) data.get(0);
-				objectiveProgress = (HashMap<String, ArrayList<Integer>>) data.get(1);
-				completedQuests = (HashMap<String, HashSet<String>>) data.get(2);
+			YamlConfiguration config = Quester.profileConfig.getConfig();
+			for(String key : config.getKeys(false)) {
+				if(config.get(key) != null) {
+					if(config.get(key) instanceof PlayerProfile) {
+						PlayerProfile prof = (PlayerProfile) config.get(key);
+						if(!prof.getQuest().isEmpty()) {
+							if(Quester.qMan.isQuestActive(prof.getQuest())) {
+								if(Quester.qMan.getObjectiveAmount(prof.getQuest()) != prof.getProgress().size()) {
+									prof.unsetQuest();
+									if(verbose) {
+										Quester.log.info("Invalid progress: " + key);
+									}
+								}
+							} else {
+								prof.unsetQuest();
+								if(verbose) {
+									Quester.log.info("Invalid progress: " + key);
+								}
+							}
+						}
+						profiles.put(prof.getName().toLowerCase(), prof);
+					} else {
+						if(verbose) {
+							Quester.log.info("Invalid key in profiles.yml: " + key);
+						}
+					}
+				}
 			}
-		} catch (EOFException e) {
-			Quester.log.severe("Couldn't load profiles. Is it first run or are they corrupted ?");
-			if(debug) {
-				e.printStackTrace();
+			saveProfiles();
+			if(verbose) {
+				Quester.log.info(profiles.size() + " profiles loaded.");
 			}
-			return;
 		} catch (Exception e) {
-			Quester.log.severe("Error while loading profiles.");
-			if(debug) {
-				e.printStackTrace();
-			}
-			resetData();
-			return;
+			e.printStackTrace();
 		}
-		if(verbose) {
-			Quester.log.info("Profiles loaded.");
-		}
+		
 	}
 	
 	static void saveQuests(){
-		HashMap<String, Quest> data = allQuests;
+		Map<String, Quest> data = allQuests;
 		try {
 			Util.saveObject(data, Quester.plugin.getDataFolder(), "Quests.qd");
 		} catch (IOException e) {
@@ -125,34 +113,5 @@ public class QuestData {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	static boolean loadOldData(){
-		ArrayList<Object> data = null;
-		try {
-			data = (ArrayList<Object>) Util.loadObject(Quester.plugin.getDataFolder(), "Data.qd");
-			if(data != null) {
-				allQuests = (HashMap<String, Quest>) data.get(0);
-				currentQuests = (HashMap<String, String>) data.get(1);
-				objectiveProgress = (HashMap<String, ArrayList<Integer>>) data.get(2);
-			}
-		} catch (EOFException e) {
-			Quester.log.severe("Error while loading quest data - file not found or empty.");
-			if(debug) {
-				e.printStackTrace();
-			}
-			return false;
-		} catch (Exception e) {
-			Quester.log.severe("Error while loading quest data - can't read.");
-			if(debug) {
-				e.printStackTrace();
-			}
-			return false;
-		}
-		if(verbose) {
-			Quester.log.info("Data loaded.");
-		}
-		return true;
 	}
 }

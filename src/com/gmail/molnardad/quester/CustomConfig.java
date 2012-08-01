@@ -38,7 +38,7 @@ public abstract class CustomConfig {
 					YamlConfiguration customConfig = YamlConfiguration.loadConfiguration(defaultConfigStream);
 					try {
 						customConfig.save(conFile);
-						plugin.getLogger().info("Created default comfig file " + conFile.getName() + " !");
+						plugin.getLogger().info("Created default file " + conFile.getName() + " !");
 					} catch (IOException ex) {
 						plugin.getLogger().severe("Can't save file " + conFile.getName() + " !");
 					}
@@ -46,7 +46,7 @@ public abstract class CustomConfig {
 				} else {
 					try {
 						conFile.createNewFile();
-						plugin.getLogger().info("Created empty comfig file " + conFile.getName() + " !");
+						plugin.getLogger().info("Created empty file " + conFile.getName() + " !");
 					} catch (IOException ex) {
 						plugin.getLogger().severe("Can't create file " + conFile.getName() + " !");
 					}

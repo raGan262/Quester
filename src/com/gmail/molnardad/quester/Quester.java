@@ -10,6 +10,7 @@ import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -27,6 +28,7 @@ public class Quester extends JavaPlugin {
 		public static Economy econ = null;
 		public static QuestManager qMan = null;
 		public static boolean citizens2 = false;
+		public static ProfileConfig profileConfig;
 		private boolean loaded = false;
 		private int saveID = 0;
 
@@ -37,6 +39,7 @@ public class Quester extends JavaPlugin {
 		public Quester() {
 			super();
 			plugin = this;
+			ConfigurationSerialization.registerClass(PlayerProfile.class);
 		}
 		
 		@Override
@@ -44,6 +47,7 @@ public class Quester extends JavaPlugin {
 			
 			log = this.getLogger();
 			qMan = new QuestManager();
+			profileConfig = new ProfileConfig("profiles.yml");
 			
 			if(!this.setupEconomy()) {
 				return;
@@ -59,6 +63,7 @@ public class Quester extends JavaPlugin {
 			
 			QuestData.loadQuests();
 			QuestData.loadProfiles();
+			
 			
 			this.setupListeners();
 			

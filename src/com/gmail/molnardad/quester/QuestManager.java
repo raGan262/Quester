@@ -2,7 +2,7 @@ package com.gmail.molnardad.quester;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -23,9 +23,7 @@ import com.gmail.molnardad.quester.utils.ExpManager;
 import com.gmail.molnardad.quester.utils.Util;
 
 import static com.gmail.molnardad.quester.QuestData.allQuests;
-import static com.gmail.molnardad.quester.QuestData.currentQuests;
-import static com.gmail.molnardad.quester.QuestData.objectiveProgress;
-import static com.gmail.molnardad.quester.QuestData.selectedQuest;
+import static com.gmail.molnardad.quester.QuestData.profiles;
 
 public class QuestManager {
 	
@@ -56,37 +54,32 @@ public class QuestManager {
 	}
 	
 	private Quest getSelected(String name) {
-		return allQuests.get(selectedQuest.get(name.toLowerCase()));
+		if(name == null) 
+			return null;
+		return getQuest(getProfile(name).getSelected());
 	}
 	
 	private Collection<Quest> getQuests() {
 		return allQuests.values();
 	}
 	
-	private boolean createProgress(String playerName) {
-		boolean result = getProgress(playerName) == null;
-		objectiveProgress.put(playerName.toLowerCase(), new ArrayList<Integer>());
-		ArrayList<Objective> objectives = getPlayerQuest(playerName).getObjectives();
-		for(@SuppressWarnings("unused") Objective o:objectives) {
-			objectiveProgress.get(playerName.toLowerCase()).add(0);
-		}
-		return result;
-	}
-	
-	private void removeProgress(String playerName) {
-		objectiveProgress.remove(playerName.toLowerCase());
-	}
-	
-	private ArrayList<Integer> getProgress(String playerName) {
-		return objectiveProgress.get(playerName.toLowerCase());
+	private List<Integer> getProgress(String playerName) {
+		return getProfile(playerName).getProgress();
 	}
 	
 	private void assignQuest(String playerName, String questName) {
-		currentQuests.put(playerName.toLowerCase(), questName.toLowerCase());
+		int objs = getObjectiveAmount(questName);
+		getProfile(playerName).setQuest(questName.toLowerCase(), objs);
 	}
 	
 	private void unassignQuest(String playerName) {
-		currentQuests.remove(playerName.toLowerCase());
+		getProfile(playerName).unsetQuest();
+	}
+	
+	private PlayerProfile createProfile(String playerName) {
+		PlayerProfile prof = new PlayerProfile(playerName.toLowerCase());
+		profiles.put(playerName.toLowerCase(), prof);
+		return prof;
 	}
 	
 	// - public part
@@ -125,19 +118,34 @@ public class QuestManager {
 		}
 	}
 	
+	public PlayerProfile getProfile(String playerName) {
+		if(playerName == null)
+			return null;
+		PlayerProfile prof = profiles.get(playerName.toLowerCase());
+		if(prof == null)
+			prof = createProfile(playerName);
+		return prof;
+	}
+	
 	public boolean achievedTarget(Player player, int id) {
 		String playerName = player.getName();
 		return getPlayerQuest(playerName).getObjectives().get(id).isComplete(player, getProgress(playerName).get(id));
 	}
 	
 	public boolean hasQuest(String playerName) {
-		return currentQuests.containsKey(playerName.toLowerCase());
+		return !getProfile(playerName).getQuest().isEmpty();
 	}
 
 	public Quest getPlayerQuest(String playerName) {
-		return getQuest(currentQuests.get(playerName.toLowerCase()));
+		return getQuest(getProfile(playerName).getQuest());
 	}
 
+	public int getObjectiveAmount(String questName) {
+		if(getQuest(questName) == null)
+			return -1;
+		return getQuest(questName).getObjectives().size();
+	}
+	
 	public boolean isQuest(String questName) {
 		if(questName == null) {
 			return false;
@@ -145,9 +153,9 @@ public class QuestManager {
 		return allQuests.containsKey(questName.toLowerCase());
 	}
 	
-	public String getSelectedName(String name) {
-		if(isQuest(selectedQuest.get(name.toLowerCase()))) {
-			return selectedQuest.get(name.toLowerCase());
+	public String getSelectedName(String playerName) {
+		if(isQuest(getProfile(playerName).getSelected())) {
+			return getProfile(playerName).getSelected();
 		} else {
 			return "";
 		}
@@ -171,10 +179,7 @@ public class QuestManager {
 		if(!isQuest(questName)) {
 			throw new QuestExistenceException("selectQuest()", false);
 		}
-		if(questName.equals(""))
-			selectedQuest.remove(changer.toLowerCase());
-		else
-			selectedQuest.put(changer.toLowerCase(), questName.toLowerCase());
+		getProfile(changer).setSelected(questName);
 	}
 	
 	public void createQuest(String changer, String questName) throws QuestExistenceException {
@@ -211,19 +216,17 @@ public class QuestManager {
 		}
 		getQuest(questName).deactivate();
 		QuestData.saveQuests();
-		if(currentQuests.containsValue(questName.toLowerCase())) {
-			for(String playerNameKey: currentQuests.keySet()) {
-				if(currentQuests.get(playerNameKey).equalsIgnoreCase(questName)) {
-					currentQuests.remove(playerNameKey);
-					objectiveProgress.remove(playerNameKey);
-					Player player = Bukkit.getServer().getPlayerExact(playerNameKey);
-					if(player != null){
-						player.sendMessage(Quester.LABEL + "Your current quest hes been deactivated.");
-					}
+		for(PlayerProfile prof: profiles.values()) {
+			if(prof.getQuest().equalsIgnoreCase(questName)) {
+				prof.unsetQuest();
+				Player player = Bukkit.getServer().getPlayerExact(prof.getName());
+				if(player != null){
+					player.sendMessage(Quester.LABEL + "Your current quest hes been deactivated.");
 				}
 			}
 		}
 	}
+	
 	public void toggleQuest(CommandSender changer) throws QuestModificationException, QuestExistenceException {
 		if(getSelected(changer.getName()) == null){
 			throw new QuestModificationException("toggleQuest()", true);
@@ -342,7 +345,6 @@ public class QuestManager {
 			throw new QuestExistenceException("startQuest() 1", false);
 		}
 		assignQuest(player.getName(), questName);
-		createProgress(player.getName());
 		player.sendMessage(Quester.LABEL + "You have started quest " + ChatColor.GOLD + getQuest(questName).getName());
 		if(QuestData.verbose) {
 			Quester.log.info(player.getName() + " started quest '" + getQuest(questName).getName() + "'.");
@@ -376,7 +378,6 @@ public class QuestManager {
 		String questName = getPlayerQuest(player.getName()).getName();
 		player.sendMessage(Quester.LABEL + "Quest " + ChatColor.GOLD + questName + ChatColor.BLUE + " cancelled.");
 		unassignQuest(player.getName());
-		removeProgress(player.getName());
 		QuestData.saveProfiles();
 	}
 	
@@ -398,14 +399,7 @@ public class QuestManager {
 		String questName = getPlayerQuest(player.getName()).getName();
 		player.sendMessage(Quester.LABEL + "Quest " + ChatColor.GOLD + getPlayerQuest(player.getName()).getName() + ChatColor.BLUE + " was completed by " + player.getName() + ".");
 		unassignQuest(player.getName());
-		removeProgress(player.getName());
-		if(QuestData.completedQuests.get(player.getName().toLowerCase()) != null) {
-			QuestData.completedQuests.get(player.getName().toLowerCase()).add(questName.toLowerCase());
-		} else {
-			HashSet<String> completed = new HashSet<String>();
-			completed.add(questName.toLowerCase());
-			QuestData.completedQuests.put(player.getName().toLowerCase(), completed);
-		}
+		getProfile(player.getName()).addCompleted(questName);
 		QuestData.saveProfiles();
 		if(QuestData.onlyFirst) {
 			deactivateQuest(questName);
@@ -413,10 +407,10 @@ public class QuestManager {
 	}
 	
 	public void incProgress(Player player, int id) {
-		String playerName = player.getName();
-		int newValue = getProgress(playerName).get(id) + 1;
-		getProgress(playerName).set(id, newValue);
-		if(getPlayerQuest(playerName).getObjectives().get(id).getTargetAmount() == newValue) {
+		PlayerProfile prof = getProfile(player.getName());
+		int newValue = prof.getProgress().get(id) + 1;
+		prof.getProgress().set(id, newValue);
+		if(getQuest(prof.getQuest()).getObjectives().get(id).getTargetAmount() == newValue) {
 			player.sendMessage(Quester.LABEL + "You completed a quest objective.");
 			QuestData.saveProfiles();
 		} 
@@ -498,8 +492,8 @@ public class QuestManager {
 		}
 		if(QuestData.showObjs) {
 			player.sendMessage(ChatColor.GOLD + getPlayerQuest(player.getName()).getName() + ChatColor.BLUE + " progress:");
-			ArrayList<Objective> objs = getPlayerQuest(player.getName()).getObjectives();
-			ArrayList<Integer> progress = getProgress(player.getName());
+			List<Objective> objs = getPlayerQuest(player.getName()).getObjectives();
+			List<Integer> progress = getProgress(player.getName());
 			for(int i = 0; i < objs.size(); i++) {
 				if(objs.get(i).isComplete(player, progress.get(i))) {
 						player.sendMessage(ChatColor.GREEN + " - Completed");

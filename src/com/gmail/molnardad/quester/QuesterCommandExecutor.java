@@ -1009,19 +1009,6 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				
-				// QUEST LOADOLD
-				if(args[0].equalsIgnoreCase("loadold")) {
-					if(!permCheck(sender, QuestData.ADMIN_PERM, true)) {
-						return true;
-					}
-					if(QuestData.loadOldData()) {
-						sender.sendMessage(ChatColor.GREEN + "Old quest data loaded, now you may stop server to save data new way.");
-					} else {
-						sender.sendMessage(ChatColor.RED + "Error while loading old data. Check console.");
-					}
-					return true;
-				}
-				
 				sender.sendMessage(ChatColor.RED + "Unknown arguments. Type /quest help.");
 			} else {
 				sender.sendMessage(Quester.LABEL + "Quest what ? /quest ?");
