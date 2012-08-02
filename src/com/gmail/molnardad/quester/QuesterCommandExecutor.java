@@ -20,6 +20,7 @@ import com.avaje.ebeaninternal.server.lib.util.InvalidDataException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.objectives.*;
 import com.gmail.molnardad.quester.rewards.*;
+import com.gmail.molnardad.quester.conditions.*;
 import static com.gmail.molnardad.quester.utils.Util.getLoc;
 import static com.gmail.molnardad.quester.utils.Util.sconcat;
 import static com.gmail.molnardad.quester.utils.Util.permCheck;
@@ -866,6 +867,101 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					}
 					
 					sender.sendMessage(ChatColor.RED + "Usage: /quest objective [add|remove] [objective_type] [args].");
+					return true;
+				}
+				
+				// QUEST CONDITION
+				if(args[0].equalsIgnoreCase("condition") || args[0].equalsIgnoreCase("con")) {
+					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
+						return true;
+					}
+					if(args.length > 2){
+						
+						// ADD CONDITION
+						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
+
+							// QUEST CONDITION
+							if(args[2].equalsIgnoreCase("quest")) {
+								if(args.length > 3) {
+									String questName = sconcat(args, 3);
+									try {
+										qm.addQuestCondition(sender.getName(), new QuestCondition(questName));
+										sender.sendMessage(ChatColor.GREEN + "Quest condition added.");
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + "Usage: /quest condition add quest [quest_name]");
+								return true;
+							}
+							
+							// QUESTNOT CONDITION
+							if(args[2].equalsIgnoreCase("questnot")) {
+								if(args.length > 3) {
+									String questName = sconcat(args, 3);
+									try {
+										qm.addQuestCondition(sender.getName(), new QuestNotCondition(questName));
+										sender.sendMessage(ChatColor.GREEN + "QuestNot condition added.");
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + "Usage: /quest condition add questnot [quest_name]");
+								return true;
+							}
+							
+							// PERMISSION CONDITION
+							if(args[2].equalsIgnoreCase("perm")) {
+								if(args.length > 3) {
+									String perm = args[3];
+									try {
+										qm.addQuestCondition(sender.getName(), new PermissionCondition(perm));
+										sender.sendMessage(ChatColor.GREEN + "Permission condition added.");
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + "Usage: /quest condition add perm [quest_name]");
+								return true;
+							}
+							
+							sender.sendMessage(ChatColor.RED + "Available condition types: " + ChatColor.WHITE + "quest, questnot, perm");
+							return true;
+						}
+						
+						// REMOVE CONDITION
+						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")){
+							try {
+								int id = Integer.parseInt(args[2]);
+								qm.removeQuestObjective(sender.getName(), id);
+								sender.sendMessage(ChatColor.GREEN + "Condition " + args[2] + " removed.");
+							} catch (NumberFormatException e) {
+								sender.sendMessage(ChatColor.RED + "Usage: /quest condition remove [id_number].");
+							} catch (QuesterException e) {
+								sender.sendMessage(e.message());
+							}
+							return true;
+						}
+						
+						sender.sendMessage(ChatColor.RED + "Usage: /quest condition [add|remove] [condition_type] [args].");
+						return true;
+					}
+					
+					if(args.length > 1) {
+						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
+							sender.sendMessage(ChatColor.RED + "Available condition types: " + ChatColor.WHITE + "quest, questnot, perm");
+							return true;
+						}
+						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
+							sender.sendMessage(ChatColor.RED + "Usage: /quest condition remove [id_number].");
+							return true;
+						}
+					}
+					
+					sender.sendMessage(ChatColor.RED + "Usage: /quest condition [add|remove] [condition_type] [args].");
 					return true;
 				}
 				

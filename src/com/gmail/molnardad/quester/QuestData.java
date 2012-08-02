@@ -89,17 +89,26 @@ public class QuestData {
 						allQuests.put(quest.getName().toLowerCase(), quest);
 						for(int i=0; i<quest.getObjectives().size(); i++) {
 							if(quest.getObjective(i) == null) {
-								Quester.log.info("Objective " + i + " is null");
+								Quester.log.info("Objective " + i + " is invalid.");
+								quest.removeObjective(i);
+								quest.deactivate();
 							}
 						}
 						for(int i=0; i<quest.getRewards().size(); i++) {
 							if(quest.getReward(i) == null) {
-								Quester.log.info("Reward " + i + " is null");								
+								Quester.log.info("Reward " + i + " is invalid.");	
+								quest.removeReward(i);
+							}
+						}
+						for(int i=0; i<quest.getConditions().size(); i++) {
+							if(quest.getCondition(i) == null) {
+								Quester.log.info("Condition " + i + " is invalid.");
+								quest.removeCondition(i);
 							}
 						}
 					} else {
 						if(verbose) {
-							Quester.log.info("Invalid key in profiles.yml: " + key);
+							Quester.log.info("Invalid key in quests.yml: " + key);
 						}
 					}
 				}

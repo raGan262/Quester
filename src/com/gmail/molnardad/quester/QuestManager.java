@@ -13,6 +13,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.molnardad.quester.conditions.Condition;
 import com.gmail.molnardad.quester.exceptions.*;
 import com.gmail.molnardad.quester.objectives.ExpObjective;
 import com.gmail.molnardad.quester.objectives.ItemObjective;
@@ -77,7 +78,7 @@ public class QuestManager {
 	}
 	
 	private PlayerProfile createProfile(String playerName) {
-		PlayerProfile prof = new PlayerProfile(playerName.toLowerCase());
+		PlayerProfile prof = new PlayerProfile(playerName);
 		profiles.put(playerName.toLowerCase(), prof);
 		return prof;
 	}
@@ -116,6 +117,19 @@ public class QuestManager {
 				}
 			}
 		}
+	}
+	
+	public boolean areConditionsMet(Player player, String questName) throws QuestExistenceException {
+		Quest qst = getQuest(questName);
+		if(qst == null)
+			throw new QuestExistenceException("areConditionsMet()", false);
+		
+		for(Condition c : qst.getConditions()) {
+			if(!c.isMet(player))
+				return false;
+		}
+		
+		return true;
 	}
 	
 	public PlayerProfile getProfile(String playerName) {
@@ -334,8 +348,33 @@ public class QuestManager {
 		}
 	}
 	
+	public void addQuestCondition(String changer, Condition newCondition) throws QuestModificationException {
+		if(getSelected(changer) == null) {
+			throw new QuestModificationException("addQuestCondition()", true);
+		}
+		if(!canModify(getSelected(changer).getName())) {
+			throw new QuestModificationException("addQuestCondition() 1", false);
+		}
+		getSelected(changer).addCondition(newCondition);
+		QuestData.saveQuests();
+	}
+	
+	public void removeQuestCondition(String changer, int id) throws QuestModificationException, QuestExistenceException {
+		if(getSelected(changer) == null) {
+			throw new QuestModificationException("removeQuestCondition()", true);
+		}
+		if(!canModify(getSelected(changer).getName())) {
+			throw new QuestModificationException("removeQuestCondition() 1", false);
+		}
+		if(!getSelected(changer).removeCondition(id)){
+			throw new QuestExistenceException("removeQuestCondition()", false);
+		} else {
+			QuestData.saveQuests();
+		}
+	}
+	
 	// Quest management methods
-	public void startQuest(Player player, String questName) throws QuestExistenceException, QuestAssignmentException {
+	public void startQuest(Player player, String questName) throws QuestExistenceException, QuestAssignmentException, QuestConditionsException {
 		if(!isQuest(questName)){
 			throw new QuestExistenceException("startQuest()", false);
 		}
@@ -345,6 +384,8 @@ public class QuestManager {
 		if(!isQuestActive(questName)) {
 			throw new QuestExistenceException("startQuest() 1", false);
 		}
+		if(!areConditionsMet(player, questName))
+			throw new QuestConditionsException("startQuest()");
 		assignQuest(player.getName(), questName);
 		player.sendMessage(Quester.LABEL + "You have started quest " + ChatColor.GOLD + getQuest(questName).getName());
 		if(QuestData.verbose) {
@@ -353,7 +394,7 @@ public class QuestManager {
 		QuestData.saveProfiles();
 	}
 	
-	public void startRandomQuest(Player player) throws QuestAssignmentException, QuestAvailabilityException, QuestExistenceException {
+	public void startRandomQuest(Player player) throws QuestAssignmentException, QuestAvailabilityException, QuestExistenceException, QuestConditionsException {
 		if(hasQuest(player.getName())) {
 			throw new QuestAssignmentException("startRandomQuest()", true);
 		}
@@ -425,8 +466,19 @@ public class QuestManager {
 		if(!qst.isActive()) {
 			throw new QuestExistenceException("showQuest() 1", false);
 		}
+		Player player = null;
+		if(sender instanceof Player)
+			player = (Player) sender;
 		sender.sendMessage(ChatColor.BLUE + "Name: " + ChatColor.GOLD + qst.getName());
 		sender.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + qst.getDescription());
+		sender.sendMessage(ChatColor.BLUE + "Conditions:");
+		ArrayList<Condition> cons = getQuest(questName).getConditions();
+		ChatColor color = ChatColor.WHITE;
+		for(int i = 0; i < cons.size(); i++) {
+			if(player != null)
+				color = cons.get(i).isMet(player) ? ChatColor.GREEN : ChatColor.RED;
+			sender.sendMessage(color + " - " + cons.get(i).show());
+		}
 		if(QuestData.showObjs) {
 			sender.sendMessage(ChatColor.BLUE + "Objectives:");
 			ArrayList<Objective> objs = getQuest(questName).getObjectives();
@@ -454,8 +506,15 @@ public class QuestManager {
 		sender.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + qst.getDescription());
 		ChatColor color = qst.isActive() ? ChatColor.GREEN : ChatColor.RED;
 		sender.sendMessage(ChatColor.BLUE + "Active: " + color + String.valueOf(qst.isActive()));
-		sender.sendMessage(ChatColor.BLUE + "Objectives:");
+		sender.sendMessage(ChatColor.BLUE + "Conditions:");
 		int i;
+		i = 0;
+		for(Condition c: qst.getConditions()){
+			sender.sendMessage(" [" + String.valueOf(i) + "] " + c.toString());
+			i++;
+			
+		}
+		sender.sendMessage(ChatColor.BLUE + "Objectives:");
 		i = 0;
 		for(Objective o: qst.getObjectives()){
 			sender.sendMessage(" [" + String.valueOf(i) + "] " + o.toString());
@@ -472,9 +531,17 @@ public class QuestManager {
 	
 	public void showQuestList(CommandSender sender) {
 		sender.sendMessage(Util.line(ChatColor.BLUE, "Quest list", ChatColor.GOLD));
+		Player player = null;
+		if(sender instanceof Player)
+			player = (Player) sender;
+		ChatColor color = ChatColor.BLUE;
 		for(Quest q: getQuests()){
 			if(q.isActive()) {
-				sender.sendMessage(ChatColor.BLUE + "* " + ChatColor.GOLD + q.getName());
+				if(player != null)
+					try {
+						color = areConditionsMet(player, q.getName()) ? ChatColor.BLUE : ChatColor.YELLOW;
+					} catch (Exception e){}
+				sender.sendMessage(color + "* " + ChatColor.GOLD + q.getName());
 			}
 		}
 	}

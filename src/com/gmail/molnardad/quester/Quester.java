@@ -17,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.gmail.molnardad.quester.listeners.*;
 import com.gmail.molnardad.quester.objectives.*;
 import com.gmail.molnardad.quester.rewards.*;
+import com.gmail.molnardad.quester.conditions.*;
 
 public class Quester extends JavaPlugin {
 	
@@ -39,7 +40,9 @@ public class Quester extends JavaPlugin {
 			super();
 			plugin = this;
 			ConfigurationSerialization.registerClass(PlayerProfile.class);
+			
 			ConfigurationSerialization.registerClass(Quest.class);
+			
 			ConfigurationSerialization.registerClass(BreakObjective.class);
 			ConfigurationSerialization.registerClass(DeathObjective.class);
 			ConfigurationSerialization.registerClass(ExpObjective.class);
@@ -48,11 +51,16 @@ public class Quester extends JavaPlugin {
 			ConfigurationSerialization.registerClass(MobKillObjective.class);
 			ConfigurationSerialization.registerClass(PlayerKillObjective.class);
 			ConfigurationSerialization.registerClass(WorldObjective.class);
+			
 			ConfigurationSerialization.registerClass(EffectReward.class);
 			ConfigurationSerialization.registerClass(ExpReward.class);
 			ConfigurationSerialization.registerClass(ItemReward.class);
 			ConfigurationSerialization.registerClass(MoneyReward.class);
 			ConfigurationSerialization.registerClass(TeleportReward.class);
+			
+			ConfigurationSerialization.registerClass(QuestCondition.class);
+			ConfigurationSerialization.registerClass(QuestNotCondition.class);
+			ConfigurationSerialization.registerClass(PermissionCondition.class);
 		}
 		
 		@Override

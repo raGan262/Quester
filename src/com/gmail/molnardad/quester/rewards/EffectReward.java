@@ -11,7 +11,7 @@ import org.bukkit.potion.PotionEffectType;
 @SerializableAs("QuesterEffectReward")
 public final class EffectReward implements Reward {
 
-	public static final String TYPE = "EFFECT";
+	private final String TYPE = "EFFECT";
 	private final int effect;
 	private final int duration;
 	private final int amplifier;

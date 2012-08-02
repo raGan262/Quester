@@ -20,7 +20,7 @@ public class PlayerProfile implements ConfigurationSerializable{
 	private List<Integer> progress;
 	
 	public PlayerProfile(String player) {
-		name = player.toLowerCase();
+		name = player;
 		completed = new HashSet<String>();
 		quest = "";
 		progress = new ArrayList<Integer>();
@@ -32,7 +32,7 @@ public class PlayerProfile implements ConfigurationSerializable{
 	}
 	
 	public void addCompleted(String questName) {
-		completed.add(questName);
+		completed.add(questName.toLowerCase());
 	}
 	
 	public Set<String> getCompleted() {
