@@ -104,7 +104,7 @@ public class Quester extends JavaPlugin {
 			this.setupListeners();
 			
 			QuesterCommandExecutor cmdExecutor = new QuesterCommandExecutor();
-			getCommand("quest").setExecutor(cmdExecutor);
+			getCommand("q").setExecutor(cmdExecutor);
 			
 			startSaving();
 			loaded = true;
