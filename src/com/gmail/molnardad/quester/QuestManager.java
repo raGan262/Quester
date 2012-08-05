@@ -141,6 +141,10 @@ public class QuestManager {
 		return prof;
 	}
 	
+	public boolean hasProfile(String playerName) {
+		return profiles.get(playerName.toLowerCase()) != null;
+	}
+	
 	public boolean achievedTarget(Player player, int id) {
 		String playerName = player.getName();
 		return getPlayerQuest(playerName).getObjectives().get(id).isComplete(player, getProgress(playerName).get(id));
@@ -449,16 +453,41 @@ public class QuestManager {
 	}
 	
 	public void incProgress(Player player, int id) {
+		incProgress(player, id, 1);
+	}
+	
+	public void incProgress(Player player, int id, int amount) {
 		PlayerProfile prof = getProfile(player.getName());
-		int newValue = prof.getProgress().get(id) + 1;
+		int newValue = prof.getProgress().get(id) + amount;
 		prof.getProgress().set(id, newValue);
-		if(getQuest(prof.getQuest()).getObjectives().get(id).getTargetAmount() == newValue) {
+		if(getQuest(prof.getQuest()).getObjectives().get(id).getTargetAmount() <= newValue) {
 			player.sendMessage(Quester.LABEL + "You completed a quest objective.");
 			QuestData.saveProfiles();
 		} 
 	}
 	
 	// Quest information printing
+	public void showProfile(CommandSender sender) {
+		showProfile(sender, sender.getName());
+	}
+	
+	public void showProfile(CommandSender sender, String name) {
+		if(!hasProfile(name)) {
+			sender.sendMessage(ChatColor.RED + name + " does not have profile.");
+			return;
+		}
+		PlayerProfile prof = getProfile(name);
+		sender.sendMessage(ChatColor.BLUE + "Name: " + ChatColor.GOLD + prof.getName());
+		sender.sendMessage(ChatColor.BLUE + "Current quest: " + ChatColor.GOLD + prof.getQuest());
+		sender.sendMessage(ChatColor.BLUE + "Quest points: " + ChatColor.GOLD + prof.getPoints());
+		String cmpltd = "";
+		for(String s : prof.getCompleted()) {
+			cmpltd = cmpltd + s + "; ";
+		}
+		sender.sendMessage(ChatColor.BLUE + "Completed quests: " + ChatColor.GOLD + cmpltd);
+		
+	}
+	
 	public void showQuest(CommandSender sender, String questName) throws QuestExistenceException {
 		Quest qst = getQuest(questName);
 		if(qst == null)
@@ -541,7 +570,7 @@ public class QuestManager {
 					try {
 						color = areConditionsMet(player, q.getName()) ? ChatColor.BLUE : ChatColor.YELLOW;
 					} catch (Exception e){}
-				sender.sendMessage(color + "* " + ChatColor.GOLD + q.getName());
+				sender.sendMessage(ChatColor.GOLD + "* " + color + q.getName());
 			}
 		}
 	}

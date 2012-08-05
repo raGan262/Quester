@@ -7,20 +7,18 @@ import org.bukkit.Material;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
-@SerializableAs("QuesterBreakObjective")
-public final class BreakObjective implements Objective {
+@SerializableAs("QuesterPlaceObjective")
+public final class PlaceObjective implements Objective {
 
-	private final String TYPE = "BREAK";
+	private final String TYPE = "PLACE";
 	private final Material material;
 	private final byte data;
 	private final int amount;
-	private final int inHand;
 	
-	public BreakObjective(int amt, Material mat, byte dat, int hnd) {
+	public PlaceObjective(int amt, Material mat, byte dat) {
 		amount = amt;
 		material = mat;
 		data = dat;
-		inHand = hnd;
 	}
 	
 	@Override
@@ -34,10 +32,6 @@ public final class BreakObjective implements Objective {
 	
 	public byte getData() {
 		return data;
-	}
-	
-	public boolean checkHand(int itm) {
-		return (inHand < 0 || inHand == itm);
 	}
 
 	@Override
@@ -53,14 +47,13 @@ public final class BreakObjective implements Objective {
 	@Override
 	public String progress(int progress) {
 		String datStr = data < 0 ? " of any type " : " of given type(" + data + ") ";
-		String hand = (inHand < 0) ? "" : (inHand == 0) ? "with empty hand " : "with " + Material.getMaterial(inHand).name().toLowerCase().replace('_', ' ') + " ";
-		return "Break " + material.name().toLowerCase() + datStr + hand + "- " + (amount - progress) + "x.";
+		return "Place " + material.name().toLowerCase() + datStr + "- " + (amount - progress) + "x.";
 	}
 	
 	@Override
 	public String toString() {
 		String dataStr = (data < 0 ? "ANY" : String.valueOf(data));
-		return TYPE + ": " + material.name() + "[" + material.getId() + "] DATA: " + dataStr + "; AMT: " + amount + "; HND: " + inHand;
+		return TYPE + ": " + material.name() + "[" + material.getId() + "] DATA: " + dataStr + "; AMT: " + amount;
 	}
 
 	@Override
@@ -75,15 +68,13 @@ public final class BreakObjective implements Objective {
 		map.put("material", material.getId());
 		map.put("data", data);
 		map.put("amount", amount);
-		map.put("in-hand", inHand);
 		
 		return map;
 	}
 
-	public static BreakObjective deserialize(Map<String, Object> map) {
+	public static PlaceObjective deserialize(Map<String, Object> map) {
 		Material mat;
 		int dat, amt;
-		int hnd = -1;
 		
 		try {
 			mat = Material.getMaterial((Integer) map.get("material"));
@@ -93,11 +84,8 @@ public final class BreakObjective implements Objective {
 			amt = (Integer) map.get("amount");
 			if(amt < 1)
 				return null;
-			if(map.get("in-hand") != null) {
-				hnd = (Integer) map.get("in-hand");
-			}
 			
-			return new BreakObjective(amt, mat, (byte)dat, hnd);
+			return new PlaceObjective(amt, mat, (byte)dat);
 		} catch (Exception e) {
 			return null;
 		}

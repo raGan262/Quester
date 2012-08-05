@@ -3,20 +3,23 @@ package com.gmail.molnardad.quester.objectives;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.DyeColor;
 import org.bukkit.configuration.serialization.SerializableAs;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-@SerializableAs("QuesterMobKillObjective")
-public final class MobKillObjective implements Objective {
+@SerializableAs("QuesterShearObjective")
+public final class ShearObjective implements Objective {
 
-	private final String TYPE = "MOBKILL";
-	private final EntityType entity;
+	private final String TYPE = "SHEAR";
+	private final DyeColor color;
 	private final int amount;
 
-	public MobKillObjective(int amt, EntityType ent) {
-		entity = ent;
+	public ShearObjective(int amt, byte dat) {
 		amount = amt;
+		if(dat < 0)
+			color = null;
+		else
+			color = DyeColor.getByData(dat);
 	}
 	
 	@Override
@@ -41,22 +44,21 @@ public final class MobKillObjective implements Objective {
 
 	@Override
 	public String progress(int progress) {
-		String mob = entity == null ? "any mob" : entity.getName();
-		return "Kill " + mob + " - " + (amount - progress) + "x";
+		String strCol = (color == null) ? "any" : color.name().replace('_', ' ').toLowerCase() ;
+		return "Shear " + strCol + " sheep - " + (amount - progress) + "x";
 	}
 	
 	@Override
 	public String toString() {
-		String entStr = entity == null ? "ANY" : entity.getName();
-		return TYPE + ": " + entStr + "; AMT: " + amount ;
+		String strCol = (color == null) ? "ANY" : color.name() ;
+		return TYPE + ": " + strCol + "; AMT: " + amount ;
 	}
 	
-	public boolean check(EntityType ent) {
-		if(entity == null) {
-			return true;
-		} else {
-			return (entity.getTypeId() == ent.getTypeId());
+	public boolean check(DyeColor col) {
+		if(col == color || color == null) {
+			return true;	
 		}
+		return false;
 	}
 
 	@Override
@@ -64,24 +66,22 @@ public final class MobKillObjective implements Objective {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		map.put("amount", amount);
-		if(entity == null)
-			map.put("entity", -1);
+		if(color == null)
+			map.put("color", -1);
 		else
-			map.put("entity", entity.getTypeId());
+			map.put("color", color.getData());
 		
 		return map;
 	}
 
-	public static MobKillObjective deserialize(Map<String, Object> map) {
-		int amt;
-		EntityType ent = null;
+	public static ShearObjective deserialize(Map<String, Object> map) {
+		int amt, dat;
 		try {
 			amt = (Integer) map.get("amount");
 			if(amt < 1)
 				return null;
-			ent = EntityType.fromId((Integer) map.get("entity"));
-			
-			return new MobKillObjective(amt, ent);
+			dat = (Integer) map.get("color");
+			return new ShearObjective(amt, (byte)dat);
 		} catch (Exception e) {
 			return null;
 		}

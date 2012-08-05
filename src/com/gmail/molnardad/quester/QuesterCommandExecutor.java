@@ -21,12 +21,7 @@ import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.objectives.*;
 import com.gmail.molnardad.quester.rewards.*;
 import com.gmail.molnardad.quester.conditions.*;
-import static com.gmail.molnardad.quester.utils.Util.getLoc;
-import static com.gmail.molnardad.quester.utils.Util.sconcat;
-import static com.gmail.molnardad.quester.utils.Util.permCheck;
-import static com.gmail.molnardad.quester.utils.Util.parseEnchants;
-import static com.gmail.molnardad.quester.utils.Util.parseItem;
-import static com.gmail.molnardad.quester.utils.Util.line;
+import static com.gmail.molnardad.quester.utils.Util.*;
 
 public class QuesterCommandExecutor implements CommandExecutor {
 
@@ -60,6 +55,20 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					sender.sendMessage(ChatColor.GOLD + "/quest done " + ChatColor.GRAY + "- completes current quest");
 					sender.sendMessage(ChatColor.GOLD + "/quest progress " + ChatColor.GRAY + "- shows current quest progress");
 					sender.sendMessage(line(ChatColor.BLUE));
+					return true;
+				}
+				
+				// QUEST PROFILE
+				if(args[0].equalsIgnoreCase("profile")) {
+					if(args.length > 1){
+						if(permCheck(sender, QuestData.MODIFY_PERM, false)) {
+							String name = args[1];
+							qm.showProfile(sender, name);
+							return true;
+						}
+					}
+					
+					qm.showProfile(sender);
 					return true;
 				}
 				
@@ -394,6 +403,22 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								return true;
 							}
 							
+							// COMMAND REWARD
+							if(args[2].equalsIgnoreCase("cmd")) {
+								if(args.length > 3) {
+									try {
+										String command = sconcat(args, 3);
+										qm.addQuestReward(sender.getName(), new CommandReward(command));
+										sender.sendMessage(ChatColor.GREEN + "Command reward added.");
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + "Usage: /quest reward add cmd [command].");
+								return true;
+							}
+							
 							// TELEPORT REWARD
 							if(args[2].equalsIgnoreCase("tele")) {
 								if(args.length > 3) {
@@ -445,7 +470,25 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								return true;
 							}
 							
-							sender.sendMessage(ChatColor.RED + "Available reward types: " + ChatColor.WHITE + "item, money, exp, effect, tele");
+							// POINT REWARD
+							if(args[2].equalsIgnoreCase("point")) {
+								if(args.length > 3) {
+									try {
+										int amt = Integer.parseInt(args[3]);
+										qm.addQuestReward(sender.getName(), new PointReward(amt));
+										sender.sendMessage(ChatColor.GREEN + "Point reward added.");
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + "Amount must be number. (negative to take)");
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + "Usage: /quest reward add point [amount].");
+								return true;
+							}
+							
+							sender.sendMessage(ChatColor.RED + "Available reward types: " + ChatColor.WHITE + "item, money, exp, effect, tele, cmd, point");
 							return true;
 						}
 						
@@ -469,7 +512,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					
 					if(args.length > 1) {
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
-							sender.sendMessage(ChatColor.RED + "Available reward types: " + ChatColor.WHITE + "item, money, exp, effect, tele");
+							sender.sendMessage(ChatColor.RED + "Available reward types: " + ChatColor.WHITE + "item, money, exp, effect, tele, cmd, point");
 							return true;
 						}
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
@@ -498,6 +541,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								if(args.length > 4) {
 									Material mat;
 									byte dat;
+									int hnd = -1;
 									try {
 										int[] itm = parseItem(args[3]);
 										mat = Material.getMaterial(itm[0]);
@@ -509,7 +553,11 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										if(amt < 1 || dat < -1) {
 											throw new NumberFormatException();
 										}
-										qm.addQuestObjective(sender.getName(), new BreakObjective(amt, mat, dat));
+										if(args.length > 5) {
+											itm = parseItem(args[5]);
+											hnd = itm[0];
+										}
+										qm.addQuestObjective(sender.getName(), new BreakObjective(amt, mat, dat, hnd));
 										sender.sendMessage(ChatColor.GREEN + "Break objective added.");
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + "Amount must be > 0. Data must be >= 0.");
@@ -520,7 +568,39 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add break [block_id/name][:data*] [amount].\n"
+								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add break [block_id/name][:data*] [amount] [hand*].\n"
+										+ "* - optional");
+								return true;
+							}
+							
+							// PLACE OBJECTIVE
+							if(args[2].equalsIgnoreCase("place")) {
+								if(args.length > 4) {
+									Material mat;
+									byte dat;
+									try {
+										int[] itm = parseItem(args[3]);
+										mat = Material.getMaterial(itm[0]);
+										dat = (byte)itm[1];
+										if(mat.getId() > 255) {
+											throw new InvalidDataException("");
+										}
+										int amt = Integer.parseInt(args[4]);
+										if(amt < 1 || dat < -1) {
+											throw new NumberFormatException();
+										}
+										qm.addQuestObjective(sender.getName(), new PlaceObjective(amt, mat, dat));
+										sender.sendMessage(ChatColor.GREEN + "Place objective added.");
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + "Amount must be > 0. Data must be >= 0.");
+									} catch (InvalidDataException e) {
+										sender.sendMessage(ChatColor.RED + "Unknown block.");
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add place [block_id/name][:data*] [amount].\n"
 										+ "* - optional");
 								return true;
 							}
@@ -576,6 +656,88 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									return true;
 								}
 								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add item [item_id/name][:data*] [amount*] {ench1*}... .\n"
+										+ "{ench} - [enchantment_id/name]:[level] ; * - optional");
+								return true;
+							}
+							
+							// COLLECT OBJECTIVE
+							if(args[2].equalsIgnoreCase("collect")) {
+								if(args.length > 4) {
+									Material mat;
+									int dat;
+									try {
+										int[] itm = parseItem(args[3]);
+										mat = Material.getMaterial(itm[0]);
+										dat = itm[1];
+										int amt = Integer.parseInt(args[4]);
+										if(amt < 1 || dat < -1) {
+											throw new NumberFormatException();
+										}
+										qm.addQuestObjective(sender.getName(), new CollectObjective(amt, mat, dat));
+										sender.sendMessage(ChatColor.GREEN + "Collect objective added.");
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + "Amount must be > 0. Data must be >= 0.");
+									} catch (InvalidDataException e) {
+										sender.sendMessage(ChatColor.RED + "Unknown item.");
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add collect [block_id/name][:data*] [amount].\n"
+										+ "* - optional");
+								return true;
+							}
+							
+							// ENCHANT OBJECTIVE
+							if(args[2].equalsIgnoreCase("ench")) {
+								if(args.length > 3) {
+									Material mat;
+									int amt = 1;
+									try {
+										int[] itm = parseItem(args[3]);
+										mat = Material.getMaterial(itm[0]);
+										if(args.length > 4) {
+											amt = Integer.parseInt(args[4]);
+										}
+										if(amt < 1) {
+											throw new NumberFormatException();
+										}
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + "Amount must be > 0.");
+										return true;
+									} catch (InvalidDataException e) {
+										sender.sendMessage(ChatColor.RED + "Unknown item.");
+										return true;
+									}
+									Map<Integer, Integer> enchs = new HashMap<Integer, Integer>();
+									if(args.length > 5) {
+										try {
+											enchs = parseEnchants(args, 5);
+											ItemStack test = new ItemStack(mat);
+											for(Integer i : enchs.keySet()) {
+												test.addEnchantment(Enchantment.getById(i), enchs.get(i));
+											}
+										} catch (NumberFormatException e) {
+											sender.sendMessage(ChatColor.RED + "Enchantment level must be > 0.");
+											return true;
+										} catch (InvalidDataException e) {
+											sender.sendMessage(ChatColor.RED + "Invalid enchantment.");
+											return true;
+										} catch (IllegalArgumentException e){
+											sender.sendMessage(ChatColor.RED + "One or more enchantments cannot be applied to specified item.");
+											return true;
+										}
+									}
+									try {
+										qm.addQuestObjective(sender.getName(), new EnchantObjective(mat, amt, enchs));
+										sender.sendMessage(ChatColor.GREEN + "Enchant objective added.");
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add ench [item_id/name] [amount*] {ench1*}... .\n"
 										+ "{ench} - [enchantment_id/name]:[level] ; * - optional");
 								return true;
 							}
@@ -833,7 +995,175 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								return true;
 							}
 							
-							sender.sendMessage(ChatColor.RED + "Available objective types: " + ChatColor.WHITE + "break, item, exp, loc, death, world, mobkill, kill");
+							// CRAFT OBJECTIVE
+							if(args[2].equalsIgnoreCase("craft")) {
+								if(args.length > 4) {
+									Material mat;
+									int dat;
+									try {
+										int[] itm = parseItem(args[3]);
+										mat = Material.getMaterial(itm[0]);
+										dat = itm[1];
+										int amt = Integer.parseInt(args[4]);
+										if(amt < 1 || dat < -1) {
+											throw new NumberFormatException();
+										}
+										qm.addQuestObjective(sender.getName(), new CraftObjective(mat, amt, dat));
+										sender.sendMessage(ChatColor.GREEN + "Craft objective added.");
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + "Amount must be > 0. Data must be >= 0.");
+									} catch (InvalidDataException e) {
+										sender.sendMessage(ChatColor.RED + "Unknown item.");
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add craft [item_id/name][:data*] [amount].\n"
+										+ "* - optional");
+								return true;
+							}
+							
+							// SMELT OBJECTIVE
+							if(args[2].equalsIgnoreCase("smelt")) {
+								if(args.length > 4) {
+									Material mat;
+									int dat;
+									try {
+										int[] itm = parseItem(args[3]);
+										mat = Material.getMaterial(itm[0]);
+										dat = itm[1];
+										int amt = Integer.parseInt(args[4]);
+										if(amt < 1 || dat < -1) {
+											throw new NumberFormatException();
+										}
+										qm.addQuestObjective(sender.getName(), new SmeltObjective(mat, amt, dat));
+										sender.sendMessage(ChatColor.GREEN + "Smelt objective added.");
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + "Amount must be > 0. Data must be >= 0.");
+									} catch (InvalidDataException e) {
+										sender.sendMessage(ChatColor.RED + "Unknown item.");
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add smelt [item_id/name][:data*] [amount].\n"
+										+ "* - optional");
+								return true;
+							}
+							
+							// SHEAR OBJECTIVE
+							if(args[2].equalsIgnoreCase("shear")) {
+								if(args.length > 3) {
+									try {
+										byte dat = -1;
+										int amt = Integer.parseInt(args[3]);
+										if(args.length > 4)
+											dat = parseColor(args[4]);
+										if(amt < 1)
+											throw new NumberFormatException();
+										qm.addQuestObjective(sender.getName(), new ShearObjective(amt, dat));
+										sender.sendMessage(ChatColor.GREEN + "Shear objective added.");
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + "Amount must be positive number.");
+									} catch (InvalidDataException e) {
+										sender.sendMessage(ChatColor.RED + "Unknown color.");
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add shear [amount] [color_id/name*].\n" +
+											"* - optional");
+								return true;
+							}
+							
+							// FISH OBJECTIVE
+							if(args[2].equalsIgnoreCase("fish")) {
+								if(args.length > 3) {
+									try {
+										int amt = Integer.parseInt(args[3]);
+										if(amt < 1)
+											throw new NumberFormatException();
+										qm.addQuestObjective(sender.getName(), new FishObjective(amt));
+										sender.sendMessage(ChatColor.GREEN + "Fish objective added.");
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + "Amount must be positive number.");
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add fish [amount].");
+								return true;
+							}
+							
+							// MILK OBJECTIVE
+							if(args[2].equalsIgnoreCase("milk")) {
+								if(args.length > 3) {
+									try {
+										int amt = Integer.parseInt(args[3]);
+										if(amt < 1)
+											throw new NumberFormatException();
+										qm.addQuestObjective(sender.getName(), new MilkObjective(amt));
+										sender.sendMessage(ChatColor.GREEN + "Milk objective added.");
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + "Amount must be positive number.");
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add milk [amount].");
+								return true;
+							}
+							
+							// TAME OBJECTIVE
+							if(args[2].equalsIgnoreCase("tame")) {
+								if(args.length > 3) {
+									int amt = 1;
+									EntityType ent = null;
+									try {
+										amt = Integer.parseInt(args[3]);
+										if(amt < 1) {
+											throw new NumberFormatException();
+										}
+										if(args.length > 4) {
+											ent = EntityType.fromName(args[4].toUpperCase());
+											if(ent == null) {
+												try {
+													ent = EntityType.fromId(Integer.parseInt(args[4]));
+												} catch (NumberFormatException e) {
+													throw new InvalidDataException("");
+												}
+												if(ent == null) {
+													throw new InvalidDataException("");
+												}
+											}
+										}
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + "Amount must be > 0. Id must be number or valid entity name.");
+										return true;
+									} catch (InvalidDataException e){
+										sender.sendMessage(ChatColor.RED + "Unknown entity.");
+										return true;
+									}
+									try {
+										qm.addQuestObjective(sender.getName(), new TameObjective(amt, ent));
+										sender.sendMessage(ChatColor.GREEN + "Tame objective added.");
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add tame [amount] [entity_id/name*]"
+										+ "* - optional");
+								return true;
+							}
+							
+							sender.sendMessage(ChatColor.RED + "Available objective types: " + ChatColor.WHITE + "break, place, item, exp, loc, death, world, " +
+									"mobkill, kill, craft, ench, smelt, shear, fish, milk, collect, tame");
 							return true;
 						}
 						
@@ -857,7 +1187,8 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					
 					if(args.length > 1) {
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
-							sender.sendMessage(ChatColor.RED + "Available objective types: " + ChatColor.WHITE + "break, item, exp, loc, death, world, mobkill, kill");
+							sender.sendMessage(ChatColor.RED + "Available objective types: " + ChatColor.WHITE + "break, place, item, exp, loc, death, world, " +
+									"mobkill, kill, craft, ench, smelt, shear, fish, milk, collect, tame");
 							return true;
 						}
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
@@ -928,7 +1259,66 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								return true;
 							}
 							
-							sender.sendMessage(ChatColor.RED + "Available condition types: " + ChatColor.WHITE + "quest, questnot, perm");
+							// MONEY CONDITION
+							if(args[2].equalsIgnoreCase("money")) {
+								if(args.length > 3) {
+									try {
+										int amt = Integer.parseInt(args[3]);
+										qm.addQuestCondition(sender.getName(), new MoneyCondition(amt));
+										sender.sendMessage(ChatColor.GREEN + "Money condition added.");
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + "Amount must be number.");
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + "Usage: /quest condition add money [amount]");
+								return true;
+							}
+							
+							// ITEM CONDITION
+							if(args[2].equalsIgnoreCase("item")) {
+								if(args.length > 3) {
+									try {
+										int amt = Integer.parseInt(args[4]);
+										int[] itm = parseItem(args[3]);
+										Material mat = Material.getMaterial(itm[0]);
+										int dat = itm[1];
+										qm.addQuestCondition(sender.getName(), new ItemCondition(mat, amt, dat));
+										sender.sendMessage(ChatColor.GREEN + "Item condition added.");
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + "Amount must be number. Data must be number.");
+									} catch (InvalidDataException e) {
+										sender.sendMessage(ChatColor.RED + "Unknown item.");
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + "Usage: /quest condition add item [item_id/name][:data*] [amount]");
+								return true;
+							}
+							
+							// POINT CONDITION
+							if(args[2].equalsIgnoreCase("point")) {
+								if(args.length > 3) {
+									try {
+										int amt = Integer.parseInt(args[3]);
+										qm.addQuestCondition(sender.getName(), new PointCondition(amt));
+										sender.sendMessage(ChatColor.GREEN + "Point condition added.");
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + "Amount must be number.");
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + "Usage: /quest condition add point [amount]");
+								return true;
+							}
+							
+							sender.sendMessage(ChatColor.RED + "Available condition types: " + ChatColor.WHITE + "quest, questnot, perm, money, item, point");
 							return true;
 						}
 						
@@ -952,7 +1342,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					
 					if(args.length > 1) {
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
-							sender.sendMessage(ChatColor.RED + "Available condition types: " + ChatColor.WHITE + "quest, questnot, perm");
+							sender.sendMessage(ChatColor.RED + "Available condition types: " + ChatColor.WHITE + "quest, questnot, perm, money, item, point");
 							return true;
 						}
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {

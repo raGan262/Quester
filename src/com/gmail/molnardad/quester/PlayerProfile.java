@@ -18,6 +18,7 @@ public class PlayerProfile implements ConfigurationSerializable{
 	private String selected;
 	private String quest;
 	private List<Integer> progress;
+	private int points;
 	
 	public PlayerProfile(String player) {
 		name = player;
@@ -25,6 +26,7 @@ public class PlayerProfile implements ConfigurationSerializable{
 		quest = "";
 		progress = new ArrayList<Integer>();
 		selected = "";
+		points = 0;
 	}
 	
 	public String getName() {
@@ -83,9 +85,18 @@ public class PlayerProfile implements ConfigurationSerializable{
 		return true;
 	}
 	
+	public int getPoints() {
+		return points;
+	}
+	
+	public void addPoints(int pts) {
+		points += pts;
+	}
+	
 	public Map<String, Object> serialize() {
 		final Map<String, Object> map = new HashMap<String, Object>();
 		map.put("name", name);
+		map.put("points", points);
 		
 		final String[] completedmap = completed.toArray(new String[0]);
 		map.put("completed", completedmap);
@@ -111,6 +122,11 @@ public class PlayerProfile implements ConfigurationSerializable{
 			profile = new PlayerProfile(buildName);
 		} else {
 			return null;
+		}
+		
+		if(map.get("points") != null) {
+			int pts = (Integer) map.get("points");
+			profile.addPoints(pts);
 		}
 		
 		List<String> strings = (List<String>) map.get("completed");

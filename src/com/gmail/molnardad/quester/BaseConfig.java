@@ -45,13 +45,37 @@ public class BaseConfig extends CustomConfig {
 		}
 		QuestData.disUseCmds = this.config.getBoolean(path);
 		
-		// NO DROPS
+		// BREAK NO DROPS
 		path = "objectives.break.no-drops";
 		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
 			this.config.set(path, false);
 			wrongConfig(path);
 		}
-		QuestData.noDrops = this.config.getBoolean(path);
+		QuestData.brkNoDrops = this.config.getBoolean(path);
+		
+		// BREAK SUBTRACT ON PLACE
+		path = "objectives.break.subtract-on-place";
+		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
+			this.config.set(path, true);
+			wrongConfig(path);
+		}
+		QuestData.brkSubOnPlace = this.config.getBoolean(path);
+		
+		// COLLECT REMOVE ON PICKUP
+		path = "objectives.collect.remove-on-pickup";
+		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
+			this.config.set(path, true);
+			wrongConfig(path);
+		}
+		QuestData.colRemPickup = this.config.getBoolean(path);
+				
+		// COLLECT SUBTRACT ON DROP
+		path = "objectives.collect.subtract-on-drop";
+		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
+			this.config.set(path, false);
+			wrongConfig(path);
+		}
+		QuestData.colSubOnDrop = this.config.getBoolean(path);
 		
 		// ONLY FIRST
 		path = "quests.only-first";

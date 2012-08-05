@@ -7,32 +7,29 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityTameEvent;
 
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
-import com.gmail.molnardad.quester.objectives.MobKillObjective;
 import com.gmail.molnardad.quester.objectives.Objective;
+import com.gmail.molnardad.quester.objectives.TameObjective;
 
-public class MobKillListener implements Listener {
+public class TameListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onDeath(EntityDeathEvent event) {
-		if(event.getEntity().getKiller() != null) {
+	public void onTame(EntityTameEvent event) {
+		if(event.getOwner() instanceof Player) {
 		    QuestManager qm = Quester.qMan;
-			Player player = event.getEntity().getKiller();
+		    Player player = (Player) event.getOwner();
 			if(qm.hasQuest(player.getName())) {
-		    	if(qm.getPlayerQuest(player.getName()).getObjectives("MOBKILL").isEmpty()) {
-		    		return;
-		    	}
 		    	ArrayList<Objective> objs = qm.getPlayerQuest(player.getName()).getObjectives();
 		    	for(int i = 0; i < objs.size(); i++) {
-		    		if(objs.get(i).getType().equalsIgnoreCase("MOBKILL")) {
+		    		if(objs.get(i).getType().equalsIgnoreCase("TAME")) {
 			    		if(qm.achievedTarget(player, i)){
 		    				continue;
 		    			}
-			    		EntityType ent = event.getEntity().getType();
-		    			MobKillObjective obj = (MobKillObjective)objs.get(i);
+			    		EntityType ent = event.getEntityType();
+		    			TameObjective obj = (TameObjective)objs.get(i);
 		    			if(obj.check(ent)) {
 		    				qm.incProgress(player, i);
 		    				return;

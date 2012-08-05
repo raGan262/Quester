@@ -7,14 +7,14 @@ import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-@SerializableAs("QuesterMobKillObjective")
-public final class MobKillObjective implements Objective {
+@SerializableAs("QuesterTameObjective")
+public final class TameObjective implements Objective {
 
-	private final String TYPE = "MOBKILL";
+	private final String TYPE = "TAME";
 	private final EntityType entity;
 	private final int amount;
 
-	public MobKillObjective(int amt, EntityType ent) {
+	public TameObjective(int amt, EntityType ent) {
 		entity = ent;
 		amount = amt;
 	}
@@ -42,7 +42,7 @@ public final class MobKillObjective implements Objective {
 	@Override
 	public String progress(int progress) {
 		String mob = entity == null ? "any mob" : entity.getName();
-		return "Kill " + mob + " - " + (amount - progress) + "x";
+		return "Tame " + mob + " - " + (amount - progress) + "x";
 	}
 	
 	@Override
@@ -72,7 +72,7 @@ public final class MobKillObjective implements Objective {
 		return map;
 	}
 
-	public static MobKillObjective deserialize(Map<String, Object> map) {
+	public static TameObjective deserialize(Map<String, Object> map) {
 		int amt;
 		EntityType ent = null;
 		try {
@@ -81,7 +81,7 @@ public final class MobKillObjective implements Objective {
 				return null;
 			ent = EntityType.fromId((Integer) map.get("entity"));
 			
-			return new MobKillObjective(amt, ent);
+			return new TameObjective(amt, ent);
 		} catch (Exception e) {
 			return null;
 		}

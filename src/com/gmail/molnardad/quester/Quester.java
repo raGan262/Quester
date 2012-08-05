@@ -44,6 +44,7 @@ public class Quester extends JavaPlugin {
 			ConfigurationSerialization.registerClass(Quest.class);
 			
 			ConfigurationSerialization.registerClass(BreakObjective.class);
+			ConfigurationSerialization.registerClass(PlaceObjective.class);
 			ConfigurationSerialization.registerClass(DeathObjective.class);
 			ConfigurationSerialization.registerClass(ExpObjective.class);
 			ConfigurationSerialization.registerClass(ItemObjective.class);
@@ -51,16 +52,29 @@ public class Quester extends JavaPlugin {
 			ConfigurationSerialization.registerClass(MobKillObjective.class);
 			ConfigurationSerialization.registerClass(PlayerKillObjective.class);
 			ConfigurationSerialization.registerClass(WorldObjective.class);
+			ConfigurationSerialization.registerClass(CraftObjective.class);
+			ConfigurationSerialization.registerClass(EnchantObjective.class);
+			ConfigurationSerialization.registerClass(ShearObjective.class);
+			ConfigurationSerialization.registerClass(FishObjective.class);
+			ConfigurationSerialization.registerClass(MilkObjective.class);
+			ConfigurationSerialization.registerClass(SmeltObjective.class);
+			ConfigurationSerialization.registerClass(CollectObjective.class);
+			ConfigurationSerialization.registerClass(TameObjective.class);
 			
 			ConfigurationSerialization.registerClass(EffectReward.class);
 			ConfigurationSerialization.registerClass(ExpReward.class);
 			ConfigurationSerialization.registerClass(ItemReward.class);
 			ConfigurationSerialization.registerClass(MoneyReward.class);
 			ConfigurationSerialization.registerClass(TeleportReward.class);
+			ConfigurationSerialization.registerClass(CommandReward.class);
+			ConfigurationSerialization.registerClass(PointReward.class);
 			
 			ConfigurationSerialization.registerClass(QuestCondition.class);
 			ConfigurationSerialization.registerClass(QuestNotCondition.class);
 			ConfigurationSerialization.registerClass(PermissionCondition.class);
+			ConfigurationSerialization.registerClass(MoneyCondition.class);
+			ConfigurationSerialization.registerClass(ItemCondition.class);
+			ConfigurationSerialization.registerClass(PointCondition.class);
 		}
 		
 		@Override
@@ -164,6 +178,16 @@ public class Quester extends JavaPlugin {
 			getServer().getPluginManager().registerEvents(new MoveListener(), this);
 			getServer().getPluginManager().registerEvents(new DeathListener(), this);
 			getServer().getPluginManager().registerEvents(new MobKillListener(), this);
+			getServer().getPluginManager().registerEvents(new PlaceListener(), this);
+			getServer().getPluginManager().registerEvents(new CraftListener(), this);
+			getServer().getPluginManager().registerEvents(new EnchantListener(), this);
+			getServer().getPluginManager().registerEvents(new ShearListener(), this);
+			getServer().getPluginManager().registerEvents(new FishListener(), this);
+			getServer().getPluginManager().registerEvents(new MilkListener(), this);
+			getServer().getPluginManager().registerEvents(new SmeltListener(), this);
+			getServer().getPluginManager().registerEvents(new CollectListener(), this);
+			getServer().getPluginManager().registerEvents(new DropListener(), this);
+			getServer().getPluginManager().registerEvents(new TameListener(), this);
 			if(citizens2) {
 				getServer().getPluginManager().registerEvents(new Citizens2Listener(), this);
 			}

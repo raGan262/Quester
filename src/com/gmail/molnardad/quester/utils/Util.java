@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -122,7 +123,11 @@ public class Util {
 		}
 		Material mat = Material.getMaterial(s[0].toUpperCase());
 		if(mat == null) {
-			itm[0] = Integer.parseInt(s[0]);
+			try {
+				itm[0] = Integer.parseInt(s[0]);
+			} catch (NumberFormatException e) {
+				throw new InvalidDataException("");
+			}
 			if(Material.getMaterial(itm[0]) == null)
 				throw new InvalidDataException("");
 		} else {
@@ -134,6 +139,82 @@ public class Util {
 			itm[1] = Integer.parseInt(s[1]);
 		}
 		return itm;
+	}
+	
+	public static byte parseColor(String arg) throws InvalidDataException {
+		DyeColor col = null;
+		col = DyeColor.valueOf(arg.toUpperCase());
+		if(col == null) {
+			try {
+				col = DyeColor.getByData(Byte.parseByte(arg));
+			} catch (NumberFormatException e) {
+				throw new InvalidDataException("");
+			}
+		}
+		if(col == null)
+			throw new InvalidDataException("");
+		return col.getData();
+	}
+	
+	public static String enchantName(int id, int lvl) {
+		String result = "Unknown";
+		switch(id) {
+			case 0 : result = "Protection";
+					break;
+			case 1 : result = "Fire Protection";
+					break;
+			case 2 : result = "Feather Falling";
+					break;
+			case 3 : result = "Blast Protection";
+					break;
+			case 4 : result = "Projectile Protection";
+					break;
+			case 5 : result = "Respiration";
+					break;
+			case 6 : result = "Aqua Affinity";
+					break;
+			case 16 : result = "Sharpness";
+					break;
+			case 17 : result = "Smite";
+					break;
+			case 18 : result = "Bane of Arthropods";
+					break;
+			case 19 : result = "Knockback";
+					break;
+			case 20 : result = "Fire Aspect";
+					break;
+			case 21 : result = "Looting";
+					break;
+			case 32 : result = "Efficiency";
+					break;
+			case 33 : result = "Silk Touch";
+					break;
+			case 34 : result = "Unbreaking";
+					break;
+			case 35 : result = "Fortune";
+					break;
+			case 48 : result = "Power";
+					break;
+			case 49 : result = "Punch";
+					break;
+			case 50 : result = "Flame";
+					break;
+			case 51 : result = "Infinity";
+					break;
+		} 
+		switch(lvl) {
+			case 1 : result = result + " I";
+					break;
+			case 2 : result = result + " II";
+					break;
+			case 3 : result = result + " III";
+					break;
+			case 4 : result = result + " IV";
+					break;
+			case 5 : result = result + " V";
+					break;
+		}
+		return result;
 	}
 	
 	// SAVE / LOAD OBJECT

@@ -6,6 +6,10 @@ general:
 objectives:
   break:
     no-drops: false
+    subtract-on-place: true
+  collect:
+    remove-on-pickup: true
+    subtract-on-drop: false
 quests:
   only-first: true
   show-objectives: true

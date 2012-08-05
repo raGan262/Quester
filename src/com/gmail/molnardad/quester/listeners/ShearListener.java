@@ -4,36 +4,34 @@ import java.util.ArrayList;
 
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Sheep;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerShearEntityEvent;
 
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
-import com.gmail.molnardad.quester.objectives.MobKillObjective;
 import com.gmail.molnardad.quester.objectives.Objective;
+import com.gmail.molnardad.quester.objectives.ShearObjective;
 
-public class MobKillListener implements Listener {
+public class ShearListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onDeath(EntityDeathEvent event) {
-		if(event.getEntity().getKiller() != null) {
+	public void onShear(PlayerShearEntityEvent event) {
+		if(event.getEntity().getType() == EntityType.SHEEP) {
 		    QuestManager qm = Quester.qMan;
-			Player player = event.getEntity().getKiller();
+			Player player = event.getPlayer();
+			Sheep sheep = (Sheep) event.getEntity();
 			if(qm.hasQuest(player.getName())) {
-		    	if(qm.getPlayerQuest(player.getName()).getObjectives("MOBKILL").isEmpty()) {
-		    		return;
-		    	}
 		    	ArrayList<Objective> objs = qm.getPlayerQuest(player.getName()).getObjectives();
 		    	for(int i = 0; i < objs.size(); i++) {
-		    		if(objs.get(i).getType().equalsIgnoreCase("MOBKILL")) {
+		    		if(objs.get(i).getType().equalsIgnoreCase("SHEAR")) {
 			    		if(qm.achievedTarget(player, i)){
 		    				continue;
 		    			}
-			    		EntityType ent = event.getEntity().getType();
-		    			MobKillObjective obj = (MobKillObjective)objs.get(i);
-		    			if(obj.check(ent)) {
+		    			ShearObjective obj = (ShearObjective)objs.get(i);
+		    			if(obj.check(sheep.getColor())) {
 		    				qm.incProgress(player, i);
 		    				return;
 		    			}

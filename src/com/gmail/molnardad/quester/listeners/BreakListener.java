@@ -23,24 +23,20 @@ public class BreakListener implements Listener {
 	    QuestManager qm = Quester.qMan;
 	    Player player = event.getPlayer();
 	    if(qm.hasQuest(player.getName())) {
-	    	if(qm.getPlayerQuest(player.getName()).getObjectives("BREAK").isEmpty()) {
-	    		return;
-	    	}
 	    	ArrayList<Objective> objs = qm.getPlayerQuest(player.getName()).getObjectives();
 	    	for(int i = 0; i < objs.size(); i++) {
-    			// check if objective is complete
-	    		if(qm.achievedTarget(player, i)){
-    				continue;
-    			}
 	    		// check if Objective is type BREAK
 	    		if(objs.get(i).getType().equalsIgnoreCase("BREAK")) {
+		    		if(qm.achievedTarget(player, i)){
+	    				continue;
+	    			}
 	    			BreakObjective obj = (BreakObjective)objs.get(i);
 	    			Block block = event.getBlock();
 	    			// compare block ID
-	    			if(block.getTypeId() == obj.getMaterial().getId()) {
+	    			if(block.getTypeId() == obj.getMaterial().getId() && obj.checkHand(player.getItemInHand().getTypeId())) {
 	    				// if DATA >= 0 compare
 	    				if(obj.getData() < 0 || obj.getData() == block.getData()) {
-	    					if(QuestData.noDrops) {
+	    					if(QuestData.brkNoDrops) {
 	    						block.setType(Material.AIR);
 	    					}
 	    					qm.incProgress(player, i);

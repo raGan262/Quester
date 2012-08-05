@@ -9,12 +9,15 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class QuestData {
 	
 	public static boolean verbose = false;
-	public static boolean noDrops = false;
+	public static boolean brkNoDrops = false;
+	public static boolean brkSubOnPlace = true;
 	public static boolean onlyFirst = false;
 	public static int saveInterval = 15;
 	public static boolean debug = true;
 	public static boolean showObjs = true;
 	public static boolean disUseCmds = false;
+	public static boolean colRemPickup = true;
+	public static boolean colSubOnDrop = false;
 
 	public static final String USE_PERM = "quester.use";
 	public static final String MODIFY_PERM = "quester.modify";
