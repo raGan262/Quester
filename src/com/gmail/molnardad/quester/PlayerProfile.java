@@ -78,13 +78,6 @@ public class PlayerProfile implements ConfigurationSerializable{
 		return progress;
 	}
 	
-	public boolean incProgress(int id) {
-		if(progress == null || id >= progress.size())
-			return false;
-		progress.set(id, progress.get(id)+1);
-		return true;
-	}
-	
 	public int getPoints() {
 		return points;
 	}

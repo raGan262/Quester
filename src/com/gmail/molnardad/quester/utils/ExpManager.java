@@ -50,12 +50,26 @@ public class ExpManager {
 		xpTotalToReachLevel = new int[maxLevel];
 
 		xpTotalToReachLevel[0] = 0;
-		int incr = 7;
+// 		Code valid for MC 1.2 and earlier
+//		int incr = 7;
+//		for (int i = 1; i < xpTotalToReachLevel.length; i++) {
+//			xpRequiredForNextLevel[i - 1] = incr;
+//			xpTotalToReachLevel[i] = xpTotalToReachLevel[i - 1] + incr;
+//			incr += (i % 2 == 0) ? 4 : 3;
+//		}
+
+		// Valid for MC 1.3 and later
+		int incr = 17;
 		for (int i = 1; i < xpTotalToReachLevel.length; i++) {
 			xpRequiredForNextLevel[i - 1] = incr;
 			xpTotalToReachLevel[i] = xpTotalToReachLevel[i - 1] + incr;
-			incr += (i % 2 == 0) ? 4 : 3;
+			if (i >= 30) {
+				incr += 7;
+			} else if (i >= 16) {
+				incr += 3;
+			}
 		}
+		xpRequiredForNextLevel[xpRequiredForNextLevel.length - 1] = incr;
 	}
 
 	/**
@@ -144,7 +158,8 @@ public class ExpManager {
 	public int getCurrentExp() {
 		Player player = getPlayer();
 		int lvl = player.getLevel();
-		return getXpForLevel(lvl) + (int) (xpRequiredForNextLevel[lvl] * player.getExp());
+		int cur = getXpForLevel(lvl) + (int) Math.round(xpRequiredForNextLevel[lvl] * player.getExp());
+		return cur;
 	}
 
 	/**

@@ -25,12 +25,12 @@ public final class ExpObjective implements Objective {
 
 	@Override
 	public int getTargetAmount() {
-		return 0;
+		return 1;
 	}
 
 	@Override
 	public boolean isComplete(Player player, int progress) {
-		return false;
+		return progress >= 1;
 	}
 
 	@Override
@@ -75,5 +75,15 @@ public final class ExpObjective implements Objective {
 		}
 		
 		return new ExpObjective(amt);
+	}
+
+	@Override
+	public boolean tryToComplete(Player player) {
+		int totalExp = new ExpManager(player).getCurrentExp();
+		if(totalExp >= amount) {
+			finish(player);
+			return true;
+		}
+		return false;
 	}
 }

@@ -30,7 +30,7 @@ public final class MoneyCondition implements Condition {
 	
 	@Override
 	public String show() {
-		return "Must have " + amount + " " + Quester.econ.currencyNameSingular();
+		return "Must have " + amount + " " + Quester.econ.currencyNamePlural();
 	}
 	
 	@Override

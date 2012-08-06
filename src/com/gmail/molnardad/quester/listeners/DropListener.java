@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
@@ -17,13 +18,35 @@ import com.gmail.molnardad.quester.objectives.Objective;
 
 public class DropListener implements Listener {
 
+    private QuestManager qm = Quester.qMan;
+	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onDrop(PlayerDropItemEvent event) {
 		if(QuestData.colSubOnDrop) {
-		    QuestManager qm = Quester.qMan;
 		    Player player = event.getPlayer();
 		    if(qm.hasQuest(player.getName())) {
-		    	ArrayList<Objective> objs = qm.getPlayerQuest(player.getName()).getObjectives();
+		    	Quest quest = qm.getPlayerQuest(player.getName());
+		    	ArrayList<Objective> objs = quest.getObjectives();
+		    	// if quest is ordered, process current objective
+		    	if(quest.isOrdered()) {
+		    		int curr = qm.getCurrentObjective(player);
+		    		Objective obj = objs.get(curr);
+		    		if(obj != null) {
+		    			if(obj.getType().equalsIgnoreCase("COLLECT")) {
+		    				CollectObjective cObj = (CollectObjective)obj;
+			    			ItemStack item = event.getItemDrop().getItemStack();
+			    			// compare block ID
+			    			if(item.getTypeId() == cObj.getMaterial().getId()) {
+			    				// if DATA >= 0 compare
+			    				if(cObj.getData() < 0 || cObj.getData() == item.getDurability()) {
+			    					qm.incProgress(player, curr, -item.getAmount());
+			    					return;
+			    				}
+			    			}
+		    			}
+		    		}
+		    		return;
+		    	}
 		    	for(int i = 0; i < objs.size(); i++) {
 		    		// check if Objective is type COLLECT
 		    		if(objs.get(i).getType().equalsIgnoreCase("COLLECT")) {

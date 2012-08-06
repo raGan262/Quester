@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
@@ -25,7 +26,40 @@ public class CollectListener implements Listener {
 	    QuestManager qm = Quester.qMan;
 	    Player player = event.getPlayer();
 	    if(qm.hasQuest(player.getName())) {
-	    	ArrayList<Objective> objs = qm.getPlayerQuest(player.getName()).getObjectives();
+	    	Quest quest = qm.getPlayerQuest(player.getName());
+	    	ArrayList<Objective> objs = quest.getObjectives();
+	    	// if quest is ordered, process current objective
+	    	if(quest.isOrdered()) {
+	    		int curr = qm.getCurrentObjective(player);
+	    		Objective obj = objs.get(curr);
+	    		if(obj != null) {
+	    			if(obj.getType().equalsIgnoreCase("COLLECT")) {
+	    				CollectObjective cObj = (CollectObjective) obj;
+	    				ItemStack item = event.getItem().getItemStack();
+		    			// compare block ID
+		    			if(item.getTypeId() == cObj.getMaterial().getId()) {
+		    				// if DATA >= 0 compare
+		    				if(cObj.getData() < 0 || cObj.getData() == item.getDurability()) {
+		    					qm.incProgress(player, curr, item.getAmount());
+		    					if(QuestData.colRemPickup) {
+			    					int rem = event.getRemaining();
+			    					Location loc = event.getItem().getLocation();
+			    					event.getItem().remove();
+			    					if(rem > 0) {
+			    						ItemStack newit = item.clone();
+			    						newit.setAmount(rem);
+			    						Item it = event.getItem().getWorld().dropItem(loc, newit);
+			    						it.setVelocity(new Vector(0, 0, 0));
+			    					}
+			    					event.setCancelled(true);
+		    					}
+		    					return;
+		    				}
+		    			}
+	    			}
+	    		}
+	    		return;
+	    	}
 	    	for(int i = 0; i < objs.size(); i++) {
 	    		// check if Objective is type COLLECT
 	    		if(objs.get(i).getType().equalsIgnoreCase("COLLECT")) {

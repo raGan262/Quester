@@ -9,6 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
@@ -18,12 +19,46 @@ import com.gmail.molnardad.quester.objectives.PlaceObjective;
 
 public class PlaceListener implements Listener {
 
+	private QuestManager qm = Quester.qMan;
+	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onBreak(BlockPlaceEvent event) {
-	    QuestManager qm = Quester.qMan;
 	    Player player = event.getPlayer();
 	    if(qm.hasQuest(player.getName())) {
-	    	ArrayList<Objective> objs = qm.getPlayerQuest(player.getName()).getObjectives();
+	    	Quest quest = qm.getPlayerQuest(player.getName());
+	    	ArrayList<Objective> objs = quest.getObjectives();
+			Block block = event.getBlock();
+	    	// if quest is ordered, process current objective
+	    	if(quest.isOrdered()) {
+	    		int curr = qm.getCurrentObjective(player);
+	    		Objective obj = objs.get(curr);
+	    		if(obj != null) {
+	    			if(obj.getType().equalsIgnoreCase("PLACE")) {
+	    				PlaceObjective pObj = (PlaceObjective)obj;
+		    			// compare block ID
+		    			if(block.getTypeId() == pObj.getMaterial().getId()) {
+		    				// if DATA >= 0 compare
+		    				if(pObj.getData() < 0 || pObj.getData() == block.getData()) {
+		    					qm.incProgress(player, curr);
+		    					return;
+		    				}
+		    			}
+	    			} else if(obj.getType().equalsIgnoreCase("BREAK")) {
+	    				if(QuestData.brkSubOnPlace) {
+	    					BreakObjective bObj = (BreakObjective)obj;
+			    			// compare block ID
+			    			if(block.getTypeId() == bObj.getMaterial().getId()) {
+			    				// if DATA >= 0 compare
+			    				if(bObj.getData() < 0 || bObj.getData() == block.getData()) {
+			    					qm.incProgress(player, curr, -1);
+			    					return;
+			    				}
+			    			}
+	    				}
+	    			}
+	    		}
+	    		return;
+	    	}
 	    	if(QuestData.brkSubOnPlace) {
 		    	for(int i = 0; i < objs.size(); i++) {
 		    		// check if Objective is type BREAK
@@ -32,7 +67,6 @@ public class PlaceListener implements Listener {
 		    				continue;
 		    			}
 			    		BreakObjective obj = (BreakObjective)objs.get(i);
-		    			Block block = event.getBlock();
 		    			// compare block ID
 		    			if(block.getTypeId() == obj.getMaterial().getId()) {
 		    				// if DATA >= 0 compare
@@ -51,7 +85,6 @@ public class PlaceListener implements Listener {
 	    				continue;
 	    			}
 		    		PlaceObjective obj = (PlaceObjective)objs.get(i);
-	    			Block block = event.getBlock();
 	    			// compare block ID
 	    			if(block.getTypeId() == obj.getMaterial().getId()) {
 	    				// if DATA >= 0 compare

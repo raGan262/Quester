@@ -18,6 +18,7 @@ public class QuestData {
 	public static boolean disUseCmds = false;
 	public static boolean colRemPickup = true;
 	public static boolean colSubOnDrop = false;
+	public static boolean ordOnlyCurrent = true;
 
 	public static final String USE_PERM = "quester.use";
 	public static final String MODIFY_PERM = "quester.modify";

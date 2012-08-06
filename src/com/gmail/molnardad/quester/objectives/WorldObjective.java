@@ -72,4 +72,9 @@ public final class WorldObjective implements Objective {
 			return null;
 		}
 	}
+
+	@Override
+	public boolean tryToComplete(Player player) {
+		return false;
+	}
 }

@@ -241,6 +241,34 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				
+				// QUEST ORDERED
+				if(args[0].equalsIgnoreCase("ordered") || args[0].equalsIgnoreCase("ord")) {
+					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
+						return true;
+					}
+					try {
+						qm.setOrdered(sender.getName(), true);
+						sender.sendMessage(ChatColor.GREEN + "Quest set as ordered.");
+					} catch (QuesterException e) {
+						sender.sendMessage(e.message());
+					}
+					return true;
+				}
+				
+				// QUEST UNORDERED
+				if(args[0].equalsIgnoreCase("unordered") || args[0].equalsIgnoreCase("unord")) {
+					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
+						return true;
+					}
+					try {
+						qm.setOrdered(sender.getName(), false);
+						sender.sendMessage(ChatColor.GREEN + "Quest set as unordered.");
+					} catch (QuesterException e) {
+						sender.sendMessage(e.message());
+					}
+					return true;
+				}
+				
 				// QUEST TOGGLE
 				if(args[0].equalsIgnoreCase("toggle")) {
 					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
@@ -1162,8 +1190,28 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								return true;
 							}
 							
+							// MONEY OBJECTIVE
+							if(args[2].equalsIgnoreCase("money")) {
+								if(args.length > 3) {
+									try {
+										double amt = Double.parseDouble(args[3]);
+										if(amt <= 0)
+											throw new NumberFormatException();
+										qm.addQuestObjective(sender.getName(), new MoneyObjective(amt));
+										sender.sendMessage(ChatColor.GREEN + "Money objective added.");
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + "Amount must be positive number.");
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add money [amount].");
+								return true;
+							}
+							
 							sender.sendMessage(ChatColor.RED + "Available objective types: " + ChatColor.WHITE + "break, place, item, exp, loc, death, world, " +
-									"mobkill, kill, craft, ench, smelt, shear, fish, milk, collect, tame");
+									"mobkill, kill, craft, ench, smelt, shear, fish, milk, collect, tame, money");
 							return true;
 						}
 						
@@ -1188,7 +1236,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					if(args.length > 1) {
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
 							sender.sendMessage(ChatColor.RED + "Available objective types: " + ChatColor.WHITE + "break, place, item, exp, loc, death, world, " +
-									"mobkill, kill, craft, ench, smelt, shear, fish, milk, collect, tame");
+									"mobkill, kill, craft, ench, smelt, shear, fish, milk, collect, tame, money");
 							return true;
 						}
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
@@ -1419,7 +1467,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						return true;
 					}
 					try {
-						qm.completeQuest(player);
+						qm.complete(player);
 					} catch (QuesterException e) {
 						sender.sendMessage(e.message());
 					}

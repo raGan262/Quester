@@ -105,4 +105,9 @@ public final class LocObjective implements Objective {
 			return null;
 		}
 	}
+
+	@Override
+	public boolean tryToComplete(Player player) {
+		return false;
+	}
 }

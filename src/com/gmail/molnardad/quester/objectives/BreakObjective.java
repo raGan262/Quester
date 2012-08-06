@@ -102,4 +102,9 @@ public final class BreakObjective implements Objective {
 			return null;
 		}
 	}
+
+	@Override
+	public boolean tryToComplete(Player player) {
+		return false;
+	}
 }

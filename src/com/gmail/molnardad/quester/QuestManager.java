@@ -15,12 +15,9 @@ import org.bukkit.inventory.ItemStack;
 
 import com.gmail.molnardad.quester.conditions.Condition;
 import com.gmail.molnardad.quester.exceptions.*;
-import com.gmail.molnardad.quester.objectives.ExpObjective;
-import com.gmail.molnardad.quester.objectives.ItemObjective;
 import com.gmail.molnardad.quester.objectives.Objective;
 import com.gmail.molnardad.quester.rewards.ItemReward;
 import com.gmail.molnardad.quester.rewards.Reward;
-import com.gmail.molnardad.quester.utils.ExpManager;
 import com.gmail.molnardad.quester.utils.Util;
 
 import static com.gmail.molnardad.quester.QuestData.allQuests;
@@ -89,21 +86,24 @@ public class QuestManager {
 		
 		Inventory inv = createInventory(player);
 		// check objectives
-		ArrayList<Objective> objs = getPlayerQuest(player.getName()).getObjectives();
-		int totalExp = new ExpManager(player).getCurrentExp();
+		Quest quest = getPlayerQuest(player.getName());
+		ArrayList<Objective> objs = quest.getObjectives();
+		PlayerProfile prof = getProfile(player.getName());
+		boolean all = true;
 		for(int i = 0; i < objs.size(); i++) {
-			if(objs.get(i).getType().equalsIgnoreCase("ITEM")){
-				if(!((ItemObjective) objs.get(i)).takeInventory(inv)){
+			if(objs.get(i).isComplete(player, prof.getProgress().get(i)))
+				continue;
+			
+			if(objs.get(i).tryToComplete(player)) {
+				incProgress(player, i);
+			} else {
+				all = false;
+				if(quest.isOrdered())
 					throw new QuestCompletionException("completeCheck() 1", true);
-				}
-			} else if(objs.get(i).getType().equalsIgnoreCase("EXPERIENCE")){
-				totalExp = ((ExpObjective) objs.get(i)).takeExp(totalExp);
-				if(totalExp < 0) {
-					throw new QuestCompletionException("completeCheck() 2", true);
-				}
-			} else if(!objs.get(i).isComplete(player, getProgress(player.getName()).get(i))){
-				throw new QuestCompletionException("completeCheck() 3", true);
 			}
+		}
+		if(!all) {
+			throw new QuestCompletionException("completeCheck() 2", true);
 		}
 		//check item rewards
 		ArrayList<Reward> rews = getPlayerQuest(player.getName()).getRewards();
@@ -117,6 +117,33 @@ public class QuestManager {
 				}
 			}
 		}
+	}
+	
+	public int getCurrentObjective(Player player) {
+		ArrayList<Objective> objs = getPlayerQuest(player.getName()).getObjectives();
+		PlayerProfile prof = getProfile(player.getName());
+	
+		for(int i=0; i<objs.size(); i++) {
+			if(!objs.get(i).isComplete(player, prof.getProgress().get(i)))
+				return i;
+		}
+		
+		return -1;
+	}
+	
+	public boolean areObjectivesCompleted(Player player) {
+		
+		ArrayList<Objective> objs = getPlayerQuest(player.getName()).getObjectives();
+		PlayerProfile prof = getProfile(player.getName());
+		boolean all = true;
+		
+		for(int i = 0; i < objs.size(); i++) {
+			if(objs.get(i).isComplete(player, prof.getProgress().get(i)))
+				continue;
+			all = false;
+		}
+		
+		return all;
 	}
 	
 	public boolean areConditionsMet(Player player, String questName) throws QuestExistenceException {
@@ -262,6 +289,18 @@ public class QuestManager {
 		} else {
 			activateQuest(questName);
 		}
+	}
+	
+	public void setOrdered(String changer, boolean ordered) throws QuestModificationException {
+		Quest quest = getSelected(changer);
+		if(getSelected(changer) == null) {
+			throw new QuestModificationException("setOrdered()", true);
+		}
+		if(!canModify(getSelected(changer).getName())) {
+			throw new QuestModificationException("setOrdered() 1", false);
+		}
+		quest.setOrdered(ordered);
+		QuestData.saveQuests();
 	}
 	
 	public void changeQuestName(String changer, String newName) throws QuestExistenceException, QuestModificationException {
@@ -427,6 +466,35 @@ public class QuestManager {
 		QuestData.saveProfiles();
 	}
 	
+	public void complete(Player player) throws QuestAssignmentException, QuestCompletionException, QuestExistenceException, ObjectiveCompletionException {
+		if(getPlayerQuest(player.getName()).isOrdered()) {
+			completeObjective(player);
+		} else {
+			completeQuest(player);
+		}
+	}
+	
+	public void completeObjective(Player player) throws QuestAssignmentException, QuestCompletionException, QuestExistenceException, ObjectiveCompletionException {
+		Quest quest = getPlayerQuest(player.getName());
+		ArrayList<Objective> objs = quest.getObjectives();
+		PlayerProfile prof = getProfile(player.getName());
+		
+		int i = 0;
+		while(i<objs.size()) {
+			if(!objs.get(i).isComplete(player, prof.getProgress().get(i))) {
+				if(objs.get(i).tryToComplete(player)) {
+					incProgress(player, i);
+					return;
+				} else {
+					throw new ObjectiveCompletionException();
+				}
+			}
+			i++;
+		}
+		
+		completeQuest(player);
+	}
+	
 	public void completeQuest(Player player) throws QuestAssignmentException, QuestCompletionException, QuestExistenceException {
 		if(!hasQuest(player.getName())){
 			throw new QuestAssignmentException("completeQuest()", false);
@@ -462,6 +530,13 @@ public class QuestManager {
 		prof.getProgress().set(id, newValue);
 		if(getQuest(prof.getQuest()).getObjectives().get(id).getTargetAmount() <= newValue) {
 			player.sendMessage(Quester.LABEL + "You completed a quest objective.");
+			if(areObjectivesCompleted(player)) {
+				try{
+					complete(player);
+				} catch (QuesterException e) {
+					player.sendMessage(e.message());
+				}
+			}
 			QuestData.saveProfiles();
 		} 
 	}
@@ -500,6 +575,8 @@ public class QuestManager {
 			player = (Player) sender;
 		sender.sendMessage(ChatColor.BLUE + "Name: " + ChatColor.GOLD + qst.getName());
 		sender.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + qst.getDescription());
+		String is = qst.isOrdered() ? "YES" : "NO";
+		sender.sendMessage(ChatColor.BLUE + "Ordered: " + ChatColor.WHITE + is);
 		sender.sendMessage(ChatColor.BLUE + "Conditions:");
 		ArrayList<Condition> cons = getQuest(questName).getConditions();
 		ChatColor color = ChatColor.WHITE;
@@ -509,8 +586,14 @@ public class QuestManager {
 			sender.sendMessage(color + " - " + cons.get(i).show());
 		}
 		if(QuestData.showObjs) {
-			sender.sendMessage(ChatColor.BLUE + "Objectives:");
 			ArrayList<Objective> objs = getQuest(questName).getObjectives();
+			if(QuestData.ordOnlyCurrent) {
+				sender.sendMessage(ChatColor.BLUE + "First objective:");
+				if(objs.get(0) != null)
+					sender.sendMessage(ChatColor.WHITE + " - " + objs.get(0).progress(0));
+				return;
+			}
+			sender.sendMessage(ChatColor.BLUE + "Objectives:");
 			for(int i = 0; i < objs.size(); i++) {
 				sender.sendMessage(ChatColor.WHITE + " - " + objs.get(i).progress(0));
 			}
@@ -534,7 +617,9 @@ public class QuestManager {
 		sender.sendMessage(ChatColor.BLUE + "Name: " + ChatColor.GOLD + qst.getName());
 		sender.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + qst.getDescription());
 		ChatColor color = qst.isActive() ? ChatColor.GREEN : ChatColor.RED;
-		sender.sendMessage(ChatColor.BLUE + "Active: " + color + String.valueOf(qst.isActive()));
+		sender.sendMessage(ChatColor.BLUE + "Active: " + color + qst.isActive());
+		color = qst.isOrdered() ? ChatColor.GREEN : ChatColor.YELLOW;
+		sender.sendMessage(ChatColor.BLUE + "Ordered: " + color + qst.isOrdered());
 		sender.sendMessage(ChatColor.BLUE + "Conditions:");
 		int i;
 		i = 0;
@@ -591,20 +676,25 @@ public class QuestManager {
 			player.sendMessage(ChatColor.GOLD + getPlayerQuest(player.getName()).getName() + ChatColor.BLUE + " progress:");
 			List<Objective> objs = getPlayerQuest(player.getName()).getObjectives();
 			List<Integer> progress = getProgress(player.getName());
-			for(int i = 0; i < objs.size(); i++) {
-				if(objs.get(i).isComplete(player, progress.get(i))) {
-						player.sendMessage(ChatColor.GREEN + " - Completed");
-				} else {
-						player.sendMessage(ChatColor.RED + " - " + objs.get(i).progress(progress.get(i)));
-				}
-			} 
+			if(QuestData.ordOnlyCurrent) {
+				int curr = getCurrentObjective(player);
+				player.sendMessage(ChatColor.GOLD + " - " + objs.get(curr).progress(progress.get(curr)));
+			} else {
+				for(int i = 0; i < objs.size(); i++) {
+					if(objs.get(i).isComplete(player, progress.get(i))) {
+							player.sendMessage(ChatColor.GREEN + " - Completed");
+					} else {
+							player.sendMessage(ChatColor.RED + " - " + objs.get(i).progress(progress.get(i)));
+					}
+				} 
+			}
 		} else {
 			player.sendMessage(Quester.LABEL + "Quest progress hidden.");
 		}
 	}
 	
 	// Utility
-	public Inventory createInventory(Player player) {
+	public static Inventory createInventory(Player player) {
 		
 		Inventory inv = Bukkit.getServer().createInventory(null, InventoryType.PLAYER);
 		ItemStack[] contents = player.getInventory().getContents();

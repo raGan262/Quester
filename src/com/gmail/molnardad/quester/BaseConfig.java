@@ -45,6 +45,14 @@ public class BaseConfig extends CustomConfig {
 		}
 		QuestData.disUseCmds = this.config.getBoolean(path);
 		
+		// SHOW ONLY CURRENT
+		path = "objectives.show-only-current";
+		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
+			this.config.set(path, true);
+			wrongConfig(path);
+		}
+		QuestData.ordOnlyCurrent = this.config.getBoolean(path);
+		
 		// BREAK NO DROPS
 		path = "objectives.break.no-drops";
 		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
@@ -85,6 +93,7 @@ public class BaseConfig extends CustomConfig {
 		}
 		QuestData.onlyFirst = this.config.getBoolean(path);
 		
+		// SHOW OBJECTIVES
 		path = "quests.show-objectives";
 		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
 			this.config.set(path, true);

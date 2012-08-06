@@ -4,6 +4,7 @@ general:
   debug-info: false
   disable-usecmds: false
 objectives:
+  show-only-current: true
   break:
     no-drops: false
     subtract-on-place: true

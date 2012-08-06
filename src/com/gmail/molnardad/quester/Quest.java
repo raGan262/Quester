@@ -20,6 +20,7 @@ public class Quest implements ConfigurationSerializable{
 	private String description = null;
 	private String name = null;
 	private boolean active = false;
+	private boolean ordered = false;
 	
 	
 	public Quest(String name) {
@@ -28,6 +29,7 @@ public class Quest implements ConfigurationSerializable{
 		objectives = new ArrayList<Objective>();
 		rewards = new ArrayList<Reward>();
 		conditions = new ArrayList<Condition>();
+		ordered = false;
 	}
 	
 	public boolean isActive() {
@@ -40,6 +42,14 @@ public class Quest implements ConfigurationSerializable{
 	
 	public void deactivate() {
 		active = false;
+	}
+	
+	public boolean isOrdered() {
+		return ordered;
+	}
+	
+	public void setOrdered(boolean state) {
+		ordered = state;
 	}
 	
 	public String getName() {
@@ -171,6 +181,7 @@ public class Quest implements ConfigurationSerializable{
 		map.put("name", name);
 		map.put("description", description);
 		map.put("active", active);
+		map.put("ordered", ordered);
 		map.put("objectives", objs);
 		map.put("rewards", rews);
 		map.put("conditions", cons);
@@ -192,6 +203,9 @@ public class Quest implements ConfigurationSerializable{
 			
 			if((Boolean) map.get("active"))
 				quest.activate();
+			
+			if(map.get("ordered") != null)
+				quest.setOrdered((Boolean) map.get("ordered"));
 			
 			Map<Integer, Objective> objs = new HashMap<Integer, Objective>();
 			if(map.get("objectives") != null) {

@@ -10,6 +10,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
@@ -23,7 +24,32 @@ public class BreakListener implements Listener {
 	    QuestManager qm = Quester.qMan;
 	    Player player = event.getPlayer();
 	    if(qm.hasQuest(player.getName())) {
-	    	ArrayList<Objective> objs = qm.getPlayerQuest(player.getName()).getObjectives();
+	    	
+	    	Quest quest = qm.getPlayerQuest(player.getName());
+	    	ArrayList<Objective> objs = quest.getObjectives();
+	    	// if quest is ordered, process current objective
+	    	if(quest.isOrdered()) {
+	    		int curr = qm.getCurrentObjective(player);
+	    		Objective obj = objs.get(curr);
+	    		if(obj != null) {
+	    			if(obj.getType().equalsIgnoreCase("BREAK")) {
+	    				BreakObjective bObj = (BreakObjective) obj;
+	    				Block block = event.getBlock();
+		    			// compare block ID
+		    			if(block.getTypeId() == bObj.getMaterial().getId() && bObj.checkHand(player.getItemInHand().getTypeId())) {
+		    				// if DATA >= 0 compare
+		    				if(bObj.getData() < 0 || bObj.getData() == block.getData()) {
+		    					if(QuestData.brkNoDrops) {
+		    						block.setType(Material.AIR);
+		    					}
+		    					qm.incProgress(player, curr);
+		    					return;
+		    				}
+		    			}
+	    			}
+	    		}
+	    		return;
+	    	}
 	    	for(int i = 0; i < objs.size(); i++) {
 	    		// check if Objective is type BREAK
 	    		if(objs.get(i).getType().equalsIgnoreCase("BREAK")) {
@@ -45,7 +71,6 @@ public class BreakListener implements Listener {
 	    			}
 	    		}
 	    	}
-	    	
 	    }
 	}
 	

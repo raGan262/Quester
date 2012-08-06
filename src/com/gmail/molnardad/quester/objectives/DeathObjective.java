@@ -121,4 +121,9 @@ public final class DeathObjective implements Objective {
 		}
 	}
 
+	@Override
+	public boolean tryToComplete(Player player) {
+		return false;
+	}
+
 }

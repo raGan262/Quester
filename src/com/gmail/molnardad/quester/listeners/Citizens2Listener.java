@@ -111,9 +111,13 @@ public class Citizens2Listener implements Listener {
 			// player has quest and quest giver accepts this quest
 			if(quest != "" && qsts.contains(quest.toLowerCase())) {
 				try {
-					qm.completeQuest(player);
+					qm.complete(player);
 				} catch (QuesterException e) {
-					player.sendMessage(e.message());
+					try {
+						qm.showProgress(player);
+					} catch (QuesterException f) {
+						player.sendMessage(ChatColor.DARK_PURPLE + "Interesting error, you don't have and have quest at once !");
+					}
 				}
 				return;
 			}

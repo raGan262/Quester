@@ -90,4 +90,9 @@ public final class PlaceObjective implements Objective {
 			return null;
 		}
 	}
+
+	@Override
+	public boolean tryToComplete(Player player) {
+		return false;
+	}
 }

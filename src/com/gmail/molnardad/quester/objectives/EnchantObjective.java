@@ -113,4 +113,9 @@ public final class EnchantObjective implements Objective {
 			return null;
 		}
 	}
+
+	@Override
+	public boolean tryToComplete(Player player) {
+		return false;
+	}
 }

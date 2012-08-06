@@ -72,4 +72,9 @@ public final class FishObjective implements Objective {
 		
 		return new FishObjective(amt);
 	}
+
+	@Override
+	public boolean tryToComplete(Player player) {
+		return false;
+	}
 }

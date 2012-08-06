@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.utils.Util;
 
 @SerializableAs("QuesterItemObjective")
@@ -35,12 +36,12 @@ public final class ItemObjective implements Objective {
 
 	@Override
 	public int getTargetAmount() {
-		return 0;
+		return 1;
 	}
 
 	@Override
 	public boolean isComplete(Player player, int progress) {
-		return false;
+		return progress >= 1;
 	}
 
 	@Override
@@ -139,5 +140,15 @@ public final class ItemObjective implements Objective {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	@Override
+	public boolean tryToComplete(Player player) {
+		Inventory newInv = QuestManager.createInventory(player);
+		if(takeInventory(newInv)) {
+			takeInventory(player.getInventory());
+			return true;
+		}
+		return false;
 	}
 }

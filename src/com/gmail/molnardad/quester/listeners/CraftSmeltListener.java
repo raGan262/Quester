@@ -14,6 +14,7 @@ import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.objectives.CraftObjective;
@@ -32,7 +33,41 @@ public class CraftSmeltListener implements Listener {
 		}
 	    Player player = (Player) event.getWhoClicked();
 	    if(qm.hasQuest(player.getName())) {
-	    	ArrayList<Objective> objs = qm.getPlayerQuest(player.getName()).getObjectives();
+			Quest quest = qm.getPlayerQuest(player.getName());
+			ArrayList<Objective> objs = quest.getObjectives();
+			// if quest is ordered, process current objective
+			if(quest.isOrdered()) {
+				int curr = qm.getCurrentObjective(player);
+				Objective obj = objs.get(curr);
+				if(obj != null) {
+					if(obj.getType().equalsIgnoreCase("CRAFT")) {
+						CraftObjective cObj = (CraftObjective) obj;
+		    			ItemStack item = event.getCurrentItem();
+			    		//check type of click
+		    			if(event.isShiftClick()) {
+		    				if(cObj.check(item)) {
+		    					// how many results can be crafted
+			    				int count = getCraftedAmount(event.getInventory());
+			    				// how many results can fit into inventory
+			    				int spc = (int) Math.floor(getInvSpace(player.getInventory(), item, count)/item.getAmount());
+			    				// actual crafted amount
+			    				int amtCrafted = Math.min(spc, count);
+			    				if(amtCrafted > 0) {
+			    					qm.incProgress(player, curr, item.getAmount()*amtCrafted);
+				    				return;
+			    				}
+		    				}
+		    			} else {
+		    				ItemStack inHand = event.getCursor();
+		    				if(cObj.check(item) && checkHand(inHand, item)) {
+		    					qm.incProgress(player, curr, item.getAmount());
+		    					return;
+		    				}
+		    			}
+					}
+				}
+				return;
+			}
 	    	for(int i = 0; i < objs.size(); i++) {
 	    		// check if Objective is type CRAFT
 	    		if(objs.get(i).getType().equalsIgnoreCase("CRAFT")) {
@@ -78,7 +113,35 @@ public class CraftSmeltListener implements Listener {
 		}
 	    Player player = (Player) event.getWhoClicked();
 	    if(qm.hasQuest(player.getName())) {
-	    	ArrayList<Objective> objs = qm.getPlayerQuest(player.getName()).getObjectives();
+	    	Quest quest = qm.getPlayerQuest(player.getName());
+	    	ArrayList<Objective> objs = quest.getObjectives();
+	    	// if quest is ordered, process current objective
+	    	if(quest.isOrdered()) {
+	    		int curr = qm.getCurrentObjective(player);
+	    		Objective obj = objs.get(curr);
+	    		if(obj != null) {
+	    			if(obj.getType().equalsIgnoreCase("SMELT")) {
+	    				SmeltObjective sObj = (SmeltObjective) obj;
+		    			ItemStack item = event.getCurrentItem();
+		    			if(event.isShiftClick()) { 
+		    				if(sObj.check(item)) {
+			    				int spc = getInvSpace(player.getInventory(), item, 1);
+			    				if(spc != 0) {
+			    					qm.incProgress(player, curr, Math.min(item.getAmount(), spc));
+				    				return;
+			    				}	    			
+		    				}
+		    			} else {
+			    			ItemStack inHand = event.getCursor();
+			    			if(sObj.check(item) && checkHand(inHand, item)) {
+			    				qm.incProgress(player, curr, item.getAmount());
+			    				return;
+			    			}
+		    			}
+	    			}
+	    		}
+	    		return;
+	    	}
 	    	for(int i = 0; i < objs.size(); i++) {
 	    		// check if Objective is type SMELT
 	    		if(objs.get(i).getType().equalsIgnoreCase("SMELT")) {

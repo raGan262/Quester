@@ -6,13 +6,15 @@ import java.util.Map;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
-@SerializableAs("QuesterMilkObjective")
-public final class MilkObjective implements Objective {
+import com.gmail.molnardad.quester.Quester;
 
-	private final String TYPE = "MILK";
-	private final int amount;
+@SerializableAs("QuesterMoneyObjective")
+public final class MoneyObjective implements Objective {
+
+	private final String TYPE = "MONEY";
+	private final double amount;
 	
-	public MilkObjective(int amt) {
+	public MoneyObjective(double amt) {
 		amount = amt;
 	}
 	
@@ -23,22 +25,24 @@ public final class MilkObjective implements Objective {
 
 	@Override
 	public int getTargetAmount() {
-		return amount;
+		return 1;
 	}
 
 	@Override
 	public boolean isComplete(Player player, int progress) {
-		return progress >= amount;
+		return progress >= 1;
 	}
 
+	
 	@Override
 	public boolean finish(Player player) {
+		Quester.econ.withdrawPlayer(player.getName(), amount);
 		return true;
 	}
 	
 	@Override
 	public String progress(int progress) {
-		return "Milk cow - " + (amount - progress) + "x";
+		return "Get " + amount + " " + Quester.econ.currencyNamePlural();
 	}
 	
 	@Override
@@ -46,7 +50,7 @@ public final class MilkObjective implements Objective {
 		return TYPE + ": " + amount;
 	}
 	
-	public int takeExp(int amt) {
+	public double takeMoney(double amt) {
 		return amt - amount;
 	}
 
@@ -59,22 +63,27 @@ public final class MilkObjective implements Objective {
 		return map;
 	}
 
-	public static MilkObjective deserialize(Map<String, Object> map) {
-		int amt;
+	public static MoneyObjective deserialize(Map<String, Object> map) {
+		double amt;
 		
 		try {
-			amt = (Integer) map.get("amount");
-			if(amt < 1)
+			amt = (Double) map.get("amount");
+			if(amt <= 0)
 				return null;
 		} catch (Exception e) {
 			return null;
 		}
 		
-		return new MilkObjective(amt);
+		return new MoneyObjective(amt);
 	}
 
 	@Override
 	public boolean tryToComplete(Player player) {
+		double money = Quester.econ.getBalance(player.getName());
+		if(money >= amount) {
+			finish(player);
+			return true;
+		}
 		return false;
 	}
 }

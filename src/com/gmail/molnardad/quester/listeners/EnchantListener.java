@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.objectives.EnchantObjective;
@@ -19,12 +20,31 @@ import com.gmail.molnardad.quester.objectives.Objective;
 
 public class EnchantListener implements Listener {
 
+	private QuestManager qm = Quester.qMan;
+	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onEnchant(EnchantItemEvent event) {
-		QuestManager qm = Quester.qMan;
 	    Player player = event.getEnchanter();
 	    if(qm.hasQuest(player.getName())) {
-	    	ArrayList<Objective> objs = qm.getPlayerQuest(player.getName()).getObjectives();
+	    	Quest quest = qm.getPlayerQuest(player.getName());
+	    	ArrayList<Objective> objs = quest.getObjectives();
+	    	// if quest is ordered, process current objective
+	    	if(quest.isOrdered()) {
+	    		int curr = qm.getCurrentObjective(player);
+	    		Objective obj = objs.get(curr);
+	    		if(obj != null) {
+	    			if(obj.getType().equalsIgnoreCase("ENCHANT")) {
+	    				EnchantObjective eObj = (EnchantObjective)obj;
+		    			ItemStack item = event.getItem();
+		    			Map<Enchantment, Integer> enchs = event.getEnchantsToAdd();
+		    			if(eObj.check(item, enchs)) {
+		    				qm.incProgress(player, curr);
+		    				return;
+		    			}
+	    			}
+	    		}
+	    		return;
+	    	}
 	    	for(int i = 0; i < objs.size(); i++) {
 	    		// check if Objective is type CRAFT
 	    		if(objs.get(i).getType().equalsIgnoreCase("ENCHANT")) {

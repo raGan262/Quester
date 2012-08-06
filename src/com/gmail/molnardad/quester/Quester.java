@@ -60,6 +60,7 @@ public class Quester extends JavaPlugin {
 			ConfigurationSerialization.registerClass(SmeltObjective.class);
 			ConfigurationSerialization.registerClass(CollectObjective.class);
 			ConfigurationSerialization.registerClass(TameObjective.class);
+			ConfigurationSerialization.registerClass(MoneyObjective.class);
 			
 			ConfigurationSerialization.registerClass(EffectReward.class);
 			ConfigurationSerialization.registerClass(ExpReward.class);
