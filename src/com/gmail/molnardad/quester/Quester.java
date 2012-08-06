@@ -179,12 +179,11 @@ public class Quester extends JavaPlugin {
 			getServer().getPluginManager().registerEvents(new DeathListener(), this);
 			getServer().getPluginManager().registerEvents(new MobKillListener(), this);
 			getServer().getPluginManager().registerEvents(new PlaceListener(), this);
-			getServer().getPluginManager().registerEvents(new CraftListener(), this);
+			getServer().getPluginManager().registerEvents(new CraftSmeltListener(), this);
 			getServer().getPluginManager().registerEvents(new EnchantListener(), this);
 			getServer().getPluginManager().registerEvents(new ShearListener(), this);
 			getServer().getPluginManager().registerEvents(new FishListener(), this);
 			getServer().getPluginManager().registerEvents(new MilkListener(), this);
-			getServer().getPluginManager().registerEvents(new SmeltListener(), this);
 			getServer().getPluginManager().registerEvents(new CollectListener(), this);
 			getServer().getPluginManager().registerEvents(new DropListener(), this);
 			getServer().getPluginManager().registerEvents(new TameListener(), this);

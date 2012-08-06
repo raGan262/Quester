@@ -65,20 +65,6 @@ public final class SmeltObjective implements Objective {
 		return true;
 	}
 
-	public boolean checkHand(ItemStack hand, ItemStack item) {
-		if(hand.getTypeId() == 0) {
-			return true;
-		}
-		if(item.getTypeId() != hand.getTypeId())
-			return false;
-		if(item.getDurability() != hand.getDurability())
-			return false;
-		if((item.getAmount() + hand.getAmount()) > item.getMaxStackSize()) {
-			return false;
-		}
-		return true;
-	}
-
 	@Override
 	public Map<String, Object> serialize() {
 		Map<String, Object> map = new HashMap<String, Object>();
