@@ -1454,10 +1454,6 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					if(!permCheck(sender, QuestData.USE_PERM, true)) {
 						return true;
 					}
-					if(QuestData.disUseCmds) {
-						sender.sendMessage(Quester.LABEL + "Quest start/done commands are disabled.");
-						return true;
-					}
 					if(player == null) {
 						sender.sendMessage(ChatColor.RED + "This command can only be run by player.");
 						return true;

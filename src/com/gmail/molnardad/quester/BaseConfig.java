@@ -1,5 +1,13 @@
 package com.gmail.molnardad.quester;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.bukkit.configuration.ConfigurationSection;
+
 public class BaseConfig extends CustomConfig {
 
 	public BaseConfig(String fileName) {
@@ -101,6 +109,35 @@ public class BaseConfig extends CustomConfig {
 		}
 		QuestData.showObjs = this.config.getBoolean(path);
 	
+		
+		
+		Map<Integer, String> rankMap = new HashMap<Integer, String>();
+		List<Integer> sortedRanks = new ArrayList<Integer>();
+		// QUESTER RANKS
+		ConfigurationSection ranks = this.config.getConfigurationSection("ranks");
+		if(ranks != null) {
+			for(String key : ranks.getKeys(false)) {
+				rankMap.put(ranks.getInt(key), key.replace('-', ' '));
+				sortedRanks.add(ranks.getInt(key));
+			}
+		}
+		if(sortedRanks.size() == 0) {
+			wrongConfig("ranks");
+			this.config.set("ranks.Quester", 0);
+			rankMap.put(0, "Quester");
+			sortedRanks.add(0);
+			this.config.set("ranks.Apprentice-Quester", 25);
+			rankMap.put(25, "Apprentice Quester");
+			sortedRanks.add(25);
+			this.config.set("ranks.Master-Quester", 50);
+			rankMap.put(50, "Master Quester");
+			sortedRanks.add(50);
+		}
+		Collections.sort(sortedRanks);
+		QuestData.ranks = rankMap;
+		QuestData.sortedRanks = sortedRanks;
+		
+		
 		saveConfig();
 	}
 

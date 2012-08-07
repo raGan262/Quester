@@ -47,7 +47,7 @@ public class QuestManager {
 	}
 	
 	private Quest getQuest(String questName) {
-		if(questName == null) return null;
+		if(questName == null || questName.isEmpty()) return null;
 		return allQuests.get(questName.toLowerCase());
 	}
 	
@@ -206,6 +206,19 @@ public class QuestManager {
 		}
 	}
 
+	public void checkRank(PlayerProfile prof) {
+		int pts = prof.getPoints();
+		String lastRank = "";
+		for(int i : QuestData.sortedRanks) {
+			if(pts >= i) {
+				lastRank = QuestData.ranks.get(i);
+			} 
+			else 
+				break;
+		}
+		prof.setRank(lastRank);
+	}
+	
 	// Quest modification methods
 	
 	public boolean isQuestActive(CommandSender sender) {
@@ -313,9 +326,10 @@ public class QuestManager {
 		if(!canModify(getSelected(changer).getName())) {
 			throw new QuestModificationException("changeQuestName() 1", false);
 		}
-		allQuests.remove(getSelected(changer).getName().toLowerCase());
-		getSelected(changer).setName(newName);
-		allQuests.put(getSelected(changer).getName().toLowerCase(), getSelected(changer));
+		Quest qst = getSelected(changer);
+		allQuests.remove(qst.getName().toLowerCase());
+		qst.setName(newName);
+		allQuests.put(qst.getName().toLowerCase(), qst);
 		QuestData.saveQuests();
 	}
 	
@@ -553,13 +567,15 @@ public class QuestManager {
 		}
 		PlayerProfile prof = getProfile(name);
 		sender.sendMessage(ChatColor.BLUE + "Name: " + ChatColor.GOLD + prof.getName());
-		sender.sendMessage(ChatColor.BLUE + "Current quest: " + ChatColor.GOLD + prof.getQuest());
-		sender.sendMessage(ChatColor.BLUE + "Quest points: " + ChatColor.GOLD + prof.getPoints());
+		sender.sendMessage(ChatColor.BLUE + "Quest points: " + ChatColor.WHITE + prof.getPoints());
+		sender.sendMessage(ChatColor.BLUE + "Quest rank: " + ChatColor.GOLD + prof.getRank());
+		sender.sendMessage(ChatColor.BLUE + "Current quest: " + ChatColor.WHITE + prof.getQuest());
 		String cmpltd = "";
 		for(String s : prof.getCompleted()) {
-			cmpltd = cmpltd + s + "; ";
+			cmpltd = cmpltd + s + ", ";
 		}
-		sender.sendMessage(ChatColor.BLUE + "Completed quests: " + ChatColor.GOLD + cmpltd);
+		cmpltd = cmpltd.substring(0, cmpltd.length()-2);
+		sender.sendMessage(ChatColor.BLUE + "Completed quests: " + ChatColor.WHITE + cmpltd);
 		
 	}
 	

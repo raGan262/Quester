@@ -19,6 +19,7 @@ public class PlayerProfile implements ConfigurationSerializable{
 	private String quest;
 	private List<Integer> progress;
 	private int points;
+	private String rank;
 	
 	public PlayerProfile(String player) {
 		name = player;
@@ -27,6 +28,7 @@ public class PlayerProfile implements ConfigurationSerializable{
 		progress = new ArrayList<Integer>();
 		selected = "";
 		points = 0;
+		rank = "";
 	}
 	
 	public String getName() {
@@ -84,6 +86,14 @@ public class PlayerProfile implements ConfigurationSerializable{
 	
 	public void addPoints(int pts) {
 		points += pts;
+	}
+	
+	public String getRank() {
+		return rank;
+	}
+	
+	public void setRank(String newRank) {
+		rank = newRank;
 	}
 	
 	public Map<String, Object> serialize() {

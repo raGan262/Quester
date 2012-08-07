@@ -171,6 +171,7 @@ public class Quester extends JavaPlugin {
 			config = (new BaseConfig("config.yml")).getConfig();
 			if(QuestData.verbose) {
 				log.info("Config loaded.");
+				log.info(QuestData.ranks.size() + " ranks loaded.");
 			}
 		}
 		

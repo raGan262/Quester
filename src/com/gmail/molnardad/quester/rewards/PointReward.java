@@ -31,6 +31,7 @@ public final class PointReward implements Reward {
 	@Override
 	public boolean giveReward(Player player) {
 		Quester.qMan.getProfile(player.getName()).addPoints(amount);
+		Quester.qMan.checkRank(Quester.qMan.getProfile(player.getName()));
 		return true;
 	}
 

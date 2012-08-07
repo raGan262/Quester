@@ -1,7 +1,9 @@
 package com.gmail.molnardad.quester;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -27,6 +29,9 @@ public class QuestData {
 
 	public static Map<String, Quest> allQuests = new HashMap<String, Quest>();
 	public static Map<String, PlayerProfile> profiles = new HashMap<String, PlayerProfile>();
+	public static Map<Integer, String> ranks = new HashMap<Integer, String>();
+	
+	public static List<Integer> sortedRanks = new ArrayList<Integer>();
 
 	
 	static void wipeData(){
@@ -60,6 +65,7 @@ public class QuestData {
 								}
 							}
 						}
+						Quester.qMan.checkRank(prof);
 						profiles.put(prof.getName().toLowerCase(), prof);
 					} else {
 						if(verbose) {
