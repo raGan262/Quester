@@ -1,6 +1,6 @@
 package com.gmail.molnardad.quester.listeners;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -25,7 +25,7 @@ public class TameListener implements Listener {
 		    Player player = (Player) event.getOwner();
 			if(qm.hasQuest(player.getName())) {
 				Quest quest = qm.getPlayerQuest(player.getName());
-				ArrayList<Objective> objs = quest.getObjectives();
+				List<Objective> objs = quest.getObjectives();
 				EntityType ent = event.getEntityType();
 				// if quest is ordered, process current objective
 				if(quest.isOrdered()) {

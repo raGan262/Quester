@@ -1,6 +1,5 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Material;
@@ -8,7 +7,7 @@ import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
 @SerializableAs("QuesterBreakObjective")
-public final class BreakObjective implements Objective {
+public final class BreakObjective extends Objective {
 
 	private final String TYPE = "BREAK";
 	private final Material material;
@@ -60,17 +59,12 @@ public final class BreakObjective implements Objective {
 	@Override
 	public String toString() {
 		String dataStr = (data < 0 ? "ANY" : String.valueOf(data));
-		return TYPE + ": " + material.name() + "[" + material.getId() + "] DATA: " + dataStr + "; AMT: " + amount + "; HND: " + inHand;
-	}
-
-	@Override
-	public boolean finish(Player player) {
-		return true;
+		return TYPE + ": " + material.name() + "[" + material.getId() + "] DATA: " + dataStr + "; AMT: " + amount + "; HND: " + inHand + stringQevents();
 	}
 
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = super.serialize();
 		
 		map.put("material", material.getId());
 		map.put("data", data);
@@ -96,15 +90,11 @@ public final class BreakObjective implements Objective {
 			if(map.get("in-hand") != null) {
 				hnd = (Integer) map.get("in-hand");
 			}
-			
-			return new BreakObjective(amt, mat, (byte)dat, hnd);
+			BreakObjective obj = new BreakObjective(amt, mat, (byte)dat, hnd);
+			obj.loadQevents(map);
+			return obj;
 		} catch (Exception e) {
 			return null;
 		}
-	}
-
-	@Override
-	public boolean tryToComplete(Player player) {
-		return false;
 	}
 }

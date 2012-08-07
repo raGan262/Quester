@@ -1,14 +1,12 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.SerializableAs;
-import org.bukkit.entity.Player;
 
 @SerializableAs("QuesterWorldObjective")
-public final class WorldObjective implements Objective {
+public final class WorldObjective extends Objective {
 
 	private final String TYPE = "WORLD";
 	private final String worldName;
@@ -21,21 +19,6 @@ public final class WorldObjective implements Objective {
 	public String getType() {
 		return TYPE;
 	}
-
-	@Override
-	public int getTargetAmount() {
-		return 1;
-	}
-
-	@Override
-	public boolean isComplete(Player player, int progress) {
-		return progress > 0;
-	}
-
-	@Override
-	public boolean finish(Player player) {
-		return true;
-	}
 	
 	@Override
 	public String progress(int progress) {
@@ -44,7 +27,7 @@ public final class WorldObjective implements Objective {
 	
 	@Override
 	public String toString() {
-		return TYPE+": "+worldName;
+		return TYPE+": "+worldName + stringQevents();
 	}
 	
 	public boolean checkWorld(String wName) {
@@ -53,7 +36,7 @@ public final class WorldObjective implements Objective {
 
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = super.serialize();
 		
 		map.put("world", worldName);
 		
@@ -67,14 +50,11 @@ public final class WorldObjective implements Objective {
 			if(Bukkit.getWorld(world) == null)
 				return null;
 			
-			return new WorldObjective(world);
+			WorldObjective obj = new WorldObjective(world);
+			obj.loadQevents(map);
+			return obj;
 		} catch (Exception e) {
 			return null;
 		}
-	}
-
-	@Override
-	public boolean tryToComplete(Player player) {
-		return false;
 	}
 }

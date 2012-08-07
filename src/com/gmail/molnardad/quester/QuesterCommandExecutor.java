@@ -19,6 +19,7 @@ import org.bukkit.potion.PotionEffectType;
 import com.avaje.ebeaninternal.server.lib.util.InvalidDataException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.objectives.*;
+import com.gmail.molnardad.quester.qevents.MessageQevent;
 import com.gmail.molnardad.quester.rewards.*;
 import com.gmail.molnardad.quester.conditions.*;
 import static com.gmail.molnardad.quester.utils.Util.*;
@@ -1327,7 +1328,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							
 							// ITEM CONDITION
 							if(args[2].equalsIgnoreCase("item")) {
-								if(args.length > 3) {
+								if(args.length > 4) {
 									try {
 										int amt = Integer.parseInt(args[4]);
 										int[] itm = parseItem(args[3]);
@@ -1400,6 +1401,93 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					}
 					
 					sender.sendMessage(ChatColor.RED + "Usage: /quest condition [add|remove] [condition_type] [args].");
+					return true;
+				}
+				
+				// QUEST EVENT
+				if(args[0].equalsIgnoreCase("event") || args[0].equalsIgnoreCase("evt")) {
+					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
+						return true;
+					}
+					if(args.length > 2){
+						
+						// ADD CONDITION
+						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
+							
+							if(args.length > 3){
+								
+								int occ;
+								try {
+									occ = Integer.parseInt(args[3]);
+									if(occ < -3)
+										throw new NumberFormatException();
+								} catch (NumberFormatException e) {
+									sender.sendMessage(ChatColor.RED + "Occasion must be > -4.");
+									return true;
+								}
+								
+								// MESSAGE EVENT
+								if(args[2].equalsIgnoreCase("msg")) {
+									if(args.length > 4) {
+										String msg = sconcat(args, 4);
+										try {
+											qm.addQevent(sender.getName(), new MessageQevent(occ, msg));
+											sender.sendMessage(ChatColor.GREEN + "Message event added.");
+										} catch (QuesterException e) {
+											sender.sendMessage(e.message());
+										}
+										return true;
+									}
+									sender.sendMessage(ChatColor.RED + "Usage: /quest event add msg {occasion} [message*]\n"
+											+ "* - supports '&' colors and '\\n' newline");
+									return true;
+								}
+								
+								sender.sendMessage(ChatColor.RED + "Available event types: " + ChatColor.WHITE + "msg");
+								return true;
+							}
+							
+							sender.sendMessage(ChatColor.RED + "Specify occasion.");
+							return true;
+						}
+						
+						// REMOVE EVENT
+						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")){
+							try {
+								int obj = -1;
+								int id = Integer.parseInt(args[2]);
+								if(args.length > 3)
+									obj = Integer.parseInt(args[3]);
+								qm.removeQevent(sender.getName(), id, obj);
+								sender.sendMessage(ChatColor.GREEN + "Event " + args[2] + " removed.");
+							} catch (NumberFormatException e) {
+								sender.sendMessage(ChatColor.RED + "Usage: /quest event remove [id_number] [objective_number*].\n"
+										+ "* - omit if not objective event");
+							} catch (QuesterException e) {
+								sender.sendMessage(e.message());
+							}
+							return true;
+						}
+						
+						sender.sendMessage(ChatColor.RED + "Usage info: /quest event [add|remove]");
+						return true;
+					}
+					
+					if(args.length > 1) {
+						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
+							sender.sendMessage(ChatColor.RED + "Usage: /quest event add [event_type] {occasion} [args].\n"
+									+ "{occasion} - -1:START, -2:CANCEL, -3:DONE,  >=0:GIVEN OBJECTIVE");
+							sender.sendMessage(ChatColor.RED + "Available event types: " + ChatColor.WHITE + "msg");
+							return true;
+						}
+						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
+							sender.sendMessage(ChatColor.RED + "Usage: /quest event remove [id_number] [objective_number*].\n"
+									+ "* - omit if not objective event");
+							return true;
+						}
+					}
+					
+					sender.sendMessage(ChatColor.RED + "Usage info: /quest event [add|remove]");
 					return true;
 				}
 				

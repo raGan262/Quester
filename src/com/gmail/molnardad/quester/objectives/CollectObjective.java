@@ -1,6 +1,5 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Material;
@@ -8,7 +7,7 @@ import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
 @SerializableAs("QuesterCollectObjective")
-public final class CollectObjective implements Objective {
+public final class CollectObjective extends Objective {
 
 	private final String TYPE = "COLLECT";
 	private final Material material;
@@ -53,17 +52,12 @@ public final class CollectObjective implements Objective {
 	@Override
 	public String toString() {
 		String dataStr = (data < 0 ? "ANY" : String.valueOf(data));
-		return TYPE + ": " + material.name() + "[" + material.getId() + "] DATA: " + dataStr + "; AMT: " + amount;
-	}
-
-	@Override
-	public boolean finish(Player player) {
-		return true;
+		return TYPE + ": " + material.name() + "[" + material.getId() + "] DATA: " + dataStr + "; AMT: " + amount + stringQevents();
 	}
 
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = super.serialize();
 		
 		map.put("material", material.getId());
 		map.put("data", data);
@@ -84,15 +78,11 @@ public final class CollectObjective implements Objective {
 			amt = (Integer) map.get("amount");
 			if(amt < 1)
 				return null;
-			
-			return new CollectObjective(amt, mat, (byte)dat);
+			CollectObjective obj = new CollectObjective(amt, mat, (byte)dat);
+			obj.loadQevents(map);
+			return obj;
 		} catch (Exception e) {
 			return null;
 		}
-	}
-
-	@Override
-	public boolean tryToComplete(Player player) {
-		return false;
 	}
 }

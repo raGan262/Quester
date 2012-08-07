@@ -1,6 +1,5 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.configuration.serialization.SerializableAs;
@@ -8,7 +7,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 @SerializableAs("QuesterMobKillObjective")
-public final class MobKillObjective implements Objective {
+public final class MobKillObjective extends Objective {
 
 	private final String TYPE = "MOBKILL";
 	private final EntityType entity;
@@ -35,11 +34,6 @@ public final class MobKillObjective implements Objective {
 	}
 
 	@Override
-	public boolean finish(Player player) {
-		return true;
-	}
-
-	@Override
 	public String progress(int progress) {
 		String mob = entity == null ? "any mob" : entity.getName();
 		return "Kill " + mob + " - " + (amount - progress) + "x";
@@ -48,7 +42,7 @@ public final class MobKillObjective implements Objective {
 	@Override
 	public String toString() {
 		String entStr = entity == null ? "ANY" : entity.getName();
-		return TYPE + ": " + entStr + "; AMT: " + amount ;
+		return TYPE + ": " + entStr + "; AMT: " + amount + stringQevents();
 	}
 	
 	public boolean check(EntityType ent) {
@@ -61,7 +55,7 @@ public final class MobKillObjective implements Objective {
 
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = super.serialize();
 		
 		map.put("amount", amount);
 		if(entity == null)
@@ -81,14 +75,11 @@ public final class MobKillObjective implements Objective {
 				return null;
 			ent = EntityType.fromId((Integer) map.get("entity"));
 			
-			return new MobKillObjective(amt, ent);
+			MobKillObjective obj = new MobKillObjective(amt, ent);
+			obj.loadQevents(map);
+			return obj;
 		} catch (Exception e) {
 			return null;
 		}
-	}
-
-	@Override
-	public boolean tryToComplete(Player player) {
-		return false;
 	}
 }

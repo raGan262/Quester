@@ -1,6 +1,6 @@
 package com.gmail.molnardad.quester.listeners;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -26,7 +26,7 @@ public class PlaceListener implements Listener {
 	    Player player = event.getPlayer();
 	    if(qm.hasQuest(player.getName())) {
 	    	Quest quest = qm.getPlayerQuest(player.getName());
-	    	ArrayList<Objective> objs = quest.getObjectives();
+	    	List<Objective> objs = quest.getObjectives();
 			Block block = event.getBlock();
 	    	// if quest is ordered, process current objective
 	    	if(quest.isOrdered()) {

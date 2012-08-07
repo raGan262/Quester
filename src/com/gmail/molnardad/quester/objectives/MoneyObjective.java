@@ -1,6 +1,5 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.configuration.serialization.SerializableAs;
@@ -9,7 +8,7 @@ import org.bukkit.entity.Player;
 import com.gmail.molnardad.quester.Quester;
 
 @SerializableAs("QuesterMoneyObjective")
-public final class MoneyObjective implements Objective {
+public final class MoneyObjective extends Objective {
 
 	private final String TYPE = "MONEY";
 	private final double amount;
@@ -22,17 +21,6 @@ public final class MoneyObjective implements Objective {
 	public String getType() {
 		return TYPE;
 	}
-
-	@Override
-	public int getTargetAmount() {
-		return 1;
-	}
-
-	@Override
-	public boolean isComplete(Player player, int progress) {
-		return progress >= 1;
-	}
-
 	
 	@Override
 	public boolean finish(Player player) {
@@ -47,7 +35,7 @@ public final class MoneyObjective implements Objective {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": " + amount;
+		return TYPE + ": " + amount + stringQevents();
 	}
 	
 	public double takeMoney(double amt) {
@@ -56,7 +44,7 @@ public final class MoneyObjective implements Objective {
 
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = super.serialize();
 		
 		map.put("amount", amount);
 		
@@ -74,7 +62,9 @@ public final class MoneyObjective implements Objective {
 			return null;
 		}
 		
-		return new MoneyObjective(amt);
+		MoneyObjective obj = new MoneyObjective(amt);
+		obj.loadQevents(map);
+		return obj;
 	}
 
 	@Override

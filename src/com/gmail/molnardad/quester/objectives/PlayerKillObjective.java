@@ -1,13 +1,12 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
 @SerializableAs("QuesterPlayerKillObjective")
-public final class PlayerKillObjective implements Objective {
+public final class PlayerKillObjective extends Objective {
 
 	private final String TYPE = "PLAYERKILL";
 	private final String playerName;
@@ -34,11 +33,6 @@ public final class PlayerKillObjective implements Objective {
 	}
 
 	@Override
-	public boolean finish(Player player) {
-		return true;
-	}
-
-	@Override
 	public String progress(int progress) {
 		String player = playerName.equals("") ? "any player" : "player named " + playerName;
 		return "Kill " + player + " - " + (amount - progress) + "x";
@@ -47,7 +41,7 @@ public final class PlayerKillObjective implements Objective {
 	@Override
 	public String toString() {
 		String player = playerName.equals("") ? "ANY" : playerName;
-		return TYPE + ": " + player + "; AMT: " + amount;
+		return TYPE + ": " + player + "; AMT: " + amount + stringQevents();
 	}
 	
 	public boolean checkPlayer(Player player) {
@@ -60,7 +54,7 @@ public final class PlayerKillObjective implements Objective {
 
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = super.serialize();
 		
 		map.put("amount", amount);
 		map.put("wanted", playerName);
@@ -77,14 +71,11 @@ public final class PlayerKillObjective implements Objective {
 				return null;
 			wanted = (String) map.get("wanted");
 			
-			return new PlayerKillObjective(amt, wanted);
+			PlayerKillObjective obj = new PlayerKillObjective(amt, wanted);
+			obj.loadQevents(map);
+			return obj;
 		} catch (Exception e) {
 			return null;
 		}
-	}
-
-	@Override
-	public boolean tryToComplete(Player player) {
-		return false;
 	}
 }

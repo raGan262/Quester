@@ -1,6 +1,5 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
@@ -9,7 +8,7 @@ import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
 @SerializableAs("QuesterDeathObjective")
-public final class DeathObjective implements Objective {
+public final class DeathObjective extends Objective {
 
 	private final String TYPE = "DEATH";
 	private final double x;
@@ -49,11 +48,6 @@ public final class DeathObjective implements Objective {
 	public boolean isComplete(Player player, int progress) {
 		return progress >= amount;
 	}
-
-	@Override
-	public boolean finish(Player player) {
-		return true;
-	}
 	
 	@Override
 	public String progress(int progress) {
@@ -64,7 +58,7 @@ public final class DeathObjective implements Objective {
 	@Override
 	public String toString() {
 		String locStr = y < 0 ? "ANY" : String.format("%.1f %.1f %.1f("+worldName+")", x, y, z);
-		return TYPE + ": LOC: "+locStr+"; AMT: "+String.valueOf(amount)+"; RNG: "+String.valueOf(range);
+		return TYPE + ": LOC: " + locStr + "; AMT: "+ amount +"; RNG: "+ range + stringQevents();
 	}
 	
 	public boolean checkDeath(Location loc) {
@@ -79,7 +73,7 @@ public final class DeathObjective implements Objective {
 
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = super.serialize();
 		
 		map.put("x", x);
 		map.put("y", y);
@@ -114,16 +108,12 @@ public final class DeathObjective implements Objective {
 			rng = (Integer) map.get("range");
 			if(rng < 1)
 				return null;
-			
-			return new DeathObjective(amt, loc, rng);
+			DeathObjective obj = new DeathObjective(amt, loc, rng);
+			obj.loadQevents(map);
+			return obj;
 		} catch (Exception e) {
 			return null;
 		}
-	}
-
-	@Override
-	public boolean tryToComplete(Player player) {
-		return false;
 	}
 
 }

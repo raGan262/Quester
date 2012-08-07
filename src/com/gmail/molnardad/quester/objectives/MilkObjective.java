@@ -1,13 +1,12 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
 @SerializableAs("QuesterMilkObjective")
-public final class MilkObjective implements Objective {
+public final class MilkObjective extends Objective {
 
 	private final String TYPE = "MILK";
 	private final int amount;
@@ -30,11 +29,6 @@ public final class MilkObjective implements Objective {
 	public boolean isComplete(Player player, int progress) {
 		return progress >= amount;
 	}
-
-	@Override
-	public boolean finish(Player player) {
-		return true;
-	}
 	
 	@Override
 	public String progress(int progress) {
@@ -43,7 +37,7 @@ public final class MilkObjective implements Objective {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": " + amount;
+		return TYPE + ": " + amount + stringQevents();
 	}
 	
 	public int takeExp(int amt) {
@@ -52,7 +46,7 @@ public final class MilkObjective implements Objective {
 
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = super.serialize();
 		
 		map.put("amount", amount);
 		
@@ -70,11 +64,8 @@ public final class MilkObjective implements Objective {
 			return null;
 		}
 		
-		return new MilkObjective(amt);
-	}
-
-	@Override
-	public boolean tryToComplete(Player player) {
-		return false;
+		MilkObjective obj = new MilkObjective(amt);
+		obj.loadQevents(map);
+		return obj;
 	}
 }

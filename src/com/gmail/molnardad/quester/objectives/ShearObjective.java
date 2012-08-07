@@ -1,6 +1,5 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.DyeColor;
@@ -8,7 +7,7 @@ import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
 @SerializableAs("QuesterShearObjective")
-public final class ShearObjective implements Objective {
+public final class ShearObjective extends Objective {
 
 	private final String TYPE = "SHEAR";
 	private final DyeColor color;
@@ -38,11 +37,6 @@ public final class ShearObjective implements Objective {
 	}
 
 	@Override
-	public boolean finish(Player player) {
-		return true;
-	}
-
-	@Override
 	public String progress(int progress) {
 		String strCol = (color == null) ? "any" : color.name().replace('_', ' ').toLowerCase() ;
 		return "Shear " + strCol + " sheep - " + (amount - progress) + "x";
@@ -51,7 +45,7 @@ public final class ShearObjective implements Objective {
 	@Override
 	public String toString() {
 		String strCol = (color == null) ? "ANY" : color.name() ;
-		return TYPE + ": " + strCol + "; AMT: " + amount ;
+		return TYPE + ": " + strCol + "; AMT: " + amount + stringQevents();
 	}
 	
 	public boolean check(DyeColor col) {
@@ -63,7 +57,7 @@ public final class ShearObjective implements Objective {
 
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = super.serialize();
 		
 		map.put("amount", amount);
 		if(color == null)
@@ -81,14 +75,12 @@ public final class ShearObjective implements Objective {
 			if(amt < 1)
 				return null;
 			dat = (Integer) map.get("color");
-			return new ShearObjective(amt, (byte)dat);
+			
+			ShearObjective obj = new ShearObjective(amt, (byte)dat);
+			obj.loadQevents(map);
+			return obj;
 		} catch (Exception e) {
 			return null;
 		}
-	}
-
-	@Override
-	public boolean tryToComplete(Player player) {
-		return false;
 	}
 }

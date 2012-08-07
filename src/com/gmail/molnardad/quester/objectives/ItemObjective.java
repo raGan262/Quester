@@ -14,7 +14,7 @@ import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.utils.Util;
 
 @SerializableAs("QuesterItemObjective")
-public final class ItemObjective implements Objective {
+public final class ItemObjective extends Objective {
 
 	private final String TYPE = "ITEM";
 	private final Material material;
@@ -32,16 +32,6 @@ public final class ItemObjective implements Objective {
 	@Override
 	public String getType() {
 		return TYPE;
-	}
-
-	@Override
-	public int getTargetAmount() {
-		return 1;
-	}
-
-	@Override
-	public boolean isComplete(Player player, int progress) {
-		return progress >= 1;
 	}
 
 	@Override
@@ -72,7 +62,7 @@ public final class ItemObjective implements Objective {
 		for(Integer e : enchants.keySet()) {
 			enchs = enchs + " " + Enchantment.getById(e).getName() + ":" + enchants.get(e);
 		}
-		return TYPE+": "+itm+enchs;
+		return TYPE+": "+itm+enchs + stringQevents();
 	}
 	
 	public boolean takeInventory(Inventory inv) {
@@ -109,7 +99,7 @@ public final class ItemObjective implements Objective {
 
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = super.serialize();
 		
 		map.put("material", material.getId());
 		map.put("data", data);
@@ -136,7 +126,9 @@ public final class ItemObjective implements Objective {
 			if(map.get("enchants") != null)
 				enchs = (Map<Integer, Integer>) map.get("enchants");
 			
-			return new ItemObjective(mat, amt, dat, enchs);
+			ItemObjective obj = new ItemObjective(mat, amt, dat, enchs);
+			obj.loadQevents(map);
+			return obj;
 		} catch (Exception e) {
 			return null;
 		}

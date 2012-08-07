@@ -1,6 +1,5 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Material;
@@ -9,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 @SerializableAs("QuesterSmeltObjective")
-public final class SmeltObjective implements Objective {
+public final class SmeltObjective extends Objective {
 
 	private final String TYPE = "SMELT";
 	private final Material material;
@@ -36,11 +35,6 @@ public final class SmeltObjective implements Objective {
 	public boolean isComplete(Player player, int progress) {
 		return progress >= amount;
 	}
-
-	@Override
-	public boolean finish(Player player) {
-		return true;
-	}
 	
 	@Override
 	public String progress(int progress) {
@@ -53,7 +47,7 @@ public final class SmeltObjective implements Objective {
 	@Override
 	public String toString() {
 		String dataStr = (data < 0 ? "ANY" : String.valueOf(data));
-		String itm = material.name()+"["+material.getId()+"]; DMG: "+dataStr+"; AMT: "+amount;
+		String itm = material.name()+"["+material.getId()+"]; DMG: "+dataStr+"; AMT: "+amount + stringQevents();
 		return TYPE+": "+itm;
 	}
 	
@@ -67,7 +61,7 @@ public final class SmeltObjective implements Objective {
 
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = super.serialize();
 		
 		map.put("material", material.getId());
 		map.put("data", data);
@@ -89,14 +83,11 @@ public final class SmeltObjective implements Objective {
 			if(amt < 1)
 				return null;
 			
-			return new SmeltObjective(mat, amt, dat);
+			SmeltObjective obj = new SmeltObjective(mat, amt, dat);
+			obj.loadQevents(map);
+			return obj;
 		} catch (Exception e) {
 			return null;
 		}
-	}
-
-	@Override
-	public boolean tryToComplete(Player player) {
-		return false;
 	}
 }

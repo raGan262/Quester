@@ -1,6 +1,6 @@
 package com.gmail.molnardad.quester.listeners;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -25,7 +25,7 @@ public class MobKillListener implements Listener {
 			Player player = event.getEntity().getKiller();
 			if(qm.hasQuest(player.getName())) {
 		    	Quest quest = qm.getPlayerQuest(player.getName());
-		    	ArrayList<Objective> objs = quest.getObjectives();
+		    	List<Objective> objs = quest.getObjectives();
 		    	// if quest is ordered, process current objective
 		    	if(quest.isOrdered()) {
 		    		int curr = qm.getCurrentObjective(player);

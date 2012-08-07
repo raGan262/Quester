@@ -2,6 +2,7 @@ package com.gmail.molnardad.quester;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -9,14 +10,16 @@ import org.bukkit.configuration.serialization.SerializableAs;
 
 import com.gmail.molnardad.quester.conditions.Condition;
 import com.gmail.molnardad.quester.objectives.Objective;
+import com.gmail.molnardad.quester.qevents.Qevent;
 import com.gmail.molnardad.quester.rewards.Reward;
 
 @SerializableAs("QeusterQuest")
 public class Quest implements ConfigurationSerializable{
 
-	private ArrayList<Objective> objectives = null;
-	private ArrayList<Reward> rewards = null;
-	private ArrayList<Condition> conditions = null;
+	private List<Objective> objectives = null;
+	private List<Reward> rewards = null;
+	private List<Condition> conditions = null;
+	private List<Qevent> qevents = null;
 	private String description = null;
 	private String name = null;
 	private boolean active = false;
@@ -29,6 +32,7 @@ public class Quest implements ConfigurationSerializable{
 		objectives = new ArrayList<Objective>();
 		rewards = new ArrayList<Reward>();
 		conditions = new ArrayList<Condition>();
+		qevents = new ArrayList<Qevent>();
 		ordered = false;
 	}
 	
@@ -79,7 +83,7 @@ public class Quest implements ConfigurationSerializable{
 		return null;
 	}
 	
-	public ArrayList<Objective> getObjectives() {
+	public List<Objective> getObjectives() {
 		return objectives;
 	}
 	
@@ -112,7 +116,7 @@ public class Quest implements ConfigurationSerializable{
 		return null;
 	}
 	
-	public ArrayList<Reward> getRewards() {
+	public List<Reward> getRewards() {
 		return rewards;
 	}
 	
@@ -145,7 +149,7 @@ public class Quest implements ConfigurationSerializable{
 		return null;
 	}
 	
-	public ArrayList<Condition> getConditions() {
+	public List<Condition> getConditions() {
 		return conditions;
 	}
 	
@@ -161,12 +165,36 @@ public class Quest implements ConfigurationSerializable{
 		conditions.add(newCondition);
 	}
 	
+	public Qevent getQevent(int id) {
+		if(id < qevents.size()){
+			return qevents.get(id);
+		}
+		return null;
+	}
+	
+	public List<Qevent> getQevents() {
+		return qevents;
+	}
+	
+	public boolean removeQevent(int id) {
+		if(id < qevents.size() && id >= 0){
+			qevents.remove(id);
+			return true;
+		}
+		return false;
+	}
+	
+	public void addQevent(Qevent newQevent) {
+		qevents.add(newQevent);
+	}
+	
 	@Override
 	public Map<String, Object> serialize() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<Integer, Objective> objs = new HashMap<Integer, Objective>();
 		Map<Integer, Reward> rews = new HashMap<Integer, Reward>();
 		Map<Integer, Condition> cons = new HashMap<Integer, Condition>();
+		Map<Integer, Qevent> qvts = new HashMap<Integer, Qevent>();
 		
 		for(int i=0; i<objectives.size(); i++) {
 			objs.put(i, objectives.get(i));
@@ -177,6 +205,9 @@ public class Quest implements ConfigurationSerializable{
 		for(int i=0; i<conditions.size(); i++) {
 			cons.put(i, conditions.get(i));
 		}
+		for(int i=0; i<qevents.size(); i++) {
+			qvts.put(i, qevents.get(i));
+		}
 		
 		map.put("name", name);
 		map.put("description", description);
@@ -185,6 +216,7 @@ public class Quest implements ConfigurationSerializable{
 		map.put("objectives", objs);
 		map.put("rewards", rews);
 		map.put("conditions", cons);
+		map.put("events", qvts);
 		
 		return map;
 	}
@@ -228,6 +260,14 @@ public class Quest implements ConfigurationSerializable{
 				cons = (Map<Integer, Condition>) map.get("conditions");
 				for(int i=0; i<cons.size(); i++) {
 					quest.addCondition(cons.get(i));
+				}
+			}
+			
+			Map<Integer, Qevent> qvts = new HashMap<Integer, Qevent>();
+			if(map.get("events") != null) {
+				qvts = (Map<Integer, Qevent>) map.get("events");
+				for(int i=0; i<qvts.size(); i++) {
+					quest.addQevent(qvts.get(i));
 				}
 			}
 			

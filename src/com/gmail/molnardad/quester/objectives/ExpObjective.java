@@ -1,6 +1,5 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.configuration.serialization.SerializableAs;
@@ -9,7 +8,7 @@ import org.bukkit.entity.Player;
 import com.gmail.molnardad.quester.utils.ExpManager;
 
 @SerializableAs("QuesterExpObjective")
-public final class ExpObjective implements Objective {
+public final class ExpObjective extends Objective {
 
 	private final String TYPE = "EXPERIENCE";
 	private final int amount;
@@ -21,16 +20,6 @@ public final class ExpObjective implements Objective {
 	@Override
 	public String getType() {
 		return TYPE;
-	}
-
-	@Override
-	public int getTargetAmount() {
-		return 1;
-	}
-
-	@Override
-	public boolean isComplete(Player player, int progress) {
-		return progress >= 1;
 	}
 
 	@Override
@@ -47,7 +36,7 @@ public final class ExpObjective implements Objective {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": " + String.valueOf(amount);
+		return TYPE + ": " + String.valueOf(amount) + stringQevents();
 	}
 	
 	public int takeExp(int amt) {
@@ -56,7 +45,7 @@ public final class ExpObjective implements Objective {
 
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = super.serialize();
 		
 		map.put("amount", amount);
 		
@@ -74,7 +63,9 @@ public final class ExpObjective implements Objective {
 			return null;
 		}
 		
-		return new ExpObjective(amt);
+		ExpObjective obj = new ExpObjective(amt);
+		obj.loadQevents(map);
+		return obj;
 	}
 
 	@Override

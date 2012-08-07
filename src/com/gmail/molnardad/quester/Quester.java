@@ -16,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.gmail.molnardad.quester.listeners.*;
 import com.gmail.molnardad.quester.objectives.*;
+import com.gmail.molnardad.quester.qevents.*;
 import com.gmail.molnardad.quester.rewards.*;
 import com.gmail.molnardad.quester.conditions.*;
 
@@ -76,6 +77,8 @@ public class Quester extends JavaPlugin {
 			ConfigurationSerialization.registerClass(MoneyCondition.class);
 			ConfigurationSerialization.registerClass(ItemCondition.class);
 			ConfigurationSerialization.registerClass(PointCondition.class);
+
+			ConfigurationSerialization.registerClass(MessageQevent.class);
 		}
 		
 		@Override

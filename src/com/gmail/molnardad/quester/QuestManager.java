@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import com.gmail.molnardad.quester.conditions.Condition;
 import com.gmail.molnardad.quester.exceptions.*;
 import com.gmail.molnardad.quester.objectives.Objective;
+import com.gmail.molnardad.quester.qevents.Qevent;
 import com.gmail.molnardad.quester.rewards.ItemReward;
 import com.gmail.molnardad.quester.rewards.Reward;
 import com.gmail.molnardad.quester.utils.Util;
@@ -24,19 +25,6 @@ import static com.gmail.molnardad.quester.QuestData.allQuests;
 import static com.gmail.molnardad.quester.QuestData.profiles;
 
 public class QuestManager {
-	
-	// RETURNS int
-	//  0 - True/Yes/OK
-	//  1 - Quest does not exist
-	//  2 - Quest already exists
-	//  3 - Can't modify quest
-	//  4 - Player already has quest
-	//  5 - Player doesn't have any quests
-	//  6 - No quest selected
-	//  7 - Specified index does not exist
-	//  8 - Objectives are not completed
-	//  9 - Not enough space for reward in inventory
-	// 10 - No active quests
 	
 	public static Random randGen = new Random();
 	
@@ -87,7 +75,7 @@ public class QuestManager {
 		Inventory inv = createInventory(player);
 		// check objectives
 		Quest quest = getPlayerQuest(player.getName());
-		ArrayList<Objective> objs = quest.getObjectives();
+		List<Objective> objs = quest.getObjectives();
 		PlayerProfile prof = getProfile(player.getName());
 		boolean all = true;
 		for(int i = 0; i < objs.size(); i++) {
@@ -106,7 +94,7 @@ public class QuestManager {
 			throw new QuestCompletionException("completeCheck() 2", true);
 		}
 		//check item rewards
-		ArrayList<Reward> rews = getPlayerQuest(player.getName()).getRewards();
+		List<Reward> rews = getPlayerQuest(player.getName()).getRewards();
 		for(Reward r : rews) {
 			if(r.getType().equalsIgnoreCase("ITEM")) {
 				ItemReward ir = (ItemReward) r;
@@ -120,7 +108,7 @@ public class QuestManager {
 	}
 	
 	public int getCurrentObjective(Player player) {
-		ArrayList<Objective> objs = getPlayerQuest(player.getName()).getObjectives();
+		List<Objective> objs = getPlayerQuest(player.getName()).getObjectives();
 		PlayerProfile prof = getProfile(player.getName());
 	
 		for(int i=0; i<objs.size(); i++) {
@@ -133,7 +121,7 @@ public class QuestManager {
 	
 	public boolean areObjectivesCompleted(Player player) {
 		
-		ArrayList<Objective> objs = getPlayerQuest(player.getName()).getObjectives();
+		List<Objective> objs = getPlayerQuest(player.getName()).getObjectives();
 		PlayerProfile prof = getProfile(player.getName());
 		boolean all = true;
 		
@@ -356,24 +344,26 @@ public class QuestManager {
 	}
 	
 	public void addQuestReward(String changer, Reward newReward) throws QuestModificationException {
-		if(getSelected(changer) == null) {
+		Quest quest = getSelected(changer);
+		if(quest == null) {
 			throw new QuestModificationException("addQuestReward()", true);
 		}
-		if(!canModify(getSelected(changer).getName())) {
+		if(quest.isActive()) {
 			throw new QuestModificationException("addQuestReward() 1", false);
 		}
-		getSelected(changer).addReward(newReward);
+		quest.addReward(newReward);
 		QuestData.saveQuests();
 	}
 	
 	public void removeQuestReward(String changer, int id) throws QuestModificationException, QuestExistenceException {
-		if(getSelected(changer) == null) {
+		Quest quest = getSelected(changer);
+		if(quest == null) {
 			throw new QuestModificationException("removeQuestReward()", true);
 		}
-		if(!canModify(getSelected(changer).getName())) {
+		if(quest.isActive()) {
 			throw new QuestModificationException("removeQuestReward() 1", false);
 		}
-		if(!getSelected(changer).removeReward(id)){
+		if(!quest.removeReward(id)){
 			throw new QuestExistenceException("removeQuestReward()", false);
 		} else {
 			QuestData.saveQuests();
@@ -381,24 +371,26 @@ public class QuestManager {
 	}
 	
 	public void addQuestObjective(String changer, Objective newObjective) throws QuestModificationException {
-		if(getSelected(changer) == null) {
+		Quest quest = getSelected(changer);
+		if(quest == null) {
 			throw new QuestModificationException("addQuestObjective()", true);
 		}
-		if(!canModify(getSelected(changer).getName())) {
+		if(quest.isActive()) {
 			throw new QuestModificationException("addQuestObjective() 1", false);
 		}
-		getSelected(changer).addObjective(newObjective);
+		quest.addObjective(newObjective);
 		QuestData.saveQuests();
 	}
 	
 	public void removeQuestObjective(String changer, int id) throws QuestModificationException, QuestExistenceException {
-		if(getSelected(changer) == null) {
+		Quest quest = getSelected(changer);
+		if(quest == null) {
 			throw new QuestModificationException("removeQuestObjective()", true);
 		}
-		if(!canModify(getSelected(changer).getName())) {
+		if(quest.isActive()) {
 			throw new QuestModificationException("removeQuestObjective() 1", false);
 		}
-		if(!getSelected(changer).removeObjective(id)){
+		if(!quest.removeObjective(id)){
 			throw new QuestExistenceException("removeQuestObjective()", false);
 		} else {
 			QuestData.saveQuests();
@@ -406,28 +398,71 @@ public class QuestManager {
 	}
 	
 	public void addQuestCondition(String changer, Condition newCondition) throws QuestModificationException {
-		if(getSelected(changer) == null) {
+		Quest quest = getSelected(changer);
+		if(quest == null) {
 			throw new QuestModificationException("addQuestCondition()", true);
 		}
-		if(!canModify(getSelected(changer).getName())) {
+		if(quest.isActive()) {
 			throw new QuestModificationException("addQuestCondition() 1", false);
 		}
-		getSelected(changer).addCondition(newCondition);
+		quest.addCondition(newCondition);
 		QuestData.saveQuests();
 	}
 	
 	public void removeQuestCondition(String changer, int id) throws QuestModificationException, QuestExistenceException {
-		if(getSelected(changer) == null) {
+		Quest quest = getSelected(changer);
+		if(quest == null) {
 			throw new QuestModificationException("removeQuestCondition()", true);
 		}
-		if(!canModify(getSelected(changer).getName())) {
+		if(quest.isActive()) {
 			throw new QuestModificationException("removeQuestCondition() 1", false);
 		}
-		if(!getSelected(changer).removeCondition(id)){
+		if(!quest.removeCondition(id)){
 			throw new QuestExistenceException("removeQuestCondition()", false);
 		} else {
 			QuestData.saveQuests();
 		}
+	}
+	
+	public void addQevent(String changer, Qevent newQevent) throws QuestModificationException, OccasionExistenceException {
+		Quest quest = getSelected(changer);
+		if(quest == null) {
+			throw new QuestModificationException("addQevent()", true);
+		}
+		if(quest.isActive()) {
+			throw new QuestModificationException("addQevent() 1", false);
+		}
+		int occasion = newQevent.getOccasion();
+		if(occasion < -3 || occasion >= quest.getObjectives().size() ) {
+			throw new OccasionExistenceException();
+		}
+		if(occasion < 0)
+			quest.addQevent(newQevent);
+		else
+			quest.getObjective(occasion).addQevent(newQevent);
+		QuestData.saveQuests();
+	}
+	
+	public void removeQevent(String changer, int id, int objective) throws QuestModificationException, QuestExistenceException, OccasionExistenceException {
+		Quest quest = getSelected(changer);
+		if(quest == null) {
+			throw new QuestModificationException("removeQevent()", true);
+		}
+		if(quest.isActive()) {
+			throw new QuestModificationException("removeQevent() 1", false);
+		}
+		if(objective < 0) {
+			if(!quest.removeQevent(id)){
+				throw new QuestExistenceException("removeQevent()", false);
+			}
+		} else {
+			Objective obj = quest.getObjective(objective);
+			if(obj == null){
+				throw new OccasionExistenceException();
+			}
+			obj.removeQevent(id);
+		}
+		QuestData.saveQuests();
 	}
 	
 	// Quest management methods
@@ -447,6 +482,10 @@ public class QuestManager {
 		player.sendMessage(Quester.LABEL + "You have started quest " + ChatColor.GOLD + getQuest(questName).getName());
 		if(QuestData.verbose) {
 			Quester.log.info(player.getName() + " started quest '" + getQuest(questName).getName() + "'.");
+		}
+		for(Qevent qv : getQuest(questName).getQevents()) {
+			if(qv.getOccasion() == -1)
+				qv.execute(player);
 		}
 		QuestData.saveProfiles();
 	}
@@ -474,9 +513,13 @@ public class QuestManager {
 		if(!hasQuest(player.getName())) {
 			throw new QuestAssignmentException("cancelQuest()", false);
 		}
-		String questName = getPlayerQuest(player.getName()).getName();
-		player.sendMessage(Quester.LABEL + "Quest " + ChatColor.GOLD + questName + ChatColor.BLUE + " cancelled.");
+		Quest quest = getPlayerQuest(player.getName());
+		player.sendMessage(Quester.LABEL + "Quest " + ChatColor.GOLD + quest.getName() + ChatColor.BLUE + " cancelled.");
 		unassignQuest(player.getName());
+		for(Qevent qv : quest.getQevents()) {
+			if(qv.getOccasion() == -2)
+				qv.execute(player);
+		}
 		QuestData.saveProfiles();
 	}
 	
@@ -490,7 +533,7 @@ public class QuestManager {
 	
 	public void completeObjective(Player player) throws QuestAssignmentException, QuestCompletionException, QuestExistenceException, ObjectiveCompletionException {
 		Quest quest = getPlayerQuest(player.getName());
-		ArrayList<Objective> objs = quest.getObjectives();
+		List<Objective> objs = quest.getObjectives();
 		PlayerProfile prof = getProfile(player.getName());
 		
 		int i = 0;
@@ -516,21 +559,25 @@ public class QuestManager {
 		
 		completeCheck(player);
 		
-		ArrayList<Objective> objs = getPlayerQuest(player.getName()).getObjectives();
+		List<Objective> objs = getPlayerQuest(player.getName()).getObjectives();
 		for(Objective o : objs) {
 			o.finish(player);
 		}
-		ArrayList<Reward> rews = getPlayerQuest(player.getName()).getRewards();
+		List<Reward> rews = getPlayerQuest(player.getName()).getRewards();
 		for(Reward r : rews) {
 			r.giveReward(player);
 		}
-		String questName = getPlayerQuest(player.getName()).getName();
-		player.sendMessage(Quester.LABEL + "Quest " + ChatColor.GOLD + getPlayerQuest(player.getName()).getName() + ChatColor.BLUE + " was completed by " + player.getName() + ".");
+		Quest quest= getPlayerQuest(player.getName());
+		player.sendMessage(Quester.LABEL + "Quest " + ChatColor.GOLD + quest.getName() + ChatColor.BLUE + " was completed by " + player.getName() + ".");
 		unassignQuest(player.getName());
-		getProfile(player.getName()).addCompleted(questName);
+		for(Qevent qv : quest.getQevents()) {
+			if(qv.getOccasion() == -3)
+				qv.execute(player);
+		}
+		getProfile(player.getName()).addCompleted(quest.getName());
 		QuestData.saveProfiles();
 		if(QuestData.onlyFirst) {
-			deactivateQuest(questName);
+			deactivateQuest(quest.getName());
 		}
 	}
 	
@@ -541,9 +588,13 @@ public class QuestManager {
 	public void incProgress(Player player, int id, int amount) {
 		PlayerProfile prof = getProfile(player.getName());
 		int newValue = prof.getProgress().get(id) + amount;
+		Objective obj = getQuest(prof.getQuest()).getObjectives().get(id);
 		prof.getProgress().set(id, newValue);
-		if(getQuest(prof.getQuest()).getObjectives().get(id).getTargetAmount() <= newValue) {
+		if(obj.getTargetAmount() <= newValue) {
 			player.sendMessage(Quester.LABEL + "You completed a quest objective.");
+			for(Qevent qv : obj.getQevents()) {
+				qv.execute(player);
+			}
 			if(areObjectivesCompleted(player)) {
 				try{
 					complete(player);
@@ -594,7 +645,7 @@ public class QuestManager {
 		String is = qst.isOrdered() ? "YES" : "NO";
 		sender.sendMessage(ChatColor.BLUE + "Ordered: " + ChatColor.WHITE + is);
 		sender.sendMessage(ChatColor.BLUE + "Conditions:");
-		ArrayList<Condition> cons = getQuest(questName).getConditions();
+		List<Condition> cons = getQuest(questName).getConditions();
 		ChatColor color = ChatColor.WHITE;
 		for(int i = 0; i < cons.size(); i++) {
 			if(player != null)
@@ -602,8 +653,9 @@ public class QuestManager {
 			sender.sendMessage(color + " - " + cons.get(i).show());
 		}
 		if(QuestData.showObjs) {
-			ArrayList<Objective> objs = getQuest(questName).getObjectives();
-			if(QuestData.ordOnlyCurrent) {
+			Quest quest = getQuest(questName);
+			List<Objective> objs = quest.getObjectives();
+			if(QuestData.ordOnlyCurrent && quest.isOrdered()) {
 				sender.sendMessage(ChatColor.BLUE + "First objective:");
 				if(objs.get(0) != null)
 					sender.sendMessage(ChatColor.WHITE + " - " + objs.get(0).progress(0));
@@ -636,24 +688,31 @@ public class QuestManager {
 		sender.sendMessage(ChatColor.BLUE + "Active: " + color + qst.isActive());
 		color = qst.isOrdered() ? ChatColor.GREEN : ChatColor.YELLOW;
 		sender.sendMessage(ChatColor.BLUE + "Ordered: " + color + qst.isOrdered());
-		sender.sendMessage(ChatColor.BLUE + "Conditions:");
 		int i;
+		sender.sendMessage(ChatColor.BLUE + "Events:");
+		i = 0;
+		for(Qevent e: qst.getQevents()){
+			sender.sendMessage(" [" + i + "] " + e.toString());
+			i++;
+			
+		}
+		sender.sendMessage(ChatColor.BLUE + "Conditions:");
 		i = 0;
 		for(Condition c: qst.getConditions()){
-			sender.sendMessage(" [" + String.valueOf(i) + "] " + c.toString());
+			sender.sendMessage(" [" + i + "] " + c.toString());
 			i++;
 			
 		}
 		sender.sendMessage(ChatColor.BLUE + "Objectives:");
 		i = 0;
 		for(Objective o: qst.getObjectives()){
-			sender.sendMessage(" [" + String.valueOf(i) + "] " + o.toString());
+			sender.sendMessage(" [" + i + "] " + o.toString());
 			i++;
 		}
 		sender.sendMessage(ChatColor.BLUE + "Rewards:");
 		i = 0;
 		for(Reward r: qst.getRewards()){
-			sender.sendMessage(" [" + String.valueOf(i) + "] " + r.toString());
+			sender.sendMessage(" [" + i + "] " + r.toString());
 			i++;
 			
 		}
@@ -690,9 +749,10 @@ public class QuestManager {
 		}
 		if(QuestData.showObjs) {
 			player.sendMessage(ChatColor.GOLD + getPlayerQuest(player.getName()).getName() + ChatColor.BLUE + " progress:");
-			List<Objective> objs = getPlayerQuest(player.getName()).getObjectives();
+			Quest quest = getPlayerQuest(player.getName());
+			List<Objective> objs = quest.getObjectives();
 			List<Integer> progress = getProgress(player.getName());
-			if(QuestData.ordOnlyCurrent) {
+			if(QuestData.ordOnlyCurrent && quest.isOrdered()) {
 				int curr = getCurrentObjective(player);
 				player.sendMessage(ChatColor.GOLD + " - " + objs.get(curr).progress(progress.get(curr)));
 			} else {

@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import com.gmail.molnardad.quester.utils.Util;
 
 @SerializableAs("QuesterEnchantObjective")
-public final class EnchantObjective implements Objective {
+public final class EnchantObjective extends Objective {
 
 	private final String TYPE = "ENCHANT";
 	private final Material material;
@@ -39,11 +39,6 @@ public final class EnchantObjective implements Objective {
 	public boolean isComplete(Player player, int progress) {
 		return progress >= amount;
 	}
-
-	@Override
-	public boolean finish(Player player) {
-		return true;
-	}
 	
 	@Override
 	public String progress(int progress) {
@@ -65,7 +60,7 @@ public final class EnchantObjective implements Objective {
 		for(Integer e : enchants.keySet()) {
 			enchs = enchs + " " + Enchantment.getById(e).getName() + ":" + enchants.get(e);
 		}
-		return TYPE+": "+itm+enchs;
+		return TYPE+": "+itm+enchs + stringQevents();
 	}
 	
 	public boolean check(ItemStack item, Map<Enchantment, Integer> enchs) {
@@ -83,7 +78,7 @@ public final class EnchantObjective implements Objective {
 
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = super.serialize();
 		
 		map.put("material", material.getId());
 		map.put("amount", amount);
@@ -108,14 +103,11 @@ public final class EnchantObjective implements Objective {
 			if(map.get("enchants") != null)
 				enchs = (Map<Integer, Integer>) map.get("enchants");
 			
-			return new EnchantObjective(mat, amt, enchs);
+			EnchantObjective obj = new EnchantObjective(mat, amt, enchs);
+			obj.loadQevents(map);
+			return obj;
 		} catch (Exception e) {
 			return null;
 		}
-	}
-
-	@Override
-	public boolean tryToComplete(Player player) {
-		return false;
 	}
 }

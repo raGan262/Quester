@@ -1,6 +1,5 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.configuration.serialization.SerializableAs;
@@ -8,7 +7,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 @SerializableAs("QuesterTameObjective")
-public final class TameObjective implements Objective {
+public final class TameObjective extends Objective {
 
 	private final String TYPE = "TAME";
 	private final EntityType entity;
@@ -33,12 +32,6 @@ public final class TameObjective implements Objective {
 	public boolean isComplete(Player player, int progress) {
 		return amount <= progress;
 	}
-
-	@Override
-	public boolean finish(Player player) {
-		return true;
-	}
-
 	@Override
 	public String progress(int progress) {
 		String mob = entity == null ? "any mob" : entity.getName();
@@ -48,7 +41,7 @@ public final class TameObjective implements Objective {
 	@Override
 	public String toString() {
 		String entStr = entity == null ? "ANY" : entity.getName();
-		return TYPE + ": " + entStr + "; AMT: " + amount ;
+		return TYPE + ": " + entStr + "; AMT: " + amount + stringQevents();
 	}
 	
 	public boolean check(EntityType ent) {
@@ -61,7 +54,7 @@ public final class TameObjective implements Objective {
 
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = super.serialize();
 		
 		map.put("amount", amount);
 		if(entity == null)
@@ -81,14 +74,11 @@ public final class TameObjective implements Objective {
 				return null;
 			ent = EntityType.fromId((Integer) map.get("entity"));
 			
-			return new TameObjective(amt, ent);
+			TameObjective obj = new TameObjective(amt, ent);
+			obj.loadQevents(map);
+			return obj;
 		} catch (Exception e) {
 			return null;
 		}
-	}
-
-	@Override
-	public boolean tryToComplete(Player player) {
-		return false;
 	}
 }

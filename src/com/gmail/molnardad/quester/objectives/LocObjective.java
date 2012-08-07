@@ -1,15 +1,13 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.SerializableAs;
-import org.bukkit.entity.Player;
 
 @SerializableAs("QuesterLocObjective")
-public final class LocObjective implements Objective {
+public final class LocObjective extends Objective {
 
 	private final String TYPE = "LOCATION";
 	private final double x;
@@ -30,21 +28,6 @@ public final class LocObjective implements Objective {
 	public String getType() {
 		return TYPE;
 	}
-
-	@Override
-	public int getTargetAmount() {
-		return 1;
-	}
-
-	@Override
-	public boolean isComplete(Player player, int progress) {
-		return progress > 0;
-	}
-
-	@Override
-	public boolean finish(Player player) {
-		return true;
-	}
 	
 	@Override
 	public String progress(int progress) {
@@ -55,7 +38,7 @@ public final class LocObjective implements Objective {
 	@Override
 	public String toString() {
 		String locStr = String.format("%.1f|%.1f|%.1f("+worldName+")", x, y, z);
-		return TYPE+": "+locStr+"; RNG: "+String.valueOf(range);
+		return TYPE+": "+locStr+"; RNG: "+ range + stringQevents();
 	}
 
 	public boolean checkLocation(Location loc) {
@@ -68,7 +51,7 @@ public final class LocObjective implements Objective {
 
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = super.serialize();
 		
 		map.put("x", x);
 		map.put("y", y);
@@ -100,14 +83,11 @@ public final class LocObjective implements Objective {
 			if(rng < 1)
 				return null;
 			
-			return new LocObjective(loc, rng);
+			LocObjective obj = new LocObjective(loc, rng);
+			obj.loadQevents(map);
+			return obj;
 		} catch (Exception e) {
 			return null;
 		}
-	}
-
-	@Override
-	public boolean tryToComplete(Player player) {
-		return false;
 	}
 }

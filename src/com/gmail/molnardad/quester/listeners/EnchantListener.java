@@ -1,6 +1,6 @@
 package com.gmail.molnardad.quester.listeners;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.enchantments.Enchantment;
@@ -27,7 +27,7 @@ public class EnchantListener implements Listener {
 	    Player player = event.getEnchanter();
 	    if(qm.hasQuest(player.getName())) {
 	    	Quest quest = qm.getPlayerQuest(player.getName());
-	    	ArrayList<Objective> objs = quest.getObjectives();
+	    	List<Objective> objs = quest.getObjectives();
 	    	// if quest is ordered, process current objective
 	    	if(quest.isOrdered()) {
 	    		int curr = qm.getCurrentObjective(player);
