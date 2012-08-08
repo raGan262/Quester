@@ -10,6 +10,8 @@ import java.util.Set;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 
+import com.gmail.molnardad.quester.utils.Util;
+
 @SerializableAs("QuesterPlayerProfile")
 public class PlayerProfile implements ConfigurationSerializable{
 
@@ -33,6 +35,10 @@ public class PlayerProfile implements ConfigurationSerializable{
 	
 	public String getName() {
 		return name;
+	}
+	
+	public String getCompletedNames() {
+		return Util.implode(completed.toArray(new String[0]), ',');
 	}
 	
 	public void addCompleted(String questName) {

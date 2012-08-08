@@ -652,12 +652,7 @@ public class QuestManager {
 		sender.sendMessage(ChatColor.BLUE + "Quest points: " + ChatColor.WHITE + prof.getPoints());
 		sender.sendMessage(ChatColor.BLUE + "Quest rank: " + ChatColor.GOLD + prof.getRank());
 		sender.sendMessage(ChatColor.BLUE + "Current quest: " + ChatColor.WHITE + prof.getQuest());
-		String cmpltd = "";
-		for(String s : prof.getCompleted()) {
-			cmpltd = cmpltd + s + ", ";
-		}
-		cmpltd = cmpltd.substring(0, cmpltd.length()-2);
-		sender.sendMessage(ChatColor.BLUE + "Completed quests: " + ChatColor.WHITE + cmpltd);
+		sender.sendMessage(ChatColor.BLUE + "Completed quests: " + ChatColor.WHITE + prof.getCompletedNames());
 		
 	}
 	

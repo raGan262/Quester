@@ -76,7 +76,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 				// QUEST SHOW
 				if(args[0].equalsIgnoreCase("show")) {
 					if(args.length > 1){
-						String questName = sconcat(args, 1);
+						String questName = implode(args, 1);
 						try {
 							qm.showQuest(sender, questName);
 						} catch (QuesterException e) {
@@ -91,7 +91,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 				// QUEST INFO
 				if(args[0].equalsIgnoreCase("info")) {
 					if(args.length > 1){
-						String questName = sconcat(args, 1);
+						String questName = implode(args, 1);
 						try {
 							if(permCheck(sender, QuestData.MODIFY_PERM, false)) {
 								qm.showQuestInfo(sender, questName);
@@ -132,7 +132,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					}
 					if(args.length > 1){
 						try {
-							String questName = sconcat(args, 1);
+							String questName = implode(args, 1);
 							qm.createQuest(sender.getName(), questName);
 							sender.sendMessage(ChatColor.GREEN + "Quest created and selected.");
 							if(QuestData.verbose) {
@@ -154,7 +154,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					}
 					if(args.length > 1){
 						try {
-							String questName = sconcat(args, 1);
+							String questName = implode(args, 1);
 							qm.removeQuest(sender.getName(), questName);
 							sender.sendMessage(ChatColor.GREEN + "Quest removed.");
 							if(QuestData.verbose) {
@@ -176,7 +176,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					}
 					if(args.length > 1){
 						try {
-							String questName = sconcat(args, 1);
+							String questName = implode(args, 1);
 							qm.selectQuest(sender.getName(), questName);
 							sender.sendMessage(ChatColor.GREEN + "Quest selected.");
 						} catch (QuesterException e) {
@@ -195,7 +195,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					}
 					if(args.length > 1){
 						try {
-							String questName = sconcat(args, 1);
+							String questName = implode(args, 1);
 							qm.changeQuestName(sender.getName(), questName);
 							sender.sendMessage(ChatColor.GREEN + "Quest name changed to '" + questName + "'.");
 						} catch (QuesterException e) {
@@ -214,7 +214,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					}
 					if(args.length > 1){
 						//PARSE DESCRIPTION
-						String questDesc = sconcat(args, 2).replaceAll("\\\\n", "\n");
+						String questDesc = implode(args, 2).replaceAll("\\\\n", "\n");
 						
 						// SET DESCRIPTION
 						if(args[1].equalsIgnoreCase("set") || args[1].equalsIgnoreCase("s")){
@@ -275,7 +275,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
 						return true;
 					}
-					String questName = sconcat(args, 1);
+					String questName = implode(args, 1);
 					boolean active;
 					try {
 						if(questName.isEmpty()){
@@ -499,7 +499,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							if(args[2].equalsIgnoreCase("cmd")) {
 								if(args.length > 3) {
 									try {
-										String command = sconcat(args, 3);
+										String command = implode(args, 3);
 										qm.addQuestReward(sender.getName(), new CommandReward(command));
 										sender.sendMessage(ChatColor.GREEN + "Command reward added.");
 									} catch (QuesterException e) {
@@ -1326,7 +1326,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							// QUEST CONDITION
 							if(args[2].equalsIgnoreCase("quest")) {
 								if(args.length > 3) {
-									String questName = sconcat(args, 3);
+									String questName = implode(args, 3);
 									try {
 										qm.addQuestCondition(sender.getName(), new QuestCondition(questName));
 										sender.sendMessage(ChatColor.GREEN + "Quest condition added.");
@@ -1342,7 +1342,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							// QUESTNOT CONDITION
 							if(args[2].equalsIgnoreCase("questnot")) {
 								if(args.length > 3) {
-									String questName = sconcat(args, 3);
+									String questName = implode(args, 3);
 									try {
 										qm.addQuestCondition(sender.getName(), new QuestNotCondition(questName));
 										sender.sendMessage(ChatColor.GREEN + "QuestNot condition added.");
@@ -1492,7 +1492,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								// MESSAGE EVENT
 								if(args[2].equalsIgnoreCase("msg")) {
 									if(args.length > 4) {
-										String msg = sconcat(args, 4);
+										String msg = implode(args, 4);
 										try {
 											qm.addQevent(sender.getName(), new MessageQevent(occ, msg));
 											sender.sendMessage(ChatColor.GREEN + "Message event added.");
@@ -1569,7 +1569,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					}
 					try {
 						if(args.length > 1){
-							String questName = sconcat(args, 1);
+							String questName = implode(args, 1);
 							qm.startQuest(player, questName);
 						} else {
 							qm.startRandomQuest(player);

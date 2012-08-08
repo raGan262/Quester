@@ -14,6 +14,7 @@ import com.gmail.molnardad.quester.conditions.Condition;
 import com.gmail.molnardad.quester.objectives.Objective;
 import com.gmail.molnardad.quester.qevents.Qevent;
 import com.gmail.molnardad.quester.rewards.Reward;
+import com.gmail.molnardad.quester.utils.Util;
 @SerializableAs("QeusterQuest")
 public class Quest implements ConfigurationSerializable{
 
@@ -192,10 +193,7 @@ public class Quest implements ConfigurationSerializable{
 	}
 	
 	public String getWorldNames() {
-		String result = "";
-		for(String s : worlds)
-			result += s + ",";
-		return result;
+		return Util.implode(worlds.toArray(new String[0]), ',');
 	}
 	
 	public Set<String> getWorlds() {

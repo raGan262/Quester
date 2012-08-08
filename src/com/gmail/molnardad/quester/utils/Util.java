@@ -68,12 +68,32 @@ public class Util {
 			return null;
 	}
 	
-	public static String sconcat(String[] strs, int start) {
+	public static String implode(String[] strs) {
+		return implode(strs, ' ', 0);
+	}
+	
+	public static String implode(String[] strs, char glue) {
+		return implode(strs, glue, 0);
+	}
+	
+	public static String implode(String[] strs, int start) {
+		return implode(strs, ' ', start);
+	}
+	
+	public static String implode(String[] strs, char glue, int start) {
 		String result = "";
+		String gl = " ";
+		if(glue != ' ')
+			gl = glue + gl;
+		boolean first = true;
 		for(int i = start; i < strs.length; i++) {
-			result = result + " " + strs[i];
+			if(first) {
+				result += strs[i];
+				first = false;
+			} else 
+				result += gl + strs[i];
 		}
-		return result.trim();
+		return result;
 	}
 	
 	public static boolean permCheck(Player player, String perm, boolean message) {
