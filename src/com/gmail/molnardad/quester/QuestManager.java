@@ -507,10 +507,10 @@ public class QuestManager {
 		if(!areConditionsMet(player, questName))
 			throw new QuestConditionsException("startQuest()");
 		assignQuest(player.getName(), questName);
-		player.sendMessage(Quester.LABEL + "You have started quest " + ChatColor.GOLD + getQuest(questName).getName());
-		if(QuestData.verbose) {
+		if(QuestData.progMsgStart)
+			player.sendMessage(Quester.LABEL + "You have started quest " + ChatColor.GOLD + getQuest(questName).getName());
+		if(QuestData.verbose)
 			Quester.log.info(player.getName() + " started quest '" + getQuest(questName).getName() + "'.");
-		}
 		for(Qevent qv : getQuest(questName).getQevents()) {
 			if(qv.getOccasion() == -1)
 				qv.execute(player);
@@ -542,8 +542,11 @@ public class QuestManager {
 			throw new QuestAssignmentException("cancelQuest()", false);
 		}
 		Quest quest = getPlayerQuest(player.getName());
-		player.sendMessage(Quester.LABEL + "Quest " + ChatColor.GOLD + quest.getName() + ChatColor.BLUE + " cancelled.");
 		unassignQuest(player.getName());
+		if(QuestData.progMsgCancel)
+			player.sendMessage(Quester.LABEL + "Quest " + ChatColor.GOLD + quest.getName() + ChatColor.BLUE + " cancelled.");
+		if(QuestData.verbose)
+			Quester.log.info(player.getName() + " cancelled quest '" + quest.getName() + "'.");
 		for(Qevent qv : quest.getQevents()) {
 			if(qv.getOccasion() == -2)
 				qv.execute(player);
@@ -599,8 +602,11 @@ public class QuestManager {
 			r.giveReward(player);
 		}
 		
-		player.sendMessage(Quester.LABEL + "Quest " + ChatColor.GOLD + quest.getName() + ChatColor.BLUE + " was completed by " + player.getName() + ".");
 		unassignQuest(player.getName());
+		if(QuestData.progMsgDone)
+			player.sendMessage(Quester.LABEL + "Quest " + ChatColor.GOLD + quest.getName() + ChatColor.BLUE + " completed.");
+		if(QuestData.verbose)
+			Quester.log.info(player.getName() + " completed quest '" + quest.getName() + "'.");
 		for(Qevent qv : quest.getQevents()) {
 			if(qv.getOccasion() == -3)
 				qv.execute(player);
@@ -622,7 +628,8 @@ public class QuestManager {
 		Objective obj = getQuest(prof.getQuest()).getObjectives().get(id);
 		prof.getProgress().set(id, newValue);
 		if(obj.getTargetAmount() <= newValue) {
-			player.sendMessage(Quester.LABEL + "You completed a quest objective.");
+			if(QuestData.progMsgObj)
+				player.sendMessage(Quester.LABEL + "You completed a quest objective.");
 			for(Qevent qv : obj.getQevents()) {
 				qv.execute(player);
 			}

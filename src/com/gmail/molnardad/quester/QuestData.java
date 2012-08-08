@@ -10,17 +10,27 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class QuestData {
 	
+	// GENERAL
 	public static boolean verbose = false;
-	public static boolean brkNoDrops = false;
-	public static boolean brkSubOnPlace = true;
-	public static boolean onlyFirst = false;
 	public static int saveInterval = 15;
 	public static boolean debug = true;
-	public static boolean showObjs = true;
 	public static boolean disUseCmds = false;
+	// OBJECTIVE SECTION
+	public static boolean onlyFirst = false;
+		// BREAK
+	public static boolean brkNoDrops = false;
+	public static boolean brkSubOnPlace = true;
+		// COLLECT
 	public static boolean colRemPickup = true;
 	public static boolean colSubOnDrop = false;
+	// QUEST SECTION
 	public static boolean ordOnlyCurrent = true;
+	public static boolean showObjs = true;
+		// MESSAGES
+	public static boolean progMsgStart = true;
+	public static boolean progMsgCancel = true;
+	public static boolean progMsgDone = true;
+	public static boolean progMsgObj = true;
 
 	public static final String USE_PERM = "quester.use";
 	public static final String MODIFY_PERM = "quester.modify";

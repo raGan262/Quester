@@ -14,6 +14,11 @@ objectives:
 quests:
   only-first: true
   show-objectives: true
+  messages:
+    start-show: true
+    cancel-show: true
+    done-show: true
+    objective-show: true
 ranks:
   Quester: 0
   Apprentice-Quester: 25

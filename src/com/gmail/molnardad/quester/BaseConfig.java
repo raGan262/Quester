@@ -108,6 +108,35 @@ public class BaseConfig extends CustomConfig {
 			wrongConfig(path);
 		}
 		QuestData.showObjs = this.config.getBoolean(path);
+		
+		// PROGRES MESSAGES
+		path = "quests.messages.start-show";
+		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
+			this.config.set(path, true);
+			wrongConfig(path);
+		}
+		QuestData.progMsgStart = this.config.getBoolean(path);
+		
+		path = "quests.messages.cancel-show";
+		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
+			this.config.set(path, true);
+			wrongConfig(path);
+		}
+		QuestData.progMsgCancel = this.config.getBoolean(path);
+		
+		path = "quests.messages.done-show";
+		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
+			this.config.set(path, true);
+			wrongConfig(path);
+		}
+		QuestData.progMsgDone = this.config.getBoolean(path);
+		
+		path = "quests.messages.objective-show";
+		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
+			this.config.set(path, true);
+			wrongConfig(path);
+		}
+		QuestData.progMsgObj = this.config.getBoolean(path);
 	
 		
 		
