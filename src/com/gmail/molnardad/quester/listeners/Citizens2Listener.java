@@ -97,7 +97,6 @@ public class Citizens2Listener implements Listener {
 						event.getNPC().getTrait(QuesterTrait.class).addQuest(sel);
 						player.sendMessage(ChatColor.GREEN + "Quest added to NPC.");
 					}
-				    return;
 				}
 			}
 			String selected = event.getNPC().getTrait(QuesterTrait.class).getSelectedName();
