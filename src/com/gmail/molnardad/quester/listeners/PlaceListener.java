@@ -26,6 +26,8 @@ public class PlaceListener implements Listener {
 	    Player player = event.getPlayer();
 	    if(qm.hasQuest(player.getName())) {
 	    	Quest quest = qm.getPlayerQuest(player.getName());
+	    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
+	    		return;
 	    	List<Objective> objs = quest.getObjectives();
 			Block block = event.getBlock();
 	    	// if quest is ordered, process current objective

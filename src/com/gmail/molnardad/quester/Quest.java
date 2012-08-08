@@ -2,8 +2,10 @@ package com.gmail.molnardad.quester;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
@@ -12,7 +14,6 @@ import com.gmail.molnardad.quester.conditions.Condition;
 import com.gmail.molnardad.quester.objectives.Objective;
 import com.gmail.molnardad.quester.qevents.Qevent;
 import com.gmail.molnardad.quester.rewards.Reward;
-
 @SerializableAs("QeusterQuest")
 public class Quest implements ConfigurationSerializable{
 
@@ -20,6 +21,7 @@ public class Quest implements ConfigurationSerializable{
 	private List<Reward> rewards = null;
 	private List<Condition> conditions = null;
 	private List<Qevent> qevents = null;
+	private Set<String> worlds = null;
 	private String description = null;
 	private String name = null;
 	private boolean active = false;
@@ -33,6 +35,7 @@ public class Quest implements ConfigurationSerializable{
 		rewards = new ArrayList<Reward>();
 		conditions = new ArrayList<Condition>();
 		qevents = new ArrayList<Qevent>();
+		worlds = new HashSet<String>();
 		ordered = false;
 	}
 	
@@ -188,6 +191,32 @@ public class Quest implements ConfigurationSerializable{
 		qevents.add(newQevent);
 	}
 	
+	public String getWorldNames() {
+		String result = "";
+		for(String s : worlds)
+			result += s + ",";
+		return result;
+	}
+	
+	public Set<String> getWorlds() {
+		return worlds;
+	}
+	
+	public void addWorld(String worldName) {
+		worlds.add(worldName.toLowerCase());
+	}
+	
+	public boolean removeWorld(String worldName) {
+		if(!worlds.contains(worldName))
+			return false;
+		worlds.remove(worldName);
+		return true;
+	}
+	
+	public boolean allowedWorld(String worldName) {
+		return (worlds.contains(worldName.toLowerCase()) || worlds.isEmpty());
+	}
+	
 	@Override
 	public Map<String, Object> serialize() {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -213,6 +242,7 @@ public class Quest implements ConfigurationSerializable{
 		map.put("description", description);
 		map.put("active", active);
 		map.put("ordered", ordered);
+		map.put("worlds", worlds.toArray(new String[0]));
 		map.put("objectives", objs);
 		map.put("rewards", rews);
 		map.put("conditions", cons);
@@ -238,6 +268,13 @@ public class Quest implements ConfigurationSerializable{
 			
 			if(map.get("ordered") != null)
 				quest.setOrdered((Boolean) map.get("ordered"));
+			
+			if(map.get("worlds") != null) {
+				List<String> strs = (List<String>) map.get("worlds");
+				for(String s : strs) {
+					quest.addWorld(s);
+				}
+			}
 			
 			Map<Integer, Objective> objs = new HashMap<Integer, Objective>();
 			if(map.get("objectives") != null) {

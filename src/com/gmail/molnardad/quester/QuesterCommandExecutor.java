@@ -299,6 +299,69 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				
+				// QUEST WORLD
+				if(args[0].equalsIgnoreCase("world")) {
+					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
+						return true;
+					}
+					if(args.length > 2){
+						
+						// ADD WORLD
+						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
+							try {
+								World world = null;
+								if(args[2].equalsIgnoreCase("this")) {
+									if(player != null) {
+										world = player.getWorld();
+									} else {
+										sender.sendMessage(ChatColor.RED + "World 'this' requires player context.");
+										return true;
+									}
+								} else {
+									world = sender.getServer().getWorld(args[2]);
+								}
+								if(world == null) {
+									sender.sendMessage(ChatColor.RED + "Invalid world.");
+									return true;
+								}
+								qm.addQuestWorld(sender.getName(), world.getName());
+								sender.sendMessage(ChatColor.GREEN + "Quest world added.");
+							} catch (QuesterException e) {
+								sender.sendMessage(e.message());
+							}
+							return true;
+						}
+						
+						// REMOVE WORLD
+						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")){
+							try {
+								String wName = args[2];
+								if(args[2].equalsIgnoreCase("this")) {
+									World world = null;
+									if(player != null) {
+										world = player.getWorld();
+									} else {
+										sender.sendMessage(ChatColor.RED + "World 'this' requires player context.");
+										return true;
+									}
+									if(world != null) {
+										wName = world.getName();
+									}
+								}
+								
+								qm.removeQuestWorld(sender.getName(), wName);
+								sender.sendMessage(ChatColor.GREEN + "Quest world removed.");
+							} catch (QuesterException e) {
+								sender.sendMessage(e.message());
+							}
+							return true;
+						}
+					}
+					
+					sender.sendMessage(ChatColor.RED + "Usage: /quest world [add|remove] [world_name or 'this'].");
+					return true;
+				}
+				
 				// QUEST REWARD
 				if(args[0].equalsIgnoreCase("reward") || args[0].equalsIgnoreCase("rew")) {
 					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {

@@ -275,10 +275,11 @@ public class QuestManager {
 	}
 	
 	public void toggleQuest(CommandSender changer) throws QuestModificationException, QuestExistenceException {
-		if(getSelected(changer.getName()) == null){
+		Quest quest = getSelected(changer.getName());
+		if(quest == null){
 			throw new QuestModificationException("toggleQuest()", true);
 		}
-		toggleQuest(getSelected(changer.getName()).getName());
+		toggleQuest(quest.getName());
 	}
 	
 	public void toggleQuest(String questName) throws QuestExistenceException {
@@ -294,10 +295,10 @@ public class QuestManager {
 	
 	public void setOrdered(String changer, boolean ordered) throws QuestModificationException {
 		Quest quest = getSelected(changer);
-		if(getSelected(changer) == null) {
+		if(quest == null) {
 			throw new QuestModificationException("setOrdered()", true);
 		}
-		if(!canModify(getSelected(changer).getName())) {
+		if(quest.isActive()) {
 			throw new QuestModificationException("setOrdered() 1", false);
 		}
 		quest.setOrdered(ordered);
@@ -305,41 +306,68 @@ public class QuestManager {
 	}
 	
 	public void changeQuestName(String changer, String newName) throws QuestExistenceException, QuestModificationException {
+		Quest quest = getSelected(changer);
 		if(isQuest(newName)) {
 			throw new QuestExistenceException("changeQuestName()", true);
 		}
-		if(getSelected(changer) == null) {
+		if(quest == null) {
 			throw new QuestModificationException("changeQuestName()", true);
 		}
-		if(!canModify(getSelected(changer).getName())) {
+		if(quest.isActive()) {
 			throw new QuestModificationException("changeQuestName() 1", false);
 		}
-		Quest qst = getSelected(changer);
-		allQuests.remove(qst.getName().toLowerCase());
-		qst.setName(newName);
-		allQuests.put(qst.getName().toLowerCase(), qst);
+		allQuests.remove(quest.getName().toLowerCase());
+		Quester.questConfig.getConfig().set(quest.getName().toLowerCase(), null);
+		quest.setName(newName);
+		allQuests.put(quest.getName().toLowerCase(), quest);
 		QuestData.saveQuests();
 	}
 	
 	public void setQuestDescription(String changer, String newDesc) throws QuestModificationException {
-		if(getSelected(changer) == null) {
+		Quest quest = getSelected(changer);
+		if(quest == null) {
 			throw new QuestModificationException("setQuestDescription()", true);
 		}
-		if(!canModify(getSelected(changer).getName())) {
+		if(quest.isActive()) {
 			throw new QuestModificationException("setQuestDescription() 1", false);
 		}
-		getSelected(changer).setDescription(newDesc);
+		quest.setDescription(newDesc);
 		QuestData.saveQuests();
 	}
 	
 	public void addQuestDescription(String changer, String descToAdd) throws QuestModificationException {
-		if(getSelected(changer) == null) {
+		Quest quest = getSelected(changer);
+		if(quest == null) {
 			throw new QuestModificationException("addQuestDescription()", true);
 		}
-		if(!canModify(getSelected(changer).getName())) {
+		if(quest.isActive()) {
 			throw new QuestModificationException("addQuestDescription() 1", false);
 		}
-		getSelected(changer).addDescription(descToAdd);
+		quest.addDescription(descToAdd);
+		QuestData.saveQuests();
+	}
+	
+	public void addQuestWorld(String changer, String worldName) throws QuestModificationException {
+		Quest quest = getSelected(changer);
+		if(quest == null) {
+			throw new QuestModificationException("addQuestWorld()", true);
+		}
+		if(quest.isActive()) {
+			throw new QuestModificationException("addQuestWorld() 1", false);
+		}
+		quest.addWorld(worldName);
+		QuestData.saveQuests();
+	}
+	
+	public void removeQuestWorld(String changer, String worldName) throws QuestModificationException {
+		Quest quest = getSelected(changer);
+		if(quest == null) {
+			throw new QuestModificationException("removeQuestWorld()", true);
+		}
+		if(quest.isActive()) {
+			throw new QuestModificationException("removeQuestWorld() 1", false);
+		}
+		quest.removeWorld(worldName.toLowerCase());
 		QuestData.saveQuests();
 	}
 	
@@ -523,8 +551,13 @@ public class QuestManager {
 		QuestData.saveProfiles();
 	}
 	
-	public void complete(Player player) throws QuestAssignmentException, QuestCompletionException, QuestExistenceException, ObjectiveCompletionException {
-		if(getPlayerQuest(player.getName()).isOrdered()) {
+	public void complete(Player player) throws QuestAssignmentException, QuestCompletionException, QuestExistenceException, ObjectiveCompletionException, QuestWorldException {
+		Quest quest = getPlayerQuest(player.getName());
+		if(quest == null)
+			throw new QuestAssignmentException("complete()", false);
+    	if(!quest.allowedWorld(player.getWorld().getName()))
+    		throw new QuestWorldException();
+		if(quest.isOrdered()) {
 			completeObjective(player);
 		} else {
 			completeQuest(player);
@@ -552,22 +585,20 @@ public class QuestManager {
 		completeQuest(player);
 	}
 	
-	public void completeQuest(Player player) throws QuestAssignmentException, QuestCompletionException, QuestExistenceException {
-		if(!hasQuest(player.getName())){
-			throw new QuestAssignmentException("completeQuest()", false);
-		}
+	public void completeQuest(Player player) throws QuestCompletionException, QuestExistenceException {
+		Quest quest = getPlayerQuest(player.getName());
 		
 		completeCheck(player);
 		
-		List<Objective> objs = getPlayerQuest(player.getName()).getObjectives();
+		List<Objective> objs = quest.getObjectives();
 		for(Objective o : objs) {
 			o.finish(player);
 		}
-		List<Reward> rews = getPlayerQuest(player.getName()).getRewards();
+		List<Reward> rews = quest.getRewards();
 		for(Reward r : rews) {
 			r.giveReward(player);
 		}
-		Quest quest= getPlayerQuest(player.getName());
+		
 		player.sendMessage(Quester.LABEL + "Quest " + ChatColor.GOLD + quest.getName() + ChatColor.BLUE + " was completed by " + player.getName() + ".");
 		unassignQuest(player.getName());
 		for(Qevent qv : quest.getQevents()) {
@@ -644,6 +675,9 @@ public class QuestManager {
 		sender.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + qst.getDescription());
 		String is = qst.isOrdered() ? "YES" : "NO";
 		sender.sendMessage(ChatColor.BLUE + "Ordered: " + ChatColor.WHITE + is);
+		String worlds = qst.getWorlds().isEmpty() ? "" : qst.getWorldNames();
+		if(!worlds.isEmpty())
+			sender.sendMessage(ChatColor.BLUE + "Allowed worlds: " + ChatColor.WHITE + worlds);
 		sender.sendMessage(ChatColor.BLUE + "Conditions:");
 		List<Condition> cons = getQuest(questName).getConditions();
 		ChatColor color = ChatColor.WHITE;
@@ -688,6 +722,8 @@ public class QuestManager {
 		sender.sendMessage(ChatColor.BLUE + "Active: " + color + qst.isActive());
 		color = qst.isOrdered() ? ChatColor.GREEN : ChatColor.YELLOW;
 		sender.sendMessage(ChatColor.BLUE + "Ordered: " + color + qst.isOrdered());
+		String worlds = qst.getWorlds().isEmpty() ? "ANY" : qst.getWorldNames();
+		sender.sendMessage(ChatColor.BLUE + "Worlds: " + ChatColor.WHITE + worlds);
 		int i;
 		sender.sendMessage(ChatColor.BLUE + "Events:");
 		i = 0;

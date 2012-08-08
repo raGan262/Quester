@@ -25,6 +25,8 @@ public class TameListener implements Listener {
 		    Player player = (Player) event.getOwner();
 			if(qm.hasQuest(player.getName())) {
 				Quest quest = qm.getPlayerQuest(player.getName());
+		    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
+		    		return;
 				List<Objective> objs = quest.getObjectives();
 				EntityType ent = event.getEntityType();
 				// if quest is ordered, process current objective

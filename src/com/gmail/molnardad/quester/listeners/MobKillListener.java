@@ -25,6 +25,8 @@ public class MobKillListener implements Listener {
 			Player player = event.getEntity().getKiller();
 			if(qm.hasQuest(player.getName())) {
 		    	Quest quest = qm.getPlayerQuest(player.getName());
+		    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
+		    		return;
 		    	List<Objective> objs = quest.getObjectives();
 		    	// if quest is ordered, process current objective
 		    	if(quest.isOrdered()) {
