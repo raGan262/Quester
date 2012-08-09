@@ -16,7 +16,6 @@ public class QuestData {
 	public static boolean debug = true;
 	public static boolean disUseCmds = false;
 	// OBJECTIVE SECTION
-	public static boolean onlyFirst = false;
 		// BREAK
 	public static boolean brkNoDrops = false;
 	public static boolean brkSubOnPlace = true;
@@ -111,7 +110,7 @@ public class QuestData {
 							if(quest.getObjective(i) == null) {
 								Quester.log.info("Objective " + i + " is invalid.");
 								quest.removeObjective(i);
-								quest.deactivate();
+								quest.removeFlag(QuestFlag.ACTIVE);
 							}
 						}
 						for(int i=0; i<quest.getRewards().size(); i++) {

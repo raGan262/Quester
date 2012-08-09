@@ -12,7 +12,6 @@ objectives:
     remove-on-pickup: true
     subtract-on-drop: false
 quests:
-  only-first: true
   show-objectives: true
   messages:
     start-show: true

@@ -15,6 +15,7 @@ import com.gmail.molnardad.quester.objectives.Objective;
 import com.gmail.molnardad.quester.qevents.Qevent;
 import com.gmail.molnardad.quester.rewards.Reward;
 import com.gmail.molnardad.quester.utils.Util;
+import com.gmail.molnardad.quester.QuestFlag;
 @SerializableAs("QeusterQuest")
 public class Quest implements ConfigurationSerializable{
 
@@ -23,10 +24,9 @@ public class Quest implements ConfigurationSerializable{
 	private List<Condition> conditions = null;
 	private List<Qevent> qevents = null;
 	private Set<String> worlds = null;
+	private Set<QuestFlag> flags = null;
 	private String description = null;
 	private String name = null;
-	private boolean active = false;
-	private boolean ordered = false;
 	
 	
 	public Quest(String name) {
@@ -37,27 +37,23 @@ public class Quest implements ConfigurationSerializable{
 		conditions = new ArrayList<Condition>();
 		qevents = new ArrayList<Qevent>();
 		worlds = new HashSet<String>();
-		ordered = false;
+		flags = new HashSet<QuestFlag>();
 	}
 	
-	public boolean isActive() {
-		return active;
+	public boolean hasFlag(QuestFlag flag) {
+		return flags.contains(flag);
 	}
 	
-	public void activate() {
-		active = true;
+	public Set<QuestFlag> getFlags() {
+		return flags;
 	}
 	
-	public void deactivate() {
-		active = false;
+	public void addFlag(QuestFlag flag) {
+		flags.add(flag);
 	}
 	
-	public boolean isOrdered() {
-		return ordered;
-	}
-	
-	public void setOrdered(boolean state) {
-		ordered = state;
+	public void removeFlag(QuestFlag flag) {
+		flags.remove(flag);
 	}
 	
 	public String getName() {
@@ -238,9 +234,8 @@ public class Quest implements ConfigurationSerializable{
 		
 		map.put("name", name);
 		map.put("description", description);
-		map.put("active", active);
-		map.put("ordered", ordered);
 		map.put("worlds", worlds.toArray(new String[0]));
+		map.put("flags", QuestFlag.serialize(flags));
 		map.put("objectives", objs);
 		map.put("rewards", rews);
 		map.put("conditions", cons);
@@ -260,12 +255,13 @@ public class Quest implements ConfigurationSerializable{
 				return null;
 			
 			quest.setDescription((String) map.get("description"));
-			
-			if((Boolean) map.get("active"))
-				quest.activate();
-			
-			if(map.get("ordered") != null)
-				quest.setOrdered((Boolean) map.get("ordered"));
+
+			if(map.get("flags") != null) {
+				Set<QuestFlag> flags = QuestFlag.deserialize((String) map.get("flags"));
+				for(QuestFlag f : flags) {
+					quest.addFlag(f);
+				}
+			}
 			
 			if(map.get("worlds") != null) {
 				List<String> strs = (List<String>) map.get("worlds");

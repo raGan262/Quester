@@ -11,6 +11,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestData;
+import com.gmail.molnardad.quester.QuestFlag;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.objectives.BreakObjective;
@@ -31,7 +32,7 @@ public class PlaceListener implements Listener {
 	    	List<Objective> objs = quest.getObjectives();
 			Block block = event.getBlock();
 	    	// if quest is ordered, process current objective
-	    	if(quest.isOrdered()) {
+	    	if(quest.hasFlag(QuestFlag.ORDERED)) {
 	    		int curr = qm.getCurrentObjective(player);
 	    		Objective obj = objs.get(curr);
 	    		if(obj != null) {

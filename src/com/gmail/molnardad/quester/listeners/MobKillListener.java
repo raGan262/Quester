@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import com.gmail.molnardad.quester.Quest;
+import com.gmail.molnardad.quester.QuestFlag;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.objectives.MobKillObjective;
@@ -29,7 +30,7 @@ public class MobKillListener implements Listener {
 		    		return;
 		    	List<Objective> objs = quest.getObjectives();
 		    	// if quest is ordered, process current objective
-		    	if(quest.isOrdered()) {
+		    	if(quest.hasFlag(QuestFlag.ORDERED)) {
 		    		int curr = qm.getCurrentObjective(player);
 		    		Objective obj = objs.get(curr);
 		    		if(obj != null) {

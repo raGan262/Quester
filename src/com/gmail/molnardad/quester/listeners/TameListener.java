@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityTameEvent;
 
 import com.gmail.molnardad.quester.Quest;
+import com.gmail.molnardad.quester.QuestFlag;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.objectives.Objective;
@@ -30,7 +31,7 @@ public class TameListener implements Listener {
 				List<Objective> objs = quest.getObjectives();
 				EntityType ent = event.getEntityType();
 				// if quest is ordered, process current objective
-				if(quest.isOrdered()) {
+				if(quest.hasFlag(QuestFlag.ORDERED)) {
 					int curr = qm.getCurrentObjective(player);
 					Objective obj = objs.get(curr);
 					if(obj != null) {

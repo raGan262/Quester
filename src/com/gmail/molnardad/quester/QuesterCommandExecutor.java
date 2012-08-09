@@ -1,8 +1,10 @@
 package com.gmail.molnardad.quester;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -244,31 +246,52 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				
-				// QUEST ORDERED
-				if(args[0].equalsIgnoreCase("ordered") || args[0].equalsIgnoreCase("ord")) {
+				// QUEST FLAG
+				if(args[0].equalsIgnoreCase("flag") || args[0].equalsIgnoreCase("f")) {
 					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
 						return true;
 					}
-					try {
-						qm.setOrdered(sender.getName(), true);
-						sender.sendMessage(ChatColor.GREEN + "Quest set as ordered.");
-					} catch (QuesterException e) {
-						sender.sendMessage(e.message());
-					}
-					return true;
-				}
-				
-				// QUEST UNORDERED
-				if(args[0].equalsIgnoreCase("unordered") || args[0].equalsIgnoreCase("unord")) {
-					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
+
+					if(args.length > 2) {
+						
+						Set<QuestFlag> flags = new HashSet<QuestFlag>();
+						
+						for(int i=2; i<args.length; i++) {
+							QuestFlag flag = QuestFlag.getByName(args[i]);
+							if(flag != null)
+								flags.add(flag);
+						}
+						
+						if(flags.isEmpty()) {
+							sender.sendMessage(ChatColor.RED + "No correct flags.");
+							return true;
+						}
+						
+						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
+							try{
+								qm.addQuestFlag(sender.getName(), flags.toArray(new QuestFlag[0]));
+								sender.sendMessage(ChatColor.GREEN + "Flags added.");
+							} catch (QuesterException e) {
+								sender.sendMessage(e.message());
+							}
+							return true;
+						}
+						
+						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")){
+							try{
+								qm.removeQuestFlag(sender.getName(), flags.toArray(new QuestFlag[0]));
+								sender.sendMessage(ChatColor.GREEN + "Flags removed.");
+							} catch (QuesterException e) {
+								sender.sendMessage(e.message());
+							}
+							return true;
+						}
+						
+						sender.sendMessage(ChatColor.RED + "Available flags: " + ChatColor.WHITE + "ordered, uncancellable, onlyfirst");
 						return true;
 					}
-					try {
-						qm.setOrdered(sender.getName(), false);
-						sender.sendMessage(ChatColor.GREEN + "Quest set as unordered.");
-					} catch (QuesterException e) {
-						sender.sendMessage(e.message());
-					}
+					
+					sender.sendMessage(ChatColor.RED + "Usage: /quest flag [add|remove] [flag_1]... .");
 					return true;
 				}
 				
