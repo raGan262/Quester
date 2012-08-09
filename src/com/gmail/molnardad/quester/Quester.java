@@ -8,6 +8,7 @@ import net.citizensnpcs.api.trait.TraitInfo;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -184,8 +185,14 @@ public class Quester extends JavaPlugin {
 		}
 		
 		private void setupListeners() {
+			// OLD LISTENER
+			// getServer().getPluginManager().registerEvents(new MoveListener(), this);
+			
+			// NEW CHECKER
+			PositionListener posCheck = new PositionListener(qMan);
+			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, posCheck, 20, 20);
+			
 			getServer().getPluginManager().registerEvents(new BreakListener(), this);
-			getServer().getPluginManager().registerEvents(new MoveListener(), this);
 			getServer().getPluginManager().registerEvents(new DeathListener(), this);
 			getServer().getPluginManager().registerEvents(new MobKillListener(), this);
 			getServer().getPluginManager().registerEvents(new PlaceListener(), this);
