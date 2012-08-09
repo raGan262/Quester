@@ -1,12 +1,14 @@
 package com.gmail.molnardad.quester;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,7 +21,7 @@ import org.bukkit.potion.PotionEffectType;
 import com.avaje.ebeaninternal.server.lib.util.InvalidDataException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.objectives.*;
-import com.gmail.molnardad.quester.qevents.MessageQevent;
+import com.gmail.molnardad.quester.qevents.*;
 import com.gmail.molnardad.quester.rewards.*;
 import com.gmail.molnardad.quester.conditions.*;
 import static com.gmail.molnardad.quester.utils.Util.*;
@@ -495,73 +497,6 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								return true;
 							}
 							
-							// COMMAND REWARD
-							if(args[2].equalsIgnoreCase("cmd")) {
-								if(args.length > 3) {
-									try {
-										String command = implode(args, 3);
-										qm.addQuestReward(sender.getName(), new CommandReward(command));
-										sender.sendMessage(ChatColor.GREEN + "Command reward added.");
-									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
-									}
-									return true;
-								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest reward add cmd [command].");
-								return true;
-							}
-							
-							// TELEPORT REWARD
-							if(args[2].equalsIgnoreCase("tele")) {
-								if(args.length > 3) {
-									if(args[3].equalsIgnoreCase("here")) {
-										if(player != null) {
-											try {
-												qm.addQuestReward(sender.getName(), new TeleportReward(player.getLocation()));
-												sender.sendMessage(ChatColor.GREEN + "Teleport reward added.");
-											} catch (QuesterException e) {
-												sender.sendMessage(e.message());
-											}
-										} else {
-											sender.sendMessage(ChatColor.RED + "This command requires player context."
-													+ "Use /quest reward add tele [X] [Y] [Z] [world].");
-										}
-										return true;
-									}
-									if(args.length > 6) {
-										try {
-											double x = Double.parseDouble(args[3]);
-											double y = Double.parseDouble(args[4]);
-											double z = Double.parseDouble(args[5]);
-											if(y < 0) {
-												sender.sendMessage(ChatColor.RED + "Y must be >= 0.");
-												return true;
-											}
-											World world = null;
-											if(player != null && args[6].equalsIgnoreCase("this")) {
-												world = player.getWorld();
-											} else {
-												world = Quester.plugin.getServer().getWorld(args[6]);
-											}
-											if(world == null) {
-												sender.sendMessage(ChatColor.RED + "World '" + args[6] + "' not found.");
-												return true;
-											}
-											qm.addQuestReward(sender.getName(), new TeleportReward(new Location(world, x, y, z)));
-											sender.sendMessage(ChatColor.GREEN + "Teleport reward added.");
-										} catch (NumberFormatException e) {
-											sender.sendMessage(ChatColor.RED + "Coordinates must be numbers.");
-										} catch (QuesterException e) {
-											sender.sendMessage(e.message());
-										}
-										return true;
-									}
-								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest reward add tele {location}.\n"
-										+ "{location} - [X] [Y] [Z] [world or 'this'] /OR/ 'here'");
-								return true;
-							}
-							
 							// POINT REWARD
 							if(args[2].equalsIgnoreCase("point")) {
 								if(args.length > 3) {
@@ -580,7 +515,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								return true;
 							}
 							
-							sender.sendMessage(ChatColor.RED + "Available reward types: " + ChatColor.WHITE + "item, money, exp, effect, tele, cmd, point");
+							sender.sendMessage(ChatColor.RED + "Available reward types: " + ChatColor.WHITE + "item, money, exp, effect, cmd, point");
 							return true;
 						}
 						
@@ -604,7 +539,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					
 					if(args.length > 1) {
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
-							sender.sendMessage(ChatColor.RED + "Available reward types: " + ChatColor.WHITE + "item, money, exp, effect, tele, cmd, point");
+							sender.sendMessage(ChatColor.RED + "Available reward types: " + ChatColor.WHITE + "item, money, exp, effect, cmd, point");
 							return true;
 						}
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
@@ -1293,7 +1228,24 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							return true;
 						}
 						
-						sender.sendMessage(ChatColor.RED + "Usage: /quest objective [add|remove] [type] [args].");
+						// SWAP OBJECTIVES
+						if(args[1].equalsIgnoreCase("swap")){
+							try {
+								if(!(args.length > 3))
+									throw new NumberFormatException();
+								int first = Integer.parseInt(args[2]);
+								int second = Integer.parseInt(args[3]);
+								qm.swapQuestObjectives(sender.getName(), first, second);
+								sender.sendMessage(ChatColor.GREEN + "Objectives " + args[2] + " and " + args[3] + " swapped.");
+							} catch (NumberFormatException e) {
+								sender.sendMessage(ChatColor.RED + "Usage: /quest objective swap [id_1] [id_2].");
+							} catch (QuesterException e) {
+								sender.sendMessage(e.message());
+							}
+							return true;
+						}
+						
+						sender.sendMessage(ChatColor.RED + "Usage: /quest objective [add|remove|swap] [args].");
 						return true;
 					}
 					
@@ -1474,18 +1426,20 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					}
 					if(args.length > 2){
 						
-						// ADD CONDITION
+						// ADD EVENT
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
 							
-							if(args.length > 3){
+							if(args.length > 4){
 								
 								int occ;
+								int del;
 								try {
 									occ = Integer.parseInt(args[3]);
-									if(occ < -3)
+									del = Integer.parseInt(args[4]);
+									if(occ < -3 || del < 0)
 										throw new NumberFormatException();
 								} catch (NumberFormatException e) {
-									sender.sendMessage(ChatColor.RED + "Occasion must be > -4.");
+									sender.sendMessage(ChatColor.RED + "Occasion must be > -4. Delay must be >= 0.");
 									return true;
 								}
 								
@@ -1494,23 +1448,220 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									if(args.length > 4) {
 										String msg = implode(args, 4);
 										try {
-											qm.addQevent(sender.getName(), new MessageQevent(occ, msg));
+											qm.addQevent(sender.getName(), new MessageQevent(occ, del, msg));
 											sender.sendMessage(ChatColor.GREEN + "Message event added.");
 										} catch (QuesterException e) {
 											sender.sendMessage(e.message());
 										}
 										return true;
 									}
-									sender.sendMessage(ChatColor.RED + "Usage: /quest event add msg {occasion} [message*]\n"
+									sender.sendMessage(ChatColor.RED + "Usage: /quest event add msg {occasion} [delay] [message*]\n"
 											+ "* - supports '&' colors and '\\n' newline");
 									return true;
 								}
 								
-								sender.sendMessage(ChatColor.RED + "Available event types: " + ChatColor.WHITE + "msg");
+								// COMMAND EVENT
+								if(args[2].equalsIgnoreCase("cmd")) {
+									if(args.length > 5) {
+										String command = implode(args, 5);
+										try {
+											qm.addQevent(sender.getName(), new CommandQevent(occ, del, command));
+											sender.sendMessage(ChatColor.GREEN + "Command event added.");
+										} catch (QuesterException e) {
+											sender.sendMessage(e.message());
+										}
+										return true;
+									}
+									sender.sendMessage(ChatColor.RED + "Usage: /quest event add cmd {occasion} [delay] [command*]\n"
+											+ "* - without '/'");
+									return true;
+								}
+								
+								// EXPLOSION EVENT
+								if(args[2].equalsIgnoreCase("explosion")) {
+									if(args.length > 5) {
+										boolean fire = false;
+										Location loc = null;
+										// LOCATION HERE
+										if(args[5].equalsIgnoreCase("here")) {
+											if(args.length > 6)
+												fire = Boolean.parseBoolean(args[6]);
+											if(player != null)
+												loc = player.getLocation();
+											else {
+												sender.sendMessage(ChatColor.RED + "Location 'here' requires player context.");
+												return true;
+											}
+										// LOCATION	
+										} else if(args.length > 8) {
+											try {
+												if(args.length > 9)
+													fire = Boolean.parseBoolean(args[9]);
+												loc = getLoc(sender, args, 5);
+												if(loc == null)
+													throw new IllegalArgumentException();
+											} catch (NumberFormatException e) {
+												sender.sendMessage(ChatColor.RED + "Invalid coordinates.");
+												return true;
+											} catch (IllegalArgumentException e) {
+												sender.sendMessage(ChatColor.RED + "Invalid world.");
+												return true;
+											}
+										}
+										try {
+											qm.addQevent(sender.getName(), new ExplosionQevent(occ, del, loc, fire));
+											sender.sendMessage(ChatColor.GREEN + "Explosion event added.");
+										} catch (QuesterException e) {
+											sender.sendMessage(e.message());
+										}
+										return true;
+									}
+									sender.sendMessage(ChatColor.RED + "Usage: /quest event add explosion {occasion} [delay] {location} [damage*]\n"
+											+ "* - true or false");
+									return true;
+								}
+								
+								// LIGHTNING EVENT
+								if(args[2].equalsIgnoreCase("lightning")) {
+									if(args.length > 5) {
+										boolean fire = false;
+										Location loc = null;
+										// LOCATION HERE
+										if(args[5].equalsIgnoreCase("here")) {
+											if(args.length > 6)
+												fire = Boolean.parseBoolean(args[6]);
+											if(player != null)
+												loc = player.getLocation();
+											else {
+												sender.sendMessage(ChatColor.RED + "Location 'here' requires player context.");
+												return true;
+											}
+										// LOCATION	
+										} else if(args.length > 8) {
+											try {
+												if(args.length > 9)
+													fire = Boolean.parseBoolean(args[9]);
+												loc = getLoc(sender, args, 5);
+												if(loc == null)
+													throw new IllegalArgumentException();
+											} catch (NumberFormatException e) {
+												sender.sendMessage(ChatColor.RED + "Invalid coordinates.");
+												return true;
+											} catch (IllegalArgumentException e) {
+												sender.sendMessage(ChatColor.RED + "Invalid world.");
+												return true;
+											}
+										}
+										try {
+											qm.addQevent(sender.getName(), new LightningQevent(occ, del, loc, fire));
+											sender.sendMessage(ChatColor.GREEN + "Lightning event added.");
+										} catch (QuesterException e) {
+											sender.sendMessage(e.message());
+										}
+										return true;
+									}
+									sender.sendMessage(ChatColor.RED + "Usage: /quest event add lightning {occasion} [delay] {location} [damage*]\n"
+											+ "* - true or false");
+									return true;
+								}
+								
+								// TELEPORT EVENT
+								if(args[2].equalsIgnoreCase("tele")) {
+									if(args.length > 5) {
+										Location loc = null;
+										// LOCATION HERE
+										if(args[5].equalsIgnoreCase("here")) {
+											if(player != null)
+												loc = player.getLocation();
+											else {
+												sender.sendMessage(ChatColor.RED + "Location 'here' requires player context.");
+												return true;
+											}
+										// LOCATION	
+										} else if(args.length > 8) {
+											try {
+												loc = getLoc(sender, args, 5);
+												if(loc == null)
+													throw new IllegalArgumentException();
+											} catch (NumberFormatException e) {
+												sender.sendMessage(ChatColor.RED + "Invalid coordinates.");
+												return true;
+											} catch (IllegalArgumentException e) {
+												sender.sendMessage(ChatColor.RED + "Invalid world.");
+												return true;
+											}
+										}
+										try {
+											qm.addQevent(sender.getName(), new TeleportQevent(occ, del, loc));
+											sender.sendMessage(ChatColor.GREEN + "Teleport event added.");
+										} catch (QuesterException e) {
+											sender.sendMessage(e.message());
+										}
+										return true;
+									}
+									sender.sendMessage(ChatColor.RED + "Usage: /quest event add tele {occasion} [delay] {location}");
+									return true;
+								}
+								
+								// SETBLOCK EVENT
+								if(args[2].equalsIgnoreCase("block")) {
+									if(args.length > 6) {
+										Location loc = null;
+										
+										// LOCATION HERE
+										if(args[6].equalsIgnoreCase("here")) {
+											if(player != null) {
+												List<Block> blcks = player.getLastTwoTargetBlocks(null, 6);
+												if(!blcks.isEmpty())
+													loc = blcks.get(blcks.size()-1).getLocation();
+												else {
+													sender.sendMessage(ChatColor.RED + "You are not looking at a block.");
+													return true;
+												}
+											} else {
+												sender.sendMessage(ChatColor.RED + "Location 'here' requires player context.");
+												return true;
+											}
+										// LOCATION	
+										} else if(args.length > 9) {
+											try {
+												loc = getLoc(sender, args, 6);
+												if(loc == null)
+													throw new IllegalArgumentException();
+											} catch (NumberFormatException e) {
+												sender.sendMessage(ChatColor.RED + "Invalid coordinates.");
+												return true;
+											} catch (IllegalArgumentException e) {
+												sender.sendMessage(ChatColor.RED + "Invalid world.");
+												return true;
+											}
+										}
+										if(loc == null) {
+											sender.sendMessage(ChatColor.RED + "Invalid location.");
+											return true;
+										}	
+										try {
+											int[] itm = parseItem(args[5]);
+											if(itm[0] > 255)
+												throw new InvalidDataException("");
+											int dat = itm[1] < 0 ? 0 : itm[1];
+											qm.addQevent(sender.getName(), new SetBlockQevent(occ, del, itm[0], dat, loc));
+											sender.sendMessage(ChatColor.GREEN + "Block event added.");
+										} catch (QuesterException e) {
+											sender.sendMessage(e.message());
+										}
+										return true;
+									}
+									sender.sendMessage(ChatColor.RED + "Usage: /quest event add block {occasion} [delay] [block_id/name][:data*] {location}\n"
+											+ "* - optional; location 'here' means block you are looking at");
+									return true;
+								}
+								
+								sender.sendMessage(ChatColor.RED + "Available event types: " + ChatColor.WHITE + "msg, explosion, block, tele");
 								return true;
 							}
 							
-							sender.sendMessage(ChatColor.RED + "Specify occasion.");
+							sender.sendMessage(ChatColor.RED + "Specify occasion and delay.");
 							return true;
 						}
 						
@@ -1538,7 +1689,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					
 					if(args.length > 1) {
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
-							sender.sendMessage(ChatColor.RED + "Usage: /quest event add [event_type] {occasion} [args].\n"
+							sender.sendMessage(ChatColor.RED + "Usage: /quest event add [event_type] {occasion} [delay] [args].\n"
 									+ "{occasion} - -1:START, -2:CANCEL, -3:DONE,  >=0:GIVEN OBJECTIVE");
 							sender.sendMessage(ChatColor.RED + "Available event types: " + ChatColor.WHITE + "msg");
 							return true;

@@ -270,7 +270,8 @@ public class Quest implements ConfigurationSerializable{
 			if(map.get("worlds") != null) {
 				List<String> strs = (List<String>) map.get("worlds");
 				for(String s : strs) {
-					quest.addWorld(s);
+					if(s != null)
+						quest.addWorld(s);
 				}
 			}
 			
@@ -278,7 +279,8 @@ public class Quest implements ConfigurationSerializable{
 			if(map.get("objectives") != null) {
 				objs = (Map<Integer, Objective>) map.get("objectives");
 				for(int i=0; i<objs.size(); i++) {
-					quest.addObjective(objs.get(i));
+					if(objs.get(i) != null)
+						quest.addObjective(objs.get(i));
 				}
 			}
 			
@@ -286,6 +288,7 @@ public class Quest implements ConfigurationSerializable{
 			if(map.get("rewards") != null) {
 				rews = (Map<Integer, Reward>) map.get("rewards");
 				for(int i=0; i<rews.size(); i++) {
+					if(rews.get(i) != null)
 					quest.addReward(rews.get(i));
 				}
 			}
@@ -294,6 +297,7 @@ public class Quest implements ConfigurationSerializable{
 			if(map.get("conditions") != null) {
 				cons = (Map<Integer, Condition>) map.get("conditions");
 				for(int i=0; i<cons.size(); i++) {
+					if(cons.get(i) != null)
 					quest.addCondition(cons.get(i));
 				}
 			}
@@ -302,6 +306,7 @@ public class Quest implements ConfigurationSerializable{
 			if(map.get("events") != null) {
 				qvts = (Map<Integer, Qevent>) map.get("events");
 				for(int i=0; i<qvts.size(); i++) {
+					if(qvts.get(i) != null)
 					quest.addQevent(qvts.get(i));
 				}
 			}

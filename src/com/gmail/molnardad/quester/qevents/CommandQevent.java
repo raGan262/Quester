@@ -3,21 +3,19 @@ package com.gmail.molnardad.quester.qevents;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
-@SerializableAs("QuesterMessageQevent")
-public final class MessageQevent extends Qevent {
+@SerializableAs("QuesterCommandQevent")
+public final class CommandQevent extends Qevent {
 
-	private final String TYPE = "MSG";
-	private final String message;
-	private final String rawmessage;
+	private final String TYPE = "CMD";
+	private final String command;
 	
-	public MessageQevent(int occ, int del, String msg) {
+	public CommandQevent(int occ, int del, String cmd) {
 		super(occ, del);
-		this.rawmessage = msg;
-		this.message = ChatColor.translateAlternateColorCodes('&', rawmessage).replaceAll("\\\\n", "\n");
+		this.command = cmd;
 	}
 	
 	@Override
@@ -32,33 +30,33 @@ public final class MessageQevent extends Qevent {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": ON-" + parseOccasion(occasion) + "; MSG: " + message;
+		return TYPE + ": ON-" + parseOccasion(occasion) + "; - /" + command;
 	}
 
 	@Override
 	public Map<String, Object> serialize() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
-		map.put("message", rawmessage);
+		map.put("command", command);
 		map.put("occasion", occasion);
 		map.put("delay", delay);
 		
 		return map;
 	}
 	
-	public static MessageQevent deserialize(Map<String, Object> map) {
-		String msg;
+	public static CommandQevent deserialize(Map<String, Object> map) {
+		String cmd;
 		int occ, del;
 		
-		msg = (String) map.get("message");
+		cmd = (String) map.get("command");
 		occ = (Integer) map.get("occasion");
 		del = (Integer) map.get("delay");
 		
-		return new MessageQevent(occ, del, msg);
+		return new CommandQevent(occ, del, cmd);
 	}
 
 	@Override
 	public void run(Player player) {
-		player.sendMessage(message);
+		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replace("%p", player.getName()));
 	}
 }

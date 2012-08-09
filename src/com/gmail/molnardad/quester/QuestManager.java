@@ -425,6 +425,23 @@ public class QuestManager {
 		}
 	}
 	
+	public void swapQuestObjectives (String changer, int first, int second) throws QuestModificationException, ObjectiveExistenceException, WhyException {
+		Quest quest = getSelected(changer);
+		if(first == second)
+			throw new WhyException();
+		if(quest == null)
+			throw new QuestModificationException("removeQuestObjective()", true);
+		if(quest.isActive())
+			throw new QuestModificationException("removeQuestObjective() 1", false);
+		if(quest.getObjective(first) == null || quest.getObjective(second) == null)
+			throw new ObjectiveExistenceException();
+		List<Objective> objs = quest.getObjectives();
+		Objective obj = objs.get(first);
+		objs.set(first, objs.get(second));
+		objs.set(second, obj);
+		QuestData.saveQuests();
+	}
+	
 	public void addQuestCondition(String changer, Condition newCondition) throws QuestModificationException {
 		Quest quest = getSelected(changer);
 		if(quest == null) {

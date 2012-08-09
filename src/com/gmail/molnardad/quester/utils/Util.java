@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -235,6 +236,43 @@ public class Util {
 					break;
 		}
 		return result;
+	}
+	
+	public static Map<String, Object> serializeLocation(Location loc) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		map.put("x", loc.getX());
+		map.put("y", loc.getY());
+		map.put("z", loc.getZ());
+		map.put("world", loc.getWorld().getName());
+		map.put("yaw", loc.getYaw());
+		map.put("pitch", loc.getPitch());
+		
+		return map;
+	}
+	
+	public static Location deserializeLocation(Map<String, Object> map) {
+		double x, y, z;
+		double yaw = 0;
+		double pitch = 0;
+		World world = null;
+		Location loc = null;
+		
+		try {
+			x = (Double) map.get("x");
+			y = (Double) map.get("y");
+			z = (Double) map.get("z");
+			world = Bukkit.getWorld((String) map.get("world"));
+			if(world == null)
+				throw new IllegalArgumentException();
+			if(map.get("yaw") != null)
+				yaw = (Double) map.get("yaw");
+			if(map.get("pitch") != null)
+				pitch = (Double) map.get("pitch");
+			loc = new Location(world, x, y, z, (float) yaw, (float) pitch);
+		} catch (Exception e) {}
+		
+		return loc;
 	}
 	
 	// SAVE / LOAD OBJECT
