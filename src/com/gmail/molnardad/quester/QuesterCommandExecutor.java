@@ -1445,8 +1445,8 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								
 								// MESSAGE EVENT
 								if(args[2].equalsIgnoreCase("msg")) {
-									if(args.length > 4) {
-										String msg = implode(args, 4);
+									if(args.length > 5) {
+										String msg = implode(args, 5);
 										try {
 											qm.addQevent(sender.getName(), new MessageQevent(occ, del, msg));
 											sender.sendMessage(ChatColor.GREEN + "Message event added.");
@@ -1508,6 +1508,10 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												return true;
 											}
 										}
+										if(loc == null) {
+											sender.sendMessage(ChatColor.RED + "Invalid location.");
+											return true;
+										}
 										try {
 											qm.addQevent(sender.getName(), new ExplosionQevent(occ, del, loc, fire));
 											sender.sendMessage(ChatColor.GREEN + "Explosion event added.");
@@ -1552,6 +1556,10 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												return true;
 											}
 										}
+										if(loc == null) {
+											sender.sendMessage(ChatColor.RED + "Invalid location.");
+											return true;
+										}
 										try {
 											qm.addQevent(sender.getName(), new LightningQevent(occ, del, loc, fire));
 											sender.sendMessage(ChatColor.GREEN + "Lightning event added.");
@@ -1590,6 +1598,10 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												sender.sendMessage(ChatColor.RED + "Invalid world.");
 												return true;
 											}
+										}
+										if(loc == null) {
+											sender.sendMessage(ChatColor.RED + "Invalid location.");
+											return true;
 										}
 										try {
 											qm.addQevent(sender.getName(), new TeleportQevent(occ, del, loc));
@@ -1657,7 +1669,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									return true;
 								}
 								
-								sender.sendMessage(ChatColor.RED + "Available event types: " + ChatColor.WHITE + "msg, explosion, block, tele");
+								sender.sendMessage(ChatColor.RED + "Available event types: " + ChatColor.WHITE + "msg, explosion, block, tele, lightning, cmd");
 								return true;
 							}
 							
