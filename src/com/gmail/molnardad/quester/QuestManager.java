@@ -3,7 +3,6 @@ package com.gmail.molnardad.quester;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,8 +24,6 @@ import static com.gmail.molnardad.quester.QuestData.allQuests;
 import static com.gmail.molnardad.quester.QuestData.profiles;
 
 public class QuestManager {
-	
-	public static Random randGen = new Random();
 	
 	// QuestManager methods
 	// - private part
@@ -564,7 +561,7 @@ public class QuestManager {
 		if(aqsts.isEmpty()) {
 			throw new QuestAvailabilityException("startRandomQuest()", false);
 		}
-		int id = randGen.nextInt(aqsts.size());
+		int id = Quester.randGen.nextInt(aqsts.size());
 		startQuest(player, aqsts.get(id).getName());
 	}
 	

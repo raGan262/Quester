@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
 import com.avaje.ebeaninternal.server.lib.util.InvalidDataException;
+import com.gmail.molnardad.quester.exceptions.CommandException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.objectives.*;
 import com.gmail.molnardad.quester.qevents.*;
@@ -816,58 +817,26 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							if(args[2].equalsIgnoreCase("loc")) {
 								if(args.length > 3) {
 									Location loc = null;
-									int rng = 3;
-									int rangeArg = 0;
-									if(args[3].equalsIgnoreCase("here")) {
-										if(player != null) {
-											loc = player.getLocation();
-										} else {
-											sender.sendMessage(ChatColor.RED + "Location 'here' requires player context.");
-											return true;
-										}
-										if(args.length > 4) {
-											rangeArg = 4;
-										}
-									} else if(args.length > 6) {
-										try {
-											loc = getLoc(sender, args, 3);
-										} catch (NumberFormatException e) {
-											sender.sendMessage(ChatColor.RED + "X, Y and Z must be >= 0.");
-											return true;
-										}
-										if(loc == null) {
-											if(args[6].equalsIgnoreCase("this")) {
-												sender.sendMessage(ChatColor.RED + "World 'this' requires player context.");
-											} else {
-												sender.sendMessage(ChatColor.RED + "World not found.");
-											}
-											return true;
-										}
-										if(args.length > 7) {
-											rangeArg = 7;
-										}
-									}
-									if(rangeArg > 0){
-										try {
-											rng = Integer.parseInt(args[rangeArg]);
+									int rng = 3;				
+									try {
+										loc = getLoc(sender, args[3]);
+										if(args.length > 4){
+											rng = Integer.parseInt(args[4]);
 											if(rng < 1) {
 												throw new NumberFormatException();
 											}
-										} catch (NumberFormatException e) {
-											sender.sendMessage(ChatColor.RED + "Range must be > 0.");
-											return true;
 										}
-									}
-									try {
 										qm.addQuestObjective(sender.getName(), new LocObjective(loc, rng));
 										sender.sendMessage(ChatColor.GREEN + "Location objective added.");
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + "Invalid range.");
 									}
 									return true;
 								}
 								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add loc {location} [range*].\n"
-										+ "{location} - [X] [Y] [Z] [world or 'this']; * - optional");
+										+ "{location} - [X];[Y];[Z];[world or 'this'] // * - optional");
 								return true;
 							}
 							
@@ -877,74 +846,30 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									int amt = 1;
 									Location loc = null;
 									int rng = 5;
-									// regular location
-									if(args.length > 7) {
-										try {
-											loc = getLoc(sender, args, 4);
-											amt = Integer.parseInt(args[3]);
-											rng = Integer.parseInt(args[5]);
-											if(rng <= 0) {
-												throw new NumberFormatException();
-											}
-										} catch (NumberFormatException e) {
-											if(args.length > 8) {
-												sender.sendMessage(ChatColor.RED + "Amount, X, Y, Z and range must be > 0.");
-											} else {
-												sender.sendMessage(ChatColor.RED + "Amount, X, Y and Z must be > 0.");
-											}
-											return true;
-										}
-										if(loc == null) {
-											if(args[7].equalsIgnoreCase("this")) {
-												sender.sendMessage(ChatColor.RED + "World 'this' requires player context.");
-											} else {
-												sender.sendMessage(ChatColor.RED + "World not found.");
-											}
-											return true;
+									try {
+										if(args.length > 4) {
+											loc = getLoc(sender, args[4]);
 											
+											if(args.length > 5) {
+												rng = Integer.parseInt(args[5]);
+												
+												if(rng < 1) {
+													throw new NumberFormatException();
+												}
+											}
 										}
 										
-									// 'here' or no location
-									} else {
-										try {
-											amt = Integer.parseInt(args[3]);
-											if(args.length > 5)
-												rng = Integer.parseInt(args[5]);
-											if(amt <= 0 || rng <= 0) {
-												throw new NumberFormatException();
-											}
-										} catch(NumberFormatException e) {
-											if(args.length > 5)
-												sender.sendMessage(ChatColor.RED + "Amount and range must be > 0.");
-											else 
-												sender.sendMessage(ChatColor.RED + "Amount must be > 0.");
-											return true;
-										}
-										// has 'here'
-										if(args.length > 4) {
-											if(args[4].equalsIgnoreCase("here")) {
-												if(player != null) {
-													loc = player.getLocation();
-												} else {
-													sender.sendMessage(ChatColor.RED + "Location 'here' requires player context.");
-													return true;
-												}
-											} else {
-												sender.sendMessage(ChatColor.RED + "Invalid location.");
-												return true;
-											}
-										}
-									}
-									try {
 										qm.addQuestObjective(sender.getName(), new DeathObjective(amt, loc, rng));
 										sender.sendMessage(ChatColor.GREEN + "Death objective added.");
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + "Invalid range.");
 									}
 									return true;
 								}
 								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add death [amount] {location*} [range*].\n"
-										+ "{location} - [X] [Y] [Z] [world or 'this']; * - optional");
+										+ "{location} - [X];[Y];[Z];[world or 'this'] , * - optional");
 								return true;
 							}
 							
@@ -1503,40 +1428,15 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								// EXPLOSION EVENT
 								if(args[2].equalsIgnoreCase("explosion")) {
 									if(args.length > 5) {
-										boolean fire = false;
+										boolean damage = false;
 										Location loc = null;
 										// LOCATION HERE
-										if(args[5].equalsIgnoreCase("here")) {
-											if(args.length > 6)
-												fire = Boolean.parseBoolean(args[6]);
-											if(player != null)
-												loc = player.getLocation();
-											else {
-												sender.sendMessage(ChatColor.RED + "Location 'here' requires player context.");
-												return true;
-											}
-										// LOCATION	
-										} else if(args.length > 8) {
-											try {
-												if(args.length > 9)
-													fire = Boolean.parseBoolean(args[9]);
-												loc = getLoc(sender, args, 5);
-												if(loc == null)
-													throw new IllegalArgumentException();
-											} catch (NumberFormatException e) {
-												sender.sendMessage(ChatColor.RED + "Invalid coordinates.");
-												return true;
-											} catch (IllegalArgumentException e) {
-												sender.sendMessage(ChatColor.RED + "Invalid world.");
-												return true;
-											}
-										}
-										if(loc == null) {
-											sender.sendMessage(ChatColor.RED + "Invalid location.");
-											return true;
-										}
 										try {
-											qm.addQevent(sender.getName(), new ExplosionQevent(occ, del, loc, fire));
+											loc = getLoc(sender, args[5]);
+											if(args.length > 6)
+												damage = Boolean.parseBoolean(args[6]);
+											
+											qm.addQevent(sender.getName(), new ExplosionQevent(occ, del, loc, damage));
 											sender.sendMessage(ChatColor.GREEN + "Explosion event added.");
 										} catch (QuesterException e) {
 											sender.sendMessage(e.message());
@@ -1551,40 +1451,14 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								// LIGHTNING EVENT
 								if(args[2].equalsIgnoreCase("lightning")) {
 									if(args.length > 5) {
-										boolean fire = false;
+										boolean damage = false;
 										Location loc = null;
-										// LOCATION HERE
-										if(args[5].equalsIgnoreCase("here")) {
-											if(args.length > 6)
-												fire = Boolean.parseBoolean(args[6]);
-											if(player != null)
-												loc = player.getLocation();
-											else {
-												sender.sendMessage(ChatColor.RED + "Location 'here' requires player context.");
-												return true;
-											}
-										// LOCATION	
-										} else if(args.length > 8) {
-											try {
-												if(args.length > 9)
-													fire = Boolean.parseBoolean(args[9]);
-												loc = getLoc(sender, args, 5);
-												if(loc == null)
-													throw new IllegalArgumentException();
-											} catch (NumberFormatException e) {
-												sender.sendMessage(ChatColor.RED + "Invalid coordinates.");
-												return true;
-											} catch (IllegalArgumentException e) {
-												sender.sendMessage(ChatColor.RED + "Invalid world.");
-												return true;
-											}
-										}
-										if(loc == null) {
-											sender.sendMessage(ChatColor.RED + "Invalid location.");
-											return true;
-										}
 										try {
-											qm.addQevent(sender.getName(), new LightningQevent(occ, del, loc, fire));
+											loc = getLoc(sender, args[5]);
+											if(args.length > 6)
+												damage = Boolean.parseBoolean(args[6]);
+											
+											qm.addQevent(sender.getName(), new LightningQevent(occ, del, loc, damage));
 											sender.sendMessage(ChatColor.GREEN + "Lightning event added.");
 										} catch (QuesterException e) {
 											sender.sendMessage(e.message());
@@ -1600,33 +1474,10 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								if(args[2].equalsIgnoreCase("tele")) {
 									if(args.length > 5) {
 										Location loc = null;
-										// LOCATION HERE
-										if(args[5].equalsIgnoreCase("here")) {
-											if(player != null)
-												loc = player.getLocation();
-											else {
-												sender.sendMessage(ChatColor.RED + "Location 'here' requires player context.");
-												return true;
-											}
-										// LOCATION	
-										} else if(args.length > 8) {
-											try {
-												loc = getLoc(sender, args, 5);
-												if(loc == null)
-													throw new IllegalArgumentException();
-											} catch (NumberFormatException e) {
-												sender.sendMessage(ChatColor.RED + "Invalid coordinates.");
-												return true;
-											} catch (IllegalArgumentException e) {
-												sender.sendMessage(ChatColor.RED + "Invalid world.");
-												return true;
-											}
-										}
-										if(loc == null) {
-											sender.sendMessage(ChatColor.RED + "Invalid location.");
-											return true;
-										}
+										
 										try {
+											loc = getLoc(sender, args[5]);
+											
 											qm.addQevent(sender.getName(), new TeleportQevent(occ, del, loc));
 											sender.sendMessage(ChatColor.GREEN + "Teleport event added.");
 										} catch (QuesterException e) {
@@ -1642,44 +1493,24 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								if(args[2].equalsIgnoreCase("block")) {
 									if(args.length > 6) {
 										Location loc = null;
-										
-										// LOCATION HERE
-										if(args[6].equalsIgnoreCase("here")) {
-											if(player != null) {
-												List<Block> blcks = player.getLastTwoTargetBlocks(null, 6);
-												if(!blcks.isEmpty())
-													loc = blcks.get(blcks.size()-1).getLocation();
-												else {
-													sender.sendMessage(ChatColor.RED + "You are not looking at a block.");
-													return true;
-												}
-											} else {
-												sender.sendMessage(ChatColor.RED + "Location 'here' requires player context.");
-												return true;
-											}
-										// LOCATION	
-										} else if(args.length > 9) {
-											try {
-												loc = getLoc(sender, args, 6);
-												if(loc == null)
-													throw new IllegalArgumentException();
-											} catch (NumberFormatException e) {
-												sender.sendMessage(ChatColor.RED + "Invalid coordinates.");
-												return true;
-											} catch (IllegalArgumentException e) {
-												sender.sendMessage(ChatColor.RED + "Invalid world.");
-												return true;
-											}
-										}
-										if(loc == null) {
-											sender.sendMessage(ChatColor.RED + "Invalid location.");
-											return true;
-										}	
 										try {
 											int[] itm = parseItem(args[5]);
 											if(itm[0] > 255)
-												throw new InvalidDataException("");
+												throw new CommandException("Unknown block.");
 											int dat = itm[1] < 0 ? 0 : itm[1];
+											if(args[6].equalsIgnoreCase("here")) {
+												if(player != null) {
+													List<Block> blcks = player.getLastTwoTargetBlocks(null, 6);
+													if(!blcks.isEmpty())
+														loc = blcks.get(blcks.size()-1).getLocation();
+													else {
+														throw new CommandException("You are not looking at a block.");
+													}
+												} else {
+													throw new CommandException("Location 'here' requires player context.");
+												}
+											} else
+												loc = getLoc(sender, args[6]);
 											qm.addQevent(sender.getName(), new SetBlockQevent(occ, del, itm[0], dat, loc));
 											sender.sendMessage(ChatColor.GREEN + "Block event added.");
 										} catch (QuesterException e) {
@@ -1850,7 +1681,6 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					}
 					return true;
 				}
-				
 				// QUEST STOP SAVE
 				if(args[0].equalsIgnoreCase("stopsave")) {
 					if(!permCheck(sender, QuestData.ADMIN_PERM, true)) {

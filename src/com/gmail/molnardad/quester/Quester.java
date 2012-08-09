@@ -1,5 +1,6 @@
 package com.gmail.molnardad.quester;
 
+import java.util.Random;
 import java.util.logging.Logger;
 
 import net.citizensnpcs.api.CitizensAPI;
@@ -25,6 +26,7 @@ public class Quester extends JavaPlugin {
 	
 		public static Quester plugin = null;
 		public static Logger log = null;
+		public static Random randGen = new Random();
 		public static Permission perms = null;
 		public static Economy econ = null;
 		public static QuestManager qMan = null;

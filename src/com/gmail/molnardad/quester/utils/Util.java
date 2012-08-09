@@ -18,9 +18,11 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import com.avaje.ebeaninternal.server.lib.util.InvalidDataException;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.exceptions.CommandException;
 
 public class Util {
 	
@@ -46,27 +48,44 @@ public class Util {
 		return lineColor + line1 + temp + line2;
 	}
 	
-	public static Location getLoc(CommandSender sender, String[] args, int i) throws NumberFormatException {
-		if(args.length > i+3){
-			double x = Double.parseDouble(args[i]);
-			double y = Double.parseDouble(args[i+1]);
-			double z = Double.parseDouble(args[i+2]);
-			if(y < 0) {
-				throw new NumberFormatException();
+	public static Location getLoc(CommandSender sender, String arg) throws NumberFormatException, CommandException {
+		String args[] = arg.split(";");
+		Location loc;
+		if(args.length < 1)
+			throw new CommandException("Invalid location.");
+		
+		if(args[0].equalsIgnoreCase("here")) {
+			if(sender instanceof Player)
+				return ((Player) sender).getLocation();
+			else
+				throw new CommandException("Location 'here' requires player context.");
+		}
+		
+		if(args.length > 3){
+			double x, y, z;
+			try {
+				x = Double.parseDouble(args[0]);
+				y = Double.parseDouble(args[1]);
+				z = Double.parseDouble(args[2]);
+			} catch (NumberFormatException e) {
+				throw new CommandException("Invalid coordinates.");
 			}
-			Location loc;
-			if(sender instanceof Player && args[i+3].equalsIgnoreCase("this")) {
+			if(y < 0) {
+				throw new CommandException("Invalid coordinates.");
+			}
+			if(sender instanceof Player && args[3].equalsIgnoreCase("this")) {
 				loc = new Location(((Player)sender).getWorld(), x, y, z);
 			} else {
-				World world = Quester.plugin.getServer().getWorld(args[i+3]);
+				World world = Quester.plugin.getServer().getWorld(args[3]);
 				if(world == null) {
-					return null;
+					throw new CommandException("Invalid world.");
 				}
 				loc = new Location(world, x, y, z);
 			}
 			return loc;
-		} else 
-			return null;
+		}
+		
+		throw new CommandException("Invalid location.");
 	}
 	
 	public static String implode(String[] strs) {
@@ -273,6 +292,14 @@ public class Util {
 		} catch (Exception e) {}
 		
 		return loc;
+	}
+	
+	public static Location move(Location loc, double d) {
+		Location newLoc = loc.clone();
+		Vector v = new Vector(Quester.randGen.nextDouble()*d*2 - d, 0, Quester.randGen.nextDouble()*d*2 - d);
+		newLoc.add(v);
+		
+		return newLoc;
 	}
 	
 	// SAVE / LOAD OBJECT
