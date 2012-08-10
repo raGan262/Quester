@@ -1338,7 +1338,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")){
 							try {
 								int id = Integer.parseInt(args[2]);
-								qm.removeQuestObjective(sender.getName(), id);
+								qm.removeQuestCondition(sender.getName(), id);
 								sender.sendMessage(ChatColor.GREEN + "Condition " + args[2] + " removed.");
 							} catch (NumberFormatException e) {
 								sender.sendMessage(ChatColor.RED + "Usage: /quest condition remove [id_number].");
