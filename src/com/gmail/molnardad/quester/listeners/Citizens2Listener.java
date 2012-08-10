@@ -26,6 +26,9 @@ public class Citizens2Listener implements Listener {
 			event.getNPC().getTrait(QuesterTrait.class).check();
 			QuestManager qm = Quester.qMan;
 			Player player = event.getClicker();
+			if(!Util.permCheck(player, QuestData.PERM_USE_NPC, true)) {
+				return;
+			}
 			// If player has perms and holds blaze rod
 			boolean isOp = Util.permCheck(player, QuestData.MODIFY_PERM, false);
 			if(isOp) {
@@ -83,10 +86,10 @@ public class Citizens2Listener implements Listener {
 			event.getNPC().getTrait(QuesterTrait.class).check();
 			QuestManager qm = Quester.qMan;
 			Player player = event.getClicker();
-			boolean isOP = Util.permCheck(player, QuestData.MODIFY_PERM, false);
-			if(!Util.permCheck(player, QuestData.USE_PERM, true)) {
+			if(!Util.permCheck(player, QuestData.PERM_USE_NPC, true)) {
 				return;
 			}
+			boolean isOP = Util.permCheck(player, QuestData.MODIFY_PERM, false);
 			// If player has perms and holds blaze rod
 			if(isOP) {
 				if(player.getItemInHand().getTypeId() == 369) {

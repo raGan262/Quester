@@ -52,14 +52,51 @@ public class QuesterCommandExecutor implements CommandExecutor {
 				
 				// QUEST HELP
 				if(args[0].equalsIgnoreCase("help") || args[0].equalsIgnoreCase("?")) {
+					if(!permCheck(sender, QuestData.PERM_USE_HELP, true)) {
+						return true;
+					}
 					sender.sendMessage(line(ChatColor.BLUE, "Quester help", ChatColor.GOLD));
 					sender.sendMessage(ChatColor.GOLD + "/quest help/? " + ChatColor.GRAY + "- this");
-					sender.sendMessage(ChatColor.GOLD + "/quest info [name] " + ChatColor.GRAY + "- shows info about quest");
-					sender.sendMessage(ChatColor.GOLD + "/quest show [name] " + ChatColor.GRAY + "- shows info about quest");
-					sender.sendMessage(ChatColor.GOLD + "/quest start [name] " + ChatColor.GRAY + "- starts a quest");
-					sender.sendMessage(ChatColor.GOLD + "/quest cancel " + ChatColor.GRAY + "- cancels current quest");
-					sender.sendMessage(ChatColor.GOLD + "/quest done " + ChatColor.GRAY + "- completes current quest");
-					sender.sendMessage(ChatColor.GOLD + "/quest progress " + ChatColor.GRAY + "- shows current quest progress");
+					if(permCheck(sender, QuestData.PERM_USE_LIST, false))
+						sender.sendMessage(ChatColor.GOLD + "/quest list " + ChatColor.GRAY + "- displays quest list");
+					if(permCheck(sender, QuestData.PERM_USE_INFO, false)) {
+						sender.sendMessage(ChatColor.GOLD + "/quest show [name] " + ChatColor.GRAY + "- shows info about quest");
+					}
+					if(permCheck(sender, QuestData.PERM_USE_START, false))
+						sender.sendMessage(ChatColor.GOLD + "/quest start [name] " + ChatColor.GRAY + "- starts a quest");
+					if(permCheck(sender, QuestData.PERM_USE_CANCEL, false))
+						sender.sendMessage(ChatColor.GOLD + "/quest cancel " + ChatColor.GRAY + "- cancels current quest");
+					if(permCheck(sender, QuestData.PERM_USE_DONE, false))
+						sender.sendMessage(ChatColor.GOLD + "/quest done " + ChatColor.GRAY + "- completes current quest");
+					if(permCheck(sender, QuestData.PERM_USE_PROGRESS, false))
+						sender.sendMessage(ChatColor.GOLD + "/quest progress " + ChatColor.GRAY + "- shows current quest progress");
+					if(permCheck(sender, QuestData.PERM_USE_PROFILE, false))
+						sender.sendMessage(ChatColor.GOLD + "/quest profile " + ChatColor.GRAY + "- displays your quester profile");
+					if(permCheck(sender, QuestData.MODIFY_PERM, false)) {
+						sender.sendMessage(line(ChatColor.BLUE, "Modify help", ChatColor.GOLD));
+						sender.sendMessage(ChatColor.GOLD + "/q profile [name] " + ChatColor.GRAY + "- shows player's profile");
+						sender.sendMessage(ChatColor.GOLD + "/q create [name] " + ChatColor.GRAY + "- creates a quest");
+						sender.sendMessage(ChatColor.GOLD + "/q remove [name] " + ChatColor.GRAY + "- removes the quest");
+						sender.sendMessage(ChatColor.GOLD + "/q select [name] " + ChatColor.GRAY + "- selects the quest");
+						sender.sendMessage(ChatColor.GOLD + "/q toggle [name*] " + ChatColor.GRAY + "- toggles state of the quest");
+						sender.sendMessage(ChatColor.GOLD + "/q info [name*] " + ChatColor.GRAY + "- shows detailed info about the quest");
+						sender.sendMessage(line(ChatColor.DARK_GRAY, "Applies only to selected quest"));
+						sender.sendMessage(ChatColor.GOLD + "/q name [newName]" + ChatColor.GRAY + "- changes the name");
+						sender.sendMessage(ChatColor.GOLD + "/q dest set\\add" + ChatColor.GRAY + "- quest description manipulation");
+						sender.sendMessage(ChatColor.GOLD + "/q world add\\remove" + ChatColor.GRAY + "- world restriction manipulation");
+						sender.sendMessage(ChatColor.GOLD + "/q flag add\\remove" + ChatColor.GRAY + "- quest flag manipulation");
+						sender.sendMessage(ChatColor.GOLD + "/q condition add\\remove" + ChatColor.GRAY + "- condition manipulation");
+						sender.sendMessage(ChatColor.GOLD + "/q objective add\\remove\\swap\\desc" + ChatColor.GRAY + "- objective manipulation");
+						sender.sendMessage(ChatColor.GOLD + "/q event add\\remove" + ChatColor.GRAY + "- event manipulation");
+						sender.sendMessage(ChatColor.GOLD + "/q reward add\\remove" + ChatColor.GRAY + "- reward manipulation");
+					}
+					if(permCheck(sender, QuestData.ADMIN_PERM, false)) {
+						sender.sendMessage(line(ChatColor.BLUE, "Admin help", ChatColor.GOLD));
+						sender.sendMessage(ChatColor.GOLD + "/q startsave " + ChatColor.GRAY + "- starts scheduled profile saving");
+						sender.sendMessage(ChatColor.GOLD + "/q stopsave " + ChatColor.GRAY + "- stops scheduled profile saving");
+						sender.sendMessage(ChatColor.GOLD + "/q save " + ChatColor.GRAY + "- saves profiles");
+						sender.sendMessage(ChatColor.GOLD + "/q reload " + ChatColor.GRAY + "- reloads config");
+					}
 					sender.sendMessage(line(ChatColor.BLUE));
 					return true;
 				}
@@ -73,7 +110,9 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							return true;
 						}
 					}
-					
+					if(!permCheck(sender, QuestData.PERM_USE_PROFILE, true)) {
+						return true;
+					}
 					qm.showProfile(sender);
 					return true;
 				}
@@ -1636,7 +1675,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 				
 				// QUEST START
 				if(args[0].equalsIgnoreCase("start")) {
-					if(!permCheck(sender, QuestData.USE_PERM, true)) {
+					if(!permCheck(sender, QuestData.PERM_USE_START, true)) {
 						return true;
 					}
 					if(player == null) {
@@ -1662,7 +1701,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 				
 				// QUEST CANCEL
 				if(args[0].equalsIgnoreCase("cancel")) {
-					if(!permCheck(sender, QuestData.USE_PERM, true)) {
+					if(!permCheck(sender, QuestData.PERM_USE_CANCEL, true)) {
 						return true;
 					}
 					if(player == null) {
@@ -1682,7 +1721,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 				
 				// QUEST DONE
 				if(args[0].equalsIgnoreCase("done")) {
-					if(!permCheck(sender, QuestData.USE_PERM, true)) {
+					if(!permCheck(sender, QuestData.PERM_USE_DONE, true)) {
 						return true;
 					}
 					if(player == null) {
@@ -1703,7 +1742,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 				
 				// QUEST PROGRESS
 				if(args[0].equalsIgnoreCase("progress")) {
-					if(!permCheck(sender, QuestData.USE_PERM, true)) {
+					if(!permCheck(sender, QuestData.PERM_USE_PROGRESS, true)) {
 						return true;
 					}
 					if(player == null) {
