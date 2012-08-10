@@ -1476,21 +1476,29 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									if(args.length > 5) {
 										boolean damage = false;
 										Location loc = null;
-										// LOCATION HERE
+										int rng = 0;
 										try {
-											loc = getLoc(sender, args[5]);
-											if(args.length > 6)
-												damage = Boolean.parseBoolean(args[6]);
-											
-											qm.addQevent(sender.getName(), new ExplosionQevent(occ, del, loc, damage));
+											if(!args[5].equalsIgnoreCase("player"))
+												loc = getLoc(sender, args[5]);
+											if(args.length > 6) {
+												rng = Integer.parseInt(args[6]);
+												if(rng < 0) {
+													throw new NumberFormatException();
+												}
+												if(args.length > 7)
+													damage = Boolean.parseBoolean(args[7]);
+											}
+											qm.addQevent(sender.getName(), new ExplosionQevent(occ, del, loc, rng, damage));
 											sender.sendMessage(ChatColor.GREEN + "Explosion event added.");
 										} catch (QuesterException e) {
 											sender.sendMessage(e.message());
+										} catch (NumberFormatException e) {
+											sender.sendMessage(ChatColor.RED + "Range must be number.");
 										}
 										return true;
 									}
-									sender.sendMessage(ChatColor.RED + "Usage: /quest event add explosion {occasion} [delay] {location} [damage*]\n"
-											+ "* - true or false");
+									sender.sendMessage(ChatColor.RED + "Usage: /quest event add explosion {occasion} [delay] {location} [range*] [damage*]\n"
+											+ "* - optional, default range = 0, default damage = false");
 									return true;
 								}
 								
@@ -1499,20 +1507,29 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									if(args.length > 5) {
 										boolean damage = false;
 										Location loc = null;
+										int rng = 0;
 										try {
-											loc = getLoc(sender, args[5]);
-											if(args.length > 6)
-												damage = Boolean.parseBoolean(args[6]);
-											
-											qm.addQevent(sender.getName(), new LightningQevent(occ, del, loc, damage));
+											if(!args[5].equalsIgnoreCase("player"))
+												loc = getLoc(sender, args[5]);
+											if(args.length > 6) {
+												rng = Integer.parseInt(args[6]);
+												if(rng < 0) {
+													throw new NumberFormatException();
+												}
+												if(args.length > 7)
+													damage = Boolean.parseBoolean(args[7]);
+											}
+											qm.addQevent(sender.getName(), new LightningQevent(occ, del, loc, rng, damage));
 											sender.sendMessage(ChatColor.GREEN + "Lightning event added.");
 										} catch (QuesterException e) {
 											sender.sendMessage(e.message());
+										} catch (NumberFormatException e) {
+											sender.sendMessage(ChatColor.RED + "Range must be number.");
 										}
 										return true;
 									}
-									sender.sendMessage(ChatColor.RED + "Usage: /quest event add lightning {occasion} [delay] {location} [damage*]\n"
-											+ "* - true or false");
+									sender.sendMessage(ChatColor.RED + "Usage: /quest event add lightning {occasion} [delay] {location} [range*] [damage*]\n"
+											+ "* - optional, default range = 0, default damage = false");
 									return true;
 								}
 								

@@ -260,6 +260,9 @@ public class Util {
 	public static Map<String, Object> serializeLocation(Location loc) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
+		if(loc == null)
+			return map;
+		
 		map.put("x", loc.getX());
 		map.put("y", loc.getY());
 		map.put("z", loc.getZ());

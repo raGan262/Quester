@@ -15,11 +15,13 @@ public final class LightningQevent extends Qevent {
 	private final String TYPE = "LIGHTNING";
 	private final Location location;
 	private final boolean damage;
+	private final int range;
 	
-	public LightningQevent(int occ, int del, Location loc, boolean damage) {
+	public LightningQevent(int occ, int del, Location loc, int rng, boolean damage) {
 		super(occ, del);
 		this.location = loc;
 		this.damage = damage;
+		this.range = rng;
 	}
 	
 	@Override
@@ -34,8 +36,12 @@ public final class LightningQevent extends Qevent {
 	
 	@Override
 	public String toString() {
-		String locStr = String.format("%.1f:%.1f:%.1f("+location.getWorld().getName()+")", location.getX(), location.getY(), location.getZ());
-		return TYPE + ": ON-" + parseOccasion(occasion) + "; LOC: " + locStr + "; DMG: " + damage;
+		String locStr;
+		if(location == null)
+			locStr = "PLAYER";
+		else
+			locStr = String.format("%.1f:%.1f:%.1f("+location.getWorld().getName()+")", location.getX(), location.getY(), location.getZ());
+		return TYPE + ": ON-" + parseOccasion(occasion) + "; LOC: " + locStr + "; RNG: " + range + "; DMG: " + damage;
 	}
 
 	@Override
@@ -46,36 +52,43 @@ public final class LightningQevent extends Qevent {
 		map.put("occasion", occasion);
 		map.put("delay", delay);
 		map.put("location", Util.serializeLocation(location));
+		map.put("range", range);
 		
 		return map;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public static LightningQevent deserialize(Map<String, Object> map) {
-		int occ, del;
+		int occ, del, rng = 0;
 		boolean damage;
 		Location loc = null;
 		try {
 			occ = (Integer) map.get("occasion");
 			damage = (Boolean) map.get("damage");
 			del = (Integer) map.get("delay");
+			if(map.get("range") != null)
+				rng = (Integer) map.get("range");
 			
 			if(map.get("location") != null)
 				loc = Util.deserializeLocation((Map<String, Object>) map.get("location"));
-			if(loc == null)
-				return null;
 		} catch (Exception e) {
 			return null;
 		}
 		
-		return new LightningQevent(occ, del, loc, damage);
+		return new LightningQevent(occ, del, loc, rng, damage);
 	}
 
 	@Override
 	public void run(Player player) {
-		if(damage)
-			location.getWorld().strikeLightning(location);
+		Location loc;;
+		if(location == null)
+			loc = Util.move(player.getLocation(), range);
 		else
-			location.getWorld().strikeLightningEffect(location);
+			loc = Util.move(location, range);
+		
+		if(damage)
+			loc.getWorld().strikeLightning(loc);
+		else
+			loc.getWorld().strikeLightningEffect(loc);
 	}
 }

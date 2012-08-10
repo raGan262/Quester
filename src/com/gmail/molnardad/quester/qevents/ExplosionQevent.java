@@ -15,11 +15,13 @@ public final class ExplosionQevent extends Qevent {
 	private final String TYPE = "EXPLOSION";
 	private final Location location;
 	private final boolean damage;
+	private final int range;
 	
-	public ExplosionQevent(int occ, int del, Location loc, boolean dmg) {
+	public ExplosionQevent(int occ, int del, Location loc, int rng, boolean dmg) {
 		super(occ, del);
 		this.location = loc;
 		this.damage = dmg;
+		this.range = rng;
 	}
 	
 	@Override
@@ -34,8 +36,12 @@ public final class ExplosionQevent extends Qevent {
 	
 	@Override
 	public String toString() {
-		String locStr = String.format("%.1f:%.1f:%.1f("+location.getWorld().getName()+")", location.getX(), location.getY(), location.getZ());
-		return TYPE + ": ON-" + parseOccasion(occasion) + "; LOC: " + locStr + "; DMG: " + damage;
+		String locStr;
+		if(location == null)
+			locStr = "PLAYER";
+		else
+			locStr = String.format("%.1f:%.1f:%.1f("+location.getWorld().getName()+")", location.getX(), location.getY(), location.getZ());
+		return TYPE + ": ON-" + parseOccasion(occasion) + "; LOC: " + locStr + "; RNG: " + range + "; DMG: " + damage;
 	}
 
 	@Override
@@ -46,36 +52,43 @@ public final class ExplosionQevent extends Qevent {
 		map.put("occasion", occasion);
 		map.put("delay", delay);
 		map.put("location", Util.serializeLocation(location));
+		map.put("range", range);
 		
 		return map;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public static ExplosionQevent deserialize(Map<String, Object> map) {
-		int occ, del;
-		boolean fire;
+		int occ, del, rng = 0;
+		boolean dmg;
 		Location loc = null;
 		try {
 			occ = (Integer) map.get("occasion");
-			fire = (Boolean) map.get("damage");
+			dmg = (Boolean) map.get("damage");
 			del = (Integer) map.get("delay");
+			if(map.get("range") != null)
+				rng = (Integer) map.get("range");
 			
 			if(map.get("location") != null)
 				loc = Util.deserializeLocation((Map<String, Object>) map.get("location"));
-			if(loc == null)
-				return null;
 		} catch (Exception e) {
 			return null;
 		}
 		
-		return new ExplosionQevent(occ, del, loc, fire);
+		return new ExplosionQevent(occ, del, loc, rng, dmg);
 	}
 
 	@Override
 	public void run(Player player) {
-		if(damage)
-			location.getWorld().createExplosion(location, 4F);
+		Location loc;;
+		if(location == null)
+			loc = Util.move(player.getLocation(), range);
 		else
-			location.getWorld().createExplosion(location, 0F);
+			loc = Util.move(location, range);
+		
+		if(damage)
+			loc.getWorld().createExplosion(loc, 4F);
+		else
+			loc.getWorld().createExplosion(loc, 0F);
 	}
 }
