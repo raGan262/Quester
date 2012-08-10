@@ -1493,6 +1493,33 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									return true;
 								}
 								
+								// QUEST EVENT
+								if(args[2].equalsIgnoreCase("quest")) {
+									if(args.length > 5) {
+										String qst = implode(args, 5);
+										try {
+											qm.addQevent(sender.getName(), new QuestQevent(occ, del, qst));
+											sender.sendMessage(ChatColor.GREEN + "Quest event added.");
+										} catch (QuesterException e) {
+											sender.sendMessage(e.message());
+										}
+										return true;
+									}
+									sender.sendMessage(ChatColor.RED + "Usage: /quest event add quest {occasion} [delay] [quest_name]");
+									return true;
+								}
+								
+								// QUEST EVENT
+								if(args[2].equalsIgnoreCase("cancel")) {
+										try {
+											qm.addQevent(sender.getName(), new CancelQevent(occ, del));
+											sender.sendMessage(ChatColor.GREEN + "Cancel event added.");
+										} catch (QuesterException e) {
+											sender.sendMessage(e.message());
+										}
+									return true;
+								}
+								
 								// COMMAND EVENT
 								if(args[2].equalsIgnoreCase("cmd")) {
 									if(args.length > 5) {
@@ -1625,7 +1652,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									return true;
 								}
 								
-								sender.sendMessage(ChatColor.RED + "Available event types: " + ChatColor.WHITE + "msg, explosion, block, tele, lightning, cmd");
+								sender.sendMessage(ChatColor.RED + "Available event types: " + ChatColor.WHITE + "msg, explosion, block, tele, lightning, cmd, quest, cancel");
 								return true;
 							}
 							
