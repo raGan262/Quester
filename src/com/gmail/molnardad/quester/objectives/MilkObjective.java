@@ -2,6 +2,7 @@ package com.gmail.molnardad.quester.objectives;
 
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
@@ -32,6 +33,9 @@ public final class MilkObjective extends Objective {
 	
 	@Override
 	public String progress(int progress) {
+		if(!desc.isEmpty()) {
+			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
+		}
 		return "Milk cow - " + (amount - progress) + "x";
 	}
 	
@@ -65,7 +69,7 @@ public final class MilkObjective extends Objective {
 		}
 		
 		MilkObjective obj = new MilkObjective(amt);
-		obj.loadQevents(map);
+		obj.loadSuper(map);
 		return obj;
 	}
 }

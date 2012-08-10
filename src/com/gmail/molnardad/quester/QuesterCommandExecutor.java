@@ -1193,7 +1193,53 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							return true;
 						}
 						
-						sender.sendMessage(ChatColor.RED + "Usage: /quest objective [add|remove|swap] [args].");
+						// OBJECTIVE DESCRIPTION
+						if(args[1].equalsIgnoreCase("desc")){
+							if(args.length > 3) {
+								int obj;
+								try {
+									obj = Integer.parseInt(args[3]);
+								} catch (NumberFormatException e) {
+									sender.sendMessage(ChatColor.RED + "Objective ID must be number.");
+									return true;
+								}
+								
+								if(args[2].equalsIgnoreCase("add") || args[2].equalsIgnoreCase("a")) {
+									
+									if(args.length > 4) {
+										String desc = implode(args, 4);
+										try {
+											qm.addObjectiveDescription(sender.getName(), obj, desc);
+											sender.sendMessage(ChatColor.GREEN + "Description to objective " + obj + " added.");
+										} catch (QuesterException e) {
+											sender.sendMessage(e.message());
+										}
+										return true;
+									}
+										
+									sender.sendMessage(ChatColor.RED + "Usage: /quest objective desc add [obj_ID] [description*]\n"
+											+ "* - %r = remaining amount, %t = total required amount");
+									return true;	
+								}
+								
+								if(args[2].equalsIgnoreCase("remove") || args[2].equalsIgnoreCase("r")) {
+									try {
+										qm.removeObjectiveDescription(sender.getName(), obj);
+										sender.sendMessage(ChatColor.GREEN + "Description of objective " + obj + " removed.");
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								
+								return true;
+							}	
+								
+							sender.sendMessage(ChatColor.RED + "Usage: /quest objective desc [add|remove] [obj_ID]");
+							return true;
+						}
+						
+						sender.sendMessage(ChatColor.RED + "Usage: /quest objective [add|remove|swap|desc] [args].");
 						return true;
 					}
 					

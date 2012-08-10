@@ -3,6 +3,7 @@ package com.gmail.molnardad.quester.objectives;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.SerializableAs;
 
 @SerializableAs("QuesterWorldObjective")
@@ -22,6 +23,9 @@ public final class WorldObjective extends Objective {
 	
 	@Override
 	public String progress(int progress) {
+		if(!desc.isEmpty()) {
+			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(1 - progress)).replaceAll("%t", String.valueOf(1));
+		}
 		return "Visit world '" + worldName + "'.";
 	}
 	
@@ -51,7 +55,7 @@ public final class WorldObjective extends Objective {
 				return null;
 			
 			WorldObjective obj = new WorldObjective(world);
-			obj.loadQevents(map);
+			obj.loadSuper(map);
 			return obj;
 		} catch (Exception e) {
 			return null;

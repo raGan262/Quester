@@ -2,6 +2,7 @@ package com.gmail.molnardad.quester.objectives;
 
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
@@ -38,6 +39,9 @@ public final class ShearObjective extends Objective {
 
 	@Override
 	public String progress(int progress) {
+		if(!desc.isEmpty()) {
+			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
+		}
 		String strCol = (color == null) ? "any" : color.name().replace('_', ' ').toLowerCase() ;
 		return "Shear " + strCol + " sheep - " + (amount - progress) + "x";
 	}
@@ -77,7 +81,7 @@ public final class ShearObjective extends Objective {
 			dat = (Integer) map.get("color");
 			
 			ShearObjective obj = new ShearObjective(amt, (byte)dat);
-			obj.loadQevents(map);
+			obj.loadSuper(map);
 			return obj;
 		} catch (Exception e) {
 			return null;

@@ -3,6 +3,7 @@ package com.gmail.molnardad.quester.objectives;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.SerializableAs;
 
@@ -31,6 +32,9 @@ public final class LocObjective extends Objective {
 	
 	@Override
 	public String progress(int progress) {
+		if(!desc.isEmpty()) {
+			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(1 - progress)).replaceAll("%t", String.valueOf(1));
+		}
 		String locStr = String.format("%d blocks close to %.1f %.1f %.1f("+worldName+")", range, x, y, z);
 		return "Come at least " + locStr + ".";
 	}
@@ -84,7 +88,7 @@ public final class LocObjective extends Objective {
 				return null;
 			
 			LocObjective obj = new LocObjective(loc, rng);
-			obj.loadQevents(map);
+			obj.loadSuper(map);
 			return obj;
 		} catch (Exception e) {
 			return null;

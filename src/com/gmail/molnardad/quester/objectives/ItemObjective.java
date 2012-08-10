@@ -3,6 +3,7 @@ package com.gmail.molnardad.quester.objectives;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.enchantments.Enchantment;
@@ -41,6 +42,9 @@ public final class ItemObjective extends Objective {
 	
 	@Override
 	public String progress(int progress) {
+		if(!desc.isEmpty()) {
+			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(1 - progress)).replaceAll("%t", String.valueOf(amount));
+		}
 		String datStr = data < 0 ? " (any) " : " (data " + data + ") ";
 		String pcs = amount == 1 ? " piece of " : " pieces of ";
 		String enchs = "\n -- Enchants:";
@@ -127,7 +131,7 @@ public final class ItemObjective extends Objective {
 				enchs = (Map<Integer, Integer>) map.get("enchants");
 			
 			ItemObjective obj = new ItemObjective(mat, amt, dat, enchs);
-			obj.loadQevents(map);
+			obj.loadSuper(map);
 			return obj;
 		} catch (Exception e) {
 			return null;

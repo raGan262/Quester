@@ -2,6 +2,7 @@ package com.gmail.molnardad.quester.objectives;
 
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
@@ -34,6 +35,9 @@ public final class PlayerKillObjective extends Objective {
 
 	@Override
 	public String progress(int progress) {
+		if(!desc.isEmpty()) {
+			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
+		}
 		String player = playerName.equals("") ? "any player" : "player named " + playerName;
 		return "Kill " + player + " - " + (amount - progress) + "x";
 	}
@@ -72,7 +76,7 @@ public final class PlayerKillObjective extends Objective {
 			wanted = (String) map.get("wanted");
 			
 			PlayerKillObjective obj = new PlayerKillObjective(amt, wanted);
-			obj.loadQevents(map);
+			obj.loadSuper(map);
 			return obj;
 		} catch (Exception e) {
 			return null;

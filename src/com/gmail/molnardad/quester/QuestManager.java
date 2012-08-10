@@ -421,7 +421,7 @@ public class QuestManager {
 		QuestData.saveQuests();
 	}
 	
-	public void removeQuestObjective(String changer, int id) throws QuestModificationException, QuestExistenceException {
+	public void removeQuestObjective(String changer, int id) throws QuestModificationException, QuestExistenceException, ObjectiveExistenceException {
 		Quest quest = getSelected(changer);
 		if(quest == null) {
 			throw new QuestModificationException("removeQuestObjective()", true);
@@ -430,10 +430,42 @@ public class QuestManager {
 			throw new QuestModificationException("removeQuestObjective() 1", false);
 		}
 		if(!quest.removeObjective(id)){
-			throw new QuestExistenceException("removeQuestObjective()", false);
+			throw new ObjectiveExistenceException();
 		} else {
 			QuestData.saveQuests();
 		}
+	}
+	
+	public void addObjectiveDescription(String changer, int id, String desc) throws QuestModificationException, ObjectiveExistenceException {
+		Quest quest = getSelected(changer);
+		if(quest == null) {
+			throw new QuestModificationException("addQuestObjective()", true);
+		}
+		if(quest.hasFlag(QuestFlag.ACTIVE)) {
+			throw new QuestModificationException("addQuestObjective() 1", false);
+		}
+		List<Objective> objs = quest.getObjectives();
+		if(id >= objs.size() || id < 0) {
+			throw new ObjectiveExistenceException();
+		}
+		objs.get(id).addDescription(desc);
+		QuestData.saveQuests();
+	}
+	
+	public void removeObjectiveDescription(String changer, int id) throws QuestModificationException, QuestExistenceException, ObjectiveExistenceException {
+		Quest quest = getSelected(changer);
+		if(quest == null) {
+			throw new QuestModificationException("removeQuestObjective()", true);
+		}
+		if(quest.hasFlag(QuestFlag.ACTIVE)) {
+			throw new QuestModificationException("removeQuestObjective() 1", false);
+		}
+		List<Objective> objs = quest.getObjectives();
+		if(id >= objs.size() || id < 0) {
+			throw new ObjectiveExistenceException();
+		}
+		objs.get(id).removeDescription();
+		QuestData.saveQuests();
 	}
 	
 	public void swapQuestObjectives (String changer, int first, int second) throws QuestModificationException, ObjectiveExistenceException, WhyException {

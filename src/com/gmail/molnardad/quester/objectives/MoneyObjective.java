@@ -2,6 +2,7 @@ package com.gmail.molnardad.quester.objectives;
 
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
@@ -30,6 +31,9 @@ public final class MoneyObjective extends Objective {
 	
 	@Override
 	public String progress(int progress) {
+		if(!desc.isEmpty()) {
+			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(1 - progress)).replaceAll("%t", String.valueOf(amount));
+		}
 		return "Get " + amount + " " + Quester.econ.currencyNamePlural();
 	}
 	
@@ -63,7 +67,7 @@ public final class MoneyObjective extends Objective {
 		}
 		
 		MoneyObjective obj = new MoneyObjective(amt);
-		obj.loadQevents(map);
+		obj.loadSuper(map);
 		return obj;
 	}
 

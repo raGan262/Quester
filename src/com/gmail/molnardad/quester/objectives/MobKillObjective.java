@@ -2,6 +2,7 @@ package com.gmail.molnardad.quester.objectives;
 
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -35,6 +36,9 @@ public final class MobKillObjective extends Objective {
 
 	@Override
 	public String progress(int progress) {
+		if(!desc.isEmpty()) {
+			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
+		}
 		String mob = entity == null ? "any mob" : entity.getName();
 		return "Kill " + mob + " - " + (amount - progress) + "x";
 	}
@@ -76,7 +80,7 @@ public final class MobKillObjective extends Objective {
 			ent = EntityType.fromId((Integer) map.get("entity"));
 			
 			MobKillObjective obj = new MobKillObjective(amt, ent);
-			obj.loadQevents(map);
+			obj.loadSuper(map);
 			return obj;
 		} catch (Exception e) {
 			return null;

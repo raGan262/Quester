@@ -3,6 +3,7 @@ package com.gmail.molnardad.quester.objectives;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
@@ -51,6 +52,9 @@ public final class DeathObjective extends Objective {
 	
 	@Override
 	public String progress(int progress) {
+		if(!desc.isEmpty()) {
+			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
+		}
 		String locStr = y < 0 ? "anywhere " : String.format("max %d blocks from %.1f %.1f %.1f("+worldName+") ", range, x, y, z);
 		return "Die " + locStr + String.valueOf(amount - progress)+"x.";
 	}
@@ -109,7 +113,7 @@ public final class DeathObjective extends Objective {
 			if(rng < 1)
 				return null;
 			DeathObjective obj = new DeathObjective(amt, loc, rng);
-			obj.loadQevents(map);
+			obj.loadSuper(map);
 			return obj;
 		} catch (Exception e) {
 			return null;

@@ -2,6 +2,7 @@ package com.gmail.molnardad.quester.objectives;
 
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
@@ -38,6 +39,9 @@ public final class SmeltObjective extends Objective {
 	
 	@Override
 	public String progress(int progress) {
+		if(!desc.isEmpty()) {
+			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
+		}
 		String datStr = data < 0 ? " (any) " : " (data " + data + ") ";
 		String pcs = (amount - progress) == 1 ? " piece of " : " pieces of ";
 		String mat = material.getId() == 351 ? "dye" : material.name().toLowerCase();
@@ -84,7 +88,7 @@ public final class SmeltObjective extends Objective {
 				return null;
 			
 			SmeltObjective obj = new SmeltObjective(mat, amt, dat);
-			obj.loadQevents(map);
+			obj.loadSuper(map);
 			return obj;
 		} catch (Exception e) {
 			return null;
