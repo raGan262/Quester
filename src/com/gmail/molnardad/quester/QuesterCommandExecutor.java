@@ -163,7 +163,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 				if(args[0].equalsIgnoreCase("list")) {
 					if(permCheck(sender, QuestData.MODIFY_PERM, false)) {
 						qm.showFullQuestList(sender);
-					} else {
+					} else if(permCheck(sender, QuestData.PERM_USE_LIST, true)) {
 						qm.showQuestList(sender);
 					}
 					return true;
