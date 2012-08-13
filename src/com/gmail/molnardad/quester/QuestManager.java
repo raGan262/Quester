@@ -731,7 +731,9 @@ public class QuestManager {
 		if(qst == null)
 			throw new QuestExistenceException("showQuest()", false);
 		if(!qst.hasFlag(QuestFlag.ACTIVE)) {
-			throw new QuestExistenceException("showQuest() 1", false);
+			if(!Util.permCheck(sender, QuestData.MODIFY_PERM, false)) {
+				throw new QuestExistenceException("showQuest() 1", false);
+			}
 		}
 		Player player = null;
 		if(sender instanceof Player)

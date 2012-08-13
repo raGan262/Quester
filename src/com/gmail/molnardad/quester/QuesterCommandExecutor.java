@@ -303,7 +303,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						}
 						
 						if(flags.isEmpty()) {
-							sender.sendMessage(ChatColor.RED + "No correct flags.");
+							sender.sendMessage(ChatColor.RED + "Available flags: " + ChatColor.WHITE + "ordered, uncancellable, onlyfirst");
 							return true;
 						}
 						
@@ -326,9 +326,6 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							}
 							return true;
 						}
-						
-						sender.sendMessage(ChatColor.RED + "Available flags: " + ChatColor.WHITE + "ordered, uncancellable, onlyfirst");
-						return true;
 					}
 					
 					sender.sendMessage(ChatColor.RED + "Usage: /quest flag [add|remove] [flag_1]... .");
