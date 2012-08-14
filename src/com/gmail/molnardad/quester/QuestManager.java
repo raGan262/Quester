@@ -80,7 +80,7 @@ public class QuestManager {
 				continue;
 			
 			if(objs.get(i).tryToComplete(player)) {
-				incProgress(player, i);
+				incProgress(player, i, false);
 			} else {
 				all = false;
 				if(quest.hasFlag(QuestFlag.ORDERED))
@@ -639,7 +639,7 @@ public class QuestManager {
 		while(i<objs.size()) {
 			if(!objs.get(i).isComplete(player, prof.getProgress().get(i))) {
 				if(objs.get(i).tryToComplete(player)) {
-					incProgress(player, i);
+					incProgress(player, i, false);
 					return;
 				} else {
 					throw new ObjectiveCompletionException();
@@ -682,10 +682,18 @@ public class QuestManager {
 	}
 	
 	public void incProgress(Player player, int id) {
-		incProgress(player, id, 1);
+		incProgress(player, id, 1, true);
 	}
 	
-	public void incProgress(Player player, int id, int amount) {
+	public void incProgress(Player player, int id, boolean checkAll) {
+		incProgress(player, id, 1, checkAll);
+	}
+	
+	public void incProgress( Player player, int id, int amount) {
+		incProgress(player, id, amount, true);
+	}
+	
+	public void incProgress(final Player player,final int id, final int amount, final boolean checkAll) {
 		PlayerProfile prof = getProfile(player.getName());
 		int newValue = prof.getProgress().get(id) + amount;
 		Objective obj = getQuest(prof.getQuest()).getObjectives().get(id);
@@ -696,11 +704,13 @@ public class QuestManager {
 			for(Qevent qv : obj.getQevents()) {
 				qv.execute(player);
 			}
-			if(areObjectivesCompleted(player)) {
-				try{
-					complete(player);
-				} catch (QuesterException e) {
-					player.sendMessage(e.message());
+			if(checkAll) {
+				if(areObjectivesCompleted(player)) {
+					try{
+						complete(player);
+					} catch (QuesterException e) {
+						player.sendMessage(e.message());
+					}
 				}
 			}
 			QuestData.saveProfiles();
