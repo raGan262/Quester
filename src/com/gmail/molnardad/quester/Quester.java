@@ -104,12 +104,12 @@ public class Quester extends JavaPlugin {
 			}
 			
 			this.setupPerms();
-			
-			this.initializeConfig();
-			
+		
 			if(this.setupCitizens()) {
 				log.info("Citizens 2 found and hooked...");
 			}
+			
+			this.initializeConfig();
 			
 			QuestData.loadQuests();
 			QuestData.loadProfiles();
