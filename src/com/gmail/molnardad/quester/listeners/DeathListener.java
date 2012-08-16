@@ -69,8 +69,8 @@ public class DeathListener implements Listener {
 	    if(killer != null ) {
 	    	if(qm.hasQuest(killer.getName())) {
 	    		// PLAYERKILL CHECK
-	    		Quest quest = qm.getPlayerQuest(player.getName());
-		    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
+	    		Quest quest = qm.getPlayerQuest(killer.getName());
+		    	if(!quest.allowedWorld(killer.getWorld().getName().toLowerCase()))
 		    		return;
 	    		List<Objective> objs = quest.getObjectives();
 	    		// if quest is ordered, process current objective
