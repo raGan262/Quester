@@ -45,15 +45,43 @@ public class QuestData {
 
 
 	public static Map<String, Quest> allQuests = new HashMap<String, Quest>();
+	public static Map<Integer, String> questIds = new HashMap<Integer, String>();
 	public static Map<String, PlayerProfile> profiles = new HashMap<String, PlayerProfile>();
 	public static Map<Integer, String> ranks = new HashMap<Integer, String>();
 	
 	public static List<Integer> sortedRanks = new ArrayList<Integer>();
 
+	private static int ID = -1;
+	
+	public static int getLastID(){
+		return ID;
+	}
+	
+	public static void assignID(Quest qst) {
+		ID++;
+		qst.setID(ID);
+	}
+	
+	public static void setID(int newID) {
+		ID = newID;
+	}
+	
+	public static void adjustID() {
+		int newID = -1;
+		for(int i : questIds.keySet()) {
+			if(i > newID)
+				newID = i;
+		}
+		ID = newID;
+	}
 	
 	static void wipeData(){
 		allQuests = null;
+		questIds = null;
 		profiles = null;
+		ranks = null;
+		sortedRanks = null;
+		ID = -1;
 	}
 	
 	static void saveProfiles(){
@@ -114,6 +142,8 @@ public class QuestData {
 					if(config.get(key) instanceof Quest) {
 						Quest quest = (Quest) config.get(key);
 						allQuests.put(quest.getName().toLowerCase(), quest);
+						if(quest.hasID())
+							questIds.put(quest.getID(), quest.getName().toLowerCase());
 						for(int i=0; i<quest.getObjectives().size(); i++) {
 							if(quest.getObjective(i) == null) {
 								Quester.log.info("Objective " + i + " is invalid.");
@@ -138,6 +168,13 @@ public class QuestData {
 							Quester.log.info("Invalid key in quests.yml: " + key);
 						}
 					}
+				}
+			}
+			adjustID();
+			for(Quest q : allQuests.values()) {
+				if(!q.hasID()) {
+					QuestData.assignID(q);
+					questIds.put(q.getID(), q.getName().toLowerCase());
 				}
 			}
 			saveQuests();

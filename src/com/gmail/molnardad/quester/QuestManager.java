@@ -22,18 +22,20 @@ import com.gmail.molnardad.quester.utils.Util;
 
 import static com.gmail.molnardad.quester.QuestData.allQuests;
 import static com.gmail.molnardad.quester.QuestData.profiles;
+import static com.gmail.molnardad.quester.QuestData.questIds;
 
 public class QuestManager {
 	
 	// QuestManager methods
 	// - private part
-	private boolean canModify(String questName) {
-		return !getQuest(questName).hasFlag(QuestFlag.ACTIVE);
-	}
 	
 	private Quest getQuest(String questName) {
 		if(questName == null || questName.isEmpty()) return null;
 		return allQuests.get(questName.toLowerCase());
+	}
+	
+	private Quest getQuest(int questID) {
+		return getQuest(questIds.get(questID));
 	}
 	
 	private Quest getSelected(String name) {
@@ -50,9 +52,8 @@ public class QuestManager {
 		return getProfile(playerName).getProgress();
 	}
 	
-	private void assignQuest(String playerName, String questName) {
-		int objs = getObjectiveAmount(questName);
-		getProfile(playerName).setQuest(questName.toLowerCase(), objs);
+	private void assignQuest(String playerName, Quest quest) {
+		getProfile(playerName).setQuest(quest.getName().toLowerCase(), quest.getObjectives().size());
 	}
 	
 	private void unassignQuest(String playerName) {
@@ -102,6 +103,14 @@ public class QuestManager {
 				}
 			}
 		}
+	}
+	
+	public String getQuestNameByID(int id) {
+		Quest q = getQuest(id);
+		if(q == null)
+			return "-";
+		else
+			return q.getName();
 	}
 	
 	public int getCurrentObjective(Player player) {
@@ -169,11 +178,19 @@ public class QuestManager {
 	public Quest getPlayerQuest(String playerName) {
 		return getQuest(getProfile(playerName).getQuest());
 	}
-
+	
+	public int getObjectiveAmount(int id) {
+		return getObjectiveAmount(getQuest(id));
+	}
+	
 	public int getObjectiveAmount(String questName) {
-		if(getQuest(questName) == null)
+		return getObjectiveAmount(getQuest(questName));
+	}
+	
+	public int getObjectiveAmount(Quest quest) {
+		if(quest == null)
 			return -1;
-		return getQuest(questName).getObjectives().size();
+		return quest.getObjectives().size();
 	}
 	
 	public boolean isQuest(String questName) {
@@ -207,61 +224,68 @@ public class QuestManager {
 	// Quest modification methods
 	
 	public boolean isQuestActive(CommandSender sender) {
-		if(getSelected(sender.getName()) == null)
-			return false;
-		return getSelected(sender.getName()).hasFlag(QuestFlag.ACTIVE);
+		return isQuestActive(getSelected(sender.getName()));
 	}
 	
 	public boolean isQuestActive(String questName) {
-		if(getQuest(questName) == null)
-			return false;
-		return getQuest(questName).hasFlag(QuestFlag.ACTIVE);
+		return isQuestActive(getQuest(questName));
 	}
 	
-	public void selectQuest(String changer, String questName) throws QuestExistenceException {
-		if(!isQuest(questName)) {
+	public boolean isQuestActive(int questID) {
+		return isQuestActive(getQuest(questID));
+	}
+	
+	public boolean isQuestActive(Quest q) {
+		if(q == null)
+			return false;
+		return q.hasFlag(QuestFlag.ACTIVE);
+	}
+	
+	public void selectQuest(String changer, int id) throws QuestExistenceException {
+		Quest q = getQuest(id);
+		if(q == null) {
 			throw new QuestExistenceException("selectQuest()", false);
 		}
-		getProfile(changer).setSelected(questName);
+		getProfile(changer).setSelected(q.getName().toLowerCase());
 	}
 	
 	public void createQuest(String changer, String questName) throws QuestExistenceException {
 		if(isQuest(questName)){
 			throw new QuestExistenceException("createQuest()", true);
 		}
-		allQuests.put(questName.toLowerCase(), new Quest(questName));
-		selectQuest(changer, questName);
+		Quest q = new Quest(questName);
+		QuestData.assignID(q);
+		allQuests.put(questName.toLowerCase(), q);
+		questIds.put(q.getID(), questName.toLowerCase());
+		selectQuest(changer, q.getID());
 		QuestData.saveQuests();
 	}
 	
-	public void removeQuest(String changer, String questName) throws QuestExistenceException, QuestModificationException {
-		if(!isQuest(questName)) {
+	public void removeQuest(String changer, int questID) throws QuestExistenceException, QuestModificationException {
+		Quest q = getQuest(questID);
+		if(q == null) {
 			throw new QuestExistenceException("removeQuest()", false);
 		}
-		if(!canModify(questName)) {
+		if(q.hasFlag(QuestFlag.ACTIVE)) {
 			throw new QuestModificationException("removeQuest()", false);
 		}
-		allQuests.remove(questName.toLowerCase());
-		Quester.questConfig.getConfig().set(questName.toLowerCase(), null);
+		questIds.remove(q.getID());
+		allQuests.remove(q.getName().toLowerCase());
+		Quester.questConfig.getConfig().set(q.getName().toLowerCase(), null);
+		QuestData.adjustID();
 		QuestData.saveQuests();
 	}
 	
-	public void activateQuest(String questName) throws QuestExistenceException {
-		if(!isQuest(questName)){
-			throw new QuestExistenceException("activateQuest()", false);
-		}
-		getQuest(questName).addFlag(QuestFlag.ACTIVE);
+	public void activateQuest(Quest q) throws QuestExistenceException {
+		q.addFlag(QuestFlag.ACTIVE);
 		QuestData.saveQuests();
 	}
 	
-	public void deactivateQuest(String questName) throws QuestExistenceException {
-		if(!isQuest(questName)){
-			throw new QuestExistenceException("deactivateQuest()", false);
-		}
-		getQuest(questName).removeFlag(QuestFlag.ACTIVE);
+	public void deactivateQuest(Quest q) throws QuestExistenceException {
+		q.removeFlag(QuestFlag.ACTIVE);
 		QuestData.saveQuests();
 		for(PlayerProfile prof: profiles.values()) {
-			if(prof.getQuest().equalsIgnoreCase(questName)) {
+			if(prof.getQuest().equalsIgnoreCase(q.getName())) {
 				prof.unsetQuest();
 				Player player = Bukkit.getServer().getPlayerExact(prof.getName());
 				if(player != null){
@@ -272,21 +296,21 @@ public class QuestManager {
 	}
 	
 	public void toggleQuest(CommandSender changer) throws QuestModificationException, QuestExistenceException {
-		Quest quest = getSelected(changer.getName());
-		if(quest == null){
-			throw new QuestModificationException("toggleQuest()", true);
-		}
-		toggleQuest(quest.getName());
+		toggleQuest(getSelected(changer.getName()));
 	}
 	
-	public void toggleQuest(String questName) throws QuestExistenceException {
-		if(!isQuest(questName)){	
+	public void toggleQuest(int questID) throws QuestExistenceException {
+		toggleQuest(getQuest(questID));
+	}
+	
+	public void toggleQuest(Quest q) throws QuestExistenceException {
+		if(q == null){	
 			throw new QuestExistenceException("toggleQuest()", false);
 		}
-		if(getQuest(questName).hasFlag(QuestFlag.ACTIVE)){
-			deactivateQuest(questName);
+		if(q.hasFlag(QuestFlag.ACTIVE)){
+			deactivateQuest(q);
 		} else {
-			activateQuest(questName);
+			activateQuest(q);
 		}
 	}
 	
@@ -555,23 +579,25 @@ public class QuestManager {
 	
 	// Quest management methods
 	public void startQuest(Player player, String questName) throws QuestExistenceException, QuestAssignmentException, QuestConditionsException {
-		if(!isQuest(questName)){
+		Quest qst = getQuest(questName);
+		String playerName = player.getName();
+		if(qst == null){
 			throw new QuestExistenceException("startQuest()", false);
 		}
-		if(hasQuest(player.getName())) {
+		if(hasQuest(playerName)) {
 			throw new QuestAssignmentException("startQuest()", true);
 		}
-		if(!isQuestActive(questName)) {
+		if(!qst.hasFlag(QuestFlag.ACTIVE)) {
 			throw new QuestExistenceException("startQuest() 1", false);
 		}
 		if(!areConditionsMet(player, questName))
 			throw new QuestConditionsException("startQuest()");
-		assignQuest(player.getName(), questName);
+		assignQuest(playerName, qst);
 		if(QuestData.progMsgStart)
-			player.sendMessage(Quester.LABEL + "You have started quest " + ChatColor.GOLD + getQuest(questName).getName());
+			player.sendMessage(Quester.LABEL + "You have started quest " + ChatColor.GOLD + qst.getName());
 		if(QuestData.verbose)
-			Quester.log.info(player.getName() + " started quest '" + getQuest(questName).getName() + "'.");
-		for(Qevent qv : getQuest(questName).getQevents()) {
+			Quester.log.info(playerName + " started quest '" + qst.getName() + "'.");
+		for(Qevent qv : qst.getQevents()) {
 			if(qv.getOccasion() == -1)
 				qv.execute(player);
 		}
@@ -677,7 +703,7 @@ public class QuestManager {
 		getProfile(player.getName()).addCompleted(quest.getName());
 		QuestData.saveProfiles();
 		if(quest.hasFlag(QuestFlag.ONLYFIRST)) {
-			deactivateQuest(quest.getName());
+			deactivateQuest(quest);
 		}
 	}
 	
@@ -782,14 +808,21 @@ public class QuestManager {
 		showQuestInfo(sender, getSelected(sender.getName()).getName());
 	}
 	
+	public void showQuestInfo(CommandSender sender, int id) throws QuestExistenceException {
+		showQuestInfo(sender, getQuest(id));
+	}
+	
 	public void showQuestInfo(CommandSender sender, String questName) throws QuestExistenceException {
-		Quest qst = getQuest(questName);
+		showQuestInfo(sender, getQuest(questName));
+	}
+	
+	public void showQuestInfo(CommandSender sender, Quest qst) throws QuestExistenceException {
 		if(qst == null)
 			throw new QuestExistenceException("showQuestInfo()", false);
 		
 		sender.sendMessage(Util.line(ChatColor.BLUE, "Quest info", ChatColor.GOLD));
 		
-		sender.sendMessage(ChatColor.BLUE + "Name: " + ChatColor.GOLD + qst.getName());
+		sender.sendMessage(ChatColor.BLUE + "Name: " + "[" + qst.getID() + "]" + ChatColor.GOLD + qst.getName());
 		sender.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + qst.getDescription());
 		sender.sendMessage(ChatColor.BLUE + "Flags: " + ChatColor.WHITE + QuestFlag.stringize(qst.getFlags()));
 		String worlds = qst.getWorlds().isEmpty() ? "ANY" : qst.getWorldNames();
@@ -845,7 +878,7 @@ public class QuestManager {
 		sender.sendMessage(Util.line(ChatColor.BLUE, "Quest list", ChatColor.GOLD));
 		for(Quest q: getQuests()){
 			ChatColor color = q.hasFlag(QuestFlag.ACTIVE) ? ChatColor.GREEN : ChatColor.RED;
-			sender.sendMessage(ChatColor.BLUE + "* " + color + q.getName());
+			sender.sendMessage(ChatColor.BLUE + "[" + q.getID() + "]" + color + q.getName());
 		}
 	}
 	

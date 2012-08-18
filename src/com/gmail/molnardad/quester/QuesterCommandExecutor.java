@@ -82,7 +82,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						sender.sendMessage(ChatColor.GOLD + "/q info [name*] " + ChatColor.GRAY + "- shows detailed info about the quest");
 						sender.sendMessage(line(ChatColor.DARK_GRAY, "Applies only to selected quest"));
 						sender.sendMessage(ChatColor.GOLD + "/q name [newName]" + ChatColor.GRAY + "- changes the name");
-						sender.sendMessage(ChatColor.GOLD + "/q dest set\\add" + ChatColor.GRAY + "- quest description manipulation");
+						sender.sendMessage(ChatColor.GOLD + "/q desc set\\add" + ChatColor.GRAY + "- quest description manipulation");
 						sender.sendMessage(ChatColor.GOLD + "/q world add\\remove" + ChatColor.GRAY + "- world restriction manipulation");
 						sender.sendMessage(ChatColor.GOLD + "/q flag add\\remove" + ChatColor.GRAY + "- quest flag manipulation");
 						sender.sendMessage(ChatColor.GOLD + "/q condition add\\remove" + ChatColor.GRAY + "- condition manipulation");
@@ -138,22 +138,27 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						String questName = implode(args, 1);
 						try {
 							if(permCheck(sender, QuestData.MODIFY_PERM, false)) {
-								qm.showQuestInfo(sender, questName);
+								int id = Integer.parseInt(args[1]);
+								qm.showQuestInfo(sender, id);
 							} else {
 								qm.showQuest(sender, questName);
 							}
 						} catch (QuesterException e) {
 							sender.sendMessage(e.message());
+						} catch (NumberFormatException e) {
+							sender.sendMessage(ChatColor.RED + "Quest ID must be number.");
 						}
 					} else {
 						try {
 							if(permCheck(sender, QuestData.MODIFY_PERM, false)) {
 								qm.showQuestInfo(sender);
 							} else {
-								sender.sendMessage(ChatColor.RED + "Usage: /quest info [quest_name*]. (optional if selected)");
+								sender.sendMessage(ChatColor.RED + "Usage: /quest info [quest_name].");
 							}
 						} catch (QuesterException e) {
 							sender.sendMessage(e.message());
+							sender.sendMessage(ChatColor.RED + "Usage: /quest info [quest_ID*]."
+									+ "* - optional if selected");
 						}
 					}
 					return true;
@@ -198,17 +203,20 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					}
 					if(args.length > 1){
 						try {
-							String questName = implode(args, 1);
-							qm.removeQuest(sender.getName(), questName);
+							int id = Integer.parseInt(args[1]);
+							String name = qm.getQuestNameByID(id);
+							qm.removeQuest(sender.getName(), id);
 							sender.sendMessage(ChatColor.GREEN + "Quest removed.");
 							if(QuestData.verbose) {
-								Quester.log.info(sender.getName() + " removed quest '" + questName + "'.");
+								Quester.log.info(sender.getName() + " removed quest '" + name + "'.");
 							}
 						} catch (QuesterException e) {
 							sender.sendMessage(e.message());
+						} catch (NumberFormatException e) {
+							sender.sendMessage(ChatColor.RED + "Quest ID must be number.");
 						}
 					} else {
-						sender.sendMessage(ChatColor.RED + "Usage: /quest remove [quest_name].");
+						sender.sendMessage(ChatColor.RED + "Usage: /quest remove [quest_ID].");
 					}
 					return true;
 				}
@@ -220,14 +228,16 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					}
 					if(args.length > 1){
 						try {
-							String questName = implode(args, 1);
-							qm.selectQuest(sender.getName(), questName);
+							int id = Integer.parseInt(args[1]);
+							qm.selectQuest(sender.getName(), id);
 							sender.sendMessage(ChatColor.GREEN + "Quest selected.");
 						} catch (QuesterException e) {
 							sender.sendMessage(e.message());
+						} catch (NumberFormatException e) {
+							sender.sendMessage(ChatColor.RED + "Quest ID must be number.");
 						}
 					} else {
-						sender.sendMessage(ChatColor.RED + "Usage: /quest select [quest_name].");
+						sender.sendMessage(ChatColor.RED + "Usage: /quest select [quest_ID].");
 					}
 					return true;
 				}
@@ -337,18 +347,23 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
 						return true;
 					}
-					String questName = implode(args, 1);
+					int id = -1;
 					boolean active;
 					try {
-						if(questName.isEmpty()){
+						if(args.length > 1)
+							id = Integer.parseInt(args[1]);
+						if(id < 0){
 							qm.toggleQuest(sender);
 							active = qm.isQuestActive(sender);
 						} else {
-							qm.toggleQuest(questName);
-							active = qm.isQuestActive(questName);
+							qm.toggleQuest(id);
+							active = qm.isQuestActive(id);
 						}
 					} catch (QuesterException e) {
 						sender.sendMessage(e.message());
+						return true;
+					} catch (NumberFormatException e) {
+						sender.sendMessage(ChatColor.RED + "Quest ID must be number.");
 						return true;
 					}
 					String status;

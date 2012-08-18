@@ -27,6 +27,7 @@ public class Quest implements ConfigurationSerializable{
 	private Set<QuestFlag> flags = null;
 	private String description = null;
 	private String name = null;
+	private int ID = -1;
 	
 	
 	public Quest(String name) {
@@ -38,6 +39,18 @@ public class Quest implements ConfigurationSerializable{
 		qevents = new ArrayList<Qevent>();
 		worlds = new HashSet<String>();
 		flags = new HashSet<QuestFlag>();
+	}
+	
+	public boolean hasID() {
+		return ID >= 0;
+	}
+	
+	public int getID() {
+		return ID;
+	}
+	
+	public void setID(int newID) {
+		ID = newID;
 	}
 	
 	public boolean hasFlag(QuestFlag flag) {
@@ -240,6 +253,8 @@ public class Quest implements ConfigurationSerializable{
 		map.put("rewards", rews);
 		map.put("conditions", cons);
 		map.put("events", qvts);
+		if(hasID())
+			map.put("ID", ID);
 		
 		return map;
 	}
@@ -256,6 +271,13 @@ public class Quest implements ConfigurationSerializable{
 			
 			quest.setDescription((String) map.get("description"));
 
+			if(map.get("ID") != null) {
+				int id = (Integer) map.get("ID");
+				if(id >= 0) {
+					quest.setID(id);
+				}
+			}
+			
 			if(map.get("flags") != null) {
 				Set<QuestFlag> flags = QuestFlag.deserialize((String) map.get("flags"));
 				for(QuestFlag f : flags) {
