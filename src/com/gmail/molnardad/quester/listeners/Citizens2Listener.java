@@ -1,6 +1,6 @@
 package com.gmail.molnardad.quester.listeners;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
@@ -12,9 +12,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import com.gmail.molnardad.quester.QuestData;
+import com.gmail.molnardad.quester.QuestHolder;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.QuesterTrait;
+import com.gmail.molnardad.quester.exceptions.QuestAvailabilityException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.utils.Util;
 
@@ -23,7 +25,7 @@ public class Citizens2Listener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onLeftClick(NPCLeftClickEvent event) {
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
-			event.getNPC().getTrait(QuesterTrait.class).check();
+			QuestHolder qh = event.getNPC().getTrait(QuesterTrait.class).getHolder();
 			QuestManager qm = Quester.qMan;
 			Player player = event.getClicker();
 			if(!Util.permCheck(player, QuestData.PERM_USE_NPC, true)) {
@@ -33,47 +35,40 @@ public class Citizens2Listener implements Listener {
 			boolean isOp = Util.permCheck(player, QuestData.MODIFY_PERM, false);
 			if(isOp) {
 				if(player.getItemInHand().getTypeId() == 369) {
-					String sel = qm.getSelectedName(player.getName());
-					if(sel == null || sel.equals("")){
+					int sel = qm.getSelectedID(player.getName());
+					if(sel < 0){
 						player.sendMessage(ChatColor.RED + "No quest selected.");
 					} else {
-						event.getNPC().getTrait(QuesterTrait.class).removeQuest(sel);
+						qh.removeQuest(sel);
 						player.sendMessage(ChatColor.GREEN + "Quest removed from NPC.");
 					}
 				    return;
 				}
 			}
-			ArrayList<String> qsts = event.getNPC().getTrait(QuesterTrait.class).getQuests();
-			int neww = -1;
-			if(hasActive(qsts)) {
-				int curr = event.getNPC().getTrait(QuesterTrait.class).getSelected();
-				int i = curr;
-				while(neww < 0) {
-					if(i < qsts.size()-1)
-						i++;
-					else
-						i = 0;
-					if(qm.isQuestActive(qsts.get(i))) {
-						neww = i;
-					}
-				}
-				event.getNPC().getTrait(QuesterTrait.class).setSelected(neww);
-			} else {
-				if(!isOp){
-					player.sendMessage(Quester.LABEL + event.getNPC().getName() +" doesn't have active quests.");
+			
+			List<Integer> qsts = qh.getQuests();
+			try {
+				qh.selectNext();
+			} catch (QuesterException e) {
+				if(isOp && e instanceof QuestAvailabilityException) {
+				} else {
+					player.sendMessage(e.message());
 					return;
 				}
+				
 			}
+			int selectedID = qh.getSelectedIndex();
+			
 			player.sendMessage(Util.line(ChatColor.BLUE, event.getNPC().getName() + "'s quests", ChatColor.GOLD));
 			if(isOp) {
 				for(int i=0; i<qsts.size(); i++) {
 					ChatColor col = qm.isQuestActive(qsts.get(i)) ? ChatColor.BLUE : ChatColor.RED;
-					player.sendMessage((i == neww ? ChatColor.GREEN : ChatColor.BLUE) + "[" + i + "]" + col + qsts.get(i));
+					player.sendMessage((i == selectedID ? ChatColor.GREEN : ChatColor.BLUE) + "[" + qsts.get(i) + "]" + col + qm.getQuestNameByID(qsts.get(i)));
 				}
 			} else {
 				for(int i=0; i<qsts.size(); i++) {
 					if(qm.isQuestActive(qsts.get(i))) {
-						player.sendMessage((i == neww ? ChatColor.GREEN : ChatColor.BLUE) + " - " + qsts.get(i));
+						player.sendMessage((i == selectedID ? ChatColor.GREEN : ChatColor.BLUE) + " - " + qm.getQuestNameByID(qsts.get(i)));
 					}
 				}
 			}
@@ -83,7 +78,7 @@ public class Citizens2Listener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onRightClick(NPCRightClickEvent event) {
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
-			event.getNPC().getTrait(QuesterTrait.class).check();
+			QuestHolder qh = event.getNPC().getTrait(QuesterTrait.class).getHolder();
 			QuestManager qm = Quester.qMan;
 			Player player = event.getClicker();
 			if(!Util.permCheck(player, QuestData.PERM_USE_NPC, true)) {
@@ -93,26 +88,26 @@ public class Citizens2Listener implements Listener {
 			// If player has perms and holds blaze rod
 			if(isOP) {
 				if(player.getItemInHand().getTypeId() == 369) {
-					String sel = qm.getSelectedName(player.getName());
-					if(sel == null || sel.equals("")){
+					int sel = qm.getSelectedID(player.getName());
+					if(sel < 0){
 						player.sendMessage(ChatColor.RED + "No quest selected.");
 					} else {
-						event.getNPC().getTrait(QuesterTrait.class).addQuest(sel);
+						qh.addQuest(sel);
 						player.sendMessage(ChatColor.GREEN + "Quest added to NPC.");
 					}
 				    return;
 				}
 			}
-			String selected = event.getNPC().getTrait(QuesterTrait.class).getSelectedName();
-			ArrayList<String> qsts = event.getNPC().getTrait(QuesterTrait.class).getQuests();
-			String quest = qm.getPlayerQuest(player.getName()) == null ? "" : qm.getPlayerQuest(player.getName()).getName();
+			int selected = qh.getSelected();
+			List<Integer> qsts = qh.getQuests();
+			int questID = qm.getPlayerQuest(player.getName()) == null ? -1 : qm.getPlayerQuest(player.getName()).getID();
 			// player has quest and quest giver does not accept this quest
-			if(quest != "" && !qsts.contains(quest.toLowerCase())) {
+			if(questID >= 0 && !qsts.contains(questID)) {
 				player.sendMessage(ChatColor.RED + "You can't complete your quest here.");
 				return;
 			}
 			// player has quest and quest giver accepts this quest
-			if(quest != "" && qsts.contains(quest.toLowerCase())) {
+			if(questID >= 0 && qsts.contains(questID)) {
 				try {
 					qm.complete(player);
 				} catch (QuesterException e) {
@@ -127,7 +122,7 @@ public class Citizens2Listener implements Listener {
 			// player doesn't have quest
 			if(qm.isQuestActive(selected)) {
 				try {
-					qm.startQuest(player, selected);
+					qm.startQuest(player, qm.getQuestNameByID(selected));
 				} catch (QuesterException e) {
 					player.sendMessage(e.message());
 				}
@@ -135,14 +130,5 @@ public class Citizens2Listener implements Listener {
 				player.sendMessage(ChatColor.RED + "No quest selected.");
 			}
 		}
-	}
-	
-	private boolean hasActive(ArrayList<String> qsts) {
-		for(String q : qsts) {
-			if(Quester.qMan.isQuestActive(q)) {
-				return true;
-			}
-		}
-		return false;
 	}
 }

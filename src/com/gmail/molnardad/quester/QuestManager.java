@@ -193,19 +193,20 @@ public class QuestManager {
 		return quest.getObjectives().size();
 	}
 	
-	public boolean isQuest(String questName) {
-		if(questName == null) {
-			return false;
-		}
-		return allQuests.containsKey(questName.toLowerCase());
+	public boolean isQuest(int questID) {
+		return getQuest(questID) != null;
 	}
 	
-	public String getSelectedName(String playerName) {
-		if(isQuest(getProfile(playerName).getSelected())) {
-			return getProfile(playerName).getSelected();
-		} else {
-			return "";
-		}
+	public boolean isQuest(String questName) {
+		return getQuest(questName) != null;
+	}
+	
+	public int getSelectedID(String playerName) {
+		Quest q = getQuest(getProfile(playerName).getSelected());
+		int sel = -1;
+		if(q != null)
+			sel = q.getID();
+		return sel;
 	}
 
 	public void checkRank(PlayerProfile prof) {
@@ -254,7 +255,7 @@ public class QuestManager {
 			throw new QuestExistenceException("createQuest()", true);
 		}
 		Quest q = new Quest(questName);
-		QuestData.assignID(q);
+		QuestData.assignQuestID(q);
 		allQuests.put(questName.toLowerCase(), q);
 		questIds.put(q.getID(), questName.toLowerCase());
 		selectQuest(changer, q.getID());
@@ -272,7 +273,7 @@ public class QuestManager {
 		questIds.remove(q.getID());
 		allQuests.remove(q.getName().toLowerCase());
 		Quester.questConfig.getConfig().set(q.getName().toLowerCase(), null);
-		QuestData.adjustID();
+		QuestData.adjustQuestID();
 		QuestData.saveQuests();
 	}
 	

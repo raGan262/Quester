@@ -46,43 +46,75 @@ public class QuestData {
 
 	public static Map<String, Quest> allQuests = new HashMap<String, Quest>();
 	public static Map<Integer, String> questIds = new HashMap<Integer, String>();
+	public static Map<Integer, QuestHolder> holderIds = new HashMap<Integer, QuestHolder>();
 	public static Map<String, PlayerProfile> profiles = new HashMap<String, PlayerProfile>();
 	public static Map<Integer, String> ranks = new HashMap<Integer, String>();
 	
 	public static List<Integer> sortedRanks = new ArrayList<Integer>();
 
-	private static int ID = -1;
+	private static int questID = -1;
+	private static int holderID = -1;
 	
-	public static int getLastID(){
-		return ID;
+	// QUEST ID MANIPULATION
+	
+	public static int getLastQuestID(){
+		return questID;
 	}
 	
-	public static void assignID(Quest qst) {
-		ID++;
-		qst.setID(ID);
+	public static void assignQuestID(Quest qst) {
+		questID++;
+		qst.setID(questID);
 	}
 	
-	public static void setID(int newID) {
-		ID = newID;
+	public static void setQuestID(int newID) {
+		questID = newID;
 	}
 	
-	public static void adjustID() {
+	public static void adjustQuestID() {
 		int newID = -1;
 		for(int i : questIds.keySet()) {
 			if(i > newID)
 				newID = i;
 		}
-		ID = newID;
+		questID = newID;
+	}
+	
+	// HOLDER ID MANIPULATION
+	
+	public static int getLastHolderID(){
+		return holderID;
+	}
+	
+	public static int getNewHolderID() {
+		holderID++;
+		return holderID;
+	}
+	
+	public static void setHolderID(int newID) {
+		holderID = newID;
+	}
+	
+	public static void adjustHolderID() {
+		int newID = -1;
+		for(int i : holderIds.keySet()) {
+			if(i > newID)
+				newID = i;
+		}
+		holderID = newID;
 	}
 	
 	static void wipeData(){
 		allQuests = null;
 		questIds = null;
+		holderIds = null;
 		profiles = null;
 		ranks = null;
 		sortedRanks = null;
-		ID = -1;
+		questID = -1;
+		holderID = -1;
 	}
+	
+	// PROFILES MANIPULATION
 	
 	static void saveProfiles(){
 		Quester.profileConfig.saveConfig();
@@ -129,6 +161,8 @@ public class QuestData {
 		
 	}
 	
+	// QUESTS MANIPULATION
+	
 	static void saveQuests(){
 		
 		Quester.questConfig.saveConfig();
@@ -170,10 +204,10 @@ public class QuestData {
 					}
 				}
 			}
-			adjustID();
+			adjustQuestID();
 			for(Quest q : allQuests.values()) {
 				if(!q.hasID()) {
-					QuestData.assignID(q);
+					QuestData.assignQuestID(q);
 					questIds.put(q.getID(), q.getName().toLowerCase());
 				}
 			}
