@@ -1,10 +1,27 @@
 package com.gmail.molnardad.quester.exceptions;
 
-public abstract class QuesterException extends Exception {
+public class QuesterException extends Exception {
 
 	private static final long serialVersionUID = 2477882018035034147L;
 
-	public abstract String message();
+	private final ExceptionType type;
+	private final String message;
 	
-	public abstract String cause();
+	public QuesterException(ExceptionType exT) {
+		type = exT;
+		message = exT.message();
+	}
+	
+	public QuesterException(String msg) {
+		type = ExceptionType.CUSTOM;
+		message = msg;
+	}
+	
+	public String message() {
+		return message;
+	}
+	
+	public ExceptionType type() {
+		return type;
+	}
 }

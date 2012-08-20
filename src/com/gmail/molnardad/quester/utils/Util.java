@@ -22,7 +22,7 @@ import org.bukkit.util.Vector;
 
 import com.avaje.ebeaninternal.server.lib.util.InvalidDataException;
 import com.gmail.molnardad.quester.Quester;
-import com.gmail.molnardad.quester.exceptions.CommandException;
+import com.gmail.molnardad.quester.exceptions.QuesterException;
 
 public class Util {
 	
@@ -48,17 +48,17 @@ public class Util {
 		return lineColor + line1 + temp + line2;
 	}
 	
-	public static Location getLoc(CommandSender sender, String arg) throws NumberFormatException, CommandException {
+	public static Location getLoc(CommandSender sender, String arg) throws NumberFormatException, QuesterException {
 		String args[] = arg.split(";");
 		Location loc;
 		if(args.length < 1)
-			throw new CommandException("Invalid location.");
+			throw new QuesterException(ChatColor.RED + "Invalid location.");
 		
 		if(args[0].equalsIgnoreCase("here")) {
 			if(sender instanceof Player)
 				return ((Player) sender).getLocation();
 			else
-				throw new CommandException("Location 'here' requires player context.");
+				throw new QuesterException(ChatColor.RED + "Location 'here' requires player context.");
 		}
 		
 		if(args.length > 3){
@@ -68,24 +68,24 @@ public class Util {
 				y = Double.parseDouble(args[1]);
 				z = Double.parseDouble(args[2]);
 			} catch (NumberFormatException e) {
-				throw new CommandException("Invalid coordinates.");
+				throw new QuesterException(ChatColor.RED + "Invalid coordinates.");
 			}
 			if(y < 0) {
-				throw new CommandException("Invalid coordinates.");
+				throw new QuesterException(ChatColor.RED + "Invalid coordinates.");
 			}
 			if(sender instanceof Player && args[3].equalsIgnoreCase("this")) {
 				loc = new Location(((Player)sender).getWorld(), x, y, z);
 			} else {
 				World world = Quester.plugin.getServer().getWorld(args[3]);
 				if(world == null) {
-					throw new CommandException("Invalid world.");
+					throw new QuesterException(ChatColor.RED + "Invalid world.");
 				}
 				loc = new Location(world, x, y, z);
 			}
 			return loc;
 		}
 		
-		throw new CommandException("Invalid location.");
+		throw new QuesterException(ChatColor.RED + "Invalid location.");
 	}
 	
 	public static String implode(String[] strs) {

@@ -21,7 +21,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
 import com.avaje.ebeaninternal.server.lib.util.InvalidDataException;
-import com.gmail.molnardad.quester.exceptions.CommandException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.objectives.*;
 import com.gmail.molnardad.quester.qevents.*;
@@ -157,7 +156,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							}
 						} catch (QuesterException e) {
 							sender.sendMessage(e.message());
-							sender.sendMessage(ChatColor.RED + "Usage: /quest info [quest_ID*]."
+							sender.sendMessage(ChatColor.RED + "Usage: /quest info [quest_ID*].\n"
 									+ "* - optional if selected");
 						}
 					}
@@ -1637,7 +1636,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										try {
 											int[] itm = parseItem(args[5]);
 											if(itm[0] > 255)
-												throw new CommandException("Unknown block.");
+												throw new QuesterException("Unknown block.");
 											int dat = itm[1] < 0 ? 0 : itm[1];
 											if(args[6].equalsIgnoreCase("here")) {
 												if(player != null) {
@@ -1645,10 +1644,10 @@ public class QuesterCommandExecutor implements CommandExecutor {
 													if(!blcks.isEmpty())
 														loc = blcks.get(blcks.size()-1).getLocation();
 													else {
-														throw new CommandException("You are not looking at a block.");
+														throw new QuesterException("You are not looking at a block.");
 													}
 												} else {
-													throw new CommandException("Location 'here' requires player context.");
+													throw new QuesterException("Location 'here' requires player context.");
 												}
 											} else
 												loc = getLoc(sender, args[6]);

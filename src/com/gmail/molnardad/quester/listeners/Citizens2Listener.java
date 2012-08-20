@@ -16,7 +16,7 @@ import com.gmail.molnardad.quester.QuestHolder;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.QuesterTrait;
-import com.gmail.molnardad.quester.exceptions.QuestAvailabilityException;
+import com.gmail.molnardad.quester.exceptions.ExceptionType;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.utils.Util;
 
@@ -50,7 +50,7 @@ public class Citizens2Listener implements Listener {
 			try {
 				qh.selectNext();
 			} catch (QuesterException e) {
-				if(isOp && e instanceof QuestAvailabilityException) {
+				if(isOp && e.type() == ExceptionType.Q_NONE_ACTIVE) {
 				} else {
 					player.sendMessage(e.message());
 					return;

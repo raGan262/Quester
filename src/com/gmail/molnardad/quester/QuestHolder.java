@@ -3,8 +3,8 @@ package com.gmail.molnardad.quester;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.gmail.molnardad.quester.exceptions.CommandException;
-import com.gmail.molnardad.quester.exceptions.QuestAvailabilityException;
+import com.gmail.molnardad.quester.exceptions.ExceptionType;
+import com.gmail.molnardad.quester.exceptions.QuesterException;
 
 public class QuestHolder {
 
@@ -26,9 +26,9 @@ public class QuestHolder {
 		return selected;
 	}
 	
-	public void selectNext() throws CommandException, QuestAvailabilityException {
+	public void selectNext() throws QuesterException {
 		if(heldQuests.isEmpty())
-			throw new CommandException("No active quest.");
+			throw new QuesterException(ExceptionType.Q_NONE);
 		if(getSelected() == -1) {
 			selected = 0;
 			if(Quester.qMan.isQuestActive(heldQuests.get(0)))
@@ -45,7 +45,7 @@ public class QuestHolder {
 				selected = i;
 				notChosen = false;
 			} else if(i == selected) {
-				throw new QuestAvailabilityException("", false);
+				throw new QuesterException(ExceptionType.Q_NONE_ACTIVE);
 			}
 		}
 	}
