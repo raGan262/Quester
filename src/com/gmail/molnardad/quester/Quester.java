@@ -21,6 +21,7 @@ import com.gmail.molnardad.quester.objectives.*;
 import com.gmail.molnardad.quester.qevents.*;
 import com.gmail.molnardad.quester.rewards.*;
 import com.gmail.molnardad.quester.conditions.*;
+import com.gmail.molnardad.quester.config.*;
 
 public class Quester extends JavaPlugin {
 	
@@ -33,6 +34,7 @@ public class Quester extends JavaPlugin {
 		public static boolean citizens2 = false;
 		public static ProfileConfig profileConfig;
 		public static QuestConfig questConfig;
+		public static HolderConfig holderConfig;
 		private boolean loaded = false;
 		private int saveID = 0;
 
@@ -98,6 +100,7 @@ public class Quester extends JavaPlugin {
 			qMan = new QuestManager();
 			profileConfig = new ProfileConfig("profiles.yml");
 			questConfig = new QuestConfig("quests.yml");
+			holderConfig = new HolderConfig("holders.yml");
 			
 			if(!this.setupEconomy()) {
 				return;
@@ -113,6 +116,7 @@ public class Quester extends JavaPlugin {
 			
 			QuestData.loadQuests();
 			QuestData.loadProfiles();
+			QuestData.loadHolders();
 			
 			
 			this.setupListeners();
@@ -130,6 +134,7 @@ public class Quester extends JavaPlugin {
 				stopSaving();
 				QuestData.saveQuests();
 				QuestData.saveProfiles();
+				QuestData.saveHolders();
 				if(QuestData.verbose) {
 					log.info("Quester data saved.");
 				}
@@ -208,6 +213,7 @@ public class Quester extends JavaPlugin {
 			getServer().getPluginManager().registerEvents(new CollectListener(), this);
 			getServer().getPluginManager().registerEvents(new DropListener(), this);
 			getServer().getPluginManager().registerEvents(new TameListener(), this);
+			getServer().getPluginManager().registerEvents(new SignListeners(), this);
 			if(citizens2) {
 				getServer().getPluginManager().registerEvents(new Citizens2Listener(), this);
 			}

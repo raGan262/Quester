@@ -1,4 +1,4 @@
-package com.gmail.molnardad.quester;
+package com.gmail.molnardad.quester.config;
 
 import java.io.File;
 import java.io.IOException;

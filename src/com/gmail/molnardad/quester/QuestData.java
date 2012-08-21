@@ -47,6 +47,7 @@ public class QuestData {
 	public static Map<String, Quest> allQuests = new HashMap<String, Quest>();
 	public static Map<Integer, String> questIds = new HashMap<Integer, String>();
 	public static Map<Integer, QuestHolder> holderIds = new HashMap<Integer, QuestHolder>();
+	public static Map<String, QuesterSign> signs = new HashMap<String, QuesterSign>();
 	public static Map<String, PlayerProfile> profiles = new HashMap<String, PlayerProfile>();
 	public static Map<Integer, String> ranks = new HashMap<Integer, String>();
 	
@@ -107,6 +108,7 @@ public class QuestData {
 		allQuests = null;
 		questIds = null;
 		holderIds = null;
+		signs = null;
 		profiles = null;
 		ranks = null;
 		sortedRanks = null;
@@ -218,5 +220,42 @@ public class QuestData {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	// SIGN MANIPULATION
+	
+	static void saveHolders(){
+		Quester.holderConfig.saveConfig();
+	}
+
+	@SuppressWarnings("unchecked")
+	static void loadHolders() {
+		try {
+			YamlConfiguration config = Quester.holderConfig.getConfig();
+			Object object = config.get("signs");
+			if(object != null) {
+				if(object instanceof List) {
+					List<Map<String, Object>> list = (List<Map<String, Object>>) object;
+					for(Map<String, Object> map : list) {
+						QuesterSign sign = QuesterSign.deserialize(map);
+						if(sign == null)
+							continue;
+						String s = sign.getLocation().getWorld().getName() + sign.getLocation().getBlockX() + sign.getLocation().getBlockY() + sign.getLocation().getBlockZ();
+						signs.put(s, sign);
+					}
+				} else {
+					if(verbose) {
+						Quester.log.info("Invalid sign list in holders.yml.");
+					}
+				}
+			}
+			saveHolders();
+			if(verbose) {
+				Quester.log.info(signs.size() + " signs loaded.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

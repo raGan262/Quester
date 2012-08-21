@@ -1,4 +1,4 @@
-package com.gmail.molnardad.quester;
+package com.gmail.molnardad.quester.config;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.configuration.ConfigurationSection;
+
+import com.gmail.molnardad.quester.QuestData;
+import com.gmail.molnardad.quester.Quester;
 
 public class BaseConfig extends CustomConfig {
 

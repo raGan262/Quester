@@ -1,6 +1,9 @@
-package com.gmail.molnardad.quester;
+package com.gmail.molnardad.quester.config;
 
 import java.io.IOException;
+
+import com.gmail.molnardad.quester.QuestData;
+import com.gmail.molnardad.quester.Quester;
 
 public final class QuestConfig extends CustomConfig {
 

@@ -60,12 +60,19 @@ public class QuestHolder {
 	}
 	
 	public void addQuest(int questID) {
-		heldQuests.add(questID);
-		checkQuests();
+		if(!heldQuests.contains(questID)) {
+			heldQuests.add(questID);
+			checkQuests();
+		}
 	}
 	
-	public void removeQuest(int arrayID) {
-		heldQuests.remove(arrayID);
+	public void removeQuest(int questID) {
+		for(int i=0; i<heldQuests.size(); i++) {
+			if(questID == heldQuests.get(i)) {
+				heldQuests.remove(i);
+				break;
+			}
+		}
 		checkQuests();
 	}
 	
