@@ -39,7 +39,7 @@ public final class MoneyObjective extends Objective {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": " + amount + stringQevents();
+		return TYPE + ": " + amount + coloredDesc() + stringQevents();
 	}
 	
 	public double takeMoney(double amt) {

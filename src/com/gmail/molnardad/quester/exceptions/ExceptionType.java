@@ -17,6 +17,7 @@ public enum ExceptionType {
 	Q_CANT_CANCEL(ChatColor.RED + "This quest cannot be cancelled."),
 	Q_NOT_COMPLETED(ChatColor.RED + "One or more objectives are not completed."),
 	Q_BAD_WORLD(ChatColor.RED + "Quest cannot be completed in this world."),
+	Q_NOT_CMD(ChatColor.RED + "Quest cannot be started or completed by command."),
 	
 	CON_NOT_MET(ChatColor.RED + "One or more conditions are not met."),
 	CON_NOT_EXIST(ChatColor.RED + "Condition does not exist."),

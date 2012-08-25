@@ -31,7 +31,7 @@ public final class WorldObjective extends Objective {
 	
 	@Override
 	public String toString() {
-		return TYPE+": "+worldName + stringQevents();
+		return TYPE+": "+worldName + coloredDesc() + stringQevents();
 	}
 	
 	public boolean checkWorld(String wName) {

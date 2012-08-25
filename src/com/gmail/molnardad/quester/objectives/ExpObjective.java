@@ -40,7 +40,7 @@ public final class ExpObjective extends Objective {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": " + String.valueOf(amount) + stringQevents();
+		return TYPE + ": " + String.valueOf(amount) + coloredDesc() + stringQevents();
 	}
 	
 	public int takeExp(int amt) {

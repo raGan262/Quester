@@ -50,7 +50,7 @@ public class SignListeners implements Listener {
 				}
 			}
 			
-			if(!Util.permCheck(player, QuestData.PERM_USE_NPC, true)) {
+			if(!Util.permCheck(player, QuestData.PERM_USE_SIGN, true)) {
 				return;
 			}
 			if(player.isSneaking()) {
@@ -127,7 +127,7 @@ public class SignListeners implements Listener {
 				// player has quest and quest giver accepts this quest
 				if(questID >= 0 && qsts.contains(questID)) {
 					try {
-						qm.complete(player);
+						qm.complete(player, false);
 					} catch (QuesterException e) {
 						try {
 							qm.showProgress(player);
@@ -140,7 +140,7 @@ public class SignListeners implements Listener {
 				// player doesn't have quest
 				if(qm.isQuestActive(selected)) {
 					try {
-						qm.startQuest(player, qm.getQuestNameByID(selected));
+						qm.startQuest(player, qm.getQuestNameByID(selected), false);
 					} catch (QuesterException e) {
 						player.sendMessage(e.message());
 					}
@@ -158,7 +158,7 @@ public class SignListeners implements Listener {
 		if(block.getType().getId() == 63 || block.getType().getId() == 68) {
 			Sign sign = (Sign) block.getState();
 			if(QuestData.signs.get(sign.getLocation().getWorld().getName() + sign.getLocation().getBlockX() + sign.getLocation().getBlockY() + sign.getLocation().getBlockZ()) != null) {
-				if(!event.getPlayer().isSneaking()) {
+				if(!event.getPlayer().isSneaking() || !Util.permCheck(event.getPlayer(), QuestData.MODIFY_PERM, false)) {
 					event.setCancelled(true);
 					return;
 				}
@@ -172,6 +172,9 @@ public class SignListeners implements Listener {
 	public void onSignChange(SignChangeEvent event) {
 		Block block = event.getBlock();
 		if(event.getLine(0).equals("[Quester]")) {
+			if(!Util.permCheck(event.getPlayer(), QuestData.MODIFY_PERM, true)) {
+				block.breakNaturally();
+			}
 			event.setLine(0, ChatColor.BLUE + "[Quester]");
 			QuesterSign sign = new QuesterSign(block.getLocation(), new QuestHolder());
 			QuestData.signs.put(sign.getLocation().getWorld().getName() + sign.getLocation().getBlockX() + sign.getLocation().getBlockY() + sign.getLocation().getBlockZ(), sign);

@@ -42,7 +42,7 @@ public final class LocObjective extends Objective {
 	@Override
 	public String toString() {
 		String locStr = String.format("%.1f|%.1f|%.1f("+worldName+")", x, y, z);
-		return TYPE+": "+locStr+"; RNG: "+ range + stringQevents();
+		return TYPE+": "+locStr+"; RNG: "+ range + coloredDesc() + stringQevents();
 	}
 
 	public boolean checkLocation(Location loc) {

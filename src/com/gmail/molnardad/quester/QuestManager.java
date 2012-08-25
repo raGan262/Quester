@@ -499,7 +499,7 @@ public class QuestManager {
 	}
 	
 	// Quest management methods
-	public void startQuest(Player player, String questName) throws QuesterException {
+	public void startQuest(Player player, String questName, boolean command) throws QuesterException {
 		Quest qst = getQuest(questName);
 		String playerName = player.getName();
 		if(qst == null){
@@ -511,6 +511,8 @@ public class QuestManager {
 		if(!qst.hasFlag(QuestFlag.ACTIVE)) {
 			throw new QuesterException(ExceptionType.Q_NOT_EXIST);
 		}
+		if(command && qst.hasFlag(QuestFlag.HIDDEN))
+			throw new QuesterException(ExceptionType.Q_NOT_CMD);
 		if(!areConditionsMet(player, questName))
 			throw new QuesterException(ExceptionType.CON_NOT_MET);
 		assignQuest(playerName, qst);
@@ -529,7 +531,7 @@ public class QuestManager {
 		Collection<Quest> qsts = getQuests();
 		ArrayList<Quest> aqsts = new ArrayList<Quest>();
 		for(Quest q : qsts) {
-			if(q.hasFlag(QuestFlag.ACTIVE)) {
+			if(q.hasFlag(QuestFlag.ACTIVE) && !q.hasFlag(QuestFlag.HIDDEN)) {
 				aqsts.add(q);
 			}
 		}
@@ -538,7 +540,7 @@ public class QuestManager {
 			throw new QuesterException(ExceptionType.Q_NONE_ACTIVE);
 		}
 		int id = Quester.randGen.nextInt(aqsts.size());
-		startQuest(player, aqsts.get(id).getName());
+		startQuest(player, aqsts.get(id).getName(), false);
 	}
 	
 	public void cancelQuest(Player player) throws QuesterException {
@@ -561,10 +563,12 @@ public class QuestManager {
 		QuestData.saveProfiles();
 	}
 	
-	public void complete(Player player) throws QuesterException {
+	public void complete(Player player, boolean command) throws QuesterException {
 		Quest quest = getPlayerQuest(player.getName());
 		if(quest == null)
 			throw new QuesterException(ExceptionType.Q_NOT_ASSIGNED);
+		if(command && quest.hasFlag(QuestFlag.HIDDEN))
+			throw new QuesterException(ExceptionType.Q_NOT_CMD);
     	if(!quest.allowedWorld(player.getWorld().getName()))
     		throw new QuesterException(ExceptionType.Q_BAD_WORLD);
 		if(quest.hasFlag(QuestFlag.ORDERED)) {
@@ -651,7 +655,7 @@ public class QuestManager {
 			if(checkAll) {
 				if(areObjectivesCompleted(player)) {
 					try{
-						complete(player);
+						complete(player, false);
 					} catch (QuesterException e) {
 						player.sendMessage(e.message());
 					}
@@ -684,7 +688,7 @@ public class QuestManager {
 		Quest qst = getQuest(questName);
 		if(qst == null)
 			throw new QuesterException(ExceptionType.Q_NOT_EXIST);
-		if(!qst.hasFlag(QuestFlag.ACTIVE)) {
+		if(!qst.hasFlag(QuestFlag.ACTIVE) || qst.hasFlag(QuestFlag.HIDDEN)) {
 			if(!Util.permCheck(sender, QuestData.MODIFY_PERM, false)) {
 				throw new QuesterException(ExceptionType.Q_NOT_EXIST);
 			}
@@ -779,7 +783,7 @@ public class QuestManager {
 			player = (Player) sender;
 		ChatColor color = ChatColor.BLUE;
 		for(Quest q: getQuests()){
-			if(q.hasFlag(QuestFlag.ACTIVE)) {
+			if(q.hasFlag(QuestFlag.ACTIVE) && !q.hasFlag(QuestFlag.HIDDEN)) {
 				if(player != null)
 					try {
 						color = areConditionsMet(player, q.getName()) ? ChatColor.BLUE : ChatColor.YELLOW;
@@ -793,7 +797,8 @@ public class QuestManager {
 		sender.sendMessage(Util.line(ChatColor.BLUE, "Quest list", ChatColor.GOLD));
 		for(Quest q: getQuests()){
 			ChatColor color = q.hasFlag(QuestFlag.ACTIVE) ? ChatColor.GREEN : ChatColor.RED;
-			sender.sendMessage(ChatColor.BLUE + "[" + q.getID() + "]" + color + q.getName());
+			ChatColor color2 = q.hasFlag(QuestFlag.HIDDEN) ? ChatColor.YELLOW : ChatColor.BLUE;
+			sender.sendMessage(color2 + "[" + q.getID() + "]" + color + q.getName());
 		}
 	}
 	

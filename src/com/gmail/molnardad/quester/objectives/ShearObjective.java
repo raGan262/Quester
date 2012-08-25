@@ -49,7 +49,7 @@ public final class ShearObjective extends Objective {
 	@Override
 	public String toString() {
 		String strCol = (color == null) ? "ANY" : color.name() ;
-		return TYPE + ": " + strCol + "; AMT: " + amount + stringQevents();
+		return TYPE + ": " + strCol + "; AMT: " + amount + coloredDesc() + stringQevents();
 	}
 	
 	public boolean check(DyeColor col) {

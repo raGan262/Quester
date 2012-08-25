@@ -64,7 +64,7 @@ public final class EnchantObjective extends Objective {
 		for(Integer e : enchants.keySet()) {
 			enchs = enchs + " " + Enchantment.getById(e).getName() + ":" + enchants.get(e);
 		}
-		return TYPE+": "+itm+enchs + stringQevents();
+		return TYPE+": "+itm+enchs + coloredDesc() + stringQevents();
 	}
 	
 	public boolean check(ItemStack item, Map<Enchantment, Integer> enchs) {

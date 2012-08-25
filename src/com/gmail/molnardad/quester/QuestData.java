@@ -32,11 +32,13 @@ public class QuestData {
 	public static boolean progMsgObj = true;
 
 	public static final String PERM_USE_NPC = "quester.use.npc";
+	public static final String PERM_USE_SIGN = "quester.use.sign";
 	public static final String PERM_USE_HELP = "quester.use.help";
 	public static final String PERM_USE_LIST = "quester.use.list";
 	public static final String PERM_USE_INFO = "quester.use.info";
 	public static final String PERM_USE_PROFILE = "quester.use.profile";
-	public static final String PERM_USE_START = "quester.use.start";
+	public static final String PERM_USE_START_PICK = "quester.use.start.pick";
+	public static final String PERM_USE_START_RANDOM = "quester.use.start.random";
 	public static final String PERM_USE_DONE = "quester.use.done";
 	public static final String PERM_USE_CANCEL = "quester.use.cancel";
 	public static final String PERM_USE_PROGRESS = "quester.use.progress";

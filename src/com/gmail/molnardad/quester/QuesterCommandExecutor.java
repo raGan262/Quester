@@ -61,8 +61,10 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					if(permCheck(sender, QuestData.PERM_USE_INFO, false)) {
 						sender.sendMessage(ChatColor.GOLD + "/quest show [name] " + ChatColor.GRAY + "- shows info about quest");
 					}
-					if(permCheck(sender, QuestData.PERM_USE_START, false))
+					if(permCheck(sender, QuestData.PERM_USE_START_PICK, false))
 						sender.sendMessage(ChatColor.GOLD + "/quest start [name] " + ChatColor.GRAY + "- starts a quest");
+					if(permCheck(sender, QuestData.PERM_USE_START_RANDOM, false))
+						sender.sendMessage(ChatColor.GOLD + "/quest start " + ChatColor.GRAY + "- starts random quest");
 					if(permCheck(sender, QuestData.PERM_USE_CANCEL, false))
 						sender.sendMessage(ChatColor.GOLD + "/quest cancel " + ChatColor.GRAY + "- cancels current quest");
 					if(permCheck(sender, QuestData.PERM_USE_DONE, false))
@@ -312,7 +314,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						}
 						
 						if(flags.isEmpty()) {
-							sender.sendMessage(ChatColor.RED + "Available flags: " + ChatColor.WHITE + "ordered, uncancellable, onlyfirst");
+							sender.sendMessage(ChatColor.RED + "Available flags: " + ChatColor.WHITE + "ordered, uncancellable, onlyfirst, hidden");
 							return true;
 						}
 						
@@ -1305,7 +1307,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						}
 					}
 					
-					sender.sendMessage(ChatColor.RED + "Usage: /quest objective [add|remove] [objective_type] [args].");
+					sender.sendMessage(ChatColor.RED + "Usage: /quest objective [add|remove|swap|desc] [args].");
 					return true;
 				}
 				
@@ -1713,9 +1715,6 @@ public class QuesterCommandExecutor implements CommandExecutor {
 				
 				// QUEST START
 				if(args[0].equalsIgnoreCase("start")) {
-					if(!permCheck(sender, QuestData.PERM_USE_START, true)) {
-						return true;
-					}
 					if(player == null) {
 						sender.sendMessage(ChatColor.RED + "This command can only be run by player.");
 						return true;
@@ -1726,9 +1725,15 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					}
 					try {
 						if(args.length > 1){
+							if(!permCheck(sender, QuestData.PERM_USE_START_PICK, true)) {
+								return true;
+							}
 							String questName = implode(args, 1);
-							qm.startQuest(player, questName);
+							qm.startQuest(player, questName, true);
 						} else {
+							if(!permCheck(sender, QuestData.PERM_USE_START_RANDOM, true)) {
+								return true;
+							}
 							qm.startRandomQuest(player);
 						}
 					} catch (QuesterException e) {
@@ -1771,7 +1776,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						return true;
 					}
 					try {
-						qm.complete(player);
+						qm.complete(player, true);
 					} catch (QuesterException e) {
 						sender.sendMessage(e.message());
 					}

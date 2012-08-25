@@ -109,7 +109,7 @@ public class Citizens2Listener implements Listener {
 			// player has quest and quest giver accepts this quest
 			if(questID >= 0 && qsts.contains(questID)) {
 				try {
-					qm.complete(player);
+					qm.complete(player, false);
 				} catch (QuesterException e) {
 					try {
 						qm.showProgress(player);
@@ -122,7 +122,7 @@ public class Citizens2Listener implements Listener {
 			// player doesn't have quest
 			if(qm.isQuestActive(selected)) {
 				try {
-					qm.startQuest(player, qm.getQuestNameByID(selected));
+					qm.startQuest(player, qm.getQuestNameByID(selected), false);
 				} catch (QuesterException e) {
 					player.sendMessage(e.message());
 				}

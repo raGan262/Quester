@@ -62,7 +62,7 @@ public final class DeathObjective extends Objective {
 	@Override
 	public String toString() {
 		String locStr = y < 0 ? "ANY" : String.format("%.1f %.1f %.1f("+worldName+")", x, y, z);
-		return TYPE + ": LOC: " + locStr + "; AMT: "+ amount +"; RNG: "+ range + stringQevents();
+		return TYPE + ": LOC: " + locStr + "; AMT: "+ amount +"; RNG: "+ range + coloredDesc() + stringQevents();
 	}
 	
 	public boolean checkDeath(Location loc) {

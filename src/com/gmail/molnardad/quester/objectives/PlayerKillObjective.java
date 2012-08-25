@@ -45,7 +45,7 @@ public final class PlayerKillObjective extends Objective {
 	@Override
 	public String toString() {
 		String player = playerName.equals("") ? "ANY" : playerName;
-		return TYPE + ": " + player + "; AMT: " + amount + stringQevents();
+		return TYPE + ": " + player + "; AMT: " + amount + coloredDesc() + stringQevents();
 	}
 	
 	public boolean checkPlayer(Player player) {

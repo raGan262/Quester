@@ -45,7 +45,7 @@ public final class TameObjective extends Objective {
 	@Override
 	public String toString() {
 		String entStr = entity == null ? "ANY" : entity.getName();
-		return TYPE + ": " + entStr + "; AMT: " + amount + stringQevents();
+		return TYPE + ": " + entStr + "; AMT: " + amount + coloredDesc() + stringQevents();
 	}
 	
 	public boolean check(EntityType ent) {

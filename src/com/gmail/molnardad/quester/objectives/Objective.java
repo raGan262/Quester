@@ -45,9 +45,16 @@ public abstract class Objective implements ConfigurationSerializable{
 			return result;
 		}
 		
+		public String coloredDesc() {
+			String des = "";
+			if(!desc.isEmpty()) {
+				des = "\n  - " + ChatColor.translateAlternateColorCodes('&', desc) + ChatColor.RESET;
+			}
+			return des;
+		}
+		
 		public void addDescription(String msg) {
-			this.desc += " " + msg;
-			this.desc.trim();
+			this.desc += (" " + msg).trim();
 		}
 		
 		public void removeDescription() {
