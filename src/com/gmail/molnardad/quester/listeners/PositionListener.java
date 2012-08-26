@@ -51,7 +51,6 @@ public class PositionListener implements Runnable {
 		    		return;
 		    	}
 		    	for(int i = 0; i < objs.size(); i++) {
-		    		// check if Objective is type BREAK
 		    		if(objs.get(i).getType().equalsIgnoreCase("LOCATION")) {
 			    		if(qm.achievedTarget(player, i)){
 		    				continue;
@@ -73,6 +72,8 @@ public class PositionListener implements Runnable {
 		    		}
 		    	}
 		    	
+		    } else {
+		    	// TODO location check
 		    }
 		}
 	}

@@ -107,18 +107,21 @@ public class PlayerProfile implements ConfigurationSerializable{
 		map.put("name", name);
 		map.put("points", points);
 		
-		final String[] completedmap = completed.toArray(new String[0]);
-		map.put("completed", completedmap);
-		
-		map.put("quest", quest);
-		
-		int i = 0;
-		final Map<Integer, Object> progressmap = new HashMap<Integer, Object>();
-		for(Integer j : progress) {
-			progressmap.put(i++, j);
+		if(!completed.isEmpty()) {
+			final String[] completedmap = completed.toArray(new String[0]);
+			map.put("completed", completedmap);
 		}
-		map.put("progress", progressmap);
 		
+		if(!quest.isEmpty()) {
+			map.put("quest", quest);
+			
+			int i = 0;
+			final Map<Integer, Object> progressmap = new HashMap<Integer, Object>();
+			for(Integer j : progress) {
+				progressmap.put(i++, j);
+			}
+			map.put("progress", progressmap);
+		}
 		return map;
 	}
 

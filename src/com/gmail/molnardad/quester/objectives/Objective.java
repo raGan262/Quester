@@ -94,9 +94,11 @@ public abstract class Objective implements ConfigurationSerializable{
 		@Override
 		public Map<String, Object> serialize() {
 			Map<String, Object> map = new HashMap<String, Object>();
-				
-			map.put("description", desc);
-			map.put("events", qevents);
+			
+			if(!desc.isEmpty())
+				map.put("description", desc);
+			if(!qevents.isEmpty())
+				map.put("events", qevents);
 			
 			return map;
 		}

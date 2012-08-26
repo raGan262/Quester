@@ -246,13 +246,20 @@ public class Quest implements ConfigurationSerializable{
 		}
 		
 		map.put("name", name);
-		map.put("description", description);
-		map.put("worlds", worlds.toArray(new String[0]));
-		map.put("flags", QuestFlag.serialize(flags));
-		map.put("objectives", objs);
-		map.put("rewards", rews);
-		map.put("conditions", cons);
-		map.put("events", qvts);
+		if(!description.isEmpty())
+			map.put("description", description);
+		if(!worlds.isEmpty())
+			map.put("worlds", worlds.toArray(new String[0]));
+		if(!flags.isEmpty())
+			map.put("flags", QuestFlag.serialize(flags));
+		if(!objs.isEmpty())
+			map.put("objectives", objs);
+		if(!rews.isEmpty())
+			map.put("rewards", rews);
+		if(!cons.isEmpty())
+			map.put("conditions", cons);
+		if(!qvts.isEmpty())
+			map.put("events", qvts);
 		if(hasID())
 			map.put("ID", ID);
 		
@@ -268,8 +275,8 @@ public class Quest implements ConfigurationSerializable{
 				quest = new Quest(name);
 			else
 				return null;
-			
-			quest.setDescription((String) map.get("description"));
+			if(map.get("description") != null)
+				quest.setDescription((String) map.get("description"));
 
 			if(map.get("ID") != null) {
 				int id = (Integer) map.get("ID");
