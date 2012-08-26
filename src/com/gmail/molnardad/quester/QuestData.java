@@ -111,6 +111,7 @@ public class QuestData {
 	static void wipeData(){
 		allQuests = null;
 		questIds = null;
+		questLocations = null;
 		holderIds = null;
 		signs = null;
 		profiles = null;
@@ -215,6 +216,9 @@ public class QuestData {
 				if(!q.hasID()) {
 					QuestData.assignQuestID(q);
 					questIds.put(q.getID(), q.getName().toLowerCase());
+				}
+				if(q.hasLocation()) {
+					questLocations.put(q.getID(), q.getLocation());
 				}
 			}
 			saveQuests();
