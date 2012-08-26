@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -23,20 +24,12 @@ import com.gmail.molnardad.quester.utils.Util;
 import static com.gmail.molnardad.quester.QuestData.allQuests;
 import static com.gmail.molnardad.quester.QuestData.profiles;
 import static com.gmail.molnardad.quester.QuestData.questIds;
+import static com.gmail.molnardad.quester.QuestData.questLocations;;
 
 public class QuestManager {
 	
 	// QuestManager methods
 	// - private part
-	
-	private Quest getQuest(String questName) {
-		if(questName == null || questName.isEmpty()) return null;
-		return allQuests.get(questName.toLowerCase());
-	}
-	
-	private Quest getQuest(int questID) {
-		return getQuest(questIds.get(questID));
-	}
 	
 	private Quest getSelected(String name) {
 		if(name == null) 
@@ -76,6 +69,15 @@ public class QuestManager {
 	}
 	
 	// - public part
+	
+	public Quest getQuest(String questName) {
+		if(questName == null || questName.isEmpty()) return null;
+		return allQuests.get(questName.toLowerCase());
+	}
+	
+	public Quest getQuest(int questID) {
+		return getQuest(questIds.get(questID));
+	}
 	
 	public void completeCheck(Player player) throws QuesterException {
 		
@@ -275,6 +277,7 @@ public class QuestManager {
 		Quest q = getQuest(questID);
 		modifyCheck(q);
 		questIds.remove(q.getID());
+		questLocations.remove(q.getID());
 		allQuests.remove(q.getName().toLowerCase());
 		Quester.questConfig.getConfig().set(q.getName().toLowerCase(), null);
 		QuestData.adjustQuestID();
@@ -344,6 +347,24 @@ public class QuestManager {
 		Quest quest = getSelected(changer);
 		modifyCheck(quest);
 		quest.addDescription(descToAdd);
+		QuestData.saveQuests();
+	}
+	
+	public void setQuestLocation(String changer, Location loc, int range) throws QuesterException {
+		Quest quest = getSelected(changer);
+		modifyCheck(quest);
+		quest.setLocation(loc);
+		quest.setRange(range);
+		questLocations.put(quest.getID(), loc);
+		QuestData.saveQuests();
+	}
+	
+	public void removeQuestLocation(String changer) throws QuesterException {
+		Quest quest = getSelected(changer);
+		modifyCheck(quest);
+		quest.setLocation(null);
+		quest.setRange(1);
+		questLocations.remove(quest.getID());
 		QuestData.saveQuests();
 	}
 	
@@ -743,6 +764,7 @@ public class QuestManager {
 		
 		sender.sendMessage(ChatColor.BLUE + "Name: " + "[" + qst.getID() + "]" + ChatColor.GOLD + qst.getName());
 		sender.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + qst.getDescription());
+		sender.sendMessage(ChatColor.BLUE + "Location: " + ChatColor.WHITE + qst.getLocationString());
 		sender.sendMessage(ChatColor.BLUE + "Flags: " + ChatColor.WHITE + QuestFlag.stringize(qst.getFlags()));
 		String worlds = qst.getWorlds().isEmpty() ? "ANY" : qst.getWorldNames();
 		sender.sendMessage(ChatColor.BLUE + "Worlds: " + ChatColor.WHITE + worlds);

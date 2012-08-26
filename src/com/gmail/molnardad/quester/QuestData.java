@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class QuestData {
@@ -48,6 +49,7 @@ public class QuestData {
 
 	public static Map<String, Quest> allQuests = new HashMap<String, Quest>();
 	public static Map<Integer, String> questIds = new HashMap<Integer, String>();
+	public static Map<Integer, Location> questLocations = new HashMap<Integer, Location>();
 	public static Map<Integer, QuestHolder> holderIds = new HashMap<Integer, QuestHolder>();
 	public static Map<String, QuesterSign> signs = new HashMap<String, QuesterSign>();
 	public static Map<String, PlayerProfile> profiles = new HashMap<String, PlayerProfile>();

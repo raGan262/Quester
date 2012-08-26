@@ -297,6 +297,49 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				
+				//QUEST LOCATION
+				if(args[0].equalsIgnoreCase("location") || args[0].equalsIgnoreCase("loc")) {
+					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
+						return true;
+					}
+
+					if(args.length > 1) {
+						
+						if(args[1].equalsIgnoreCase("set") || args[1].equalsIgnoreCase("s")){
+							if(args.length > 3) {
+								try {
+									int range = Integer.parseInt(args[3]);
+									if(range < 1)
+										throw new NumberFormatException();
+									qm.setQuestLocation(sender.getName(), getLoc(sender, args[2]), range);
+									sender.sendMessage(ChatColor.GREEN + "Quest location set.");
+								} catch (QuesterException e) {
+									sender.sendMessage(e.message());
+								} catch (NumberFormatException e) {
+									sender.sendMessage(ChatColor.GREEN + "Range must be greater than 0");
+								}	
+							} else {
+								sender.sendMessage(ChatColor.RED + "Usage: /quest location set {location} [range].");
+								return true;
+							}
+							return true;
+						}
+						
+						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")){
+							try{
+								qm.removeQuestLocation(sender.getName());
+								sender.sendMessage(ChatColor.GREEN + "Quest location removed.");
+							} catch (QuesterException e) {
+								sender.sendMessage(e.message());
+							}
+							return true;
+						}
+					}
+					
+					sender.sendMessage(ChatColor.RED + "Usage: /quest location [set|remove] .");
+					return true;
+				}
+				
 				// QUEST FLAG
 				if(args[0].equalsIgnoreCase("flag") || args[0].equalsIgnoreCase("f")) {
 					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
@@ -309,7 +352,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						
 						for(int i=2; i<args.length; i++) {
 							QuestFlag flag = QuestFlag.getByName(args[i]);
-							if(flag != null)
+							if(flag != null && flag != QuestFlag.ACTIVE)
 								flags.add(flag);
 						}
 						

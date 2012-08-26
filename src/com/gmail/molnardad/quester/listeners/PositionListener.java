@@ -3,11 +3,14 @@ package com.gmail.molnardad.quester.listeners;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quest;
+import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.QuestFlag;
 import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.objectives.LocObjective;
 import com.gmail.molnardad.quester.objectives.Objective;
 import com.gmail.molnardad.quester.objectives.WorldObjective;
@@ -73,7 +76,16 @@ public class PositionListener implements Runnable {
 		    	}
 		    	
 		    } else {
-		    	// TODO location check
+		    	Location loc = player.getLocation();
+		    	for(int ID : QuestData.questLocations.keySet()) {
+		    		Quest qst = qm.getQuest(ID);
+		    		if(QuestData.questLocations.get(ID).distance(loc) <= qst.getRange() && qst.hasFlag(QuestFlag.ACTIVE)) {
+		    			try {
+							qm.startQuest(player, qst.getName(), false);
+						} catch (QuesterException e) {
+						}
+		    		}
+		    	}
 		    }
 		}
 	}

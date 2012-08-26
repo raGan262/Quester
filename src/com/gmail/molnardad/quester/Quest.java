@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 
@@ -27,6 +28,8 @@ public class Quest implements ConfigurationSerializable{
 	private Set<QuestFlag> flags = null;
 	private String description = null;
 	private String name = null;
+	private Location location = null;
+	private int range = 1;
 	private int ID = -1;
 	
 	
@@ -87,6 +90,33 @@ public class Quest implements ConfigurationSerializable{
 	
 	public void addDescription(String toAdd) {
 		description = (description + " " + toAdd).trim();
+	}
+	
+	public boolean hasLocation() {
+		return location != null;
+	}
+	
+	public String getLocationString() {
+		if(location != null)
+			return String.format("%.1f %.1f %.1f("+location.getWorld().getName()+"), range: %d", location.getX(), location.getY(), location.getZ(), range);
+		else
+			return "none";
+	}
+	
+	public Location getLocation() {
+		return location;
+	}
+	
+	public void setLocation(Location loc) {
+		location = loc;
+	}
+	
+	public int getRange() {
+		return range;
+	}
+	
+	public void setRange(int rng) {
+		range = rng;
 	}
 	
 	public Objective getObjective(int id) {
@@ -248,6 +278,11 @@ public class Quest implements ConfigurationSerializable{
 		map.put("name", name);
 		if(!description.isEmpty())
 			map.put("description", description);
+		if(location != null) {
+			map.put("location", Util.serializeLocation(location));
+			if(range > 1)
+				map.put("range", range);
+		}
 		if(!worlds.isEmpty())
 			map.put("worlds", worlds.toArray(new String[0]));
 		if(!flags.isEmpty())
@@ -277,7 +312,13 @@ public class Quest implements ConfigurationSerializable{
 				return null;
 			if(map.get("description") != null)
 				quest.setDescription((String) map.get("description"));
-
+			
+			if(map.get("location") != null) {
+				quest.setLocation(Util.deserializeLocation((Map<String, Object>) map.get("location")));
+				if(map.get("range") != null)
+					quest.setRange((Integer) map.get("range"));
+			}
+			
 			if(map.get("ID") != null) {
 				int id = (Integer) map.get("ID");
 				if(id >= 0) {
