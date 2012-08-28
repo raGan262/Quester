@@ -15,7 +15,6 @@ public class QuestData {
 	public static boolean verbose = false;
 	public static int saveInterval = 15;
 	public static boolean debug = true;
-	public static boolean disUseCmds = false;
 	// OBJECTIVE SECTION
 		// BREAK
 	public static boolean brkNoDrops = false;

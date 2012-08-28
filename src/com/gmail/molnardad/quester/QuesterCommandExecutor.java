@@ -1762,10 +1762,6 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						sender.sendMessage(ChatColor.RED + "This command can only be run by player.");
 						return true;
 					}
-					if(QuestData.disUseCmds) {
-						sender.sendMessage(Quester.LABEL + "Quest start/done commands are disabled.");
-						return true;
-					}
 					try {
 						if(args.length > 1){
 							if(!permCheck(sender, QuestData.PERM_USE_START_PICK, true)) {
@@ -1812,10 +1808,6 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					}
 					if(player == null) {
 						sender.sendMessage(ChatColor.RED + "This command can only be run by player.");
-						return true;
-					}
-					if(QuestData.disUseCmds) {
-						sender.sendMessage(ChatColor.RED + "Quest start/done commands are disabled.");
 						return true;
 					}
 					try {

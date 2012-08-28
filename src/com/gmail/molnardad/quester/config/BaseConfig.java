@@ -49,13 +49,6 @@ public class BaseConfig extends CustomConfig {
 		}
 		QuestData.debug = this.config.getBoolean(path);
 		
-		path = "general.disable-usecmds";
-		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
-			this.config.set(path, false);
-			wrongConfig(path);
-		}
-		QuestData.disUseCmds = this.config.getBoolean(path);
-		
 		// SHOW ONLY CURRENT
 		path = "objectives.show-only-current";
 		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
