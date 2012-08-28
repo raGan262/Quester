@@ -11,7 +11,6 @@ objectives:
     remove-on-pickup: true
     subtract-on-drop: false
 quests:
-  show-objectives: true
   messages:
     start-show: true
     cancel-show: true

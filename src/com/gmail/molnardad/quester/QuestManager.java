@@ -729,10 +729,9 @@ public class QuestManager {
 				color = cons.get(i).isMet(player) ? ChatColor.GREEN : ChatColor.RED;
 			sender.sendMessage(color + " - " + cons.get(i).show());
 		}
-		if(QuestData.showObjs) {
-			Quest quest = getQuest(questName);
-			List<Objective> objs = quest.getObjectives();
-			if(QuestData.ordOnlyCurrent && quest.hasFlag(QuestFlag.ORDERED)) {
+		if(!qst.hasFlag(QuestFlag.HIDDENOBJS)) {
+			List<Objective> objs = qst.getObjectives();
+			if(QuestData.ordOnlyCurrent && qst.hasFlag(QuestFlag.ORDERED)) {
 				sender.sendMessage(ChatColor.BLUE + "First objective:");
 				if(objs.get(0) != null)
 					sender.sendMessage(ChatColor.WHITE + " - " + objs.get(0).progress(0));
@@ -830,7 +829,7 @@ public class QuestManager {
 		if(quest == null) {
 			throw new QuesterException(ExceptionType.Q_NOT_ASSIGNED);
 		}
-		if(QuestData.showObjs) {
+		if(!quest.hasFlag(QuestFlag.HIDDENOBJS)) {
 			player.sendMessage(ChatColor.GOLD + getPlayerQuest(player.getName()).getName() + ChatColor.BLUE + " progress:");
 			List<Objective> objs = quest.getObjectives();
 			List<Integer> progress = getProgress(player.getName());

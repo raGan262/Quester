@@ -24,7 +24,6 @@ public class QuestData {
 	public static boolean colSubOnDrop = false;
 	// QUEST SECTION
 	public static boolean ordOnlyCurrent = true;
-	public static boolean showObjs = true;
 		// MESSAGES
 	public static boolean progMsgStart = true;
 	public static boolean progMsgCancel = true;

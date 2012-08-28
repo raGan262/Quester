@@ -89,14 +89,6 @@ public class BaseConfig extends CustomConfig {
 		}
 		QuestData.colSubOnDrop = this.config.getBoolean(path);
 		
-		// SHOW OBJECTIVES
-		path = "quests.show-objectives";
-		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
-			this.config.set(path, true);
-			wrongConfig(path);
-		}
-		QuestData.showObjs = this.config.getBoolean(path);
-		
 		// PROGRES MESSAGES
 		path = "quests.messages.start-show";
 		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
