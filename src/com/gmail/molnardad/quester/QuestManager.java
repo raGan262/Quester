@@ -674,7 +674,7 @@ public class QuestManager {
 			for(Qevent qv : obj.getQevents()) {
 				qv.execute(player);
 			}
-			if(checkAll && !q.hasFlag(QuestFlag.HIDDEN)) {
+			if(checkAll) {
 				if(areObjectivesCompleted(player)) {
 					try{
 						complete(player, false);
