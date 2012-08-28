@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
@@ -81,7 +82,7 @@ public class Quest implements ConfigurationSerializable{
 	}
 	
 	public String getDescription() {
-		return description;
+		return ChatColor.translateAlternateColorCodes('&', description);
 	}
 	
 	public void setDescription(String newDescription) {

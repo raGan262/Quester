@@ -539,6 +539,8 @@ public class QuestManager {
 		assignQuest(playerName, qst);
 		if(QuestData.progMsgStart)
 			player.sendMessage(Quester.LABEL + "You have started quest " + ChatColor.GOLD + qst.getName());
+		if(!qst.getDescription().isEmpty() && !qst.hasFlag(QuestFlag.NODESC))
+			player.sendMessage(qst.getDescription());
 		if(QuestData.verbose)
 			Quester.log.info(playerName + " started quest '" + qst.getName() + "'.");
 		for(Qevent qv : qst.getQevents()) {

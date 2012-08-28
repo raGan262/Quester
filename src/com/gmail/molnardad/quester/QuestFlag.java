@@ -10,7 +10,8 @@ public enum QuestFlag {
 	UNCANCELLABLE (2),
 	ONLYFIRST (3),
 	HIDDEN (4),
-	HIDDENOBJS(5);
+	HIDDENOBJS(5),
+	NODESC(6);
 
     private final int type;
     QuestFlag (int type) {
