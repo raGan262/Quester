@@ -141,9 +141,11 @@ public class PlayerProfile implements ConfigurationSerializable{
 			profile.addPoints(pts);
 		}
 		
-		List<String> strings = (List<String>) map.get("completed");
-		for(String s : strings) {
-			profile.addCompleted(s);
+		if(map.get("completed") != null) {
+			List<String> strings = (List<String>) map.get("completed");
+			for(String s : strings) {
+				profile.addCompleted(s);
+			}
 		}
 		
 		if(map.get("quest") != null) {
