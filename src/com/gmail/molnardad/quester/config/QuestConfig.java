@@ -12,15 +12,6 @@ public final class QuestConfig extends CustomConfig {
 	}
 
 	@Override
-	public void initialize() {
-	}
-
-	@Override
-	public boolean validate() {
-		return true;
-	}
-
-	@Override
 	public void saveConfig() {
 		for(String key : QuestData.allQuests.keySet()) {
 			config.set(key, QuestData.allQuests.get(key));

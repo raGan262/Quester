@@ -52,13 +52,13 @@ public class Util {
 		String args[] = arg.split(";");
 		Location loc;
 		if(args.length < 1)
-			throw new QuesterException(ChatColor.RED + "Invalid location.");
+			throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_LOC_INVALID);
 		
-		if(args[0].equalsIgnoreCase("here")) {
+		if(args[0].equalsIgnoreCase(Quester.strings.OTHER_HERE_LOC_LABEL)) {
 			if(sender instanceof Player)
 				return ((Player) sender).getLocation();
 			else
-				throw new QuesterException(ChatColor.RED + "Location 'here' requires player context.");
+				throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_LOC_HERE.replaceAll("%here", Quester.strings.OTHER_HERE_LOC_LABEL));
 		}
 		
 		if(args.length > 3){
@@ -68,24 +68,24 @@ public class Util {
 				y = Double.parseDouble(args[1]);
 				z = Double.parseDouble(args[2]);
 			} catch (NumberFormatException e) {
-				throw new QuesterException(ChatColor.RED + "Invalid coordinates.");
+				throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_COORDS_INVALID);
 			}
 			if(y < 0) {
-				throw new QuesterException(ChatColor.RED + "Invalid coordinates.");
+				throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_COORDS_INVALID);
 			}
-			if(sender instanceof Player && args[3].equalsIgnoreCase("this")) {
+			if(sender instanceof Player && args[3].equalsIgnoreCase(Quester.strings.OTHER_THIS_WORLD_LABEL)) {
 				loc = new Location(((Player)sender).getWorld(), x, y, z);
 			} else {
 				World world = Quester.plugin.getServer().getWorld(args[3]);
 				if(world == null) {
-					throw new QuesterException(ChatColor.RED + "Invalid world.");
+					throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_WORLD_INVALID);
 				}
 				loc = new Location(world, x, y, z);
 			}
 			return loc;
 		}
 		
-		throw new QuesterException(ChatColor.RED + "Invalid location.");
+		throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_LOC_INVALID);
 	}
 	
 	public static String implode(String[] strs) {
@@ -125,7 +125,7 @@ public class Util {
 			return true;
 		}
 		if(message)
-			sender.sendMessage(ChatColor.RED + "You don't have permission for this.");
+			sender.sendMessage(ChatColor.RED + Quester.strings.MSG_PERMS);
 		return false;
 	}
 	

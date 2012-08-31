@@ -79,7 +79,11 @@ public abstract class CustomConfig {
 			}
 		}
 		
-		public abstract void initialize();
+		public void initialize() {
+			
+		}
 		
-		public abstract boolean validate();
+		public boolean validate() {
+			return true;
+		}
 }

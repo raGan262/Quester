@@ -297,7 +297,7 @@ public class QuestManager {
 				prof.unsetQuest();
 				Player player = Bukkit.getServer().getPlayerExact(prof.getName());
 				if(player != null){
-					player.sendMessage(Quester.LABEL + "Your current quest hes been deactivated.");
+					player.sendMessage(Quester.LABEL + Quester.strings.MSG_Q_DEACTIVATED);
 				}
 			}
 		}
@@ -538,7 +538,7 @@ public class QuestManager {
 			throw new QuesterException(ExceptionType.CON_NOT_MET);
 		assignQuest(playerName, qst);
 		if(QuestData.progMsgStart)
-			player.sendMessage(Quester.LABEL + "You have started quest " + ChatColor.GOLD + qst.getName());
+			player.sendMessage(Quester.LABEL + Quester.strings.MSG_Q_STARTED.replaceAll("%q", ChatColor.GOLD + qst.getName() + ChatColor.BLUE));
 		if(!qst.getDescription().isEmpty() && !qst.hasFlag(QuestFlag.NODESC))
 			player.sendMessage(qst.getDescription());
 		if(QuestData.verbose)
@@ -576,7 +576,7 @@ public class QuestManager {
 		}
 		unassignQuest(player.getName());
 		if(QuestData.progMsgCancel)
-			player.sendMessage(Quester.LABEL + "Quest " + ChatColor.GOLD + quest.getName() + ChatColor.BLUE + " cancelled.");
+			player.sendMessage(Quester.LABEL + Quester.strings.MSG_Q_CANCELLED.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 		if(QuestData.verbose)
 			Quester.log.info(player.getName() + " cancelled quest '" + quest.getName() + "'.");
 		for(Qevent qv : quest.getQevents()) {
@@ -638,7 +638,7 @@ public class QuestManager {
 		
 		unassignQuest(player.getName());
 		if(QuestData.progMsgDone)
-			player.sendMessage(Quester.LABEL + "Quest " + ChatColor.GOLD + quest.getName() + ChatColor.BLUE + " completed.");
+			player.sendMessage(Quester.LABEL + Quester.strings.MSG_Q_COMPLETED.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 		if(QuestData.verbose)
 			Quester.log.info(player.getName() + " completed quest '" + quest.getName() + "'.");
 		for(Qevent qv : quest.getQevents()) {
@@ -672,7 +672,7 @@ public class QuestManager {
 		prof.getProgress().set(id, newValue);
 		if(obj.getTargetAmount() <= newValue) {
 			if(QuestData.progMsgObj)
-				player.sendMessage(Quester.LABEL + "You completed a quest objective.");
+				player.sendMessage(Quester.LABEL + Quester.strings.MSG_OBJ_COMPLETED);
 			for(Qevent qv : obj.getQevents()) {
 				qv.execute(player);
 			}
@@ -696,15 +696,15 @@ public class QuestManager {
 	
 	public void showProfile(CommandSender sender, String name) {
 		if(!hasProfile(name)) {
-			sender.sendMessage(ChatColor.RED + name + " does not have profile.");
+			sender.sendMessage(ChatColor.RED + Quester.strings.INFO_PROFILE_NOT_EXIST.replaceAll("%p", name));
 			return;
 		}
 		PlayerProfile prof = getProfile(name);
-		sender.sendMessage(ChatColor.BLUE + "Name: " + ChatColor.GOLD + prof.getName());
-		sender.sendMessage(ChatColor.BLUE + "Quest points: " + ChatColor.WHITE + prof.getPoints());
-		sender.sendMessage(ChatColor.BLUE + "Quest rank: " + ChatColor.GOLD + prof.getRank());
-		sender.sendMessage(ChatColor.BLUE + "Current quest: " + ChatColor.WHITE + prof.getQuest());
-		sender.sendMessage(ChatColor.BLUE + "Completed quests: " + ChatColor.WHITE + prof.getCompletedNames());
+		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_NAME + ": " + ChatColor.GOLD + prof.getName());
+		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_PROFILE_POINTS + ": " + ChatColor.WHITE + prof.getPoints());
+		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_PROFILE_RANK + ": " + ChatColor.GOLD + prof.getRank());
+		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_PROFILE_CURRENT + ": " + ChatColor.WHITE + prof.getQuest());
+		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_PROFILE_COMPLETED + ": " + ChatColor.WHITE + prof.getCompletedNames());
 		
 	}
 	
@@ -720,11 +720,11 @@ public class QuestManager {
 		Player player = null;
 		if(sender instanceof Player)
 			player = (Player) sender;
-		sender.sendMessage(ChatColor.BLUE + "Name: " + ChatColor.GOLD + qst.getName());
-		sender.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + qst.getDescription());
+		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_NAME + ": " + ChatColor.GOLD + qst.getName());
+		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_DESCRIPTION + ": " + ChatColor.WHITE + qst.getDescription());
 		List<Condition> cons = getQuest(questName).getConditions();
 		if(!cons.isEmpty())
-			sender.sendMessage(ChatColor.BLUE + "Conditions:");
+			sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_CONDITIONS + ":");
 		ChatColor color = ChatColor.WHITE;
 		for(int i = 0; i < cons.size(); i++) {
 			if(player != null)
@@ -734,12 +734,12 @@ public class QuestManager {
 		if(!qst.hasFlag(QuestFlag.HIDDENOBJS)) {
 			List<Objective> objs = qst.getObjectives();
 			if(QuestData.ordOnlyCurrent && qst.hasFlag(QuestFlag.ORDERED)) {
-				sender.sendMessage(ChatColor.BLUE + "First objective:");
+				sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_FIRST_OBJECTIVE + ":");
 				if(objs.get(0) != null)
 					sender.sendMessage(ChatColor.WHITE + " - " + objs.get(0).progress(0));
 				return;
 			}
-			sender.sendMessage(ChatColor.BLUE + "Objectives:");
+			sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_OBJECTIVES + ":");
 			for(int i = 0; i < objs.size(); i++) {
 				sender.sendMessage(ChatColor.WHITE + " - " + objs.get(i).progress(0));
 			}
@@ -762,36 +762,36 @@ public class QuestManager {
 		if(qst == null)
 			throw new QuesterException(ExceptionType.Q_NOT_EXIST);
 		
-		sender.sendMessage(Util.line(ChatColor.BLUE, "Quest info", ChatColor.GOLD));
+		sender.sendMessage(Util.line(ChatColor.BLUE, Quester.strings.INFO_QUEST_INFO, ChatColor.GOLD));
 		
-		sender.sendMessage(ChatColor.BLUE + "Name: " + "[" + qst.getID() + "]" + ChatColor.GOLD + qst.getName());
-		sender.sendMessage(ChatColor.BLUE + "Description: " + ChatColor.WHITE + qst.getDescription());
-		sender.sendMessage(ChatColor.BLUE + "Location: " + ChatColor.WHITE + qst.getLocationString());
-		sender.sendMessage(ChatColor.BLUE + "Flags: " + ChatColor.WHITE + QuestFlag.stringize(qst.getFlags()));
+		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_NAME + ": " + "[" + qst.getID() + "]" + ChatColor.GOLD + qst.getName());
+		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_DESCRIPTION + ": " + ChatColor.WHITE + qst.getDescription());
+		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_LOCATION + ": " + ChatColor.WHITE + qst.getLocationString());
+		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_FLAGS + ": " + ChatColor.WHITE + QuestFlag.stringize(qst.getFlags()));
 		String worlds = qst.getWorlds().isEmpty() ? "ANY" : qst.getWorldNames();
-		sender.sendMessage(ChatColor.BLUE + "Worlds: " + ChatColor.WHITE + worlds);
+		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_WORLDS + ": " + ChatColor.WHITE + worlds);
 		int i;
-		sender.sendMessage(ChatColor.BLUE + "Events:");
+		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_EVENTS + ":");
 		i = 0;
 		for(Qevent e: qst.getQevents()){
 			sender.sendMessage(" [" + i + "] " + e.toString());
 			i++;
 			
 		}
-		sender.sendMessage(ChatColor.BLUE + "Conditions:");
+		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_CONDITIONS + ":");
 		i = 0;
 		for(Condition c: qst.getConditions()){
 			sender.sendMessage(" [" + i + "] " + c.toString());
 			i++;
 			
 		}
-		sender.sendMessage(ChatColor.BLUE + "Objectives:");
+		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_OBJECTIVES + ":");
 		i = 0;
 		for(Objective o: qst.getObjectives()){
 			sender.sendMessage(" [" + i + "] " + o.toString());
 			i++;
 		}
-		sender.sendMessage(ChatColor.BLUE + "Rewards:");
+		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_REWARDS + ":");
 		i = 0;
 		for(Reward r: qst.getRewards()){
 			sender.sendMessage(" [" + i + "] " + r.toString());
@@ -801,7 +801,7 @@ public class QuestManager {
 	}
 	
 	public void showQuestList(CommandSender sender) {
-		sender.sendMessage(Util.line(ChatColor.BLUE, "Quest list", ChatColor.GOLD));
+		sender.sendMessage(Util.line(ChatColor.BLUE, Quester.strings.INFO_QUEST_LIST, ChatColor.GOLD));
 		Player player = null;
 		if(sender instanceof Player)
 			player = (Player) sender;
@@ -818,7 +818,7 @@ public class QuestManager {
 	}
 	
 	public void showFullQuestList(CommandSender sender) {
-		sender.sendMessage(Util.line(ChatColor.BLUE, "Quest list", ChatColor.GOLD));
+		sender.sendMessage(Util.line(ChatColor.BLUE, Quester.strings.INFO_QUEST_LIST, ChatColor.GOLD));
 		for(Quest q: getQuests()){
 			ChatColor color = q.hasFlag(QuestFlag.ACTIVE) ? ChatColor.GREEN : ChatColor.RED;
 			ChatColor color2 = q.hasFlag(QuestFlag.HIDDEN) ? ChatColor.YELLOW : ChatColor.BLUE;
@@ -832,7 +832,7 @@ public class QuestManager {
 			throw new QuesterException(ExceptionType.Q_NOT_ASSIGNED);
 		}
 		if(!quest.hasFlag(QuestFlag.HIDDENOBJS)) {
-			player.sendMessage(ChatColor.GOLD + getPlayerQuest(player.getName()).getName() + ChatColor.BLUE + " progress:");
+			player.sendMessage(Quester.strings.INFO_PROGRESS.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 			List<Objective> objs = quest.getObjectives();
 			List<Integer> progress = getProgress(player.getName());
 			if(QuestData.ordOnlyCurrent && quest.hasFlag(QuestFlag.ORDERED)) {
@@ -841,14 +841,14 @@ public class QuestManager {
 			} else {
 				for(int i = 0; i < objs.size(); i++) {
 					if(objs.get(i).isComplete(player, progress.get(i))) {
-							player.sendMessage(ChatColor.GREEN + " - Completed");
+							player.sendMessage(ChatColor.GREEN + " - " + Quester.strings.INFO_PROGRESS_COMPLETED);
 					} else {
 							player.sendMessage(ChatColor.RED + " - " + objs.get(i).progress(progress.get(i)));
 					}
 				} 
 			}
 		} else {
-			player.sendMessage(Quester.LABEL + "Quest progress hidden.");
+			player.sendMessage(Quester.LABEL + Quester.strings.INFO_PROGRESS_HIDDEN);
 		}
 	}
 	

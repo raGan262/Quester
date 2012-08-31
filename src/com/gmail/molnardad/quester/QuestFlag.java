@@ -30,11 +30,13 @@ public enum QuestFlag {
     	return null;
     }
     
-    public static String stringize(Set<QuestFlag> flags) {
+    public static String stringize(QuestFlag[] flags) {
     	String result = "";
 		String gl = ", ";
 		boolean first = true;
 		for(QuestFlag f : flags) {
+			if(f.getType() == 0)
+				continue;
 			if(first) {
 				result += f.name();
 				first = false;
@@ -42,6 +44,10 @@ public enum QuestFlag {
 				result += gl + f.name();
 		}
 		return result;
+    }
+    
+    public static String stringize(Set<QuestFlag> flags) {
+    	return stringize(flags.toArray(new QuestFlag[0]));
     }
     
     public static String serialize(Set<QuestFlag> flags) {

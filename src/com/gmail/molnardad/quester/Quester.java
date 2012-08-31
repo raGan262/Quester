@@ -1,5 +1,6 @@
 package com.gmail.molnardad.quester;
 
+import java.lang.reflect.Field;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -35,6 +36,7 @@ public class Quester extends JavaPlugin {
 		public static ProfileConfig profileConfig;
 		public static QuestConfig questConfig;
 		public static HolderConfig holderConfig;
+		public static QuesterStrings strings;
 		private boolean loaded = false;
 		private int saveID = 0;
 
@@ -113,6 +115,8 @@ public class Quester extends JavaPlugin {
 			}
 			
 			this.initializeConfig();
+
+			loadLocal();
 			
 			QuestData.loadQuests();
 			QuestData.loadProfiles();
@@ -191,6 +195,37 @@ public class Quester extends JavaPlugin {
 				log.info("Config loaded.");
 				log.info(QuestData.ranks.size() + " ranks loaded.");
 			}
+		}
+		
+		public void loadLocal() {
+			strings = new QuesterStrings("local.yml");
+			Class<? extends CustomConfig> qsclass = strings.getClass();
+			YamlConfiguration conf = strings.getConfig();
+			for(Field f : qsclass.getFields()) {
+				String val = conf.getString(f.getName(), "");
+				if(val.isEmpty()) {
+					try {
+						conf.set(f.getName(),((String)f.get(strings)).replaceAll("\\n", "%n"));
+						Quester.log.info(f.getName() + " reset to default.");
+					} catch (IllegalArgumentException | IllegalAccessException e) {
+						Quester.log.info("Error occured while setting values in local file.");
+						if(QuestData.debug) {
+							e.printStackTrace();
+						}
+					}
+				} else {
+					try {
+						f.set(strings, (String) val.replaceAll("%n", "\n"));
+					} catch (IllegalArgumentException | IllegalAccessException e) {
+						Quester.log.info("Error occured while setting values in local object.");
+						if(QuestData.debug) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+			strings.saveConfig();
+			log.info("Local file loaded.");
 		}
 		
 		private void setupListeners() {

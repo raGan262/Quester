@@ -26,6 +26,7 @@ import com.gmail.molnardad.quester.objectives.*;
 import com.gmail.molnardad.quester.qevents.*;
 import com.gmail.molnardad.quester.rewards.*;
 import com.gmail.molnardad.quester.conditions.*;
+import static com.gmail.molnardad.quester.Quester.strings;
 import static com.gmail.molnardad.quester.utils.Util.*;
 
 public class QuesterCommandExecutor implements CommandExecutor {
@@ -54,49 +55,52 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					if(!permCheck(sender, QuestData.PERM_USE_HELP, true)) {
 						return true;
 					}
-					sender.sendMessage(line(ChatColor.BLUE, "Quester help", ChatColor.GOLD));
-					sender.sendMessage(ChatColor.GOLD + "/quest help/? " + ChatColor.GRAY + "- this");
+
+					String command = strings.OTHER_COMMAND_IN_HELP;
+					
+					sender.sendMessage(line(ChatColor.BLUE, strings.HELP_SECTION_USE, ChatColor.GOLD));
+					sender.sendMessage(ChatColor.GOLD + command + " help/? " + ChatColor.GRAY + strings.HELP_HELP);
 					if(permCheck(sender, QuestData.PERM_USE_LIST, false))
-						sender.sendMessage(ChatColor.GOLD + "/quest list " + ChatColor.GRAY + "- displays quest list");
+						sender.sendMessage(ChatColor.GOLD + command + " list " + ChatColor.GRAY + strings.HELP_LIST);
 					if(permCheck(sender, QuestData.PERM_USE_INFO, false)) {
-						sender.sendMessage(ChatColor.GOLD + "/quest show [name] " + ChatColor.GRAY + "- shows info about quest");
+						sender.sendMessage(ChatColor.GOLD + command + " show [name] " + ChatColor.GRAY + strings.HELP_SHOW);
 					}
 					if(permCheck(sender, QuestData.PERM_USE_START_PICK, false))
-						sender.sendMessage(ChatColor.GOLD + "/quest start [name] " + ChatColor.GRAY + "- starts a quest");
+						sender.sendMessage(ChatColor.GOLD + command + " start [name] " + ChatColor.GRAY + strings.HELP_START_PICK);
 					if(permCheck(sender, QuestData.PERM_USE_START_RANDOM, false))
-						sender.sendMessage(ChatColor.GOLD + "/quest start " + ChatColor.GRAY + "- starts random quest");
+						sender.sendMessage(ChatColor.GOLD + command + " start " + ChatColor.GRAY + strings.HELP_START_RANDOM);
 					if(permCheck(sender, QuestData.PERM_USE_CANCEL, false))
-						sender.sendMessage(ChatColor.GOLD + "/quest cancel " + ChatColor.GRAY + "- cancels current quest");
+						sender.sendMessage(ChatColor.GOLD + command + " cancel " + ChatColor.GRAY + strings.HELP_CANCEL);
 					if(permCheck(sender, QuestData.PERM_USE_DONE, false))
-						sender.sendMessage(ChatColor.GOLD + "/quest done " + ChatColor.GRAY + "- completes current quest");
+						sender.sendMessage(ChatColor.GOLD + command + " done " + ChatColor.GRAY + strings.HELP_DONE);
 					if(permCheck(sender, QuestData.PERM_USE_PROGRESS, false))
-						sender.sendMessage(ChatColor.GOLD + "/quest progress " + ChatColor.GRAY + "- shows current quest progress");
+						sender.sendMessage(ChatColor.GOLD + command + " progress " + ChatColor.GRAY + strings.HELP_PROGRESS);
 					if(permCheck(sender, QuestData.PERM_USE_PROFILE, false))
-						sender.sendMessage(ChatColor.GOLD + "/quest profile " + ChatColor.GRAY + "- displays your quester profile");
+						sender.sendMessage(ChatColor.GOLD + command + " profile " + ChatColor.GRAY + strings.HELP_PROFILE_USE);
 					if(permCheck(sender, QuestData.MODIFY_PERM, false)) {
-						sender.sendMessage(line(ChatColor.BLUE, "Modify help", ChatColor.GOLD));
-						sender.sendMessage(ChatColor.GOLD + "/q profile [name] " + ChatColor.GRAY + "- shows player's profile");
-						sender.sendMessage(ChatColor.GOLD + "/q create [name] " + ChatColor.GRAY + "- creates a quest");
-						sender.sendMessage(ChatColor.GOLD + "/q remove [name] " + ChatColor.GRAY + "- removes the quest");
-						sender.sendMessage(ChatColor.GOLD + "/q select [name] " + ChatColor.GRAY + "- selects the quest");
-						sender.sendMessage(ChatColor.GOLD + "/q toggle [name*] " + ChatColor.GRAY + "- toggles state of the quest");
-						sender.sendMessage(ChatColor.GOLD + "/q info [name*] " + ChatColor.GRAY + "- shows detailed info about the quest");
-						sender.sendMessage(line(ChatColor.DARK_GRAY, "Applies only to selected quest"));
-						sender.sendMessage(ChatColor.GOLD + "/q name [newName]" + ChatColor.GRAY + "- changes the name");
-						sender.sendMessage(ChatColor.GOLD + "/q desc set\\add" + ChatColor.GRAY + "- quest description manipulation");
-						sender.sendMessage(ChatColor.GOLD + "/q world add\\remove" + ChatColor.GRAY + "- world restriction manipulation");
-						sender.sendMessage(ChatColor.GOLD + "/q flag add\\remove" + ChatColor.GRAY + "- quest flag manipulation");
-						sender.sendMessage(ChatColor.GOLD + "/q condition add\\remove" + ChatColor.GRAY + "- condition manipulation");
-						sender.sendMessage(ChatColor.GOLD + "/q objective add\\remove\\swap\\desc" + ChatColor.GRAY + "- objective manipulation");
-						sender.sendMessage(ChatColor.GOLD + "/q event add\\remove" + ChatColor.GRAY + "- event manipulation");
-						sender.sendMessage(ChatColor.GOLD + "/q reward add\\remove" + ChatColor.GRAY + "- reward manipulation");
+						sender.sendMessage(line(ChatColor.BLUE, strings.HELP_SECTION_MODIFY, ChatColor.GOLD));
+						sender.sendMessage(ChatColor.GOLD + command + " profile [name] " + ChatColor.GRAY + strings.HELP_PROFILE_MOD);
+						sender.sendMessage(ChatColor.GOLD + command + " create [name] " + ChatColor.GRAY + strings.HELP_CREATE);
+						sender.sendMessage(ChatColor.GOLD + command + " remove [name] " + ChatColor.GRAY + strings.HELP_REMOVE);
+						sender.sendMessage(ChatColor.GOLD + command + " select [name] " + ChatColor.GRAY + strings.HELP_SELECT);
+						sender.sendMessage(ChatColor.GOLD + command + " toggle [name*] " + ChatColor.GRAY + strings.HELP_TOGGLE);
+						sender.sendMessage(ChatColor.GOLD + command + " info [name*] " + ChatColor.GRAY + strings.HELP_INFO);
+						sender.sendMessage(line(ChatColor.DARK_GRAY, strings.HELP_SECTION_MODIFY_SELECTED));
+						sender.sendMessage(ChatColor.GOLD + command + " name [newName] " + ChatColor.GRAY + strings.HELP_NAME);
+						sender.sendMessage(ChatColor.GOLD + command + " desc set\\add " + ChatColor.GRAY + strings.HELP_DESC);
+						sender.sendMessage(ChatColor.GOLD + command + " world add\\remove " + ChatColor.GRAY + strings.HELP_WORLD);
+						sender.sendMessage(ChatColor.GOLD + command + " flag add\\remove " + ChatColor.GRAY + strings.HELP_FLAG);
+						sender.sendMessage(ChatColor.GOLD + command + " condition add\\remove " + ChatColor.GRAY + strings.HELP_CONDITION);
+						sender.sendMessage(ChatColor.GOLD + command + " objective add\\remove\\swap\\desc " + ChatColor.GRAY + strings.HELP_OBJECTIVE);
+						sender.sendMessage(ChatColor.GOLD + command + " event add\\remove " + ChatColor.GRAY + strings.HELP_EVENT);
+						sender.sendMessage(ChatColor.GOLD + command + " reward add\\remove " + ChatColor.GRAY + strings.HELP_REWARD);
 					}
 					if(permCheck(sender, QuestData.ADMIN_PERM, false)) {
-						sender.sendMessage(line(ChatColor.BLUE, "Admin help", ChatColor.GOLD));
-						sender.sendMessage(ChatColor.GOLD + "/q startsave " + ChatColor.GRAY + "- starts scheduled profile saving");
-						sender.sendMessage(ChatColor.GOLD + "/q stopsave " + ChatColor.GRAY + "- stops scheduled profile saving");
-						sender.sendMessage(ChatColor.GOLD + "/q save " + ChatColor.GRAY + "- saves profiles");
-						sender.sendMessage(ChatColor.GOLD + "/q reload " + ChatColor.GRAY + "- reloads config");
+						sender.sendMessage(line(ChatColor.BLUE, strings.HELP_SECTION_ADMIN, ChatColor.GOLD));
+						sender.sendMessage(ChatColor.GOLD + command + " startsave " + ChatColor.GRAY + strings.HELP_STARTSAVE);
+						sender.sendMessage(ChatColor.GOLD + command + " stopsave " + ChatColor.GRAY + strings.HELP_STOPSAVE);
+						sender.sendMessage(ChatColor.GOLD + command + " save " + ChatColor.GRAY + strings.HELP_SAVE);
+						sender.sendMessage(ChatColor.GOLD + command + " reload " + ChatColor.GRAY + strings.HELP_RELOAD);
 					}
 					sender.sendMessage(line(ChatColor.BLUE));
 					return true;
@@ -128,7 +132,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							sender.sendMessage(e.message());
 						}
 					} else {
-						sender.sendMessage(ChatColor.RED + "Usage: /quest show [quest_name].");
+						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_SHOW);
 					}
 					return true;
 				}
@@ -147,19 +151,18 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						} catch (QuesterException e) {
 							sender.sendMessage(e.message());
 						} catch (NumberFormatException e) {
-							sender.sendMessage(ChatColor.RED + "Quest ID must be number.");
+							sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 						}
 					} else {
 						try {
 							if(permCheck(sender, QuestData.MODIFY_PERM, false)) {
 								qm.showQuestInfo(sender);
 							} else {
-								sender.sendMessage(ChatColor.RED + "Usage: /quest info [quest_name].");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_INFO_USER);
 							}
 						} catch (QuesterException e) {
 							sender.sendMessage(e.message());
-							sender.sendMessage(ChatColor.RED + "Usage: /quest info [quest_ID*].\n"
-									+ "* - optional if selected");
+							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_INFO_MOD);
 						}
 					}
 					return true;
@@ -184,7 +187,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						try {
 							String questName = implode(args, 1);
 							qm.createQuest(sender.getName(), questName);
-							sender.sendMessage(ChatColor.GREEN + "Quest created and selected.");
+							sender.sendMessage(ChatColor.GREEN + strings.Q_CREATED);
 							if(QuestData.verbose) {
 								Quester.log.info(sender.getName() + " created quest '" + questName + "'.");
 							}
@@ -192,7 +195,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							sender.sendMessage(e.message());
 						}
 					} else {
-						sender.sendMessage(ChatColor.RED + "Usage: /quest create [quest_name].");
+						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_CREATE);
 					}
 					return true;
 				}
@@ -207,17 +210,17 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							int id = Integer.parseInt(args[1]);
 							String name = qm.getQuestNameByID(id);
 							qm.removeQuest(sender.getName(), id);
-							sender.sendMessage(ChatColor.GREEN + "Quest removed.");
+							sender.sendMessage(ChatColor.GREEN + strings.Q_REMOVED);
 							if(QuestData.verbose) {
 								Quester.log.info(sender.getName() + " removed quest '" + name + "'.");
 							}
 						} catch (QuesterException e) {
 							sender.sendMessage(e.message());
 						} catch (NumberFormatException e) {
-							sender.sendMessage(ChatColor.RED + "Quest ID must be number.");
+							sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 						}
 					} else {
-						sender.sendMessage(ChatColor.RED + "Usage: /quest remove [quest_ID].");
+						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_REMOVE);
 					}
 					return true;
 				}
@@ -231,14 +234,14 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						try {
 							int id = Integer.parseInt(args[1]);
 							qm.selectQuest(sender.getName(), id);
-							sender.sendMessage(ChatColor.GREEN + "Quest selected.");
+							sender.sendMessage(ChatColor.GREEN + strings.Q_SELECTED);
 						} catch (QuesterException e) {
 							sender.sendMessage(e.message());
 						} catch (NumberFormatException e) {
-							sender.sendMessage(ChatColor.RED + "Quest ID must be number.");
+							sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 						}
 					} else {
-						sender.sendMessage(ChatColor.RED + "Usage: /quest select [quest_ID].");
+						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_SELECT);
 					}
 					return true;
 				}
@@ -252,12 +255,12 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						try {
 							String questName = implode(args, 1);
 							qm.changeQuestName(sender.getName(), questName);
-							sender.sendMessage(ChatColor.GREEN + "Quest name changed to '" + questName + "'.");
+							sender.sendMessage(ChatColor.GREEN + strings.Q_RENAMED.replaceAll("%q", questName));
 						} catch (QuesterException e) {
 							sender.sendMessage(e.message());
 						}
 					} else {
-						sender.sendMessage(ChatColor.RED + "Usage: /quest name [new_name].");
+						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_NAME);
 					}
 					return true;
 				}
@@ -275,7 +278,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						if(args[1].equalsIgnoreCase("set") || args[1].equalsIgnoreCase("s")){
 							try {
 								qm.setQuestDescription(sender.getName(), questDesc);
-								sender.sendMessage(ChatColor.GREEN + "Quest description set.");
+								sender.sendMessage(ChatColor.GREEN + strings.Q_DESC_SET);
 							} catch (QuesterException e) {
 								sender.sendMessage(e.message());
 							}
@@ -286,14 +289,14 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
 							try {
 								qm.addQuestDescription(sender.getName(), questDesc);
-								sender.sendMessage(ChatColor.GREEN + "Quest description added.");
+								sender.sendMessage(ChatColor.GREEN + strings.Q_DESC_ADDED);
 							} catch (QuesterException e) {
 								sender.sendMessage(e.message());
 							}
 							return true;
 						}
 					}
-					sender.sendMessage(ChatColor.RED + "Usage: /quest desc [set|add] [quest_description].");
+					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_DESC);
 					return true;
 				}
 				
@@ -312,14 +315,14 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									if(range < 1)
 										throw new NumberFormatException();
 									qm.setQuestLocation(sender.getName(), getLoc(sender, args[2]), range);
-									sender.sendMessage(ChatColor.GREEN + "Quest location set.");
+									sender.sendMessage(ChatColor.GREEN + strings.Q_LOC_SET);
 								} catch (QuesterException e) {
 									sender.sendMessage(e.message());
 								} catch (NumberFormatException e) {
-									sender.sendMessage(ChatColor.GREEN + "Range must be greater than 0");
+									sender.sendMessage(ChatColor.GREEN + strings.ERROR_CMD_RANGE_INVALID);
 								}	
 							} else {
-								sender.sendMessage(ChatColor.RED + "Usage: /quest location set {location} [range].");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_LOC_SET);
 								return true;
 							}
 							return true;
@@ -328,7 +331,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")){
 							try{
 								qm.removeQuestLocation(sender.getName());
-								sender.sendMessage(ChatColor.GREEN + "Quest location removed.");
+								sender.sendMessage(ChatColor.GREEN + strings.Q_LOC_REMOVED);
 							} catch (QuesterException e) {
 								sender.sendMessage(e.message());
 							}
@@ -336,7 +339,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						}
 					}
 					
-					sender.sendMessage(ChatColor.RED + "Usage: /quest location [set|remove] .");
+					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_LOC);
 					return true;
 				}
 				
@@ -357,14 +360,14 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						}
 						
 						if(flags.isEmpty()) {
-							sender.sendMessage(ChatColor.RED + "Available flags: " + ChatColor.WHITE + "ordered, uncancellable, onlyfirst, hidden");
+							sender.sendMessage(ChatColor.RED + strings.USAGE_FLAG_AVAIL + ChatColor.WHITE + QuestFlag.stringize(QuestFlag.values()));
 							return true;
 						}
 						
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
 							try{
 								qm.addQuestFlag(sender.getName(), flags.toArray(new QuestFlag[0]));
-								sender.sendMessage(ChatColor.GREEN + "Flags added.");
+								sender.sendMessage(ChatColor.GREEN + strings.Q_FLGS_ADDED);
 							} catch (QuesterException e) {
 								sender.sendMessage(e.message());
 							}
@@ -374,7 +377,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")){
 							try{
 								qm.removeQuestFlag(sender.getName(), flags.toArray(new QuestFlag[0]));
-								sender.sendMessage(ChatColor.GREEN + "Flags removed.");
+								sender.sendMessage(ChatColor.GREEN + strings.Q_FLGS_REMOVED);
 							} catch (QuesterException e) {
 								sender.sendMessage(e.message());
 							}
@@ -382,7 +385,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						}
 					}
 					
-					sender.sendMessage(ChatColor.RED + "Usage: /quest flag [add|remove] [flag_1]... .");
+					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_FLAG);
 					return true;
 				}
 				
@@ -407,16 +410,14 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						sender.sendMessage(e.message());
 						return true;
 					} catch (NumberFormatException e) {
-						sender.sendMessage(ChatColor.RED + "Quest ID must be number.");
+						sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 						return true;
 					}
-					String status;
 					if(active){
-						status = "activated.";
+						sender.sendMessage(ChatColor.GREEN + strings.Q_ACTIVATED);
 					} else {
-						status = "deactivated.";
+						sender.sendMessage(ChatColor.GREEN + strings.Q_DEACTIVATED);
 					}
-					sender.sendMessage(ChatColor.GREEN + "Quest " + status);
 					return true;
 				}
 				
@@ -431,22 +432,22 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
 							try {
 								World world = null;
-								if(args[2].equalsIgnoreCase("this")) {
+								if(args[2].equalsIgnoreCase(strings.OTHER_THIS_WORLD_LABEL)) {
 									if(player != null) {
 										world = player.getWorld();
 									} else {
-										sender.sendMessage(ChatColor.RED + "World 'this' requires player context.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_WORLD_THIS.replaceAll("%this", strings.OTHER_THIS_WORLD_LABEL));
 										return true;
 									}
 								} else {
 									world = sender.getServer().getWorld(args[2]);
 								}
 								if(world == null) {
-									sender.sendMessage(ChatColor.RED + "Invalid world.");
+									sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_WORLD_INVALID);
 									return true;
 								}
 								qm.addQuestWorld(sender.getName(), world.getName());
-								sender.sendMessage(ChatColor.GREEN + "Quest world added.");
+								sender.sendMessage(ChatColor.GREEN + strings.Q_WORLD_ADDED);
 							} catch (QuesterException e) {
 								sender.sendMessage(e.message());
 							}
@@ -457,12 +458,12 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")){
 							try {
 								String wName = args[2];
-								if(args[2].equalsIgnoreCase("this")) {
+								if(args[2].equalsIgnoreCase(strings.OTHER_THIS_WORLD_LABEL)) {
 									World world = null;
 									if(player != null) {
 										world = player.getWorld();
 									} else {
-										sender.sendMessage(ChatColor.RED + "World 'this' requires player context.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_WORLD_THIS.replaceAll("%this", strings.OTHER_THIS_WORLD_LABEL));
 										return true;
 									}
 									if(world != null) {
@@ -471,7 +472,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								}
 								
 								qm.removeQuestWorld(sender.getName(), wName);
-								sender.sendMessage(ChatColor.GREEN + "Quest world removed.");
+								sender.sendMessage(ChatColor.GREEN + strings.Q_WORLD_REMOVED);
 							} catch (QuesterException e) {
 								sender.sendMessage(e.message());
 							}
@@ -479,7 +480,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						}
 					}
 					
-					sender.sendMessage(ChatColor.RED + "Usage: /quest world [add|remove] [world_name or 'this'].");
+					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_WORLD.replaceAll("%this", strings.OTHER_THIS_WORLD_LABEL));
 					return true;
 				}
 				
@@ -500,7 +501,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										int dur = Integer.parseInt(args[4]);
 										int pow = Integer.parseInt(args[5]);
 										if(dur < 0 || pow < 0) {
-											sender.sendMessage(ChatColor.RED + "Duration and power must be >= 0.");
+											sender.sendMessage(ChatColor.RED + strings.REW_EFF_NUMBERS);
 											return true;
 										}
 										PotionEffectType eff = PotionEffectType.getByName(args[3].toUpperCase());
@@ -508,19 +509,19 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											eff = PotionEffectType.getById(Integer.parseInt(args[3]));
 										}
 										if(eff == null) {
-											sender.sendMessage(ChatColor.RED + "Unknown effect.");
+											sender.sendMessage(ChatColor.RED + strings.REW_EFF_UNKNOWN);
 											return true;
 										}
 										qm.addQuestReward(sender.getName(), new EffectReward(eff.getId(), dur, pow));
-										sender.sendMessage(ChatColor.GREEN + "Effect reward added.");
+										sender.sendMessage(ChatColor.GREEN + strings.REW_ADDED.replaceAll("%type", strings.REW_EFF_TYPE));
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "All arguments must be >= 0, first can be name.");
+										sender.sendMessage(ChatColor.RED + strings.REW_EFF_ARGS);
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest reward add effect [effect_id/name] [duration_secs] [power].");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_EFF_USAGE);
 								return true;
 							}
 							
@@ -538,14 +539,13 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											amt = Integer.parseInt(args[4]);
 										}
 										if(amt < 1 || dat < 0) {
-											sender.sendMessage(ChatColor.RED + "Amount must be > 0. Data must be >= 0");
-											return true;
+											throw new NumberFormatException();
 										}
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount and data must be numbers.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_NUMBERS);
 										return true;
 									} catch (InvalidDataException e) {
-										sender.sendMessage(ChatColor.RED + "Unknown item.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_UNKNOWN);
 										return true;
 									}
 									Map<Integer, Integer> enchs = new HashMap<Integer, Integer>();
@@ -557,26 +557,25 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												test.addEnchantment(Enchantment.getById(i), enchs.get(i));
 											}
 										} catch (NumberFormatException e) {
-											sender.sendMessage(ChatColor.RED + "Enchantment level must be > 0.");
+											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_LEVEL);
 											return true;
 										} catch (InvalidDataException e) {
-											sender.sendMessage(ChatColor.RED + "Invalid enchantment.");
+											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_INVALID);
 											return true;
 										} catch (IllegalArgumentException e){
-											sender.sendMessage(ChatColor.RED + "One or more enchantments cannot be applied to specified item.");
+											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_CANT);
 											return true;
 										}
 									}
 									try {
 										qm.addQuestReward(sender.getName(), new ItemReward(mat, amt, dat, enchs));
-										sender.sendMessage(ChatColor.GREEN + "Item reward added.");
+										sender.sendMessage(ChatColor.GREEN + strings.REW_ADDED.replaceAll("%type", strings.REW_ITEM_TYPE));
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest reward add item [item_id/name][:data*] [amount*] {ench1*}... .\n"
-										+ "{ench} - [enchantment_id/name]:[level] ; * - optional");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_ITEM_USAGE);
 								return true;
 							}
 							
@@ -586,15 +585,15 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									try {
 										double amt = Double.parseDouble(args[3]);
 										qm.addQuestReward(sender.getName(), new MoneyReward(amt));
-										sender.sendMessage(ChatColor.GREEN + "Money reward added.");
+										sender.sendMessage(ChatColor.GREEN + strings.REW_ADDED.replaceAll("%type", strings.REW_MONEY_TYPE));
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be number. (negative to take)");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_GENERAL);
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest reward add money [amount].");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_MONEY_USAGE);
 								return true;
 							}
 							
@@ -604,15 +603,15 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									try {
 										int amt = Integer.parseInt(args[3]);
 										qm.addQuestReward(sender.getName(), new ExpReward(amt));
-										sender.sendMessage(ChatColor.GREEN + "Experience reward added.");
+										sender.sendMessage(ChatColor.GREEN + strings.REW_ADDED.replaceAll("%type", strings.REW_EXP_TYPE));
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be number. (negative to take)");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_GENERAL);
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest reward add exp [amount].");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_EXP_USAGE);
 								return true;
 							}
 							
@@ -622,19 +621,19 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									try {
 										int amt = Integer.parseInt(args[3]);
 										qm.addQuestReward(sender.getName(), new PointReward(amt));
-										sender.sendMessage(ChatColor.GREEN + "Point reward added.");
+										sender.sendMessage(ChatColor.GREEN + strings.REW_ADDED.replaceAll("%type", strings.REW_POINT_TYPE));
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be number. (negative to take)");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_GENERAL);
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest reward add point [amount].");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_POINT_USAGE);
 								return true;
 							}
 							
-							sender.sendMessage(ChatColor.RED + "Available reward types: " + ChatColor.WHITE + "item, money, exp, effect, point");
+							sender.sendMessage(ChatColor.RED + strings.REW_USAGE_AVAILABLE + ChatColor.WHITE + "item, money, exp, effect, point"); //TODO
 							return true;
 						}
 						
@@ -643,31 +642,31 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							try {
 								int id = Integer.parseInt(args[2]);
 								qm.removeQuestReward(sender.getName(), id);
-								sender.sendMessage(ChatColor.GREEN + "Reward " + args[2] + " removed.");
+								sender.sendMessage(ChatColor.GREEN + strings.REW_REMOVED.replaceAll("%id", args[2]));
 							} catch (NumberFormatException e) {
-								sender.sendMessage(ChatColor.RED + "Usage: /quest reward remove [id_number].");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_USAGE_REMOVE);
 							} catch (QuesterException e) {
 								sender.sendMessage(e.message());
 							}
 							return true;
 						}
 						
-						sender.sendMessage(ChatColor.RED + "Usage: /quest reward [add|remove] [reward_type] [args].");
+						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_USAGE);
 						return true;
 					}
 					
 					if(args.length > 1) {
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
-							sender.sendMessage(ChatColor.RED + "Available reward types: " + ChatColor.WHITE + "item, money, exp, effect, point");
+							sender.sendMessage(ChatColor.RED + strings.REW_USAGE_AVAILABLE + ChatColor.WHITE + "item, money, exp, effect, point"); // TODO
 							return true;
 						}
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
-							sender.sendMessage(ChatColor.RED + "Usage: /quest reward remove [id_number].");
+							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_USAGE_REMOVE);
 							return true;
 						}
 					}
 					
-					sender.sendMessage(ChatColor.RED + "Usage: /quest reward [add|remove] [reward_type] [args].");
+					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_USAGE);
 					return true;
 				}
 				
@@ -704,18 +703,17 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											hnd = itm[0];
 										}
 										qm.addQuestObjective(sender.getName(), new BreakObjective(amt, mat, dat, hnd));
-										sender.sendMessage(ChatColor.GREEN + "Break objective added.");
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_BREAK_TYPE));
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be > 0. Data must be >= 0.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_NUMBERS);
 									} catch (InvalidDataException e) {
-										sender.sendMessage(ChatColor.RED + "Unknown block.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BLOCK_UNKNOWN);
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add break [block_id/name][:data*] [amount] [hand*].\n"
-										+ "* - optional");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_BREAK_USAGE);
 								return true;
 							}
 							
@@ -736,18 +734,17 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											throw new NumberFormatException();
 										}
 										qm.addQuestObjective(sender.getName(), new PlaceObjective(amt, mat, dat));
-										sender.sendMessage(ChatColor.GREEN + "Place objective added.");
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_PLACE_TYPE));
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be > 0. Data must be >= 0.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_NUMBERS);
 									} catch (InvalidDataException e) {
-										sender.sendMessage(ChatColor.RED + "Unknown block.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BLOCK_UNKNOWN);
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add place [block_id/name][:data*] [amount].\n"
-										+ "* - optional");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_PLACE_USAGE);
 								return true;
 							}
 							
@@ -768,10 +765,10 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											throw new NumberFormatException();
 										}
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be > 0. Data must be >= 0.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_NUMBERS);
 										return true;
 									} catch (InvalidDataException e) {
-										sender.sendMessage(ChatColor.RED + "Unknown item.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_UNKNOWN);
 										return true;
 									}
 									Map<Integer, Integer> enchs = new HashMap<Integer, Integer>();
@@ -783,26 +780,25 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												test.addEnchantment(Enchantment.getById(i), enchs.get(i));
 											}
 										} catch (NumberFormatException e) {
-											sender.sendMessage(ChatColor.RED + "Enchantment level must be > 0.");
+											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_LEVEL);
 											return true;
 										} catch (InvalidDataException e) {
-											sender.sendMessage(ChatColor.RED + "Invalid enchantment.");
+											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_INVALID);
 											return true;
 										} catch (IllegalArgumentException e){
-											sender.sendMessage(ChatColor.RED + "One or more enchantments cannot be applied to specified item.");
+											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_CANT);
 											return true;
 										}
 									}
 									try {
 										qm.addQuestObjective(sender.getName(), new ItemObjective(mat, amt, dat, enchs));
-										sender.sendMessage(ChatColor.GREEN + "Item objective added.");
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_ITEM_TYPE));
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add item [item_id/name][:data*] [amount*] {ench1*}... .\n"
-										+ "{ench} - [enchantment_id/name]:[level] ; * - optional");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_ITEM_USAGE);
 								return true;
 							}
 							
@@ -820,18 +816,17 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											throw new NumberFormatException();
 										}
 										qm.addQuestObjective(sender.getName(), new CollectObjective(amt, mat, dat));
-										sender.sendMessage(ChatColor.GREEN + "Collect objective added.");
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_COLLECT_TYPE));
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be > 0. Data must be >= 0.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_NUMBERS);
 									} catch (InvalidDataException e) {
-										sender.sendMessage(ChatColor.RED + "Unknown item.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_UNKNOWN);
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add collect [block_id/name][:data*] [amount].\n"
-										+ "* - optional");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_COLLECT_USAGE);
 								return true;
 							}
 							
@@ -850,10 +845,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											throw new NumberFormatException();
 										}
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be > 0.");
-										return true;
-									} catch (InvalidDataException e) {
-										sender.sendMessage(ChatColor.RED + "Unknown item.");
+										sender.sendMessage(ChatColor.RED + strings.OBJ_ENCH_NUMBERS);
 										return true;
 									}
 									Map<Integer, Integer> enchs = new HashMap<Integer, Integer>();
@@ -865,26 +857,25 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												test.addEnchantment(Enchantment.getById(i), enchs.get(i));
 											}
 										} catch (NumberFormatException e) {
-											sender.sendMessage(ChatColor.RED + "Enchantment level must be > 0.");
+											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_LEVEL);
 											return true;
 										} catch (InvalidDataException e) {
-											sender.sendMessage(ChatColor.RED + "Invalid enchantment.");
+											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_INVALID);
 											return true;
 										} catch (IllegalArgumentException e){
-											sender.sendMessage(ChatColor.RED + "One or more enchantments cannot be applied to specified item.");
+											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_CANT);
 											return true;
 										}
 									}
 									try {
 										qm.addQuestObjective(sender.getName(), new EnchantObjective(mat, amt, enchs));
-										sender.sendMessage(ChatColor.GREEN + "Enchant objective added.");
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_ENCH_TYPE));
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add ench [item_id/name] [amount*] {ench1*}... .\n"
-										+ "{ench} - [enchantment_id/name]:[level] ; * - optional");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_ENCH_USAGE);
 								return true;
 							}
 							
@@ -896,15 +887,15 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										if(amt < 1)
 											throw new NumberFormatException();
 										qm.addQuestObjective(sender.getName(), new ExpObjective(amt));
-										sender.sendMessage(ChatColor.GREEN + "Experience objective added.");
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_EXP_TYPE));
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be positive number.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_POSITIVE);
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add exp [amount].");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_EXP_USAGE);
 								return true;
 							}
 							
@@ -922,16 +913,15 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											}
 										}
 										qm.addQuestObjective(sender.getName(), new LocObjective(loc, rng));
-										sender.sendMessage(ChatColor.GREEN + "Location objective added.");
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_LOC_TYPE));
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Invalid range.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_RANGE_INVALID);
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add loc {location} [range*].\n"
-										+ "{location} - [X];[Y];[Z];[world or 'this'] // * - optional");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_LOC_USAGE);
 								return true;
 							}
 							
@@ -942,6 +932,10 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									Location loc = null;
 									int rng = 5;
 									try {
+										amt = Integer.parseInt(args[3]);
+										if(amt < 1) {
+											throw new QuesterException(ChatColor.RED + strings.ERROR_CMD_AMOUNT_POSITIVE);
+										}
 										if(args.length > 4) {
 											loc = getLoc(sender, args[4]);
 											
@@ -955,16 +949,15 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										}
 										
 										qm.addQuestObjective(sender.getName(), new DeathObjective(amt, loc, rng));
-										sender.sendMessage(ChatColor.GREEN + "Death objective added.");
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_DEATH_TYPE));
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Invalid range.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_RANGE_INVALID);
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add death [amount] {location*} [range*].\n"
-										+ "{location} - [X];[Y];[Z];[world or 'this'] , * - optional");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_DEATH_USAGE.replaceAll("%this", strings.OTHER_THIS_WORLD_LABEL));
 								return true;
 							}
 							
@@ -972,29 +965,29 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							if(args[2].equalsIgnoreCase("world")) {
 								if(args.length > 3) {
 									World world = null;
-									if(args[3].equalsIgnoreCase("this")) {
+									if(args[3].equalsIgnoreCase(strings.OTHER_THIS_WORLD_LABEL)) {
 										if(player != null) {
 											world = player.getWorld();
 										} else {
-											sender.sendMessage(ChatColor.RED + "World 'this' requires player context.");
+											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_WORLD_THIS.replaceAll("%this", strings.OTHER_THIS_WORLD_LABEL));
 											return true;
 										}
 									} else {
 										world = sender.getServer().getWorld(args[3]);
 									}
 									if(world == null) {
-										sender.sendMessage(ChatColor.RED + "Invalid world.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_WORLD_INVALID);
 										return true;
 									}
 									try {
 										qm.addQuestObjective(sender.getName(), new WorldObjective(world.getName()));
-										sender.sendMessage(ChatColor.GREEN + "World objective added.");
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_WORLD_TYPE));
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add world [world or 'this']");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_WORLD_USAGE.replaceAll("%this", strings.OTHER_THIS_WORLD_LABEL));
 								return true;
 							}
 							
@@ -1013,25 +1006,24 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											if(ent == null) {
 												ent = EntityType.fromId(Integer.parseInt(args[4]));
 												if(ent == null || ent.getTypeId() < 50) {
-													sender.sendMessage(ChatColor.RED + "Unknown entity.");
+													sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENTITY_UNKNOWN);
 													return true;
 												}
 											}
 										}
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be > 0. Id must be number or valid entity name.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENTITY_NUMBERS);
 										return true;
 									}
 									try {
 										qm.addQuestObjective(sender.getName(), new MobKillObjective(amt, ent));
-										sender.sendMessage(ChatColor.GREEN + "Mob kill objective added.");
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_MOBKILL_TYPE));
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add mobkill [amount] [entity_id/name*]"
-										+ "* - optional");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_MOBKILL_USAGE);
 								return true;
 							}
 							
@@ -1046,7 +1038,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											throw new NumberFormatException();
 										}
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be > 0.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_POSITIVE);
 										return true;
 									}
 									if(args.length > 4) {
@@ -1054,14 +1046,13 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									try {
 										qm.addQuestObjective(sender.getName(), new PlayerKillObjective(amt, name));
-										sender.sendMessage(ChatColor.GREEN + "Player kill objective added.");
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_KILL_TYPE));
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add kill [amount] [player_name*]"
-										+ "* - optional");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_KILL_USAGE);
 								return true;
 							}
 							
@@ -1079,18 +1070,17 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											throw new NumberFormatException();
 										}
 										qm.addQuestObjective(sender.getName(), new CraftObjective(mat, amt, dat));
-										sender.sendMessage(ChatColor.GREEN + "Craft objective added.");
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_CRAFT_TYPE));
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be > 0. Data must be >= 0.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_NUMBERS);
 									} catch (InvalidDataException e) {
-										sender.sendMessage(ChatColor.RED + "Unknown item.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_UNKNOWN);
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add craft [item_id/name][:data*] [amount].\n"
-										+ "* - optional");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_CRAFT_USAGE);
 								return true;
 							}
 							
@@ -1108,18 +1098,17 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											throw new NumberFormatException();
 										}
 										qm.addQuestObjective(sender.getName(), new SmeltObjective(mat, amt, dat));
-										sender.sendMessage(ChatColor.GREEN + "Smelt objective added.");
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_SMELT_TYPE));
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be > 0. Data must be >= 0.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_NUMBERS);
 									} catch (InvalidDataException e) {
-										sender.sendMessage(ChatColor.RED + "Unknown item.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_UNKNOWN);
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add smelt [item_id/name][:data*] [amount].\n"
-										+ "* - optional");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_SMELT_USAGE);
 								return true;
 							}
 							
@@ -1134,18 +1123,17 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										if(amt < 1)
 											throw new NumberFormatException();
 										qm.addQuestObjective(sender.getName(), new ShearObjective(amt, dat));
-										sender.sendMessage(ChatColor.GREEN + "Shear objective added.");
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_SHEAR_TYPE));
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be positive number.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_POSITIVE);
 									} catch (InvalidDataException e) {
-										sender.sendMessage(ChatColor.RED + "Unknown color.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_COLOR_UNKNOWN);
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add shear [amount] [color_id/name*].\n" +
-											"* - optional");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_SHEAR_USAGE);
 								return true;
 							}
 							
@@ -1157,15 +1145,15 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										if(amt < 1)
 											throw new NumberFormatException();
 										qm.addQuestObjective(sender.getName(), new FishObjective(amt));
-										sender.sendMessage(ChatColor.GREEN + "Fish objective added.");
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_FISH_TYPE));
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be positive number.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_POSITIVE);
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add fish [amount].");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_FISH_USAGE);
 								return true;
 							}
 							
@@ -1177,15 +1165,15 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										if(amt < 1)
 											throw new NumberFormatException();
 										qm.addQuestObjective(sender.getName(), new MilkObjective(amt));
-										sender.sendMessage(ChatColor.GREEN + "Milk objective added.");
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_MILK_TYPE));
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be positive number.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_POSITIVE);
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add milk [amount].");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_MILK_USAGE);
 								return true;
 							}
 							
@@ -1213,22 +1201,21 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											}
 										}
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be > 0. Id must be number or valid entity name.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENTITY_NUMBERS);
 										return true;
 									} catch (InvalidDataException e){
-										sender.sendMessage(ChatColor.RED + "Unknown entity.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENTITY_UNKNOWN);
 										return true;
 									}
 									try {
 										qm.addQuestObjective(sender.getName(), new TameObjective(amt, ent));
-										sender.sendMessage(ChatColor.GREEN + "Tame objective added.");
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_TAME_TYPE));
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add tame [amount] [entity_id/name*]"
-										+ "* - optional");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_TAME_USAGE);
 								return true;
 							}
 							
@@ -1240,20 +1227,20 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										if(amt <= 0)
 											throw new NumberFormatException();
 										qm.addQuestObjective(sender.getName(), new MoneyObjective(amt));
-										sender.sendMessage(ChatColor.GREEN + "Money objective added.");
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_MONEY_TYPE));
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be positive number.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_POSITIVE);
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective add money [amount].");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_MONEY_USAGE);
 								return true;
 							}
 							
-							sender.sendMessage(ChatColor.RED + "Available objective types: " + ChatColor.WHITE + "break, place, item, exp, loc, death, world, " +
-									"mobkill, kill, craft, ench, smelt, shear, fish, milk, collect, tame, money");
+							sender.sendMessage(ChatColor.RED + strings.OBJ_ADD_AVAILABLE + ChatColor.WHITE + "break, place, item, exp, loc, death, world, " +
+									"mobkill, kill, craft, ench, smelt, shear, fish, milk, collect, tame, money"); // TODO
 							return true;
 						}
 						
@@ -1262,9 +1249,9 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							try {
 								int id = Integer.parseInt(args[2]);
 								qm.removeQuestObjective(sender.getName(), id);
-								sender.sendMessage(ChatColor.GREEN + "Objective " + args[2] + " removed.");
+								sender.sendMessage(ChatColor.GREEN + strings.OBJ_REMOVE.replaceAll("%id", args[2]));
 							} catch (NumberFormatException e) {
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective remove [id_number].");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_REMOVE_USAGE);
 							} catch (QuesterException e) {
 								sender.sendMessage(e.message());
 							}
@@ -1279,9 +1266,9 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								int first = Integer.parseInt(args[2]);
 								int second = Integer.parseInt(args[3]);
 								qm.swapQuestObjectives(sender.getName(), first, second);
-								sender.sendMessage(ChatColor.GREEN + "Objectives " + args[2] + " and " + args[3] + " swapped.");
+								sender.sendMessage(ChatColor.GREEN + strings.OBJ_SWAP.replaceAll("%id1", args[2]).replaceAll("%id2", args[3]));
 							} catch (NumberFormatException e) {
-								sender.sendMessage(ChatColor.RED + "Usage: /quest objective swap [id_1] [id_2].");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_SWAP_USAGE);
 							} catch (QuesterException e) {
 								sender.sendMessage(e.message());
 							}
@@ -1295,7 +1282,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								try {
 									obj = Integer.parseInt(args[3]);
 								} catch (NumberFormatException e) {
-									sender.sendMessage(ChatColor.RED + "Objective ID must be number.");
+									sender.sendMessage(ChatColor.RED + strings.OBJ_BAD_ID);
 									return true;
 								}
 								
@@ -1305,22 +1292,21 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										String desc = implode(args, 4);
 										try {
 											qm.addObjectiveDescription(sender.getName(), obj, desc);
-											sender.sendMessage(ChatColor.GREEN + "Description to objective " + obj + " added.");
+											sender.sendMessage(ChatColor.GREEN + strings.OBJ_DESC_ADD.replaceAll("%id", String.valueOf(obj)));
 										} catch (QuesterException e) {
 											sender.sendMessage(e.message());
 										}
 										return true;
 									}
 										
-									sender.sendMessage(ChatColor.RED + "Usage: /quest objective desc add [obj_ID] [description*]\n"
-											+ "* - %r = remaining amount, %t = total required amount");
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_DESC_ADD_USAGE);
 									return true;	
 								}
 								
 								if(args[2].equalsIgnoreCase("remove") || args[2].equalsIgnoreCase("r")) {
 									try {
 										qm.removeObjectiveDescription(sender.getName(), obj);
-										sender.sendMessage(ChatColor.GREEN + "Description of objective " + obj + " removed.");
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_DESC_REMOVE.replaceAll("%id", String.valueOf(obj)));
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
@@ -1330,27 +1316,27 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								return true;
 							}	
 								
-							sender.sendMessage(ChatColor.RED + "Usage: /quest objective desc [add|remove] [obj_ID]");
+							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_DESC_USAGE);
 							return true;
 						}
 						
-						sender.sendMessage(ChatColor.RED + "Usage: /quest objective [add|remove|swap|desc] [args].");
+						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_USAGE);
 						return true;
 					}
 					
 					if(args.length > 1) {
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
-							sender.sendMessage(ChatColor.RED + "Available objective types: " + ChatColor.WHITE + "break, place, item, exp, loc, death, world, " +
-									"mobkill, kill, craft, ench, smelt, shear, fish, milk, collect, tame, money");
+							sender.sendMessage(ChatColor.RED + strings.OBJ_ADD_AVAILABLE + ChatColor.WHITE + "break, place, item, exp, loc, death, world, " +
+									"mobkill, kill, craft, ench, smelt, shear, fish, milk, collect, tame, money"); // TODO
 							return true;
 						}
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
-							sender.sendMessage(ChatColor.RED + "Usage: /quest objective remove [id_number].");
+							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_REMOVE_USAGE);
 							return true;
 						}
 					}
 					
-					sender.sendMessage(ChatColor.RED + "Usage: /quest objective [add|remove|swap|desc] [args].");
+					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_USAGE);
 					return true;
 				}
 				
@@ -1370,13 +1356,13 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									String questName = implode(args, 3);
 									try {
 										qm.addQuestCondition(sender.getName(), new QuestCondition(questName));
-										sender.sendMessage(ChatColor.GREEN + "Quest condition added.");
+										sender.sendMessage(ChatColor.GREEN + strings.CON_ADD.replaceAll("%type", strings.CON_QUEST_TYPE));
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest condition add quest [quest_name]");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_QUEST_USAGE);
 								return true;
 							}
 							
@@ -1386,13 +1372,13 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									String questName = implode(args, 3);
 									try {
 										qm.addQuestCondition(sender.getName(), new QuestNotCondition(questName));
-										sender.sendMessage(ChatColor.GREEN + "QuestNot condition added.");
+										sender.sendMessage(ChatColor.GREEN + strings.CON_ADD.replaceAll("%type", strings.CON_QUESTNOT_TYPE));
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest condition add questnot [quest_name]");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_QUESTNOT_USAGE);
 								return true;
 							}
 							
@@ -1402,13 +1388,13 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									String perm = args[3];
 									try {
 										qm.addQuestCondition(sender.getName(), new PermissionCondition(perm));
-										sender.sendMessage(ChatColor.GREEN + "Permission condition added.");
+										sender.sendMessage(ChatColor.GREEN + strings.CON_ADD.replaceAll("%type", strings.CON_PERM_TYPE));
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest condition add perm [quest_name]");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_PERM_USAGE);
 								return true;
 							}
 							
@@ -1418,15 +1404,15 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									try {
 										int amt = Integer.parseInt(args[3]);
 										qm.addQuestCondition(sender.getName(), new MoneyCondition(amt));
-										sender.sendMessage(ChatColor.GREEN + "Money condition added.");
+										sender.sendMessage(ChatColor.GREEN + strings.CON_ADD.replaceAll("%type", strings.CON_MONEY_TYPE));
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be number.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_GENERAL);
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest condition add money [amount]");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_MONEY_USAGE);
 								return true;
 							}
 							
@@ -1438,18 +1424,21 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										int[] itm = parseItem(args[3]);
 										Material mat = Material.getMaterial(itm[0]);
 										int dat = itm[1];
+										if(amt < 1 || dat < -1) {
+											throw new NumberFormatException();
+										}
 										qm.addQuestCondition(sender.getName(), new ItemCondition(mat, amt, dat));
-										sender.sendMessage(ChatColor.GREEN + "Item condition added.");
+										sender.sendMessage(ChatColor.GREEN + strings.CON_ADD.replaceAll("%type", strings.CON_ITEM_TYPE));
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be number. Data must be number.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_NUMBERS);
 									} catch (InvalidDataException e) {
-										sender.sendMessage(ChatColor.RED + "Unknown item.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_UNKNOWN);
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest condition add item [item_id/name][:data*] [amount]");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_ITEM_USAGE);
 								return true;
 							}
 							
@@ -1459,19 +1448,19 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									try {
 										int amt = Integer.parseInt(args[3]);
 										qm.addQuestCondition(sender.getName(), new PointCondition(amt));
-										sender.sendMessage(ChatColor.GREEN + "Point condition added.");
+										sender.sendMessage(ChatColor.GREEN + strings.CON_ADD.replaceAll("%type", strings.CON_POINT_TYPE));
 									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + "Amount must be number.");
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_GENERAL);
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + "Usage: /quest condition add point [amount]");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_POINT_USAGE);
 								return true;
 							}
 							
-							sender.sendMessage(ChatColor.RED + "Available condition types: " + ChatColor.WHITE + "quest, questnot, perm, money, item, point");
+							sender.sendMessage(ChatColor.RED + strings.CON_ADD_AVAILABLE + ChatColor.WHITE + "quest, questnot, perm, money, item, point"); // TODO
 							return true;
 						}
 						
@@ -1480,31 +1469,31 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							try {
 								int id = Integer.parseInt(args[2]);
 								qm.removeQuestCondition(sender.getName(), id);
-								sender.sendMessage(ChatColor.GREEN + "Condition " + args[2] + " removed.");
+								sender.sendMessage(ChatColor.GREEN + strings.CON_REMOVE.replaceAll("%id", args[2]));
 							} catch (NumberFormatException e) {
-								sender.sendMessage(ChatColor.RED + "Usage: /quest condition remove [id_number].");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_REMOVE_USAGE);
 							} catch (QuesterException e) {
 								sender.sendMessage(e.message());
 							}
 							return true;
 						}
 						
-						sender.sendMessage(ChatColor.RED + "Usage: /quest condition [add|remove] [condition_type] [args].");
+						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_USAGE);
 						return true;
 					}
 					
 					if(args.length > 1) {
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
-							sender.sendMessage(ChatColor.RED + "Available condition types: " + ChatColor.WHITE + "quest, questnot, perm, money, item, point");
+							sender.sendMessage(ChatColor.RED + strings.CON_ADD_AVAILABLE + ChatColor.WHITE + "quest, questnot, perm, money, item, point"); // TODO
 							return true;
 						}
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
-							sender.sendMessage(ChatColor.RED + "Usage: /quest condition remove [id_number].");
+							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_REMOVE_USAGE);
 							return true;
 						}
 					}
 					
-					sender.sendMessage(ChatColor.RED + "Usage: /quest condition [add|remove] [condition_type] [args].");
+					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_USAGE);
 					return true;
 				}
 				
@@ -1528,7 +1517,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									if(occ < -3 || del < 0)
 										throw new NumberFormatException();
 								} catch (NumberFormatException e) {
-									sender.sendMessage(ChatColor.RED + "Occasion must be > -4. Delay must be >= 0.");
+									sender.sendMessage(ChatColor.RED + strings.EVT_NUMBERS);
 									return true;
 								}
 								
@@ -1538,14 +1527,13 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										String msg = implode(args, 5);
 										try {
 											qm.addQevent(sender.getName(), new MessageQevent(occ, del, msg));
-											sender.sendMessage(ChatColor.GREEN + "Message event added.");
+											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_MSG_TYPE));
 										} catch (QuesterException e) {
 											sender.sendMessage(e.message());
 										}
 										return true;
 									}
-									sender.sendMessage(ChatColor.RED + "Usage: /quest event add msg {occasion} [delay] [message*]\n"
-											+ "* - supports '&' colors and '\\n' newline");
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_MSG_USAGE);
 									return true;
 								}
 								
@@ -1555,21 +1543,21 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										String qst = implode(args, 5);
 										try {
 											qm.addQevent(sender.getName(), new QuestQevent(occ, del, qst));
-											sender.sendMessage(ChatColor.GREEN + "Quest event added.");
+											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_QUEST_TYPE));
 										} catch (QuesterException e) {
 											sender.sendMessage(e.message());
 										}
 										return true;
 									}
-									sender.sendMessage(ChatColor.RED + "Usage: /quest event add quest {occasion} [delay] [quest_name]");
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_QUEST_USAGE);
 									return true;
 								}
 								
-								// QUEST EVENT
+								// CANCEL EVENT
 								if(args[2].equalsIgnoreCase("cancel")) {
 										try {
 											qm.addQevent(sender.getName(), new CancelQevent(occ, del));
-											sender.sendMessage(ChatColor.GREEN + "Cancel event added.");
+											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_CANCEL_TYPE));
 										} catch (QuesterException e) {
 											sender.sendMessage(e.message());
 										}
@@ -1579,17 +1567,16 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								// COMMAND EVENT
 								if(args[2].equalsIgnoreCase("cmd")) {
 									if(args.length > 5) {
-										String command = implode(args, 5);
+										String comm = implode(args, 5);
 										try {
-											qm.addQevent(sender.getName(), new CommandQevent(occ, del, command));
-											sender.sendMessage(ChatColor.GREEN + "Command event added.");
+											qm.addQevent(sender.getName(), new CommandQevent(occ, del, comm));
+											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_CMD_TYPE));
 										} catch (QuesterException e) {
 											sender.sendMessage(e.message());
 										}
 										return true;
 									}
-									sender.sendMessage(ChatColor.RED + "Usage: /quest event add cmd {occasion} [delay] [command*]\n"
-											+ "* - without '/'");
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_CMD_USAGE);
 									return true;
 								}
 								
@@ -1600,7 +1587,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										Location loc = null;
 										int rng = 0;
 										try {
-											if(!args[5].equalsIgnoreCase("player"))
+											if(!args[5].equalsIgnoreCase(strings.OTHER_PLAYER_LOC_LABEL))
 												loc = getLoc(sender, args[5]);
 											if(args.length > 6) {
 												rng = Integer.parseInt(args[6]);
@@ -1611,16 +1598,15 @@ public class QuesterCommandExecutor implements CommandExecutor {
 													damage = Boolean.parseBoolean(args[7]);
 											}
 											qm.addQevent(sender.getName(), new ExplosionQevent(occ, del, loc, rng, damage));
-											sender.sendMessage(ChatColor.GREEN + "Explosion event added.");
+											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_EXPL_TYPE));
 										} catch (QuesterException e) {
 											sender.sendMessage(e.message());
 										} catch (NumberFormatException e) {
-											sender.sendMessage(ChatColor.RED + "Range must be number.");
+											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_RANGE_INVALID);
 										}
 										return true;
 									}
-									sender.sendMessage(ChatColor.RED + "Usage: /quest event add explosion {occasion} [delay] {location} [range*] [damage*]\n"
-											+ "* - optional, default range = 0, default damage = false");
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_EXPL_USAGE);
 									return true;
 								}
 								
@@ -1631,7 +1617,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										Location loc = null;
 										int rng = 0;
 										try {
-											if(!args[5].equalsIgnoreCase("player"))
+											if(!args[5].equalsIgnoreCase(strings.OTHER_PLAYER_LOC_LABEL))
 												loc = getLoc(sender, args[5]);
 											if(args.length > 6) {
 												rng = Integer.parseInt(args[6]);
@@ -1642,16 +1628,15 @@ public class QuesterCommandExecutor implements CommandExecutor {
 													damage = Boolean.parseBoolean(args[7]);
 											}
 											qm.addQevent(sender.getName(), new LightningQevent(occ, del, loc, rng, damage));
-											sender.sendMessage(ChatColor.GREEN + "Lightning event added.");
+											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_LIGHT_TYPE));
 										} catch (QuesterException e) {
 											sender.sendMessage(e.message());
 										} catch (NumberFormatException e) {
-											sender.sendMessage(ChatColor.RED + "Range must be number.");
+											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_RANGE_INVALID);
 										}
 										return true;
 									}
-									sender.sendMessage(ChatColor.RED + "Usage: /quest event add lightning {occasion} [delay] {location} [range*] [damage*]\n"
-											+ "* - optional, default range = 0, default damage = false");
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_LIGHT_USAGE);
 									return true;
 								}
 								
@@ -1664,13 +1649,13 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											loc = getLoc(sender, args[5]);
 											
 											qm.addQevent(sender.getName(), new TeleportQevent(occ, del, loc));
-											sender.sendMessage(ChatColor.GREEN + "Teleport event added.");
+											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_TELE_TYPE));
 										} catch (QuesterException e) {
 											sender.sendMessage(e.message());
 										}
 										return true;
 									}
-									sender.sendMessage(ChatColor.RED + "Usage: /quest event add tele {occasion} [delay] {location}");
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_TELE_USAGE);
 									return true;
 								}
 								
@@ -1681,38 +1666,37 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										try {
 											int[] itm = parseItem(args[5]);
 											if(itm[0] > 255)
-												throw new QuesterException("Unknown block.");
+												throw new QuesterException(strings.ERROR_CMD_BLOCK_UNKNOWN);
 											int dat = itm[1] < 0 ? 0 : itm[1];
-											if(args[6].equalsIgnoreCase("here")) {
+											if(args[6].equalsIgnoreCase(strings.OTHER_HERE_LOC_LABEL)) {
 												if(player != null) {
 													List<Block> blcks = player.getLastTwoTargetBlocks(null, 6);
 													if(!blcks.isEmpty())
 														loc = blcks.get(blcks.size()-1).getLocation();
 													else {
-														throw new QuesterException("You are not looking at a block.");
+														throw new QuesterException(strings.ERROR_CMD_BLOCK_LOOK);
 													}
 												} else {
-													throw new QuesterException("Location 'here' requires player context.");
+													throw new QuesterException(strings.ERROR_CMD_LOC_HERE.replaceAll("%here", strings.OTHER_HERE_LOC_LABEL));
 												}
 											} else
 												loc = getLoc(sender, args[6]);
 											qm.addQevent(sender.getName(), new SetBlockQevent(occ, del, itm[0], dat, loc));
-											sender.sendMessage(ChatColor.GREEN + "Block event added.");
+											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_BLOCK_TYPE));
 										} catch (QuesterException e) {
 											sender.sendMessage(e.message());
 										}
 										return true;
 									}
-									sender.sendMessage(ChatColor.RED + "Usage: /quest event add block {occasion} [delay] [block_id/name][:data*] {location}\n"
-											+ "* - optional; location 'here' means block you are looking at");
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_BLOCK_USAGE);
 									return true;
 								}
 								
-								sender.sendMessage(ChatColor.RED + "Available event types: " + ChatColor.WHITE + "msg, explosion, block, tele, lightning, cmd, quest, cancel");
+								sender.sendMessage(ChatColor.RED + strings.EVT_ADD_AVAILABLE + ChatColor.WHITE + "msg, explosion, block, tele, lightning, cmd, quest, cancel");
 								return true;
 							}
 							
-							sender.sendMessage(ChatColor.RED + "Specify occasion and delay.");
+							sender.sendMessage(ChatColor.RED + strings.EVT_SPECIFY);
 							return true;
 						}
 						
@@ -1724,42 +1708,39 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								if(args.length > 3)
 									obj = Integer.parseInt(args[3]);
 								qm.removeQevent(sender.getName(), id, obj);
-								sender.sendMessage(ChatColor.GREEN + "Event " + args[2] + " removed.");
+								sender.sendMessage(ChatColor.GREEN + strings.EVT_REMOVE.replaceAll("%id", args[2]));
 							} catch (NumberFormatException e) {
-								sender.sendMessage(ChatColor.RED + "Usage: /quest event remove [id_number] [objective_number*].\n"
-										+ "* - omit if not objective event");
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_REMOVE_USAGE);
 							} catch (QuesterException e) {
 								sender.sendMessage(e.message());
 							}
 							return true;
 						}
 						
-						sender.sendMessage(ChatColor.RED + "Usage info: /quest event [add|remove]");
+						sender.sendMessage(ChatColor.RED + strings.EVT_USAGE);
 						return true;
 					}
 					
 					if(args.length > 1) {
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
-							sender.sendMessage(ChatColor.RED + "Usage: /quest event add [event_type] {occasion} [delay] [args].\n"
-									+ "{occasion} - -1:START, -2:CANCEL, -3:DONE,  >=0:GIVEN OBJECTIVE");
-							sender.sendMessage(ChatColor.RED + "Available event types: " + ChatColor.WHITE + "msg");
+							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_ADD_USAGE);
+							sender.sendMessage(ChatColor.RED + strings.EVT_ADD_AVAILABLE + ChatColor.WHITE + "msg, explosion, block, tele, lightning, cmd, quest, cancel");
 							return true;
 						}
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
-							sender.sendMessage(ChatColor.RED + "Usage: /quest event remove [id_number] [objective_number*].\n"
-									+ "* - omit if not objective event");
+							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_REMOVE_USAGE);
 							return true;
 						}
 					}
 					
-					sender.sendMessage(ChatColor.RED + "Usage info: /quest event [add|remove]");
+					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_USAGE);
 					return true;
 				}
 				
 				// QUEST START
 				if(args[0].equalsIgnoreCase("start")) {
 					if(player == null) {
-						sender.sendMessage(ChatColor.RED + "This command can only be run by player.");
+						sender.sendMessage(ChatColor.RED + strings.MSG_ONLY_PLAYER);
 						return true;
 					}
 					try {
@@ -1787,7 +1768,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						return true;
 					}
 					if(player == null) {
-						sender.sendMessage(ChatColor.RED + "This command can only be run by player.");
+						sender.sendMessage(ChatColor.RED + strings.MSG_ONLY_PLAYER);
 					} else {
 						try {
 							qm.cancelQuest(player);
@@ -1807,7 +1788,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						return true;
 					}
 					if(player == null) {
-						sender.sendMessage(ChatColor.RED + "This command can only be run by player.");
+						sender.sendMessage(ChatColor.RED + strings.MSG_ONLY_PLAYER);
 						return true;
 					}
 					try {
@@ -1824,7 +1805,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						return true;
 					}
 					if(player == null) {
-						sender.sendMessage(ChatColor.RED + "This command can only be run by player.");
+						sender.sendMessage(ChatColor.RED + strings.MSG_ONLY_PLAYER);
 					} else {
 						try {
 							qm.showProgress(player);
@@ -1841,7 +1822,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						return true;
 					}
 					QuestData.saveProfiles();
-					sender.sendMessage(ChatColor.GREEN + "Profiles saved.");
+					sender.sendMessage(ChatColor.GREEN + strings.MSG_PROFILES_SAVE);
 					return true;
 				}
 				
@@ -1851,13 +1832,13 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						return true;
 					}
 					if(QuestData.saveInterval == 0) {
-						sender.sendMessage(ChatColor.RED + "AutoSaving is disabled in config.");
+						sender.sendMessage(ChatColor.RED + strings.MSG_AUTOSAVE_DISABLED);
 						return true;
 					}
 					if(Quester.plugin.startSaving()) {
-						sender.sendMessage(ChatColor.GREEN + "Saving started. Interval: " + QuestData.saveInterval + "m");
+						sender.sendMessage(ChatColor.GREEN + strings.MSG_AUTOSAVE_STARTED.replaceAll("%interval", String.valueOf(QuestData.saveInterval)));
 					} else {
-						sender.sendMessage(ChatColor.RED + "Saving already running.");
+						sender.sendMessage(ChatColor.RED + strings.MSG_AUTOSAVE_RUNNING);
 					}
 					return true;
 				}
@@ -1867,13 +1848,13 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						return true;
 					}
 					if(QuestData.saveInterval == 0) {
-						sender.sendMessage(ChatColor.RED + "AutoSaving is disabled in config.");
+						sender.sendMessage(ChatColor.RED + strings.MSG_AUTOSAVE_DISABLED);
 						return true;
 					}
 					if(Quester.plugin.stopSaving()) {
-						sender.sendMessage(ChatColor.GREEN + "Saving Stopped.");
+						sender.sendMessage(ChatColor.GREEN + strings.MSG_AUTOSAVE_STOPPED);
 					} else {
-						sender.sendMessage(ChatColor.RED + "Saving not running.");
+						sender.sendMessage(ChatColor.RED + strings.MSG_AUTOSAVE_NOT_RUNNING);
 					}
 					return true;
 				}
@@ -1884,11 +1865,12 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						return true;
 					}
 					Quester.plugin.initializeConfig();
-					sender.sendMessage(ChatColor.GREEN + "Quest config reloaded.");
+					Quester.plugin.loadLocal();
+					sender.sendMessage(ChatColor.GREEN + strings.MSG_CONFIG_RELOADED);
 					return true;
 				}
 				
-				sender.sendMessage(ChatColor.RED + "Unknown arguments. Type /quest help.");
+				sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ARGUMENTS_UNKNOWN);
 			} else {
 				sender.sendMessage(Quester.LABEL + ChatColor.GOLD + "version " + Quester.plugin.getDescription().getVersion());
 				sender.sendMessage(Quester.LABEL + "http://dev.bukkit.org/server-mods/quester/");

@@ -1,0 +1,320 @@
+package com.gmail.molnardad.quester;
+
+import com.gmail.molnardad.quester.config.CustomConfig;
+
+public class QuesterStrings extends CustomConfig {
+
+	public String MSG_ONLY_PLAYER = "This command can only be run by player.";
+	public String MSG_PROFILES_SAVE = "Profiles saved.";
+	public String MSG_AUTOSAVE_DISABLED = "AutoSaving is disabled in config.";
+	public String MSG_AUTOSAVE_STARTED = "Saving started. Interval: %intervalm";// %interval = autosave interval;
+	public String MSG_AUTOSAVE_RUNNING = "Saving already running.";
+	public String MSG_AUTOSAVE_STOPPED = "Saving Stopped.";
+	public String MSG_AUTOSAVE_NOT_RUNNING = "Saving not running.";
+	public String MSG_CONFIG_RELOADED = "Quest configs reloaded.";
+	public String MSG_PERMS = "You don't have permission for this.";
+	public String MSG_Q_STARTED = "You have started quest %q";// %q = quest name;
+	public String MSG_Q_COMPLETED = "Quest %q completed.";// %q = quest name;
+	public String MSG_Q_CANCELLED = "Quest %q cancelled.";// %q = quest name;
+	public String MSG_Q_DEACTIVATED = "Your current quest hes been deactivated.";
+	public String MSG_OBJ_COMPLETED = "You completed a quest objective.";
+
+	
+	public String INFO_NAME = "Name";
+	public String INFO_DESCRIPTION = "Description";
+	public String INFO_LOCATION = "Location";
+	public String INFO_WORLDS = "Worlds";
+	public String INFO_FLAGS = "Flags";
+	public String INFO_CONDITIONS = "Conditions";
+	public String INFO_OBJECTIVES = "Objectives";
+	public String INFO_REWARDS = "Rewards";
+	public String INFO_EVENTS = "Events";
+	public String INFO_FIRST_OBJECTIVE = "First objective";
+	public String INFO_QUEST_LIST = "Quest list";
+	public String INFO_QUEST_INFO = "Quest info";
+	public String INFO_PROGRESS = "%q progress";
+	public String INFO_PROGRESS_HIDDEN = "Quest progress hidden";
+	public String INFO_PROGRESS_COMPLETED = "Completed";
+	public String INFO_PROFILE_POINTS = "Quest points";
+	public String INFO_PROFILE_RANK = "Quester rank";
+	public String INFO_PROFILE_CURRENT = "Current quest";
+	public String INFO_PROFILE_COMPLETED = "Completed quests";
+	public String INFO_PROFILE_NOT_EXIST = "%p does not have profile.";// %p = player name;
+
+	public String HELP_SECTION_USE = "Quester help";
+	public String HELP_SECTION_MODIFY = "Modify help";
+	public String HELP_SECTION_MODIFY_SELECTED = "Applies only to selected quest";
+	public String HELP_SECTION_ADMIN = "Admin help";
+	public String HELP_HELP = "- this";
+	public String HELP_LIST = "- displays quest list";
+	public String HELP_SHOW = "- shows info about quest";
+	public String HELP_START_PICK = "- starts a quest";
+	public String HELP_START_RANDOM = "- starts random quest";
+	public String HELP_CANCEL = "- cancels current quest";
+	public String HELP_DONE = "- completes current quest";
+	public String HELP_PROGRESS = "- shows current quest progress";
+	public String HELP_PROFILE_USE = "- displays your quester profile";
+	public String HELP_PROFILE_MOD = "- shows player's profile";
+	public String HELP_CREATE = "- creates a quest";
+	public String HELP_REMOVE = "- removes the quest";
+	public String HELP_SELECT = "- selects the quest";
+	public String HELP_TOGGLE = "- toggles state of the quest";
+	public String HELP_INFO = "- shows detailed info about the quest";
+	public String HELP_NAME = "- changes the name";
+	public String HELP_DESC = "- quest description manipulation";
+	public String HELP_WORLD = "- world restriction manipulation";
+	public String HELP_FLAG = "- quest flag manipulation";
+	public String HELP_CONDITION = "- condition manipulation";
+	public String HELP_OBJECTIVE = "- objective manipulation";
+	public String HELP_EVENT = "- event manipulation";
+	public String HELP_REWARD = "- reward manipulation";
+	public String HELP_STARTSAVE = "- starts scheduled profile saving";
+	public String HELP_STOPSAVE = "- stops scheduled profile saving";
+	public String HELP_SAVE = "- saves profiles";
+	public String HELP_RELOAD = "- reloads config and local file";
+	
+	public String USAGE_LABEL = "Usage: ";
+	public String USAGE_FLAG_AVAIL = "Available flags: ";
+	public String USAGE_SHOW = "/quest show [quest_name].";
+	public String USAGE_INFO_USER = "/quest info [quest_name].";
+	public String USAGE_INFO_MOD = "/quest info [quest_ID*].\n* - optional if selected";
+	public String USAGE_CREATE = "/quest create [quest_name].";
+	public String USAGE_REMOVE = "/quest remove [quest_ID].";
+	public String USAGE_SELECT = "/quest select [quest_ID].";
+	public String USAGE_NAME = "/quest name [new_name].";
+	public String USAGE_DESC = "/quest desc [set|add] [quest_description].";
+	public String USAGE_LOC_SET = "/quest location set {location} [range].";
+	public String USAGE_LOC = "/quest location [set|remove].";
+	public String USAGE_FLAG = "/quest flag [add|remove] [flag_1]... .";
+	public String USAGE_WORLD = "/quest world [add|remove] [world_name or '%this'].";// %this = world label;
+	
+	// QUEST STRING
+	
+	public String Q_CREATED = "Quest created and selected.";
+	public String Q_REMOVED = "Quest removed.";
+	public String Q_SELECTED = "Quest selected.";
+	public String Q_RENAMED = "Quest name changed to '%q'."; // %q = quest name;
+	public String Q_DESC_SET = "Quest description set.";
+	public String Q_DESC_ADDED = "Quest description added.";
+	public String Q_LOC_SET = "Quest location set.";
+	public String Q_LOC_REMOVED = "Quest location removed.";
+	public String Q_FLGS_ADDED = "Flags added.";
+	public String Q_FLGS_REMOVED = "Flags removed.";
+	public String Q_ACTIVATED = "Quest activated.";
+	public String Q_DEACTIVATED = "Quest deactivated.";
+	public String Q_WORLD_ADDED = "Quest world added.";
+	public String Q_WORLD_REMOVED = "Quest world removed.";
+
+	// REWARD STRINGS
+	
+	public String REW_ADDED = "%type reward added."; // %type = reward type;
+	public String REW_REMOVED = "Reward %id removed."; // %id = reward ID;
+	public String REW_USAGE_AVAILABLE = "Available reward types: ";
+	public String REW_USAGE_REMOVE = "/quest reward remove [id_number].";
+	public String REW_USAGE = "/quest reward [add|remove] [reward_type] [args].";
+	
+	public String REW_EFF_TYPE = "Effect";
+	public String REW_EFF_UNKNOWN = "Unknown effect.";
+	public String REW_EFF_NUMBERS = "Duration and power must be >= 0.";
+	public String REW_EFF_ARGS = "All arguments must be >= 0, first can be name.";
+	public String REW_EFF_USAGE = "/quest reward add effect [effect_id/name] [duration_secs] [power].";
+	
+	public String REW_ITEM_TYPE = "Item";
+	public String REW_ITEM_USAGE = "/quest reward add item [item_id/name][:data*] [amount*] {ench1*}... .\n{ench} - [enchantment_id/name]:[level] ; * - optional";
+	
+	public String REW_MONEY_TYPE = "Money";
+	public String REW_MONEY_USAGE = "/quest reward add money [amount].";
+	
+	public String REW_EXP_TYPE = "Experience";
+	public String REW_EXP_USAGE = "/quest reward add exp [amount].";
+	
+	public String REW_POINT_TYPE = "Point";
+	public String REW_POINT_USAGE = "/quest reward add point [amount].";
+			
+	// OBJECTIVE STRINGS
+	
+	public String OBJ_ADD = "%type objective added."; // %type = objective type;
+	public String OBJ_ADD_AVAILABLE = "Available objective types: ";
+	public String OBJ_REMOVE = "Objective %id removed."; // %id = objective ID;
+	public String OBJ_REMOVE_USAGE = "/quest objective remove [id_number].";
+	public String OBJ_SWAP = "Objectives %id1 and %id2 swapped.";// %id1 = objective ID 1; %id2 = objective ID 2;
+	public String OBJ_SWAP_USAGE = "/quest objective swap [id_1] [id_2].";
+	public String OBJ_BAD_ID = "Objective ID must be number.";
+	public String OBJ_DESC_ADD = "Description to objective %id added."; // %id = objective ID;
+	public String OBJ_DESC_ADD_USAGE = "/quest objective desc add [obj_ID] [description*].\n* - %r = remaining amount, %t = total required amount";
+	public String OBJ_DESC_REMOVE = "Description of objective %id removed."; // %id = objective ID;
+	public String OBJ_DESC_USAGE = "/quest objective desc [add|remove] [obj_ID].";
+	public String OBJ_USAGE = "/quest objective [add|remove|swap|desc] [args].";
+	
+	public String OBJ_BREAK_TYPE = "Break";
+	public String OBJ_BREAK_USAGE = "/quest objective add break [block_id/name][:data*] [amount] [hand*].\n* - optional";
+	
+	public String OBJ_PLACE_TYPE = "Place";
+	public String OBJ_PLACE_USAGE = "/quest objective add place [block_id/name][:data*] [amount].\n* - optional";
+	
+	public String OBJ_ITEM_TYPE = "Item";
+	public String OBJ_ITEM_USAGE = "/quest objective add item [item_id/name][:data*] [amount*] {ench1*}... .\n{ench} - [enchantment_id/name]:[level] ; * - optional";
+	
+	public String OBJ_COLLECT_TYPE = "Collect";
+	public String OBJ_COLLECT_USAGE = "/quest objective add collect [block_id/name][:data*] [amount].\n* - optional";
+	
+	public String OBJ_ENCH_TYPE = "Enchant";
+	public String OBJ_ENCH_NUMBERS = "Amount must be > 0.";
+	public String OBJ_ENCH_USAGE = "/quest objective add ench [item_id/name] [amount*] {ench1*}... .\n{ench} - [enchantment_id/name]:[level] ; * - optional";
+	
+	public String OBJ_EXP_TYPE = "Experience";
+	public String OBJ_EXP_USAGE = "/quest objective add exp [amount].";
+	
+	public String OBJ_LOC_TYPE = "Location";
+	public String OBJ_LOC_USAGE = "/quest objective add loc {location} [range*].\n{location} - [X];[Y];[Z];[world or 'this'] // * - optional";
+	
+	public String OBJ_DEATH_TYPE = "Death";
+	public String OBJ_DEATH_USAGE = "/quest objective add death [amount] {location*} [range*].\n{location} - [X];[Y];[Z];[world or '%this'] , * - optional";// %this = world label;
+	
+	public String OBJ_WORLD_TYPE = "World";
+	public String OBJ_WORLD_USAGE = "/quest objective add world [world or '%this']";// %this = world label;
+	
+	public String OBJ_MOBKILL_TYPE = "Mob kill";
+	public String OBJ_MOBKILL_USAGE = "/quest objective add mobkill [amount] [entity_id/name*]* - optional";
+	
+	public String OBJ_KILL_TYPE = "Player kill";
+	public String OBJ_KILL_USAGE = "/quest objective add kill [amount] [player_name*]* - optional";
+	
+	public String OBJ_CRAFT_TYPE = "Craft";
+	public String OBJ_CRAFT_USAGE = "/quest objective add craft [item_id/name][:data*] [amount].\n* - optional";
+	
+	public String OBJ_SMELT_TYPE = "Smelt";
+	public String OBJ_SMELT_USAGE = "/quest objective add smelt [item_id/name][:data*] [amount].\n* - optional";
+	
+	public String OBJ_SHEAR_TYPE = "Shear";
+	public String OBJ_SHEAR_USAGE = "/quest objective add shear [amount] [color_id/name*].\n* - optional";
+	
+	public String OBJ_FISH_TYPE = "Fish";
+	public String OBJ_FISH_USAGE = "/quest objective add fish [amount].";
+	
+	public String OBJ_MILK_TYPE = "Milk";
+	public String OBJ_MILK_USAGE = "/quest objective add milk [amount].";
+	
+	public String OBJ_TAME_TYPE = "Tame";
+	public String OBJ_TAME_USAGE = "/quest objective add tame [amount] [entity_id/name*]* - optional";
+	
+	public String OBJ_MONEY_TYPE = "Money";
+	public String OBJ_MONEY_USAGE = "/quest objective add money [amount].";
+	
+	// CONDITION STRINGS
+
+	public String CON_ADD = "%type condition added."; // %type = condition type;
+	public String CON_ADD_AVAILABLE = "Available condition types: ";
+	public String CON_REMOVE = "Condition %id removed."; // %id = condition ID;
+	public String CON_REMOVE_USAGE = "/quest condition remove [id_number].";
+	public String CON_USAGE = "/quest condition [add|remove] [args].";
+	
+	public String CON_QUEST_TYPE = "Quest";
+	public String CON_QUEST_USAGE = "/quest condition add quest [quest_name]";
+	
+	public String CON_QUESTNOT_TYPE = "QuestNot";
+	public String CON_QUESTNOT_USAGE = "/quest condition add questnot [quest_name]";
+	
+	public String CON_PERM_TYPE = "Permission";
+	public String CON_PERM_USAGE = "/quest condition add perm [quest_name]";
+	
+	public String CON_MONEY_TYPE = "Money";
+	public String CON_MONEY_USAGE = "/quest condition add money [amount]";
+	
+	public String CON_ITEM_TYPE = "Item";
+	public String CON_ITEM_USAGE = "/quest condition add item [item_id/name][:data*] [amount]";
+	
+	public String CON_POINT_TYPE = "Point";
+	public String CON_POINT_USAGE = "/quest condition add point [amount]";
+	
+	// EVENT STRINGS
+	
+	public String EVT_ADD = "%type event added."; // %type = event type;
+	public String EVT_ADD_AVAILABLE = "Available event types: ";
+	public String EVT_ADD_USAGE = "/quest event add [event_type] {occasion} [delay] [args].\n{occasion} - -1:START, -2:CANCEL, -3:DONE,  >=0:GIVEN OBJECTIVE";
+	public String EVT_REMOVE = "Event %id removed.";// %id = event ID;
+	public String EVT_REMOVE_USAGE = "/quest event remove [id_number] [objective_number*].\n* - omit if not objective event";
+	public String EVT_NUMBERS = "Occasion must be > -4. Delay must be >= 0.";
+	public String EVT_SPECIFY = "Specify occasion and delay.";
+	public String EVT_USAGE = "/quest event [add|remove] [args]";
+	
+	public String EVT_MSG_TYPE = "Message";
+	public String EVT_MSG_USAGE = "/quest event add msg {occasion} [delay] [message*]\n* - supports '&' colors and '\\n' newline";
+	
+	public String EVT_QUEST_TYPE = "Quest";
+	public String EVT_QUEST_USAGE = "/quest event add quest {occasion} [delay] [quest_name]";
+	
+	public String EVT_CANCEL_TYPE = "Cancel";
+	
+	public String EVT_CMD_TYPE = "Command";
+	public String EVT_CMD_USAGE = "/quest event add cmd {occasion} [delay] [command*]\n* - without '/'";
+	
+	public String EVT_EXPL_TYPE = "Explosion";
+	public String EVT_EXPL_USAGE = "/quest event add explosion {occasion} [delay] {location} [range*] [damage*]\n* - optional, default range = 0, default damage = false";
+	
+	public String EVT_LIGHT_TYPE = "Lightning";
+	public String EVT_LIGHT_USAGE = "/quest event add lightning {occasion} [delay] {location} [range*] [damage*]\n* - optional, default range = 0, default damage = false";
+	
+	public String EVT_TELE_TYPE = "Teleport";
+	public String EVT_TELE_USAGE = "/quest event add tele {occasion} [delay] {location}";
+	
+	public String EVT_BLOCK_TYPE = "Block";
+	public String EVT_BLOCK_USAGE = "/quest event add block {occasion} [delay] [block_id/name][:data*] {location}\n* - optional; location 'here' means block you are looking at";
+	
+	// ERROR STRINGS
+
+	public String ERROR_CUSTOM = "Something is wrong.";
+	public String ERROR_CMD_BAD_ID = "Quest ID must be number.";
+	public String ERROR_CMD_RANGE_INVALID = "Invalid range.";
+	public String ERROR_CMD_WORLD_THIS = "World '%this' requires player context."; // %this = world label;
+	public String ERROR_CMD_WORLD_INVALID = "Invalid world.";
+	public String ERROR_CMD_ITEM_UNKNOWN = "Unknown item.";
+	public String ERROR_CMD_BLOCK_UNKNOWN = "Unknown block.";
+	public String ERROR_CMD_BLOCK_LOOK = "You are not looking at a block.";
+	public String ERROR_CMD_ITEM_NUMBERS = "Amount must be > 0. Data must be >= 0.";
+	public String ERROR_CMD_ENCH_LEVEL = "Enchantment level must be > 0.";
+	public String ERROR_CMD_ENCH_INVALID = "Invalid enchantment.";
+	public String ERROR_CMD_ENCH_CANT = "One or more enchantments cannot be applied to specified item.";
+	public String ERROR_CMD_AMOUNT_GENERAL = "Amount must be number.";
+	public String ERROR_CMD_AMOUNT_POSITIVE = "Amount must be positive number.";
+	public String ERROR_CMD_LOC_INVALID = "Invalid location.";
+	public String ERROR_CMD_LOC_HERE = "Location '%here' requires player context."; // %here = location label;
+	public String ERROR_CMD_COORDS_INVALID = "Invalid coordinates.";
+	public String ERROR_CMD_ENTITY_UNKNOWN = "Unknown entity.";
+	public String ERROR_CMD_ENTITY_NUMBERS = "Amount must be > 0. Id must be number or valid entity name.";
+	public String ERROR_CMD_COLOR_UNKNOWN = "Unknown color.";
+	public String ERROR_CMD_ARGUMENTS_UNKNOWN = "Unknown arguments. Type /quest help.";
+	
+	public String ERROR_Q_EXIST = "Quest already exists.";
+	public String ERROR_Q_NOT_EXIST = "Quest does not exist.";
+	public String ERROR_Q_NOT_SELECTED = "No quest selected.";
+	public String ERROR_Q_CANT_MODIFY = "Modification of active quests is not allowed.";
+	public String ERROR_Q_NONE = "No quest available.";
+	public String ERROR_Q_NONE_ACTIVE = "No quest active.";
+	public String ERROR_Q_ASSIGNED = "Other quest already assigned.";
+	public String ERROR_Q_NOT_ASSIGNED = "No quest assigned.";
+	public String ERROR_Q_CANT_CANCEL = "This quest cannot be cancelled.";
+	public String ERROR_Q_NOT_COMPLETED = "One or more objectives are not completed.";
+	public String ERROR_Q_BAD_WORLD = "Quest cannot be completed in this world.";
+	public String ERROR_Q_NOT_CMD = "Quest cannot be started or completed by command.";
+	public String ERROR_CON_NOT_MET = "One or more conditions are not met.";
+	public String ERROR_CON_NOT_EXIST = "Condition does not exist.";
+	public String ERROR_OBJ_NOT_EXIST = "Objective does not exist.";
+	public String ERROR_OBJ_CANT_DO = "Not enough resources to complete objective.";
+	public String ERROR_OCC_NOT_EXIST = "Occasion does not exist.";
+	public String ERROR_REW_NOT_EXIST = "Reward does not exist.";
+	public String ERROR_REW_CANT_DO = "Not enough space to recieve quest rewards.";
+	public String ERROR_EVT_NOT_EXIST = "Event does not exist.";
+	public String ERROR_WHY = "Why would you want to do this ?";
+
+	// OTHER STRINGS
+	
+	public String OTHER_COMMAND_IN_HELP = "/q";
+	public String OTHER_THIS_WORLD_LABEL = "this";
+	public String OTHER_HERE_LOC_LABEL = "here";
+	public String OTHER_PLAYER_LOC_LABEL = "player";
+	
+	public QuesterStrings(String fileName) {
+		super(Quester.plugin, fileName);
+	}
+}

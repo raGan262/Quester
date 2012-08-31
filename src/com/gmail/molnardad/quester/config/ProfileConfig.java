@@ -11,15 +11,6 @@ public final class ProfileConfig extends CustomConfig {
 	public ProfileConfig(String fileName) {
 		super(Quester.plugin, fileName);
 	}
-
-	@Override
-	public void initialize() {
-	}
-
-	@Override
-	public boolean validate() {
-		return true;
-	}
 	
 	@Override
 	public void saveConfig() {

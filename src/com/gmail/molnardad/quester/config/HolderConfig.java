@@ -17,15 +17,6 @@ public class HolderConfig extends CustomConfig {
 	}
 
 	@Override
-	public void initialize() {
-	}
-
-	@Override
-	public boolean validate() {
-		return true;
-	}
-
-	@Override
 	public void saveConfig() {
 		config.set("signs", null);
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();

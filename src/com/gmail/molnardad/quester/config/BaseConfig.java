@@ -150,10 +150,4 @@ public class BaseConfig extends CustomConfig {
 		saveConfig();
 	}
 
-	@Override
-	public boolean validate() {
-		//Validate not needed, since keys and values are fixed during initialization
-		return true;
-	}
-
 }
