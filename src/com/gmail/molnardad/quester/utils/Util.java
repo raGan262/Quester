@@ -21,6 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import com.avaje.ebeaninternal.server.lib.util.InvalidDataException;
+import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 
@@ -54,11 +55,11 @@ public class Util {
 		if(args.length < 1)
 			throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_LOC_INVALID);
 		
-		if(args[0].equalsIgnoreCase(Quester.strings.OTHER_HERE_LOC_LABEL)) {
+		if(args[0].equalsIgnoreCase(QuestData.locLabelHere)) {
 			if(sender instanceof Player)
 				return ((Player) sender).getLocation();
 			else
-				throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_LOC_HERE.replaceAll("%here", Quester.strings.OTHER_HERE_LOC_LABEL));
+				throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_LOC_HERE.replaceAll("%here", QuestData.locLabelHere));
 		}
 		
 		if(args.length > 3){
@@ -73,7 +74,7 @@ public class Util {
 			if(y < 0) {
 				throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_COORDS_INVALID);
 			}
-			if(sender instanceof Player && args[3].equalsIgnoreCase(Quester.strings.OTHER_THIS_WORLD_LABEL)) {
+			if(sender instanceof Player && args[3].equalsIgnoreCase(QuestData.worldLabelThis)) {
 				loc = new Location(((Player)sender).getWorld(), x, y, z);
 			} else {
 				World world = Quester.plugin.getServer().getWorld(args[3]);

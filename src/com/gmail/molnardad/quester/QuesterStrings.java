@@ -75,18 +75,18 @@ public class QuesterStrings extends CustomConfig {
 	
 	public String USAGE_LABEL = "Usage: ";
 	public String USAGE_FLAG_AVAIL = "Available flags: ";
-	public String USAGE_SHOW = "/quest show [quest_name].";
-	public String USAGE_INFO_USER = "/quest info [quest_name].";
-	public String USAGE_INFO_MOD = "/quest info [quest_ID*].\n* - optional if selected";
-	public String USAGE_CREATE = "/quest create [quest_name].";
-	public String USAGE_REMOVE = "/quest remove [quest_ID].";
-	public String USAGE_SELECT = "/quest select [quest_ID].";
-	public String USAGE_NAME = "/quest name [new_name].";
-	public String USAGE_DESC = "/quest desc [set|add] [quest_description].";
-	public String USAGE_LOC_SET = "/quest location set {location} [range].";
-	public String USAGE_LOC = "/quest location [set|remove].";
-	public String USAGE_FLAG = "/quest flag [add|remove] [flag_1]... .";
-	public String USAGE_WORLD = "/quest world [add|remove] [world_name or '%this'].";// %this = world label;
+	public String USAGE_SHOW = "%cmd show [quest_name].";
+	public String USAGE_INFO_USER = "%cmd info [quest_name].";
+	public String USAGE_INFO_MOD = "%cmd info [quest_ID*].\n* - optional if selected";
+	public String USAGE_CREATE = "%cmd create [quest_name].";
+	public String USAGE_REMOVE = "%cmd remove [quest_ID].";
+	public String USAGE_SELECT = "%cmd select [quest_ID].";
+	public String USAGE_NAME = "%cmd name [new_name].";
+	public String USAGE_DESC = "%cmd desc [set|add] [quest_description].";
+	public String USAGE_LOC_SET = "%cmd location set {location} [range].";
+	public String USAGE_LOC = "%cmd location [set|remove].";
+	public String USAGE_FLAG = "%cmd flag [add|remove] [flag_1]... .";
+	public String USAGE_WORLD = "%cmd world [add|remove] [world_name or '%this'].";// %this = world label;
 	
 	// QUEST STRING
 	
@@ -110,156 +110,156 @@ public class QuesterStrings extends CustomConfig {
 	public String REW_ADDED = "%type reward added."; // %type = reward type;
 	public String REW_REMOVED = "Reward %id removed."; // %id = reward ID;
 	public String REW_USAGE_AVAILABLE = "Available reward types: ";
-	public String REW_USAGE_REMOVE = "/quest reward remove [id_number].";
-	public String REW_USAGE = "/quest reward [add|remove] [reward_type] [args].";
+	public String REW_USAGE_REMOVE = "%cmd reward remove [id_number].";
+	public String REW_USAGE = "%cmd reward [add|remove] [reward_type] [args].";
 	
 	public String REW_EFF_TYPE = "Effect";
 	public String REW_EFF_UNKNOWN = "Unknown effect.";
 	public String REW_EFF_NUMBERS = "Duration and power must be >= 0.";
 	public String REW_EFF_ARGS = "All arguments must be >= 0, first can be name.";
-	public String REW_EFF_USAGE = "/quest reward add effect [effect_id/name] [duration_secs] [power].";
+	public String REW_EFF_USAGE = "%cmd reward add effect [effect_id/name] [duration_secs] [power].";
 	
 	public String REW_ITEM_TYPE = "Item";
-	public String REW_ITEM_USAGE = "/quest reward add item [item_id/name][:data*] [amount*] {ench1*}... .\n{ench} - [enchantment_id/name]:[level] ; * - optional";
+	public String REW_ITEM_USAGE = "%cmd reward add item [item_id/name][:data*] [amount*] {ench1*}... .\n{ench} - [enchantment_id/name]:[level] ; * - optional";
 	
 	public String REW_MONEY_TYPE = "Money";
-	public String REW_MONEY_USAGE = "/quest reward add money [amount].";
+	public String REW_MONEY_USAGE = "%cmd reward add money [amount].";
 	
 	public String REW_EXP_TYPE = "Experience";
-	public String REW_EXP_USAGE = "/quest reward add exp [amount].";
+	public String REW_EXP_USAGE = "%cmd reward add exp [amount].";
 	
 	public String REW_POINT_TYPE = "Point";
-	public String REW_POINT_USAGE = "/quest reward add point [amount].";
+	public String REW_POINT_USAGE = "%cmd reward add point [amount].";
 			
 	// OBJECTIVE STRINGS
 	
 	public String OBJ_ADD = "%type objective added."; // %type = objective type;
 	public String OBJ_ADD_AVAILABLE = "Available objective types: ";
 	public String OBJ_REMOVE = "Objective %id removed."; // %id = objective ID;
-	public String OBJ_REMOVE_USAGE = "/quest objective remove [id_number].";
+	public String OBJ_REMOVE_USAGE = "%cmd objective remove [id_number].";
 	public String OBJ_SWAP = "Objectives %id1 and %id2 swapped.";// %id1 = objective ID 1; %id2 = objective ID 2;
-	public String OBJ_SWAP_USAGE = "/quest objective swap [id_1] [id_2].";
+	public String OBJ_SWAP_USAGE = "%cmd objective swap [id_1] [id_2].";
 	public String OBJ_BAD_ID = "Objective ID must be number.";
 	public String OBJ_DESC_ADD = "Description to objective %id added."; // %id = objective ID;
-	public String OBJ_DESC_ADD_USAGE = "/quest objective desc add [obj_ID] [description*].\n* - %r = remaining amount, %t = total required amount";
+	public String OBJ_DESC_ADD_USAGE = "%cmd objective desc add [obj_ID] [description*].\n* - %r = remaining amount, %t = total required amount";
 	public String OBJ_DESC_REMOVE = "Description of objective %id removed."; // %id = objective ID;
-	public String OBJ_DESC_USAGE = "/quest objective desc [add|remove] [obj_ID].";
-	public String OBJ_USAGE = "/quest objective [add|remove|swap|desc] [args].";
+	public String OBJ_DESC_USAGE = "%cmd objective desc [add|remove] [obj_ID].";
+	public String OBJ_USAGE = "%cmd objective [add|remove|swap|desc] [args].";
 	
 	public String OBJ_BREAK_TYPE = "Break";
-	public String OBJ_BREAK_USAGE = "/quest objective add break [block_id/name][:data*] [amount] [hand*].\n* - optional";
+	public String OBJ_BREAK_USAGE = "%cmd objective add break [block_id/name][:data*] [amount] [hand*].\n* - optional";
 	
 	public String OBJ_PLACE_TYPE = "Place";
-	public String OBJ_PLACE_USAGE = "/quest objective add place [block_id/name][:data*] [amount].\n* - optional";
+	public String OBJ_PLACE_USAGE = "%cmd objective add place [block_id/name][:data*] [amount].\n* - optional";
 	
 	public String OBJ_ITEM_TYPE = "Item";
-	public String OBJ_ITEM_USAGE = "/quest objective add item [item_id/name][:data*] [amount*] {ench1*}... .\n{ench} - [enchantment_id/name]:[level] ; * - optional";
+	public String OBJ_ITEM_USAGE = "%cmd objective add item [item_id/name][:data*] [amount*] {ench1*}... .\n{ench} - [enchantment_id/name]:[level] ; * - optional";
 	
 	public String OBJ_COLLECT_TYPE = "Collect";
-	public String OBJ_COLLECT_USAGE = "/quest objective add collect [block_id/name][:data*] [amount].\n* - optional";
+	public String OBJ_COLLECT_USAGE = "%cmd objective add collect [block_id/name][:data*] [amount].\n* - optional";
 	
 	public String OBJ_ENCH_TYPE = "Enchant";
 	public String OBJ_ENCH_NUMBERS = "Amount must be > 0.";
-	public String OBJ_ENCH_USAGE = "/quest objective add ench [item_id/name] [amount*] {ench1*}... .\n{ench} - [enchantment_id/name]:[level] ; * - optional";
+	public String OBJ_ENCH_USAGE = "%cmd objective add ench [item_id/name] [amount*] {ench1*}... .\n{ench} - [enchantment_id/name]:[level] ; * - optional";
 	
 	public String OBJ_EXP_TYPE = "Experience";
-	public String OBJ_EXP_USAGE = "/quest objective add exp [amount].";
+	public String OBJ_EXP_USAGE = "%cmd objective add exp [amount].";
 	
 	public String OBJ_LOC_TYPE = "Location";
-	public String OBJ_LOC_USAGE = "/quest objective add loc {location} [range*].\n{location} - [X];[Y];[Z];[world or 'this'] // * - optional";
+	public String OBJ_LOC_USAGE = "%cmd objective add loc {location} [range*].\n{location} - [X];[Y];[Z];[world or 'this'] // * - optional";
 	
 	public String OBJ_DEATH_TYPE = "Death";
-	public String OBJ_DEATH_USAGE = "/quest objective add death [amount] {location*} [range*].\n{location} - [X];[Y];[Z];[world or '%this'] , * - optional";// %this = world label;
+	public String OBJ_DEATH_USAGE = "%cmd objective add death [amount] {location*} [range*].\n{location} - [X];[Y];[Z];[world or '%this'] , * - optional";// %this = world label;
 	
 	public String OBJ_WORLD_TYPE = "World";
-	public String OBJ_WORLD_USAGE = "/quest objective add world [world or '%this']";// %this = world label;
+	public String OBJ_WORLD_USAGE = "%cmd objective add world [world or '%this']";// %this = world label;
 	
 	public String OBJ_MOBKILL_TYPE = "Mob kill";
-	public String OBJ_MOBKILL_USAGE = "/quest objective add mobkill [amount] [entity_id/name*]* - optional";
+	public String OBJ_MOBKILL_USAGE = "%cmd objective add mobkill [amount] [entity_id/name*]* - optional";
 	
 	public String OBJ_KILL_TYPE = "Player kill";
-	public String OBJ_KILL_USAGE = "/quest objective add kill [amount] [player_name*]* - optional";
+	public String OBJ_KILL_USAGE = "%cmd objective add kill [amount] [player_name*]* - optional";
 	
 	public String OBJ_CRAFT_TYPE = "Craft";
-	public String OBJ_CRAFT_USAGE = "/quest objective add craft [item_id/name][:data*] [amount].\n* - optional";
+	public String OBJ_CRAFT_USAGE = "%cmd objective add craft [item_id/name][:data*] [amount].\n* - optional";
 	
 	public String OBJ_SMELT_TYPE = "Smelt";
-	public String OBJ_SMELT_USAGE = "/quest objective add smelt [item_id/name][:data*] [amount].\n* - optional";
+	public String OBJ_SMELT_USAGE = "%cmd objective add smelt [item_id/name][:data*] [amount].\n* - optional";
 	
 	public String OBJ_SHEAR_TYPE = "Shear";
-	public String OBJ_SHEAR_USAGE = "/quest objective add shear [amount] [color_id/name*].\n* - optional";
+	public String OBJ_SHEAR_USAGE = "%cmd objective add shear [amount] [color_id/name*].\n* - optional";
 	
 	public String OBJ_FISH_TYPE = "Fish";
-	public String OBJ_FISH_USAGE = "/quest objective add fish [amount].";
+	public String OBJ_FISH_USAGE = "%cmd objective add fish [amount].";
 	
 	public String OBJ_MILK_TYPE = "Milk";
-	public String OBJ_MILK_USAGE = "/quest objective add milk [amount].";
+	public String OBJ_MILK_USAGE = "%cmd objective add milk [amount].";
 	
 	public String OBJ_TAME_TYPE = "Tame";
-	public String OBJ_TAME_USAGE = "/quest objective add tame [amount] [entity_id/name*]* - optional";
+	public String OBJ_TAME_USAGE = "%cmd objective add tame [amount] [entity_id/name*]* - optional";
 	
 	public String OBJ_MONEY_TYPE = "Money";
-	public String OBJ_MONEY_USAGE = "/quest objective add money [amount].";
+	public String OBJ_MONEY_USAGE = "%cmd objective add money [amount].";
 	
 	// CONDITION STRINGS
 
 	public String CON_ADD = "%type condition added."; // %type = condition type;
 	public String CON_ADD_AVAILABLE = "Available condition types: ";
 	public String CON_REMOVE = "Condition %id removed."; // %id = condition ID;
-	public String CON_REMOVE_USAGE = "/quest condition remove [id_number].";
-	public String CON_USAGE = "/quest condition [add|remove] [args].";
+	public String CON_REMOVE_USAGE = "%cmd condition remove [id_number].";
+	public String CON_USAGE = "%cmd condition [add|remove] [args].";
 	
 	public String CON_QUEST_TYPE = "Quest";
-	public String CON_QUEST_USAGE = "/quest condition add quest [quest_name]";
+	public String CON_QUEST_USAGE = "%cmd condition add quest [quest_name]";
 	
 	public String CON_QUESTNOT_TYPE = "QuestNot";
-	public String CON_QUESTNOT_USAGE = "/quest condition add questnot [quest_name]";
+	public String CON_QUESTNOT_USAGE = "%cmd condition add questnot [quest_name]";
 	
 	public String CON_PERM_TYPE = "Permission";
-	public String CON_PERM_USAGE = "/quest condition add perm [quest_name]";
+	public String CON_PERM_USAGE = "%cmd condition add perm [quest_name]";
 	
 	public String CON_MONEY_TYPE = "Money";
-	public String CON_MONEY_USAGE = "/quest condition add money [amount]";
+	public String CON_MONEY_USAGE = "%cmd condition add money [amount]";
 	
 	public String CON_ITEM_TYPE = "Item";
-	public String CON_ITEM_USAGE = "/quest condition add item [item_id/name][:data*] [amount]";
+	public String CON_ITEM_USAGE = "%cmd condition add item [item_id/name][:data*] [amount]";
 	
 	public String CON_POINT_TYPE = "Point";
-	public String CON_POINT_USAGE = "/quest condition add point [amount]";
+	public String CON_POINT_USAGE = "%cmd condition add point [amount]";
 	
 	// EVENT STRINGS
 	
 	public String EVT_ADD = "%type event added."; // %type = event type;
 	public String EVT_ADD_AVAILABLE = "Available event types: ";
-	public String EVT_ADD_USAGE = "/quest event add [event_type] {occasion} [delay] [args].\n{occasion} - -1:START, -2:CANCEL, -3:DONE,  >=0:GIVEN OBJECTIVE";
+	public String EVT_ADD_USAGE = "%cmd event add [event_type] {occasion} [delay] [args].\n{occasion} - -1:START, -2:CANCEL, -3:DONE,  >=0:GIVEN OBJECTIVE";
 	public String EVT_REMOVE = "Event %id removed.";// %id = event ID;
-	public String EVT_REMOVE_USAGE = "/quest event remove [id_number] [objective_number*].\n* - omit if not objective event";
+	public String EVT_REMOVE_USAGE = "%cmd event remove [id_number] [objective_number*].\n* - omit if not objective event";
 	public String EVT_NUMBERS = "Occasion must be > -4. Delay must be >= 0.";
 	public String EVT_SPECIFY = "Specify occasion and delay.";
-	public String EVT_USAGE = "/quest event [add|remove] [args]";
+	public String EVT_USAGE = "%cmd event [add|remove] [args]";
 	
 	public String EVT_MSG_TYPE = "Message";
-	public String EVT_MSG_USAGE = "/quest event add msg {occasion} [delay] [message*]\n* - supports '&' colors and '\\n' newline";
+	public String EVT_MSG_USAGE = "%cmd event add msg {occasion} [delay] [message*]\n* - supports '&' colors and '\\n' newline";
 	
 	public String EVT_QUEST_TYPE = "Quest";
-	public String EVT_QUEST_USAGE = "/quest event add quest {occasion} [delay] [quest_name]";
+	public String EVT_QUEST_USAGE = "%cmd event add quest {occasion} [delay] [quest_name]";
 	
 	public String EVT_CANCEL_TYPE = "Cancel";
 	
 	public String EVT_CMD_TYPE = "Command";
-	public String EVT_CMD_USAGE = "/quest event add cmd {occasion} [delay] [command*]\n* - without '/'";
+	public String EVT_CMD_USAGE = "%cmd event add cmd {occasion} [delay] [command*]\n* - without '/'";
 	
 	public String EVT_EXPL_TYPE = "Explosion";
-	public String EVT_EXPL_USAGE = "/quest event add explosion {occasion} [delay] {location} [range*] [damage*]\n* - optional, default range = 0, default damage = false";
+	public String EVT_EXPL_USAGE = "%cmd event add explosion {occasion} [delay] {location} [range*] [damage*]\n* - optional, default range = 0, default damage = false";
 	
 	public String EVT_LIGHT_TYPE = "Lightning";
-	public String EVT_LIGHT_USAGE = "/quest event add lightning {occasion} [delay] {location} [range*] [damage*]\n* - optional, default range = 0, default damage = false";
+	public String EVT_LIGHT_USAGE = "%cmd event add lightning {occasion} [delay] {location} [range*] [damage*]\n* - optional, default range = 0, default damage = false";
 	
 	public String EVT_TELE_TYPE = "Teleport";
-	public String EVT_TELE_USAGE = "/quest event add tele {occasion} [delay] {location}";
+	public String EVT_TELE_USAGE = "%cmd event add tele {occasion} [delay] {location}";
 	
 	public String EVT_BLOCK_TYPE = "Block";
-	public String EVT_BLOCK_USAGE = "/quest event add block {occasion} [delay] [block_id/name][:data*] {location}\n* - optional; location 'here' means block you are looking at";
+	public String EVT_BLOCK_USAGE = "%cmd event add block {occasion} [delay] [block_id/name][:data*] {location}\n* - optional; location 'here' means block you are looking at";
 	
 	// ERROR STRINGS
 
@@ -283,7 +283,7 @@ public class QuesterStrings extends CustomConfig {
 	public String ERROR_CMD_ENTITY_UNKNOWN = "Unknown entity.";
 	public String ERROR_CMD_ENTITY_NUMBERS = "Amount must be > 0. Id must be number or valid entity name.";
 	public String ERROR_CMD_COLOR_UNKNOWN = "Unknown color.";
-	public String ERROR_CMD_ARGUMENTS_UNKNOWN = "Unknown arguments. Type /quest help.";
+	public String ERROR_CMD_ARGUMENTS_UNKNOWN = "Unknown arguments. Type %cmd help.";
 	
 	public String ERROR_Q_EXIST = "Quest already exists.";
 	public String ERROR_Q_NOT_EXIST = "Quest does not exist.";
@@ -306,13 +306,6 @@ public class QuesterStrings extends CustomConfig {
 	public String ERROR_REW_CANT_DO = "Not enough space to recieve quest rewards.";
 	public String ERROR_EVT_NOT_EXIST = "Event does not exist.";
 	public String ERROR_WHY = "Why would you want to do this ?";
-
-	// OTHER STRINGS
-	
-	public String OTHER_COMMAND_IN_HELP = "/q";
-	public String OTHER_THIS_WORLD_LABEL = "this";
-	public String OTHER_HERE_LOC_LABEL = "here";
-	public String OTHER_PLAYER_LOC_LABEL = "player";
 	
 	public QuesterStrings(String fileName) {
 		super(Quester.plugin, fileName);

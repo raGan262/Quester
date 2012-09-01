@@ -56,7 +56,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						return true;
 					}
 
-					String command = strings.OTHER_COMMAND_IN_HELP;
+					String command = QuestData.displayedCmd;
 					
 					sender.sendMessage(line(ChatColor.BLUE, strings.HELP_SECTION_USE, ChatColor.GOLD));
 					sender.sendMessage(ChatColor.GOLD + command + " help/? " + ChatColor.GRAY + strings.HELP_HELP);
@@ -132,7 +132,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							sender.sendMessage(e.message());
 						}
 					} else {
-						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_SHOW);
+						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_SHOW.replaceAll("%cmd", QuestData.displayedCmd));
 					}
 					return true;
 				}
@@ -158,11 +158,11 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							if(permCheck(sender, QuestData.MODIFY_PERM, false)) {
 								qm.showQuestInfo(sender);
 							} else {
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_INFO_USER);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_INFO_USER.replaceAll("%cmd", QuestData.displayedCmd));
 							}
 						} catch (QuesterException e) {
 							sender.sendMessage(e.message());
-							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_INFO_MOD);
+							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_INFO_MOD.replaceAll("%cmd", QuestData.displayedCmd));
 						}
 					}
 					return true;
@@ -195,7 +195,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							sender.sendMessage(e.message());
 						}
 					} else {
-						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_CREATE);
+						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_CREATE.replaceAll("%cmd", QuestData.displayedCmd));
 					}
 					return true;
 				}
@@ -220,7 +220,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 						}
 					} else {
-						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_REMOVE);
+						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_REMOVE.replaceAll("%cmd", QuestData.displayedCmd));
 					}
 					return true;
 				}
@@ -241,7 +241,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 						}
 					} else {
-						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_SELECT);
+						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_SELECT.replaceAll("%cmd", QuestData.displayedCmd));
 					}
 					return true;
 				}
@@ -260,7 +260,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							sender.sendMessage(e.message());
 						}
 					} else {
-						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_NAME);
+						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_NAME.replaceAll("%cmd", QuestData.displayedCmd));
 					}
 					return true;
 				}
@@ -296,7 +296,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							return true;
 						}
 					}
-					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_DESC);
+					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_DESC.replaceAll("%cmd", QuestData.displayedCmd));
 					return true;
 				}
 				
@@ -322,7 +322,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									sender.sendMessage(ChatColor.GREEN + strings.ERROR_CMD_RANGE_INVALID);
 								}	
 							} else {
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_LOC_SET);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_LOC_SET.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							return true;
@@ -339,7 +339,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						}
 					}
 					
-					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_LOC);
+					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_LOC.replaceAll("%cmd", QuestData.displayedCmd));
 					return true;
 				}
 				
@@ -385,7 +385,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						}
 					}
 					
-					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_FLAG);
+					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_FLAG.replaceAll("%cmd", QuestData.displayedCmd));
 					return true;
 				}
 				
@@ -432,11 +432,11 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
 							try {
 								World world = null;
-								if(args[2].equalsIgnoreCase(strings.OTHER_THIS_WORLD_LABEL)) {
+								if(args[2].equalsIgnoreCase(QuestData.worldLabelThis)) {
 									if(player != null) {
 										world = player.getWorld();
 									} else {
-										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_WORLD_THIS.replaceAll("%this", strings.OTHER_THIS_WORLD_LABEL));
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_WORLD_THIS.replaceAll("%this", QuestData.worldLabelThis));
 										return true;
 									}
 								} else {
@@ -458,12 +458,12 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")){
 							try {
 								String wName = args[2];
-								if(args[2].equalsIgnoreCase(strings.OTHER_THIS_WORLD_LABEL)) {
+								if(args[2].equalsIgnoreCase(QuestData.worldLabelThis)) {
 									World world = null;
 									if(player != null) {
 										world = player.getWorld();
 									} else {
-										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_WORLD_THIS.replaceAll("%this", strings.OTHER_THIS_WORLD_LABEL));
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_WORLD_THIS.replaceAll("%this", QuestData.worldLabelThis));
 										return true;
 									}
 									if(world != null) {
@@ -480,7 +480,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						}
 					}
 					
-					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_WORLD.replaceAll("%this", strings.OTHER_THIS_WORLD_LABEL));
+					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_WORLD.replaceAll("%this", QuestData.worldLabelThis).replaceAll("%cmd", QuestData.displayedCmd));
 					return true;
 				}
 				
@@ -521,7 +521,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_EFF_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_EFF_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -575,7 +575,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_ITEM_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_ITEM_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -593,7 +593,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_MONEY_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_MONEY_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -611,7 +611,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_EXP_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_EXP_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -629,7 +629,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_POINT_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_POINT_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -644,14 +644,14 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								qm.removeQuestReward(sender.getName(), id);
 								sender.sendMessage(ChatColor.GREEN + strings.REW_REMOVED.replaceAll("%id", args[2]));
 							} catch (NumberFormatException e) {
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_USAGE_REMOVE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_USAGE_REMOVE.replaceAll("%cmd", QuestData.displayedCmd));
 							} catch (QuesterException e) {
 								sender.sendMessage(e.message());
 							}
 							return true;
 						}
 						
-						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_USAGE);
+						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 						return true;
 					}
 					
@@ -661,12 +661,12 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							return true;
 						}
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
-							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_USAGE_REMOVE);
+							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_USAGE_REMOVE.replaceAll("%cmd", QuestData.displayedCmd));
 							return true;
 						}
 					}
 					
-					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_USAGE);
+					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 					return true;
 				}
 				
@@ -713,7 +713,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_BREAK_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_BREAK_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -744,7 +744,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_PLACE_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_PLACE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -798,7 +798,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_ITEM_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_ITEM_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -826,7 +826,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_COLLECT_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_COLLECT_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -875,7 +875,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_ENCH_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_ENCH_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -895,7 +895,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_EXP_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_EXP_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -921,7 +921,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_LOC_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_LOC_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -957,7 +957,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_DEATH_USAGE.replaceAll("%this", strings.OTHER_THIS_WORLD_LABEL));
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_DEATH_USAGE.replaceAll("%this", QuestData.worldLabelThis).replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -965,11 +965,11 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							if(args[2].equalsIgnoreCase("world")) {
 								if(args.length > 3) {
 									World world = null;
-									if(args[3].equalsIgnoreCase(strings.OTHER_THIS_WORLD_LABEL)) {
+									if(args[3].equalsIgnoreCase(QuestData.worldLabelThis)) {
 										if(player != null) {
 											world = player.getWorld();
 										} else {
-											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_WORLD_THIS.replaceAll("%this", strings.OTHER_THIS_WORLD_LABEL));
+											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_WORLD_THIS.replaceAll("%this", QuestData.worldLabelThis));
 											return true;
 										}
 									} else {
@@ -987,7 +987,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_WORLD_USAGE.replaceAll("%this", strings.OTHER_THIS_WORLD_LABEL));
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_WORLD_USAGE.replaceAll("%this", QuestData.worldLabelThis).replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -1023,7 +1023,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_MOBKILL_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_MOBKILL_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -1052,7 +1052,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_KILL_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_KILL_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -1080,7 +1080,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_CRAFT_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_CRAFT_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -1108,7 +1108,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_SMELT_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_SMELT_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -1133,7 +1133,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_SHEAR_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_SHEAR_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -1153,7 +1153,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_FISH_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_FISH_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -1173,7 +1173,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_MILK_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_MILK_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -1215,7 +1215,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_TAME_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_TAME_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -1235,7 +1235,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_MONEY_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_MONEY_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -1251,7 +1251,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								qm.removeQuestObjective(sender.getName(), id);
 								sender.sendMessage(ChatColor.GREEN + strings.OBJ_REMOVE.replaceAll("%id", args[2]));
 							} catch (NumberFormatException e) {
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_REMOVE_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_REMOVE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 							} catch (QuesterException e) {
 								sender.sendMessage(e.message());
 							}
@@ -1268,7 +1268,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								qm.swapQuestObjectives(sender.getName(), first, second);
 								sender.sendMessage(ChatColor.GREEN + strings.OBJ_SWAP.replaceAll("%id1", args[2]).replaceAll("%id2", args[3]));
 							} catch (NumberFormatException e) {
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_SWAP_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_SWAP_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 							} catch (QuesterException e) {
 								sender.sendMessage(e.message());
 							}
@@ -1299,7 +1299,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										return true;
 									}
 										
-									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_DESC_ADD_USAGE);
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_DESC_ADD_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 									return true;	
 								}
 								
@@ -1316,11 +1316,11 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								return true;
 							}	
 								
-							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_DESC_USAGE);
+							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_DESC_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 							return true;
 						}
 						
-						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_USAGE);
+						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 						return true;
 					}
 					
@@ -1331,12 +1331,12 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							return true;
 						}
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
-							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_REMOVE_USAGE);
+							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_REMOVE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 							return true;
 						}
 					}
 					
-					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_USAGE);
+					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 					return true;
 				}
 				
@@ -1362,7 +1362,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_QUEST_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_QUEST_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -1378,7 +1378,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_QUESTNOT_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_QUESTNOT_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -1394,7 +1394,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_PERM_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_PERM_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -1412,7 +1412,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_MONEY_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_MONEY_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -1438,7 +1438,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_ITEM_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_ITEM_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -1456,7 +1456,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									return true;
 								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_POINT_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_POINT_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
@@ -1471,14 +1471,14 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								qm.removeQuestCondition(sender.getName(), id);
 								sender.sendMessage(ChatColor.GREEN + strings.CON_REMOVE.replaceAll("%id", args[2]));
 							} catch (NumberFormatException e) {
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_REMOVE_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_REMOVE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 							} catch (QuesterException e) {
 								sender.sendMessage(e.message());
 							}
 							return true;
 						}
 						
-						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_USAGE);
+						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 						return true;
 					}
 					
@@ -1488,12 +1488,12 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							return true;
 						}
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
-							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_REMOVE_USAGE);
+							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_REMOVE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 							return true;
 						}
 					}
 					
-					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_USAGE);
+					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 					return true;
 				}
 				
@@ -1533,7 +1533,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										}
 										return true;
 									}
-									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_MSG_USAGE);
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_MSG_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 									return true;
 								}
 								
@@ -1549,7 +1549,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										}
 										return true;
 									}
-									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_QUEST_USAGE);
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_QUEST_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 									return true;
 								}
 								
@@ -1576,7 +1576,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										}
 										return true;
 									}
-									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_CMD_USAGE);
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_CMD_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 									return true;
 								}
 								
@@ -1587,7 +1587,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										Location loc = null;
 										int rng = 0;
 										try {
-											if(!args[5].equalsIgnoreCase(strings.OTHER_PLAYER_LOC_LABEL))
+											if(!args[5].equalsIgnoreCase(QuestData.locLabelPlayer))
 												loc = getLoc(sender, args[5]);
 											if(args.length > 6) {
 												rng = Integer.parseInt(args[6]);
@@ -1606,7 +1606,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										}
 										return true;
 									}
-									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_EXPL_USAGE);
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_EXPL_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 									return true;
 								}
 								
@@ -1617,7 +1617,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										Location loc = null;
 										int rng = 0;
 										try {
-											if(!args[5].equalsIgnoreCase(strings.OTHER_PLAYER_LOC_LABEL))
+											if(!args[5].equalsIgnoreCase(QuestData.locLabelPlayer))
 												loc = getLoc(sender, args[5]);
 											if(args.length > 6) {
 												rng = Integer.parseInt(args[6]);
@@ -1636,7 +1636,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										}
 										return true;
 									}
-									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_LIGHT_USAGE);
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_LIGHT_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 									return true;
 								}
 								
@@ -1655,7 +1655,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										}
 										return true;
 									}
-									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_TELE_USAGE);
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_TELE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 									return true;
 								}
 								
@@ -1668,7 +1668,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											if(itm[0] > 255)
 												throw new QuesterException(strings.ERROR_CMD_BLOCK_UNKNOWN);
 											int dat = itm[1] < 0 ? 0 : itm[1];
-											if(args[6].equalsIgnoreCase(strings.OTHER_HERE_LOC_LABEL)) {
+											if(args[6].equalsIgnoreCase(QuestData.locLabelHere)) {
 												if(player != null) {
 													List<Block> blcks = player.getLastTwoTargetBlocks(null, 6);
 													if(!blcks.isEmpty())
@@ -1677,7 +1677,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 														throw new QuesterException(strings.ERROR_CMD_BLOCK_LOOK);
 													}
 												} else {
-													throw new QuesterException(strings.ERROR_CMD_LOC_HERE.replaceAll("%here", strings.OTHER_HERE_LOC_LABEL));
+													throw new QuesterException(strings.ERROR_CMD_LOC_HERE.replaceAll("%here", QuestData.locLabelHere));
 												}
 											} else
 												loc = getLoc(sender, args[6]);
@@ -1688,7 +1688,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										}
 										return true;
 									}
-									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_BLOCK_USAGE);
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_BLOCK_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 									return true;
 								}
 								
@@ -1710,7 +1710,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								qm.removeQevent(sender.getName(), id, obj);
 								sender.sendMessage(ChatColor.GREEN + strings.EVT_REMOVE.replaceAll("%id", args[2]));
 							} catch (NumberFormatException e) {
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_REMOVE_USAGE);
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_REMOVE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 							} catch (QuesterException e) {
 								sender.sendMessage(e.message());
 							}
@@ -1728,12 +1728,12 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							return true;
 						}
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
-							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_REMOVE_USAGE);
+							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_REMOVE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 							return true;
 						}
 					}
 					
-					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_USAGE);
+					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 					return true;
 				}
 				
@@ -1870,7 +1870,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				
-				sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ARGUMENTS_UNKNOWN);
+				sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ARGUMENTS_UNKNOWN.replaceAll("%cmd", QuestData.displayedCmd));
 			} else {
 				sender.sendMessage(Quester.LABEL + ChatColor.GOLD + "version " + Quester.plugin.getDescription().getVersion());
 				sender.sendMessage(Quester.LABEL + "http://dev.bukkit.org/server-mods/quester/");

@@ -21,16 +21,21 @@ public class BaseConfig extends CustomConfig {
 		Quester.log.info("Invalid or missing value in config: " + path.replace('.', ':') + ". Setting to default.");
 	}
 	
-	@Override
-	public void initialize() {
-		
-		String path;
-		// VERBOSE-LOGGING
-		path = "general.verbose-logging";
+	private void checkBoolean(String path) {
 		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
 			this.config.set(path, true);
 			wrongConfig(path);
 		}
+	}
+	
+	@Override
+	public void initialize() {
+		
+		String path;
+		String temp;
+		// VERBOSE-LOGGING
+		path = "general.verbose-logging";
+		checkBoolean(path);
 		QuestData.verbose = this.config.getBoolean(path);
 
 		// SAVE INTERVAL
@@ -43,86 +48,90 @@ public class BaseConfig extends CustomConfig {
 		
 		// DEBUG INFO
 		path = "general.debug-info";
-		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
-			this.config.set(path, false);
-			wrongConfig(path);
-		}
+		checkBoolean(path);
 		QuestData.debug = this.config.getBoolean(path);
 		
 		// SHOW ONLY CURRENT
 		path = "objectives.show-only-current";
-		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
-			this.config.set(path, true);
-			wrongConfig(path);
-		}
+		checkBoolean(path);
 		QuestData.ordOnlyCurrent = this.config.getBoolean(path);
 		
 		// BREAK NO DROPS
 		path = "objectives.break.no-drops";
-		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
-			this.config.set(path, false);
-			wrongConfig(path);
-		}
+		checkBoolean(path);
 		QuestData.brkNoDrops = this.config.getBoolean(path);
 		
 		// BREAK SUBTRACT ON PLACE
 		path = "objectives.break.subtract-on-place";
-		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
-			this.config.set(path, true);
-			wrongConfig(path);
-		}
+		checkBoolean(path);
 		QuestData.brkSubOnPlace = this.config.getBoolean(path);
 		
 		// COLLECT REMOVE ON PICKUP
 		path = "objectives.collect.remove-on-pickup";
-		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
-			this.config.set(path, true);
-			wrongConfig(path);
-		}
+		checkBoolean(path);
 		QuestData.colRemPickup = this.config.getBoolean(path);
 				
 		// COLLECT SUBTRACT ON DROP
 		path = "objectives.collect.subtract-on-drop";
-		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
-			this.config.set(path, false);
-			wrongConfig(path);
-		}
+		checkBoolean(path);
 		QuestData.colSubOnDrop = this.config.getBoolean(path);
 		
 		// PROGRES MESSAGES
 		path = "quests.messages.start-show";
-		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
-			this.config.set(path, true);
-			wrongConfig(path);
-		}
+		checkBoolean(path);
 		QuestData.progMsgStart = this.config.getBoolean(path);
 		
 		path = "quests.messages.cancel-show";
-		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
-			this.config.set(path, true);
-			wrongConfig(path);
-		}
+		checkBoolean(path);
 		QuestData.progMsgCancel = this.config.getBoolean(path);
 		
 		path = "quests.messages.done-show";
-		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
-			this.config.set(path, true);
-			wrongConfig(path);
-		}
+		checkBoolean(path);
 		QuestData.progMsgDone = this.config.getBoolean(path);
 		
 		path = "quests.messages.objective-show";
-		if(this.config.getString(path) != "true" && this.config.getString(path) != "false") {
-			this.config.set(path, true);
-			wrongConfig(path);
-		}
+		checkBoolean(path);
 		QuestData.progMsgObj = this.config.getBoolean(path);
 	
+		// COMMANDS
 		
+		path = "commands.displayed-cmd";
+		temp = this.config.getString(path, "");
+		if(!temp.equals("/q") && !temp.equals("/quest") && !temp.equals("/quester")) {
+			this.config.set(path, "/q");
+			wrongConfig(path);
+		}
+		QuestData.displayedCmd = this.config.getString(path);
+		
+		path = "commands.world-label-this";
+		temp = this.config.getString(path, "");
+		if(temp.isEmpty()) {
+			this.config.set(path, "this");
+			wrongConfig(path);
+		}
+		QuestData.worldLabelThis = this.config.getString(path);
+		
+		path = "commands.loc-label-here";
+		temp = this.config.getString(path, "");
+		if(temp.isEmpty()) {
+			this.config.set(path, "here");
+			wrongConfig(path);
+		}
+		QuestData.locLabelHere = this.config.getString(path);
+		
+		path = "commands.loc-label-player";
+		temp = this.config.getString(path, "");
+		if(temp.isEmpty()) {
+			this.config.set(path, "player");
+			wrongConfig(path);
+		}
+		QuestData.locLabelPlayer = this.config.getString(path);
+		
+		// QUESTER RANKS
 		
 		Map<Integer, String> rankMap = new HashMap<Integer, String>();
 		List<Integer> sortedRanks = new ArrayList<Integer>();
-		// QUESTER RANKS
+		
 		ConfigurationSection ranks = this.config.getConfigurationSection("ranks");
 		if(ranks != null) {
 			for(String key : ranks.getKeys(false)) {

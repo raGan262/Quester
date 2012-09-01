@@ -206,7 +206,9 @@ public class Quester extends JavaPlugin {
 				if(val.isEmpty()) {
 					try {
 						conf.set(f.getName(),((String)f.get(strings)).replaceAll("\\n", "%n"));
-						Quester.log.info(f.getName() + " reset to default.");
+						if(QuestData.debug) {
+							Quester.log.info(f.getName() + " reset to default.");
+						}
 					} catch (IllegalArgumentException | IllegalAccessException e) {
 						Quester.log.info("Error occured while setting values in local file.");
 						if(QuestData.debug) {
