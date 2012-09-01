@@ -1,15 +1,15 @@
 package com.gmail.molnardad.quester.conditions;
 
-import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 @SerializableAs("QuesterItemCondition")
-public final class ItemCondition implements Condition {
+public final class ItemCondition extends Condition {
 
 	private final String TYPE = "ITEM";
 	private final Material material;
@@ -49,6 +49,9 @@ public final class ItemCondition implements Condition {
 	
 	@Override
 	public String show() {
+		if(!desc.isEmpty()) {
+			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%amt", amount+"").replaceAll("%data", data+"").replaceAll("%id", material.getId()+"");
+		}
 		String datStr = data < 0 ? " (any) " : " (data " + data + ") ";
 		String pcs = amount == 1 ? " piece of " : " pieces of ";
 		String mat = material.getId() == 351 ? "dye" : material.name().toLowerCase();
@@ -58,12 +61,13 @@ public final class ItemCondition implements Condition {
 	@Override
 	public String toString() {
 		String dataStr = (data < 0 ? "ANY" : String.valueOf(data));
-		return TYPE+": "+ material.name()+"["+material.getId()+"]; DMG: "+dataStr+"; AMT: "+amount;
+		return TYPE+": "+ material.name()+"["+material.getId()+"]; DMG: "+dataStr+"; AMT: "+amount
+				+ coloredDesc().replaceAll("%amt", amount+"").replaceAll("%data", data+"").replaceAll("%id", material.getId()+"");
 	}
 	
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = super.serialize();
 		
 		map.put("material", material.getId());
 		map.put("data", data);
@@ -86,7 +90,8 @@ public final class ItemCondition implements Condition {
 		} catch (Exception e) {
 			return null;
 		}
-		
-		return new ItemCondition(mat, amt, dat);
+		ItemCondition con = new ItemCondition(mat, amt, dat);
+		con.loadSuper(map);
+		return con;
 	}
 }

@@ -1,15 +1,15 @@
 package com.gmail.molnardad.quester.conditions;
 
-import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
 
 @SerializableAs("QuesterPointCondition")
-public final class PointCondition implements Condition {
+public final class PointCondition extends Condition {
 
 	private final String TYPE = "POINT";
 	private final int amount;
@@ -30,17 +30,20 @@ public final class PointCondition implements Condition {
 	
 	@Override
 	public String show() {
+		if(!desc.isEmpty()) {
+			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%amt", amount+"");
+		}
 		return "Must have " + amount + " quest points.";
 	}
 	
 	@Override
 	public String toString() {
-		return TYPE + ": " + amount;
+		return TYPE + ": " + amount + coloredDesc().replaceAll("%amt", amount+"");
 	}
 	
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = super.serialize();
 		
 		map.put("amount", amount);
 		
@@ -55,6 +58,8 @@ public final class PointCondition implements Condition {
 			return null;
 		}
 		
-		return new PointCondition(qst);
+		PointCondition con = new PointCondition(qst);
+		con.loadSuper(map);
+		return con;
 	}
 }

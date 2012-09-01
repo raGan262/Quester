@@ -207,7 +207,12 @@ public class QuesterStrings extends CustomConfig {
 	public String CON_ADD_AVAILABLE = "Available condition types: ";
 	public String CON_REMOVE = "Condition %id removed."; // %id = condition ID;
 	public String CON_REMOVE_USAGE = "%cmd condition remove [id_number].";
-	public String CON_USAGE = "%cmd condition [add|remove] [args].";
+	public String CON_BAD_ID = "Condition ID must be number.";
+	public String CON_DESC_ADD = "Description to condition %id added."; // %id = condition ID;
+	public String CON_DESC_ADD_USAGE = "%cmd condition desc add [con_ID] [description*].\n* - %amt = amount, %id = item id, %data = data, %perm = permission, %qst = quest";
+	public String CON_DESC_REMOVE = "Description of condition %id removed."; // %id = condition ID;
+	public String CON_DESC_USAGE = "%cmd condition desc [add|remove] [con_ID].";
+	public String CON_USAGE = "%cmd condition [add|remove|desc] [args].";
 	
 	public String CON_QUEST_TYPE = "Quest";
 	public String CON_QUEST_USAGE = "%cmd condition add quest [quest_name]";

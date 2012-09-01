@@ -488,6 +488,28 @@ public class QuestManager {
 		}
 	}
 	
+	public void addConditionDescription(String changer, int id, String desc) throws QuesterException {
+		Quest quest = getSelected(changer);
+		modifyCheck(quest);
+		List<Condition> cons = quest.getConditions();
+		if(id >= cons.size() || id < 0) {
+			throw new QuesterException(ExceptionType.CON_NOT_EXIST);
+		}
+		cons.get(id).addDescription(desc);
+		QuestData.saveQuests();
+	}
+	
+	public void removeConditionDescription(String changer, int id) throws QuesterException {
+		Quest quest = getSelected(changer);
+		modifyCheck(quest);
+		List<Condition> cons = quest.getConditions();
+		if(id >= cons.size() || id < 0) {
+			throw new QuesterException(ExceptionType.CON_NOT_EXIST);
+		}
+		cons.get(id).removeDescription();
+		QuestData.saveQuests();
+	}
+	
 	public void addQevent(String changer, Qevent newQevent) throws QuesterException {
 		Quest quest = getSelected(changer);
 		modifyCheck(quest);

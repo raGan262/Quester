@@ -1,15 +1,15 @@
 package com.gmail.molnardad.quester.conditions;
 
-import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
 
 @SerializableAs("QuesterQuestNotCondition")
-public final class QuestNotCondition implements Condition {
+public final class QuestNotCondition extends Condition {
 
 	private final String TYPE = "QUESTNOT";
 	private final String quest;
@@ -30,17 +30,20 @@ public final class QuestNotCondition implements Condition {
 	
 	@Override
 	public String show() {
+		if(!desc.isEmpty()) {
+			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%qst", quest);
+		}
 		return "Must not have done quest '" + quest + "'";
 	}
 	
 	@Override
 	public String toString() {
-		return TYPE + ": " + quest;
+		return TYPE + ": " + quest + coloredDesc().replaceAll("%qst", quest);
 	}
 	
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = super.serialize();
 		
 		map.put("quest", quest);
 		
@@ -55,6 +58,8 @@ public final class QuestNotCondition implements Condition {
 			return null;
 		}
 		
-		return new QuestNotCondition(qst);
+		QuestNotCondition con = new QuestNotCondition(qst);
+		con.loadSuper(map);
+		return con;
 	}
 }
