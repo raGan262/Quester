@@ -11,7 +11,8 @@ public enum QuestFlag {
 	ONLYFIRST (3),
 	HIDDEN (4),
 	HIDDENOBJS(5),
-	NODESC(6);
+	NODESC(6),
+	DEATHCANCEL(7);
 
     private final int type;
     QuestFlag (int type) {

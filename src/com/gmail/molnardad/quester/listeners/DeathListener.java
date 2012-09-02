@@ -12,6 +12,7 @@ import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestFlag;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.objectives.DeathObjective;
 import com.gmail.molnardad.quester.objectives.Objective;
 import com.gmail.molnardad.quester.objectives.PlayerKillObjective;
@@ -24,9 +25,16 @@ public class DeathListener implements Listener {
 	public void onDeath(PlayerDeathEvent event) {
 	    Player player = event.getEntity();
 	    // DEATH OBJECTIVE
-	    if(qm.hasQuest(player.getName())) {
+    	Quest quest = qm.getPlayerQuest(player.getName());
+	    if(quest != null) {
 	    	// DEATH CHECK
-	    	Quest quest = qm.getPlayerQuest(player.getName());
+	    	if(quest.hasFlag(QuestFlag.DEATHCANCEL)) {
+	    		try {
+					qm.cancelQuest(player, false);
+				} catch (QuesterException e) {
+				}
+	    		return;
+	    	}
 	    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
 	    		return;
 	    	List<Objective> objs = quest.getObjectives();
@@ -67,9 +75,16 @@ public class DeathListener implements Listener {
 	    Player killer = event.getEntity().getKiller();
 	    Player player = event.getEntity();
 	    if(killer != null ) {
-	    	if(qm.hasQuest(killer.getName())) {
+    		Quest quest = qm.getPlayerQuest(killer.getName());
+	    	if(quest != null) {
+	    		if(quest.hasFlag(QuestFlag.DEATHCANCEL)) {
+		    		try {
+						qm.cancelQuest(player, false);
+					} catch (QuesterException e) {
+					}
+		    		return;
+		    	}
 	    		// PLAYERKILL CHECK
-	    		Quest quest = qm.getPlayerQuest(killer.getName());
 		    	if(!quest.allowedWorld(killer.getWorld().getName().toLowerCase()))
 		    		return;
 	    		List<Objective> objs = quest.getObjectives();

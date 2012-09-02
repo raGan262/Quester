@@ -56,7 +56,7 @@ public final class CancelQevent extends Qevent {
 	@Override
 	public void run(Player player) {
 		try {
-			Quester.qMan.cancelQuest(player);
+			Quester.qMan.cancelQuest(player, false);
 		} catch (QuesterException e) {
 			Quester.log.info("Event failed to cancel " + player.getName() + "'s quest. Reason: " + ChatColor.stripColor(e.message()));
 		}

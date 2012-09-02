@@ -1828,7 +1828,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						sender.sendMessage(ChatColor.RED + strings.MSG_ONLY_PLAYER);
 					} else {
 						try {
-							qm.cancelQuest(player);
+							qm.cancelQuest(player, true);
 							if(QuestData.verbose) {
 								Quester.log.info(player.getName() + " cancelled his/her quest.");
 							}

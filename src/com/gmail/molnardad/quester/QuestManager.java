@@ -588,12 +588,12 @@ public class QuestManager {
 		startQuest(player, aqsts.get(id).getName(), false);
 	}
 	
-	public void cancelQuest(Player player) throws QuesterException {
+	public void cancelQuest(Player player, boolean command) throws QuesterException {
 		Quest quest = getPlayerQuest(player.getName());
 		if(quest == null) {
 			throw new QuesterException(ExceptionType.Q_NOT_ASSIGNED);
 		}
-		if(quest.hasFlag(QuestFlag.UNCANCELLABLE)) {
+		if(command && quest.hasFlag(QuestFlag.UNCANCELLABLE)) {
 			throw new QuesterException(ExceptionType.Q_CANT_CANCEL);
 		}
 		unassignQuest(player.getName());
