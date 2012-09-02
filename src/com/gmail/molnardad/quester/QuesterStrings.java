@@ -249,6 +249,12 @@ public class QuesterStrings extends CustomConfig {
 	public String EVT_QUEST_TYPE = "Quest";
 	public String EVT_QUEST_USAGE = "%cmd event add quest {occasion} [delay] [quest_name]";
 	
+	public String EVT_TOGGLE_TYPE = "Toggle";
+	public String EVT_TOGGLE_USAGE = "%cmd event add toggle {occasion} [delay] [quest_ID]";
+	
+	public String EVT_OBJCOM_TYPE = "Objective complete";
+	public String EVT_OBJCOM_USAGE = "%cmd event add objcom {occasion} [delay] [objective_ID]";
+	
 	public String EVT_CANCEL_TYPE = "Cancel";
 	
 	public String EVT_CMD_TYPE = "Command";

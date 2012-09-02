@@ -1610,6 +1610,42 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									return true;
 								}
 								
+								// TOGGLE EVENT
+								if(args[2].equalsIgnoreCase("toggle")) {
+									if(args.length > 5) {
+										try {
+											int qst = Integer.parseInt(args[5]);
+											qm.addQevent(sender.getName(), new ToggleQevent(occ, del, qst));
+											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_TOGGLE_TYPE));
+										} catch (QuesterException e) {
+											sender.sendMessage(e.message());
+										} catch (NumberFormatException e) {
+											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
+										}
+										return true;
+									}
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_TOGGLE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+									return true;
+								}
+								
+								// OBJECTIVE COMPLETE EVENT
+								if(args[2].equalsIgnoreCase("objcom")) {
+									if(args.length > 5) {
+										try {
+											int obj = Integer.parseInt(args[5]);
+											qm.addQevent(sender.getName(), new ObjectiveCompleteQevent(occ, del, obj));
+											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_OBJCOM_TYPE));
+										} catch (QuesterException e) {
+											sender.sendMessage(e.message());
+										} catch (NumberFormatException e) {
+											sender.sendMessage(ChatColor.RED + strings.OBJ_BAD_ID);
+										}
+										return true;
+									}
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_OBJCOM_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+									return true;
+								}
+								
 								// CANCEL EVENT
 								if(args[2].equalsIgnoreCase("cancel")) {
 										try {
@@ -1749,7 +1785,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									return true;
 								}
 								
-								sender.sendMessage(ChatColor.RED + strings.EVT_ADD_AVAILABLE + ChatColor.WHITE + "msg, explosion, block, tele, lightning, cmd, quest, cancel");
+								sender.sendMessage(ChatColor.RED + strings.EVT_ADD_AVAILABLE + ChatColor.WHITE + "msg, explosion, block, tele, lightning, cmd, quest, cancel, toggle, objcom");
 								return true;
 							}
 							
@@ -1780,8 +1816,8 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					
 					if(args.length > 1) {
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
-							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_ADD_USAGE);
-							sender.sendMessage(ChatColor.RED + strings.EVT_ADD_AVAILABLE + ChatColor.WHITE + "msg, explosion, block, tele, lightning, cmd, quest, cancel");
+							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_ADD_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+							sender.sendMessage(ChatColor.RED + strings.EVT_ADD_AVAILABLE + ChatColor.WHITE + "msg, explosion, block, tele, lightning, cmd, quest, cancel, toggle, objcom");
 							return true;
 						}
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
