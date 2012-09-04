@@ -62,7 +62,7 @@ public final class ToggleQevent extends Qevent {
 		try {
 			Quester.qMan.toggleQuest(quest);
 		} catch (QuesterException e) {
-			Quester.log.info("Event failed to quest quest. Reason: " + ChatColor.stripColor(e.message()));
+			Quester.log.info("Event failed to toggle quest. Reason: " + ChatColor.stripColor(e.message()));
 		}
 	}
 }

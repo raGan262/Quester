@@ -93,6 +93,8 @@ public class Quester extends JavaPlugin {
 			ConfigurationSerialization.registerClass(LightningQevent.class);
 			ConfigurationSerialization.registerClass(QuestQevent.class);
 			ConfigurationSerialization.registerClass(CancelQevent.class);
+			ConfigurationSerialization.registerClass(ToggleQevent.class);
+			ConfigurationSerialization.registerClass(ObjectiveCompleteQevent.class);
 		}
 		
 		@Override

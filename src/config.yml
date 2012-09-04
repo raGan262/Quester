@@ -20,3 +20,8 @@ ranks:
   Quester: 0
   Apprentice-Quester: 25
   Master-Quester: 50
+commands:
+  displayed-cmd: /q
+  world-label-this: this
+  loc-label-here: here
+  loc-label-player: player

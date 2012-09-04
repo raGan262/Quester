@@ -70,7 +70,7 @@ public final class ObjectiveCompleteQevent extends Qevent {
 				throw new QuesterException(ExceptionType.OBJ_NOT_EXIST);
 			}
 		} catch (QuesterException e) {
-			Quester.log.info("Event failed to quest quest. Reason: " + ChatColor.stripColor(e.message()));
+			Quester.log.info("Event failed to complete objective. Reason: " + ChatColor.stripColor(e.message()));
 		}
 	}
 }
