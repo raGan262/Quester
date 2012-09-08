@@ -57,9 +57,13 @@ public class SignListeners implements Listener {
 				return;
 			}
 			boolean isOp = Util.permCheck(player, QuestData.MODIFY_PERM, false);
-			QuestHolder qh = qs.getHolder();
 
 			event.setCancelled(true);
+			QuestHolder qh = qs.getHolder();
+			if(qh == null) {
+				player.sendMessage(ChatColor.RED + "No quest holder assigned.");
+				return;
+			}
 			if(event.getAction() == Action.LEFT_CLICK_BLOCK) {
 				
 				if(isOp) {
@@ -75,7 +79,6 @@ public class SignListeners implements Listener {
 					}
 				}
 				
-				List<Integer> qsts = qh.getQuests();
 				try {
 					qh.selectNext();
 				} catch (QuesterException e) {
@@ -86,20 +89,12 @@ public class SignListeners implements Listener {
 					}
 					
 				}
-				int selectedID = qh.getSelectedIndex();
 				
 				player.sendMessage(Util.line(ChatColor.BLUE, "Sign quests", ChatColor.GOLD));
 				if(isOp) {
-					for(int i=0; i<qsts.size(); i++) {
-						ChatColor col = qm.isQuestActive(qsts.get(i)) ? ChatColor.BLUE : ChatColor.RED;
-						player.sendMessage((i == selectedID ? ChatColor.GREEN : ChatColor.BLUE) + "[" + qsts.get(i) + "]" + col + qm.getQuestNameByID(qsts.get(i)));
-					}
+					qh.showQuestsModify(player);
 				} else {
-					for(int i=0; i<qsts.size(); i++) {
-						if(qm.isQuestActive(qsts.get(i))) {
-							player.sendMessage((i == selectedID ? ChatColor.GREEN : ChatColor.BLUE) + " - " + qm.getQuestNameByID(qsts.get(i)));
-						}
-					}
+					qh.showQuestsUse(player);
 				}
 				
 			} else {
@@ -176,7 +171,7 @@ public class SignListeners implements Listener {
 				block.breakNaturally();
 			}
 			event.setLine(0, ChatColor.BLUE + "[Quester]");
-			QuesterSign sign = new QuesterSign(block.getLocation(), new QuestHolder());
+			QuesterSign sign = new QuesterSign(block.getLocation());
 			QuestData.signs.put(sign.getLocation().getWorld().getName() + sign.getLocation().getBlockX() + sign.getLocation().getBlockY() + sign.getLocation().getBlockZ(), sign);
 			event.getPlayer().sendMessage(Quester.LABEL + "Sign registered.");;
 		}

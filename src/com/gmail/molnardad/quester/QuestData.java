@@ -1,12 +1,14 @@
 package com.gmail.molnardad.quester;
 
 
+import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class QuestData {
@@ -88,6 +90,10 @@ public class QuestData {
 	}
 	
 	// HOLDER ID MANIPULATION
+	
+	public static QuestHolder getHolder(int ID) {
+		return holderIds.get(ID);
+	}
 	
 	public static int getLastHolderID(){
 		return holderID;
@@ -242,7 +248,35 @@ public class QuestData {
 	@SuppressWarnings("unchecked")
 	static void loadHolders() {
 		try {
+
 			YamlConfiguration config = Quester.holderConfig.getConfig();
+			
+			// HOLDERS
+			ConfigurationSection holders = config.getConfigurationSection("holders");
+			QuestHolder qh;
+			if(holders != null) {
+				for(String key : holders.getKeys(false)) {
+					try {
+						int id = Integer.parseInt(key);
+						qh = QuestHolder.deserialize(holders.getConfigurationSection(key));
+						if(qh == null){
+							throw new InvalidKeyException();
+						}
+						if(holderIds.get(id) != null)
+							Quester.log.info("Duplicate holder index: '" + key + "'");
+						holderIds.put(id, qh);
+					} catch (NumberFormatException e) {
+						Quester.log.info("Not numeric holder index: '" + key + "'");
+					} catch (Exception e) {
+						Quester.log.info("Invalid holder: '" + key + "'");
+					}
+				}
+			} else {
+				Quester.log.info("null");
+			}
+			adjustHolderID();
+			
+			// SIGNS
 			Object object = config.get("signs");
 			if(object != null) {
 				if(object instanceof List) {
@@ -255,13 +289,13 @@ public class QuestData {
 						signs.put(s, sign);
 					}
 				} else {
-					if(verbose) {
-						Quester.log.info("Invalid sign list in holders.yml.");
-					}
+					Quester.log.info("Invalid sign list in holders.yml.");
 				}
 			}
+			
 			saveHolders();
 			if(verbose) {
+				Quester.log.info(holderIds.size() + " holders loaded.");
 				Quester.log.info(signs.size() + " signs loaded.");
 			}
 		} catch (Exception e) {

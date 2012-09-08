@@ -24,6 +24,11 @@ public class HolderConfig extends CustomConfig {
 			list.add(sign.serialize());
 		}
 		config.set("signs", list);
+		
+		config.set("holders", null);
+		for(int key : QuestData.holderIds.keySet()) {
+			config.set("holders." + key, QuestData.holderIds.get(key).serialize());
+		}
 		try {
 			config.save(conFile);
 		} catch (IOException ex) {

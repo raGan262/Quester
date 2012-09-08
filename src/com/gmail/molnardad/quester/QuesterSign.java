@@ -9,12 +9,11 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public class QuesterSign {
 
-	private final QuestHolder holder;
+	private int holder = -1;
 	private final Location location;
 	
-	public QuesterSign(Location location, QuestHolder holder) {
+	public QuesterSign(Location location) {
 		this.location = location;
-		this.holder = holder;
 	}
 	
 	public Location getLocation() {
@@ -22,14 +21,19 @@ public class QuesterSign {
 	}
 	
 	public QuestHolder getHolder() {
-		return holder;
+		return QuestData.getHolder(holder);
 	}
+	
+	public void setHolder(int ID) {
+		holder = ID;
+	} 
 	
 	public Map<String, Object> serialize() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		map.put("location", Util.serializeLocation(location));
-		map.put("quests", holder.serialize());
+		if(holder != -1)
+			map.put("holder", holder);
 		
 		return map;
 	}
@@ -37,14 +41,16 @@ public class QuesterSign {
 	@SuppressWarnings("unchecked")
 	public static QuesterSign deserialize(Map<String, Object> map) {
 		Location loc;
-		QuestHolder qh;
 		QuesterSign sign = null;
 		
 		try{
 			loc = Util.deserializeLocation((Map<String, Object>) map.get("location"));
-			qh = QuestHolder.deserialize((String) map.get("quests"));
+			sign = new QuesterSign(loc);
 			
-			sign = new QuesterSign(loc, qh);
+			if(map.get("holder") != null) {
+				int qh = (Integer) map.get("holder");
+				sign.setHolder(qh);
+			}
 		} catch (Exception e) {
 		}
 			

@@ -31,6 +31,10 @@ public class Citizens2Listener implements Listener {
 			if(!Util.permCheck(player, QuestData.PERM_USE_NPC, true)) {
 				return;
 			}
+			if(qh == null) {
+				player.sendMessage(ChatColor.RED + "No quest holder assigned.");
+				return;
+			}
 			// If player has perms and holds blaze rod
 			boolean isOp = Util.permCheck(player, QuestData.MODIFY_PERM, false);
 			if(isOp) {
@@ -46,7 +50,6 @@ public class Citizens2Listener implements Listener {
 				}
 			}
 			
-			List<Integer> qsts = qh.getQuests();
 			try {
 				qh.selectNext();
 			} catch (QuesterException e) {
@@ -57,20 +60,12 @@ public class Citizens2Listener implements Listener {
 				}
 				
 			}
-			int selectedID = qh.getSelectedIndex();
 			
 			player.sendMessage(Util.line(ChatColor.BLUE, event.getNPC().getName() + "'s quests", ChatColor.GOLD));
 			if(isOp) {
-				for(int i=0; i<qsts.size(); i++) {
-					ChatColor col = qm.isQuestActive(qsts.get(i)) ? ChatColor.BLUE : ChatColor.RED;
-					player.sendMessage((i == selectedID ? ChatColor.GREEN : ChatColor.BLUE) + "[" + qsts.get(i) + "]" + col + qm.getQuestNameByID(qsts.get(i)));
-				}
+				qh.showQuestsModify(player);
 			} else {
-				for(int i=0; i<qsts.size(); i++) {
-					if(qm.isQuestActive(qsts.get(i))) {
-						player.sendMessage((i == selectedID ? ChatColor.GREEN : ChatColor.BLUE) + " - " + qm.getQuestNameByID(qsts.get(i)));
-					}
-				}
+				qh.showQuestsUse(player);
 			}
 		}
 	}
@@ -82,6 +77,10 @@ public class Citizens2Listener implements Listener {
 			QuestManager qm = Quester.qMan;
 			Player player = event.getClicker();
 			if(!Util.permCheck(player, QuestData.PERM_USE_NPC, true)) {
+				return;
+			}
+			if(qh == null) {
+				player.sendMessage(ChatColor.RED + "No quest holder assigned.");
 				return;
 			}
 			boolean isOP = Util.permCheck(player, QuestData.MODIFY_PERM, false);

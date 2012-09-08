@@ -119,7 +119,7 @@ public class QuestManager {
 	public String getQuestNameByID(int id) {
 		Quest q = getQuest(id);
 		if(q == null)
-			return "-";
+			return "non-existant";
 		else
 			return q.getName();
 	}

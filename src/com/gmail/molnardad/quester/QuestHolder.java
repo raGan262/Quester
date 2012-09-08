@@ -1,15 +1,35 @@
 package com.gmail.molnardad.quester;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.exceptions.ExceptionType;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import static com.gmail.molnardad.quester.Quester.qMan;
 
 public class QuestHolder {
 
 	private List<Integer> heldQuests = new ArrayList<Integer>();
 	private int selected = -1;
+	private String name;
+	
+	public QuestHolder(String name) {
+		this.name = name;
+	}
+	
+	public void setname(String newName) {
+		name = newName;
+	}
+	
+	public String getName() {
+		return name;
+	}
 	
 	public List<Integer> getQuests() {
 		return heldQuests;
@@ -31,7 +51,7 @@ public class QuestHolder {
 			throw new QuesterException(ExceptionType.Q_NONE);
 		if(getSelected() == -1) {
 			selected = 0;
-			if(Quester.qMan.isQuestActive(heldQuests.get(0)))
+			if(qMan.isQuestActive(heldQuests.get(0)))
 				return;
 		}
 		int i = selected;
@@ -41,7 +61,7 @@ public class QuestHolder {
 				i++;
 			else
 				i = 0;
-			if(Quester.qMan.isQuestActive(heldQuests.get(i))) {
+			if(qMan.isQuestActive(heldQuests.get(i))) {
 				selected = i;
 				notChosen = false;
 			} else if(i == selected) {
@@ -51,9 +71,8 @@ public class QuestHolder {
 	}
 	
 	private void checkQuests() {
-		QuestManager qm = Quester.qMan;
 		for(int i=heldQuests.size()-1; i>=0; i--) {
-			if(!qm.isQuest(heldQuests.get(i))) {
+			if(!qMan.isQuest(heldQuests.get(i))) {
 				heldQuests.remove(i);
 			}
 		}
@@ -76,25 +95,48 @@ public class QuestHolder {
 		checkQuests();
 	}
 	
-	public String serialize() {
-		String result = "";
+	public void showQuestsUse(Player player) {
+		for(int i=0; i<heldQuests.size(); i++) {
+			if(qMan.isQuestActive(heldQuests.get(i))) {
+				player.sendMessage((i == selected ? ChatColor.GREEN : ChatColor.BLUE) + " - " + qMan.getQuestNameByID(heldQuests.get(i)));
+			}
+		}
+	}
+	
+	public void showQuestsModify(Player player){
+		for(int i=0; i<heldQuests.size(); i++) {
+			ChatColor col = qMan.isQuestActive(heldQuests.get(i)) ? ChatColor.BLUE : ChatColor.RED;
+			
+			player.sendMessage((i == selected ? ChatColor.GREEN : ChatColor.BLUE) + "[" + heldQuests.get(i) + "]" + col + qMan.getQuestNameByID(heldQuests.get(i)));
+		}
+	}
+	
+	public Map<String, Object> serialize() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		String str = "";
 		boolean first = true;
 		for(int i : heldQuests) {
 			if(first) {
-				result += String.valueOf(i);
+				str += String.valueOf(i);
 				first = false;
 			} else 
-				result += "," + i;
+				str += "," + i;
 		}
+		map.put("name", name);
+		map.put("quests", str);
 		
-		
-		return result;
+		return map;
 	}
 	
-	public static QuestHolder deserialize(String str) {
-		QuestHolder qHolder = new QuestHolder();
-		
+	public static QuestHolder deserialize(ConfigurationSection section) {
+		QuestHolder qHolder = null;
 		try{
+			if(section == null)
+				return null;
+			String name = section.getString("name", "Default name");
+			String str = section.getString("quests", "");
+			
+			qHolder = new QuestHolder(name);
 			String[] split = str.split(",");
 			
 			int i;
@@ -109,7 +151,8 @@ public class QuestHolder {
 		} catch (Exception e) {
 		}
 		
-		qHolder.checkQuests();
+		if(qHolder != null)
+			qHolder.checkQuests();
 		return qHolder;
 	}
 	

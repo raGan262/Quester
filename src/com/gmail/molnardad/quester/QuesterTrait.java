@@ -6,7 +6,7 @@ import net.citizensnpcs.api.util.DataKey;
 
 public class QuesterTrait extends Trait {
 	
-	private QuestHolder holder = new QuestHolder();
+	private int holder = -1;
 	
 	public QuesterTrait() {
 		super("quester");
@@ -14,19 +14,15 @@ public class QuesterTrait extends Trait {
 	
 	@Override
 	public void load(DataKey key) throws NPCLoadException {
-		String value = key.getString("quests", "");
-		QuestHolder h = QuestHolder.deserialize(value);
-		if(h != null) {
-			holder = h;
-		}
+		holder = key.getInt("quester.holder", -1);
 	}
 
 	@Override
 	public void save(DataKey key) {
-		key.setString("quests", holder.serialize());
+		key.setInt("quester.holder", holder);
 	}
 	
 	public QuestHolder getHolder() {
-		return holder;
+		return QuestData.getHolder(holder);
 	}
 }
