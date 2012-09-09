@@ -152,11 +152,14 @@ public class QuestManager {
 	}
 	
 	public boolean areConditionsMet(Player player, String questName) throws QuesterException {
-		Quest qst = getQuest(questName);
-		if(qst == null)
-			throw new QuesterException(ExceptionType.CON_NOT_MET);
+		return areConditionsMet(player, getQuest(questName));
+	}
+	
+	public boolean areConditionsMet(Player player, Quest quest) throws QuesterException {
+		if(quest == null)
+			throw new QuesterException(ExceptionType.Q_NOT_EXIST);
 		
-		for(Condition c : qst.getConditions()) {
+		for(Condition c : quest.getConditions()) {
 			if(!c.isMet(player))
 				return false;
 		}
@@ -577,7 +580,9 @@ public class QuestManager {
 		ArrayList<Quest> aqsts = new ArrayList<Quest>();
 		for(Quest q : qsts) {
 			if(q.hasFlag(QuestFlag.ACTIVE) && !q.hasFlag(QuestFlag.HIDDEN)) {
-				aqsts.add(q);
+				if(areConditionsMet(player, q)) {
+					aqsts.add(q);
+				}
 			}
 		}
 		qsts = null;

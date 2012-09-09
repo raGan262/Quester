@@ -34,6 +34,11 @@ public class QuesterCommandExecutor implements CommandExecutor {
 	Player player = null;
 	QuestManager qm = null;
 	
+	private final String OBJECTIVES = "break, place, item, exp, loc, death, world, mobkill, kill, craft, ench, smelt, shear, fish, milk, collect, tame, money";
+	private final String CONDITIONS = "quest, questnot, perm, money, item, point";
+	private final String REWARDS = "item, money, exp, effect, point";
+	private final String EVENTS = "msg, explosion, block, tele, lightning, cmd, quest, cancel, toggle, objcom";
+	
 	public QuesterCommandExecutor() {
 		qm = Quester.qMan;
 	}
@@ -484,7 +489,24 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				
-				// QUEST REWARD
+				// QUEST HOLDER
+				if(args[0].equalsIgnoreCase("holder") || args[0].equalsIgnoreCase("hol")) {
+					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
+						return true;
+					}
+					if(args.length > 2){
+						
+					}
+					
+					if(args.length > 1) {
+						
+					}
+					
+					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+					return true;
+				}
+						
+				// QUEST REWARD TODO
 				if(args[0].equalsIgnoreCase("reward") || args[0].equalsIgnoreCase("rew")) {
 					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
 						return true;
@@ -633,7 +655,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								return true;
 							}
 							
-							sender.sendMessage(ChatColor.RED + strings.REW_USAGE_AVAILABLE + ChatColor.WHITE + "item, money, exp, effect, point"); //TODO
+							sender.sendMessage(ChatColor.RED + strings.REW_USAGE_AVAILABLE + ChatColor.WHITE + REWARDS);
 							return true;
 						}
 						
@@ -657,7 +679,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					
 					if(args.length > 1) {
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
-							sender.sendMessage(ChatColor.RED + strings.REW_USAGE_AVAILABLE + ChatColor.WHITE + "item, money, exp, effect, point"); // TODO
+							sender.sendMessage(ChatColor.RED + strings.REW_USAGE_AVAILABLE + ChatColor.WHITE + REWARDS);
 							return true;
 						}
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
@@ -670,7 +692,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				
-				// QUEST OBJECTIVE
+				// QUEST OBJECTIVE TODO
 				if(args[0].equalsIgnoreCase("objective") || args[0].equalsIgnoreCase("obj")) {
 					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
 						return true;
@@ -1239,8 +1261,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								return true;
 							}
 							
-							sender.sendMessage(ChatColor.RED + strings.OBJ_ADD_AVAILABLE + ChatColor.WHITE + "break, place, item, exp, loc, death, world, " +
-									"mobkill, kill, craft, ench, smelt, shear, fish, milk, collect, tame, money"); // TODO
+							sender.sendMessage(ChatColor.RED + strings.OBJ_ADD_AVAILABLE + ChatColor.WHITE + OBJECTIVES);
 							return true;
 						}
 						
@@ -1326,8 +1347,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					
 					if(args.length > 1) {
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
-							sender.sendMessage(ChatColor.RED + strings.OBJ_ADD_AVAILABLE + ChatColor.WHITE + "break, place, item, exp, loc, death, world, " +
-									"mobkill, kill, craft, ench, smelt, shear, fish, milk, collect, tame, money"); // TODO
+							sender.sendMessage(ChatColor.RED + strings.OBJ_ADD_AVAILABLE + ChatColor.WHITE + OBJECTIVES);
 							return true;
 						}
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
@@ -1348,7 +1368,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				
-				// QUEST CONDITION
+				// QUEST CONDITION TODO
 				if(args[0].equalsIgnoreCase("condition") || args[0].equalsIgnoreCase("con")) {
 					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
 						return true;
@@ -1468,7 +1488,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								return true;
 							}
 							
-							sender.sendMessage(ChatColor.RED + strings.CON_ADD_AVAILABLE + ChatColor.WHITE + "quest, questnot, perm, money, item, point"); // TODO
+							sender.sendMessage(ChatColor.RED + strings.CON_ADD_AVAILABLE + ChatColor.WHITE + CONDITIONS);
 							return true;
 						}
 						
@@ -1537,7 +1557,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					
 					if(args.length > 1) {
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
-							sender.sendMessage(ChatColor.RED + strings.CON_ADD_AVAILABLE + ChatColor.WHITE + "quest, questnot, perm, money, item, point"); // TODO
+							sender.sendMessage(ChatColor.RED + strings.CON_ADD_AVAILABLE + ChatColor.WHITE + CONDITIONS);
 							return true;
 						}
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
@@ -1554,7 +1574,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				
-				// QUEST EVENT
+				// QUEST EVENT TODO
 				if(args[0].equalsIgnoreCase("event") || args[0].equalsIgnoreCase("evt")) {
 					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
 						return true;
@@ -1785,8 +1805,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									return true;
 								}
 								
-								sender.sendMessage(ChatColor.RED + strings.EVT_ADD_AVAILABLE + ChatColor.WHITE + 
-										"msg, explosion, block, tele, lightning, cmd, quest, cancel, toggle, objcom");
+								sender.sendMessage(ChatColor.RED + strings.EVT_ADD_AVAILABLE + ChatColor.WHITE + EVENTS);
 								return true;
 							}
 							
@@ -1818,8 +1837,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					if(args.length > 1) {
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
 							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_ADD_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
-							sender.sendMessage(ChatColor.RED + strings.EVT_ADD_AVAILABLE + ChatColor.WHITE + 
-									"msg, explosion, block, tele, lightning, cmd, quest, cancel, toggle, objcom");
+							sender.sendMessage(ChatColor.RED + strings.EVT_ADD_AVAILABLE + ChatColor.WHITE + EVENTS);
 							return true;
 						}
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
@@ -1832,7 +1850,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				
-				// QUEST START
+				// QUEST START TODO
 				if(args[0].equalsIgnoreCase("start")) {
 					if(player == null) {
 						sender.sendMessage(ChatColor.RED + strings.MSG_ONLY_PLAYER);
