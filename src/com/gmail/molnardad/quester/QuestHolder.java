@@ -6,11 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.exceptions.ExceptionType;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.utils.Util;
+
 import static com.gmail.molnardad.quester.Quester.qMan;
 
 public class QuestHolder {
@@ -95,6 +98,16 @@ public class QuestHolder {
 		checkQuests();
 	}
 	
+	public void moveQuest(int from, int to) throws QuesterException {
+		try{
+			heldQuests.get(from);
+			heldQuests.get(to);
+			Util.moveListUnit(heldQuests, from, to);
+		} catch (IndexOutOfBoundsException e) {
+			throw new QuesterException(Quester.strings.ERROR_CMD_ID_OUT_OF_BOUNDS);
+		}
+	}
+	
 	public void showQuestsUse(Player player) {
 		for(int i=0; i<heldQuests.size(); i++) {
 			if(qMan.isQuestActive(heldQuests.get(i))) {
@@ -103,11 +116,11 @@ public class QuestHolder {
 		}
 	}
 	
-	public void showQuestsModify(Player player){
+	public void showQuestsModify(CommandSender sender){
 		for(int i=0; i<heldQuests.size(); i++) {
 			ChatColor col = qMan.isQuestActive(heldQuests.get(i)) ? ChatColor.BLUE : ChatColor.RED;
 			
-			player.sendMessage((i == selected ? ChatColor.GREEN : ChatColor.BLUE) + "[" + heldQuests.get(i) + "]" + col + qMan.getQuestNameByID(heldQuests.get(i)));
+			sender.sendMessage(i + ". " + (i == selected ? ChatColor.GREEN : ChatColor.BLUE) + "[" + heldQuests.get(i) + "] " + col + qMan.getQuestNameByID(heldQuests.get(i)));
 		}
 	}
 	
@@ -133,7 +146,7 @@ public class QuestHolder {
 		try{
 			if(section == null)
 				return null;
-			String name = section.getString("name", "Default name");
+			String name = section.getString("name", "QuestHolder");
 			String str = section.getString("quests", "");
 			
 			qHolder = new QuestHolder(name);
@@ -155,5 +168,4 @@ public class QuestHolder {
 			qHolder.checkQuests();
 		return qHolder;
 	}
-	
 }

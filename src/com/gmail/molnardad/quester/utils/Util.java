@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
@@ -326,5 +327,14 @@ public class Util {
 		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fajl));
 		Object result = ois.readObject();
 		return result;
+	}
+
+	public static <T> void moveListUnit(List<T> list, int which, int where) {
+		T temp = list.get(which);
+		int increment = (which > where ? -1 : 1);
+		for(int i = which; i != where; i+=increment) {
+			list.set(i, list.get(i+increment));
+		}
+		list.set(where, temp);
 	}
 }

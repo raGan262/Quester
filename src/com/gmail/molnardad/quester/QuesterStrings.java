@@ -40,6 +40,7 @@ public class QuesterStrings extends CustomConfig {
 	public String INFO_PROFILE_CURRENT = "Current quest";
 	public String INFO_PROFILE_COMPLETED = "Completed quests";
 	public String INFO_PROFILE_NOT_EXIST = "%p does not have profile.";// %p = player name;
+	public String INFO_HOLDER_LIST = "Holder list";
 
 	public String HELP_SECTION_USE = "Quester help";
 	public String HELP_SECTION_MODIFY = "Modify help";
@@ -88,7 +89,7 @@ public class QuesterStrings extends CustomConfig {
 	public String USAGE_FLAG = "%cmd flag [add|remove] [flag_1]... .";
 	public String USAGE_WORLD = "%cmd world [add|remove] [world_name or '%this'].";// %this = world label;
 	
-	// QUEST STRING
+	// QUEST STRINGs
 	
 	public String Q_CREATED = "Quest created and selected.";
 	public String Q_REMOVED = "Quest removed.";
@@ -104,6 +105,22 @@ public class QuesterStrings extends CustomConfig {
 	public String Q_DEACTIVATED = "Quest deactivated.";
 	public String Q_WORLD_ADDED = "Quest world added.";
 	public String Q_WORLD_REMOVED = "Quest world removed.";
+	public String Q_MOVED = "Quest moved.";
+	
+	// HOLDER STRINGS
+	
+	public String HOL_CREATED = "Holder created.";
+	public String HOL_REMOVED = "Holder deleted.";
+	public String HOL_Q_ADDED = "Quest added to holder.";
+	public String HOL_Q_REMOVED = "Quest removed from holder.";
+	public String HOL_Q_MOVED = "Quest in holder moved.";
+	public String HOL_USAGE = "%cmd holder [create|delete|add|remove|move|list|info] [args]";
+	public String HOL_CREATE_USAGE = "%cmd holder create <holder name>";
+	public String HOL_DELETE_USAGE = "%cmd holder delete <holder ID>";
+	public String HOL_ADD_USAGE = "%cmd holder add <holder ID> <quest ID>";
+	public String HOL_REMOVE_USAGE = "%cmd holder remove <holder ID> <quest ID>";
+	public String HOL_MOVE_USAGE = "%cmd holder move <HOLDER ID> <FROM> <TO>";
+	public String HOL_INFO_USAGE = "%cmd holder info <HOLDER ID>";
 
 	// REWARD STRINGS
 	
@@ -139,12 +156,14 @@ public class QuesterStrings extends CustomConfig {
 	public String OBJ_REMOVE_USAGE = "%cmd objective remove [id_number].";
 	public String OBJ_SWAP = "Objectives %id1 and %id2 swapped.";// %id1 = objective ID 1; %id2 = objective ID 2;
 	public String OBJ_SWAP_USAGE = "%cmd objective swap [id_1] [id_2].";
+	public String OBJ_MOVE = "Objective moved from %id1 to %id2.";// %id1 = objective ID 1; %id2 = objective ID 2;
+	public String OBJ_MOVE_USAGE = "%cmd objective move [from] [to].";
 	public String OBJ_BAD_ID = "Objective ID must be number.";
 	public String OBJ_DESC_ADD = "Description to objective %id added."; // %id = objective ID;
 	public String OBJ_DESC_ADD_USAGE = "%cmd objective desc add [obj_ID] [description*].\n* - %r = remaining amount, %t = total required amount";
 	public String OBJ_DESC_REMOVE = "Description of objective %id removed."; // %id = objective ID;
 	public String OBJ_DESC_USAGE = "%cmd objective desc [add|remove] [obj_ID].";
-	public String OBJ_USAGE = "%cmd objective [add|remove|swap|desc] [args].";
+	public String OBJ_USAGE = "%cmd objective [add|remove|swap|move|desc] [args].";
 	
 	public String OBJ_BREAK_TYPE = "Break";
 	public String OBJ_BREAK_USAGE = "%cmd objective add break [block_id/name][:data*] [amount] [hand*].\n* - optional";
@@ -275,7 +294,7 @@ public class QuesterStrings extends CustomConfig {
 	// ERROR STRINGS
 
 	public String ERROR_CUSTOM = "Something is wrong.";
-	public String ERROR_CMD_BAD_ID = "Quest ID must be number.";
+	public String ERROR_CMD_BAD_ID = "ID must be number.";
 	public String ERROR_CMD_RANGE_INVALID = "Invalid range.";
 	public String ERROR_CMD_WORLD_THIS = "World '%this' requires player context."; // %this = world label;
 	public String ERROR_CMD_WORLD_INVALID = "Invalid world.";
@@ -295,6 +314,7 @@ public class QuesterStrings extends CustomConfig {
 	public String ERROR_CMD_ENTITY_NUMBERS = "Amount must be > 0. Id must be number or valid entity name.";
 	public String ERROR_CMD_COLOR_UNKNOWN = "Unknown color.";
 	public String ERROR_CMD_ARGUMENTS_UNKNOWN = "Unknown arguments. Type %cmd help.";
+	public String ERROR_CMD_ID_OUT_OF_BOUNDS = "Index does not exist.";
 	
 	public String ERROR_Q_EXIST = "Quest already exists.";
 	public String ERROR_Q_NOT_EXIST = "Quest does not exist.";
@@ -308,6 +328,7 @@ public class QuesterStrings extends CustomConfig {
 	public String ERROR_Q_NOT_COMPLETED = "One or more objectives are not completed.";
 	public String ERROR_Q_BAD_WORLD = "Quest cannot be completed in this world.";
 	public String ERROR_Q_NOT_CMD = "Quest cannot be started or completed by command.";
+	public String ERROR_HOL_NOT_EXIST = "Holder does not exist.";
 	public String ERROR_CON_NOT_MET = "One or more conditions are not met.";
 	public String ERROR_CON_NOT_EXIST = "Condition does not exist.";
 	public String ERROR_OBJ_NOT_EXIST = "Objective does not exist.";

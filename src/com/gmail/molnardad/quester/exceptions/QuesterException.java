@@ -1,5 +1,7 @@
 package com.gmail.molnardad.quester.exceptions;
 
+import org.bukkit.ChatColor;
+
 public class QuesterException extends Exception {
 
 	private static final long serialVersionUID = 2477882018035034147L;
@@ -14,7 +16,7 @@ public class QuesterException extends Exception {
 	
 	public QuesterException(String msg) {
 		type = ExceptionType.CUSTOM;
-		message = msg;
+		message = ChatColor.RED + msg;
 	}
 	
 	public String message() {

@@ -21,6 +21,8 @@ public enum ExceptionType {
 	Q_BAD_WORLD(ChatColor.RED + Quester.strings.ERROR_Q_BAD_WORLD),
 	Q_NOT_CMD(ChatColor.RED + Quester.strings.ERROR_Q_NOT_CMD),
 	
+	HOL_NOT_EXIST(ChatColor.RED + Quester.strings.ERROR_HOL_NOT_EXIST),
+	
 	CON_NOT_MET(ChatColor.RED + Quester.strings.ERROR_CON_NOT_MET),
 	CON_NOT_EXIST(ChatColor.RED + Quester.strings.ERROR_CON_NOT_EXIST),
 	

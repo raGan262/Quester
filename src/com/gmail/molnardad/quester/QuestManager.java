@@ -29,7 +29,7 @@ import static com.gmail.molnardad.quester.QuestData.questLocations;;
 public class QuestManager {
 	
 	// QuestManager methods
-	// - private part
+	// - private part TODO
 	
 	private Quest getSelected(String name) {
 		if(name == null) 
@@ -68,7 +68,7 @@ public class QuestManager {
 		}
 	}
 	
-	// - public part
+	// - public part TODO
 	
 	public Quest getQuest(String questName) {
 		if(questName == null || questName.isEmpty()) return null;
@@ -236,7 +236,7 @@ public class QuestManager {
 		prof.setRank(lastRank);
 	}
 	
-	// Quest modification methods
+	// Quest modification methods TODO
 	
 	public boolean isQuestActive(CommandSender sender) {
 		return isQuestActive(getSelected(sender.getName()));
@@ -457,7 +457,7 @@ public class QuestManager {
 		QuestData.saveQuests();
 	}
 	
-	public void swapQuestObjectives (String changer, int first, int second) throws QuesterException {
+	public void swapQuestObjectives(String changer, int first, int second) throws QuesterException {
 		Quest quest = getSelected(changer);
 		if(first == second) {
 			throw new QuesterException(ExceptionType.WHY);
@@ -471,6 +471,20 @@ public class QuestManager {
 		Objective obj = objs.get(first);
 		objs.set(first, objs.get(second));
 		objs.set(second, obj);
+		QuestData.saveQuests();
+	}
+	
+	public void moveQuestObjective(String changer, int which, int where) throws QuesterException {
+		Quest quest = getSelected(changer);
+		if(which == where) {
+			throw new QuesterException(ExceptionType.WHY);
+		}
+		modifyCheck(quest);
+		
+		if(quest.getObjective(which) == null || quest.getObjective(where) == null) {
+			throw new QuesterException(Quester.strings.ERROR_CMD_ID_OUT_OF_BOUNDS);
+		}
+		Util.moveListUnit(quest.getObjectives(), which, where);
 		QuestData.saveQuests();
 	}
 	
@@ -544,7 +558,51 @@ public class QuestManager {
 		QuestData.saveQuests();
 	}
 	
-	// Quest management methods
+	public QuestHolder getHolder(int ID) {
+		return QuestData.getHolder(ID);
+	}
+	
+	public int createHolder(String name) {
+		QuestHolder qh = new QuestHolder(name);
+		int id = QuestData.getNewHolderID();
+		QuestData.holderIds.put(id, qh);
+		QuestData.saveHolders();
+		return id;
+	}
+	
+	public void removeHolder(int ID) {
+		QuestData.holderIds.remove(ID);
+		QuestData.saveHolders();
+	}
+	
+	public void addHolderQuest(int holderID, int questID) throws QuesterException {
+		QuestHolder qh = getHolder(holderID);
+		if(qh == null) {
+			throw new QuesterException(ExceptionType.HOL_NOT_EXIST);
+		}
+		qh.addQuest(questID);
+		QuestData.saveHolders();
+	}
+	
+	public void removeHolderQuest(int holderID, int questID) throws QuesterException {
+		QuestHolder qh = getHolder(holderID);
+		if(qh == null) {
+			throw new QuesterException(ExceptionType.HOL_NOT_EXIST);
+		}
+		qh.removeQuest(questID);
+		QuestData.saveHolders();
+	}
+	
+	public void moveHolderQuest(int holderID, int which, int where) throws QuesterException {
+		QuestHolder qh = getHolder(holderID);
+		if(qh == null) {
+			throw new QuesterException(ExceptionType.HOL_NOT_EXIST);
+		}
+		qh.moveQuest(which, where);
+		QuestData.saveHolders();
+	}
+	
+	// Quest management methods TODO
 	public void startQuest(Player player, String questName, boolean command) throws QuesterException {
 		Quest qst = getQuest(questName);
 		String playerName = player.getName();
@@ -716,7 +774,7 @@ public class QuestManager {
 		} 
 	}
 	
-	// Quest information printing
+	// Quest information printing TODO
 	public void showProfile(CommandSender sender) {
 		showProfile(sender, sender.getName());
 	}
@@ -878,8 +936,24 @@ public class QuestManager {
 			player.sendMessage(Quester.LABEL + Quester.strings.INFO_PROGRESS_HIDDEN);
 		}
 	}
+
+	public void showHolderList(CommandSender sender) {
+		sender.sendMessage(Util.line(ChatColor.BLUE, Quester.strings.INFO_HOLDER_LIST, ChatColor.GOLD));
+		for(int id : QuestData.getHolders().keySet()){
+			sender.sendMessage(ChatColor.BLUE + "[" + id + "]" + ChatColor.GOLD + " " + getHolder(id).getName());
+		}
+	}
+
+	public void showHolderInfo(CommandSender sender, int holderID) throws QuesterException {
+		QuestHolder qh = getHolder(holderID);
+		if(qh == null) {
+			throw new QuesterException(ExceptionType.HOL_NOT_EXIST);
+		}
+		sender.sendMessage(ChatColor.GOLD + "Holder: " + ChatColor.BLUE + qh.getName() + ChatColor.GOLD + " ID: " + ChatColor.BLUE + holderID);
+		qh.showQuestsModify(sender);
+	}
 	
-	// Utility
+	// Utility TODO
 	public static Inventory createInventory(Player player) {
 		
 		Inventory inv = Bukkit.getServer().createInventory(null, InventoryType.PLAYER);

@@ -91,6 +91,10 @@ public class QuestData {
 	
 	// HOLDER ID MANIPULATION
 	
+	public static Map<Integer, QuestHolder> getHolders() {
+		return holderIds;
+	}
+	
 	public static QuestHolder getHolder(int ID) {
 		return holderIds.get(ID);
 	}
@@ -116,6 +120,8 @@ public class QuestData {
 		}
 		holderID = newID;
 	}
+	
+	// GENERAL
 	
 	static void wipeData(){
 		allQuests = null;
