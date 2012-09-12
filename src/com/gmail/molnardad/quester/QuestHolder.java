@@ -117,6 +117,7 @@ public class QuestHolder {
 	}
 	
 	public void showQuestsModify(CommandSender sender){
+		sender.sendMessage(ChatColor.GOLD + "Holder name: " + ChatColor.RESET + name);
 		for(int i=0; i<heldQuests.size(); i++) {
 			ChatColor col = qMan.isQuestActive(heldQuests.get(i)) ? ChatColor.BLUE : ChatColor.RED;
 			

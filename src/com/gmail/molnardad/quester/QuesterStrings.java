@@ -111,16 +111,18 @@ public class QuesterStrings extends CustomConfig {
 	
 	public String HOL_CREATED = "Holder created.";
 	public String HOL_REMOVED = "Holder deleted.";
+	public String HOL_SELECTED = "Holder selected.";
 	public String HOL_Q_ADDED = "Quest added to holder.";
 	public String HOL_Q_REMOVED = "Quest removed from holder.";
 	public String HOL_Q_MOVED = "Quest in holder moved.";
-	public String HOL_USAGE = "%cmd holder [create|delete|add|remove|move|list|info] [args]";
+	public String HOL_USAGE = "%cmd holder [create|delete|add|remove|move|list|info|select] [args]";
 	public String HOL_CREATE_USAGE = "%cmd holder create <holder name>";
 	public String HOL_DELETE_USAGE = "%cmd holder delete <holder ID>";
-	public String HOL_ADD_USAGE = "%cmd holder add <holder ID> <quest ID>";
-	public String HOL_REMOVE_USAGE = "%cmd holder remove <holder ID> <quest ID>";
-	public String HOL_MOVE_USAGE = "%cmd holder move <HOLDER ID> <FROM> <TO>";
-	public String HOL_INFO_USAGE = "%cmd holder info <HOLDER ID>";
+	public String HOL_ADD_USAGE = "%cmd holder add <quest ID>";
+	public String HOL_REMOVE_USAGE = "%cmd holder remove <quest ID>";
+	public String HOL_MOVE_USAGE = "%cmd holder move <FROM> <TO>";
+	public String HOL_INFO_USAGE = "%cmd holder info [HOLDER ID]";
+	public String HOL_SELECT_USAGE = "%cmd holder select <HOLDER ID>";
 
 	// REWARD STRINGS
 	
@@ -329,6 +331,7 @@ public class QuesterStrings extends CustomConfig {
 	public String ERROR_Q_BAD_WORLD = "Quest cannot be completed in this world.";
 	public String ERROR_Q_NOT_CMD = "Quest cannot be started or completed by command.";
 	public String ERROR_HOL_NOT_EXIST = "Holder does not exist.";
+	public String ERROR_HOL_NOT_SELECTED = "No holder selected.";
 	public String ERROR_CON_NOT_MET = "One or more conditions are not met.";
 	public String ERROR_CON_NOT_EXIST = "Condition does not exist.";
 	public String ERROR_OBJ_NOT_EXIST = "Objective does not exist.";

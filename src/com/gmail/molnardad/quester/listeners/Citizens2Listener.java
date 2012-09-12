@@ -25,31 +25,25 @@ public class Citizens2Listener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onLeftClick(NPCLeftClickEvent event) {
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
-			QuestHolder qh = event.getNPC().getTrait(QuesterTrait.class).getHolder();
 			QuestManager qm = Quester.qMan;
+			QuestHolder qh = qm.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
 			Player player = event.getClicker();
 			if(!Util.permCheck(player, QuestData.PERM_USE_NPC, true)) {
-				return;
-			}
-			if(qh == null) {
-				player.sendMessage(ChatColor.RED + "No quest holder assigned.");
 				return;
 			}
 			// If player has perms and holds blaze rod
 			boolean isOp = Util.permCheck(player, QuestData.MODIFY_PERM, false);
 			if(isOp) {
 				if(player.getItemInHand().getTypeId() == 369) {
-					int sel = qm.getSelectedID(player.getName());
-					if(sel < 0){
-						player.sendMessage(ChatColor.RED + "No quest selected.");
-					} else {
-						qh.removeQuest(sel);
-						player.sendMessage(ChatColor.GREEN + "Quest removed from NPC.");
-					}
+					event.getNPC().getTrait(QuesterTrait.class).setHolderID(-1);
+					player.sendMessage(ChatColor.GREEN + "Holder unassigned.");
 				    return;
 				}
 			}
-			
+			if(qh == null) {
+				player.sendMessage(ChatColor.RED + "No quest holder assigned.");
+				return;
+			}
 			try {
 				qh.selectNext();
 			} catch (QuesterException e) {
@@ -73,29 +67,29 @@ public class Citizens2Listener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onRightClick(NPCRightClickEvent event) {
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
-			QuestHolder qh = event.getNPC().getTrait(QuesterTrait.class).getHolder();
 			QuestManager qm = Quester.qMan;
+			QuestHolder qh = qm.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
 			Player player = event.getClicker();
 			if(!Util.permCheck(player, QuestData.PERM_USE_NPC, true)) {
-				return;
-			}
-			if(qh == null) {
-				player.sendMessage(ChatColor.RED + "No quest holder assigned.");
 				return;
 			}
 			boolean isOP = Util.permCheck(player, QuestData.MODIFY_PERM, false);
 			// If player has perms and holds blaze rod
 			if(isOP) {
 				if(player.getItemInHand().getTypeId() == 369) {
-					int sel = qm.getSelectedID(player.getName());
+					int sel = qm.getSelectedHolderID(player.getName());
 					if(sel < 0){
-						player.sendMessage(ChatColor.RED + "No quest selected.");
+						player.sendMessage(ChatColor.RED + "Holder not selected.");
 					} else {
-						qh.addQuest(sel);
-						player.sendMessage(ChatColor.GREEN + "Quest added to NPC.");
+						event.getNPC().getTrait(QuesterTrait.class).setHolderID(sel);
+						player.sendMessage(ChatColor.GREEN + "Holder assigned.");
 					}
 				    return;
 				}
+			}
+			if(qh == null) {
+				player.sendMessage(ChatColor.RED + "No quest holder assigned.");
+				return;
 			}
 			int selected = qh.getSelected();
 			List<Integer> qsts = qh.getQuests();

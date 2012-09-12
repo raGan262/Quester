@@ -22,7 +22,11 @@ public class QuesterTrait extends Trait {
 		key.setInt("quester.holder", holder);
 	}
 	
-	public QuestHolder getHolder() {
-		return QuestData.getHolder(holder);
+	public int getHolderID() {
+		return holder;
+	}
+	
+	public void setHolderID(int newID) {
+		holder = newID;
 	}
 }

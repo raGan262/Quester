@@ -216,11 +216,17 @@ public class QuestManager {
 	}
 	
 	public int getSelectedID(String playerName) {
-		Quest q = getQuest(getProfile(playerName).getSelected());
-		int sel = -1;
-		if(q != null)
-			sel = q.getID();
-		return sel;
+		int id = getProfile(playerName).getSelected();
+		if(getQuest(id) != null)
+			return id;
+		return -1;
+	}
+	
+	public int getSelectedHolderID(String playerName) {
+		int id = getProfile(playerName).getHolderID();
+		if(getQuest(id) != null)
+			return id;
+		return -1;
 	}
 
 	public void checkRank(PlayerProfile prof) {
@@ -261,7 +267,7 @@ public class QuestManager {
 		if(q == null) {
 			throw new QuesterException(ExceptionType.Q_NOT_EXIST);
 		}
-		getProfile(changer).setSelected(q.getName().toLowerCase());
+		getProfile(changer).setSelected(q.getID());
 	}
 	
 	public void createQuest(String changer, String questName) throws QuesterException {
@@ -558,6 +564,14 @@ public class QuestManager {
 		QuestData.saveQuests();
 	}
 	
+	public void selectHolder(String changer, int id) throws QuesterException {
+		QuestHolder qh = getHolder(id);
+		if(qh == null) {
+			throw new QuesterException(ExceptionType.HOL_NOT_EXIST);
+		}
+		getProfile(changer).setHolderID(id);
+	}
+	
 	public QuestHolder getHolder(int ID) {
 		return QuestData.getHolder(ID);
 	}
@@ -575,8 +589,8 @@ public class QuestManager {
 		QuestData.saveHolders();
 	}
 	
-	public void addHolderQuest(int holderID, int questID) throws QuesterException {
-		QuestHolder qh = getHolder(holderID);
+	public void addHolderQuest(String changer, int questID) throws QuesterException {
+		QuestHolder qh = getHolder(getProfile(changer).getHolderID());
 		if(qh == null) {
 			throw new QuesterException(ExceptionType.HOL_NOT_EXIST);
 		}
@@ -584,8 +598,8 @@ public class QuestManager {
 		QuestData.saveHolders();
 	}
 	
-	public void removeHolderQuest(int holderID, int questID) throws QuesterException {
-		QuestHolder qh = getHolder(holderID);
+	public void removeHolderQuest(String changer, int questID) throws QuesterException {
+		QuestHolder qh = getHolder(getProfile(changer).getHolderID());
 		if(qh == null) {
 			throw new QuesterException(ExceptionType.HOL_NOT_EXIST);
 		}
@@ -593,10 +607,10 @@ public class QuestManager {
 		QuestData.saveHolders();
 	}
 	
-	public void moveHolderQuest(int holderID, int which, int where) throws QuesterException {
-		QuestHolder qh = getHolder(holderID);
+	public void moveHolderQuest(String changer, int which, int where) throws QuesterException {
+		QuestHolder qh = getHolder(getProfile(changer).getHolderID());
 		if(qh == null) {
-			throw new QuesterException(ExceptionType.HOL_NOT_EXIST);
+			throw new QuesterException(ExceptionType.HOL_NOT_SELECTED);
 		}
 		qh.moveQuest(which, where);
 		QuestData.saveHolders();
@@ -945,11 +959,19 @@ public class QuestManager {
 	}
 
 	public void showHolderInfo(CommandSender sender, int holderID) throws QuesterException {
-		QuestHolder qh = getHolder(holderID);
+		QuestHolder qh;
+		int id = getProfile(sender.getName()).getHolderID();
+		if(holderID < 0)
+			qh = getHolder(id);
+		else
+			qh = getHolder(holderID);
 		if(qh == null) {
-			throw new QuesterException(ExceptionType.HOL_NOT_EXIST);
+			if(holderID < 0)
+				throw new QuesterException(ExceptionType.HOL_NOT_SELECTED);
+			else
+				throw new QuesterException(ExceptionType.HOL_NOT_EXIST);
 		}
-		sender.sendMessage(ChatColor.GOLD + "Holder: " + ChatColor.BLUE + qh.getName() + ChatColor.GOLD + " ID: " + ChatColor.BLUE + holderID);
+		sender.sendMessage(ChatColor.GOLD + "Holder ID: " + ChatColor.RESET + holderID);
 		qh.showQuestsModify(sender);
 	}
 	

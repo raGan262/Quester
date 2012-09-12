@@ -20,11 +20,11 @@ public class QuesterSign {
 		return location;
 	}
 	
-	public QuestHolder getHolder() {
-		return QuestData.getHolder(holder);
+	public int getHolderID() {
+		return holder;
 	}
 	
-	public void setHolder(int ID) {
+	public void setHolderID(int ID) {
 		holder = ID;
 	} 
 	
@@ -49,7 +49,7 @@ public class QuesterSign {
 			
 			if(map.get("holder") != null) {
 				int qh = (Integer) map.get("holder");
-				sign.setHolder(qh);
+				sign.setHolderID(qh);
 			}
 		} catch (Exception e) {
 		}

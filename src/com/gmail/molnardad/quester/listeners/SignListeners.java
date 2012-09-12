@@ -59,24 +59,20 @@ public class SignListeners implements Listener {
 			boolean isOp = Util.permCheck(player, QuestData.MODIFY_PERM, false);
 
 			event.setCancelled(true);
-			QuestHolder qh = qs.getHolder();
-			if(qh == null) {
-				player.sendMessage(ChatColor.RED + "No quest holder assigned.");
-				return;
-			}
+			QuestHolder qh = qm.getHolder(qs.getHolderID());
 			if(event.getAction() == Action.LEFT_CLICK_BLOCK) {
 				
 				if(isOp) {
 					if(player.getItemInHand().getTypeId() == 369) {
-						int sel = qm.getSelectedID(player.getName());
-						if(sel < 0){
-							player.sendMessage(ChatColor.RED + "No quest selected.");
-						} else {
-							qh.removeQuest(sel);
-							player.sendMessage(ChatColor.GREEN + "Quest removed from sign.");
-						}
+						qs.setHolderID(-1);
+						player.sendMessage(ChatColor.GREEN + "Holder unassigned.");
 					    return;
 					}
+				}
+				
+				if(qh == null) {
+					player.sendMessage(ChatColor.RED + "No quest holder assigned.");
+					return;
 				}
 				
 				try {
@@ -101,15 +97,19 @@ public class SignListeners implements Listener {
 				
 				if(isOp) {
 					if(player.getItemInHand().getTypeId() == 369) {
-						int sel = qm.getSelectedID(player.getName());
+						int sel = qm.getSelectedHolderID(player.getName());
 						if(sel < 0){
-							player.sendMessage(ChatColor.RED + "No quest selected.");
+							player.sendMessage(ChatColor.RED + "Holder not selected.");
 						} else {
-							qh.addQuest(sel);
-							player.sendMessage(ChatColor.GREEN + "Quest added to sign.");
+							qs.setHolderID(sel);
+							player.sendMessage(ChatColor.GREEN + "Holder assigned.");
 						}
 					    return;
 					}
+				}
+				if(qh == null) {
+					player.sendMessage(ChatColor.RED + "No quest holder assigned.");
+					return;
 				}
 				int selected = qh.getSelected();
 				List<Integer> qsts = qh.getQuests();

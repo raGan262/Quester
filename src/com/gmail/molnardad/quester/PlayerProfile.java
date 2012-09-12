@@ -17,7 +17,8 @@ public class PlayerProfile implements ConfigurationSerializable{
 
 	private final String name;
 	private Set<String> completed;
-	private String selected;
+	private int selected;
+	private int holder;
 	private String quest;
 	private List<Integer> progress;
 	private int points;
@@ -28,7 +29,8 @@ public class PlayerProfile implements ConfigurationSerializable{
 		completed = new HashSet<String>();
 		quest = "";
 		progress = new ArrayList<Integer>();
-		selected = "";
+		selected = -1;
+		holder = -1;
 		points = 0;
 		rank = "";
 	}
@@ -70,12 +72,20 @@ public class PlayerProfile implements ConfigurationSerializable{
 		return quest;
 	}
 	
-	public String getSelected() {
+	public int getSelected() {
 		return selected;
 	}
 	
-	public void setSelected(String newSelected) {
+	public void setSelected(int newSelected) {
 		selected = newSelected;
+	}
+	
+	public int getHolderID() {
+		return holder;
+	}
+	
+	public void setHolderID(int newID) {
+		holder = newID;
 	}
 	
 	private void setProgress(List<Integer> list) {
