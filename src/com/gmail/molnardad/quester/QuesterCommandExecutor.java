@@ -37,7 +37,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 	private final String OBJECTIVES = "break, place, item, exp, loc, death, world, mobkill, kill, craft, ench, smelt, shear, fish, milk, collect, tame, money";
 	private final String CONDITIONS = "quest, questnot, perm, money, item, point";
 	private final String REWARDS = "item, money, exp, effect, point";
-	private final String EVENTS = "msg, explosion, block, tele, lightning, cmd, quest, cancel, toggle, objcom";
+	private final String EVENTS = "msg, explosion, block, tele, lightning, cmd, quest, cancel, toggle, objcom, spawn";
 	
 	public QuesterCommandExecutor() {
 		qm = Quester.qMan;
@@ -1130,24 +1130,15 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											throw new NumberFormatException();
 										}
 										if(args.length > 4) {
-											ent = EntityType.fromName(args[4].toUpperCase());
-											if(ent == null) {
-												ent = EntityType.fromId(Integer.parseInt(args[4]));
-												if(ent == null || ent.getTypeId() < 50) {
-													sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENTITY_UNKNOWN);
-													return true;
-												}
-											}
-										}
-									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENTITY_NUMBERS);
-										return true;
-									}
-									try {
+											ent = parseEntity(args[4]);
+										} 
 										qm.addQuestObjective(sender.getName(), new MobKillObjective(amt, ent));
 										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_MOBKILL_TYPE));
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENTITY_NUMBERS);
+										return true;
 									}
 									return true;
 								}
@@ -1873,6 +1864,43 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										return true;
 									}
 									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_LIGHT_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+									return true;
+								}
+								
+								// EXPLOSION EVENT
+								if(args[2].equalsIgnoreCase("spawn")) {
+									if(args.length > 7) {
+										int amt;
+										EntityType ent;
+										Location loc = null;
+										int rng = 0;
+										try {
+											ent = parseEntity(args[5]);
+											try {
+												amt = Integer.parseInt(args[6]);
+												if(amt < 1)
+													throw new NumberFormatException();
+											} catch (NumberFormatException e) {
+												throw new QuesterException(strings.ERROR_CMD_AMOUNT_POSITIVE);
+											}
+											if(!args[7].equalsIgnoreCase(QuestData.locLabelPlayer))
+												loc = getLoc(sender, args[7]);
+											if(args.length > 8) {
+												rng = Integer.parseInt(args[8]);
+												if(rng < 0) {
+													throw new NumberFormatException();
+												}
+											}
+											qm.addQevent(sender.getName(), new SpawnQevent(occ, del, loc, rng, ent, amt));
+											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_SPAWN_TYPE));
+										} catch (QuesterException e) {
+											sender.sendMessage(e.message());
+										} catch (NumberFormatException e) {
+											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_RANGE_INVALID);
+										}
+										return true;
+									}
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_SPAWN_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 									return true;
 								}
 								

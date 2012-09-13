@@ -5,23 +5,26 @@ import java.util.Map;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.utils.Util;
 
-@SerializableAs("QuesterExplosionQevent")
-public final class ExplosionQevent extends Qevent {
+@SerializableAs("QuesterSpawnQevent")
+public final class SpawnQevent extends Qevent {
 
-	private final String TYPE = "EXPLOSION";
+	private final String TYPE = "SPAWN";
 	private final Location location;
-	private final boolean damage;
+	private final EntityType entity;
 	private final int range;
+	private final int amount;
 	
-	public ExplosionQevent(int occ, int del, Location loc, int rng, boolean dmg) {
+	public SpawnQevent(int occ, int del, Location loc, int rng, EntityType ent, int amt) {
 		super(occ, del);
 		this.location = loc;
-		this.damage = dmg;
 		this.range = rng;
+		this.entity = ent;
+		this.amount = amt;
 	}
 	
 	@Override
@@ -41,14 +44,15 @@ public final class ExplosionQevent extends Qevent {
 			locStr = "PLAYER";
 		else
 			locStr = String.format("%.1f:%.1f:%.1f("+location.getWorld().getName()+")", location.getX(), location.getY(), location.getZ());
-		return TYPE + ": ON-" + parseOccasion(occasion) + "; LOC: " + locStr + "; RNG: " + range + "; DMG: " + damage;
+		return TYPE + ": ON-" + parseOccasion(occasion) + "; LOC: " + locStr + "; RNG: " + range + "; ENT: " + entity.getName() + "; AMT: " + amount;
 	}
 
 	@Override
 	public Map<String, Object> serialize() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
-		map.put("damage", damage);
+		map.put("entity", entity.getTypeId());
+		map.put("amount", amount);
 		map.put("occasion", occasion);
 		map.put("delay", delay);
 		map.put("location", Util.serializeLocation(location));
@@ -58,37 +62,40 @@ public final class ExplosionQevent extends Qevent {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static ExplosionQevent deserialize(Map<String, Object> map) {
-		int occ, del, rng = 0;
-		boolean dmg;
+	public static SpawnQevent deserialize(Map<String, Object> map) {
+		int occ, del, rng = 0, amt = 1;
+		EntityType ent = null;
 		Location loc = null;
 		try {
 			occ = (Integer) map.get("occasion");
-			dmg = (Boolean) map.get("damage");
 			del = (Integer) map.get("delay");
-			if(map.get("range") != null)
-				rng = (Integer) map.get("range");
+			ent = EntityType.fromId((Integer) map.get("entity"));
 			
 			if(map.get("location") != null)
 				loc = Util.deserializeLocation((Map<String, Object>) map.get("location"));
+			if(map.get("range") != null)
+				rng = (Integer) map.get("range");
+			if(rng < 0)
+				rng = 0;
+			if(map.get("amount") != null)
+				amt = (Integer) map.get("amount");
+				
 		} catch (Exception e) {
 			return null;
 		}
 		
-		return new ExplosionQevent(occ, del, loc, rng, dmg);
+		return new SpawnQevent(occ, del, loc, rng, ent, amt);
 	}
 
 	@Override
 	public void run(Player player) {
-		Location loc;
+		Location temp;
 		if(location == null)
-			loc = Util.move(player.getLocation(), range);
+			temp = player.getLocation();
 		else
-			loc = Util.move(location, range);
-		
-		if(damage)
-			loc.getWorld().createExplosion(loc, 4F);
-		else
-			loc.getWorld().createExplosion(loc, 0F);
+			temp = location;
+		for(int i = 0; i < amount; i++) {
+			temp.getWorld().spawnEntity(Util.move(temp, range), entity);
+		}
 	}
 }

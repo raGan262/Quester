@@ -80,7 +80,7 @@ public final class LightningQevent extends Qevent {
 
 	@Override
 	public void run(Player player) {
-		Location loc;;
+		Location loc;
 		if(location == null)
 			loc = Util.move(player.getLocation(), range);
 		else

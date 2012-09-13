@@ -256,41 +256,44 @@ public class QuesterStrings extends CustomConfig {
 	
 	public String EVT_ADD = "%type event added."; // %type = event type;
 	public String EVT_ADD_AVAILABLE = "Available event types: ";
-	public String EVT_ADD_USAGE = "%cmd event add [event_type] {occasion} [delay] [args].\n{occasion} - -1:START, -2:CANCEL, -3:DONE,  >=0:GIVEN OBJECTIVE";
+	public String EVT_ADD_USAGE = "%cmd event add <event_type> {<occasion>} <delay> [args]";
 	public String EVT_REMOVE = "Event %id removed.";// %id = event ID;
-	public String EVT_REMOVE_USAGE = "%cmd event remove [id_number] [objective_number*].\n* - omit if not objective event";
+	public String EVT_REMOVE_USAGE = "%cmd event remove <id_number> [objective_number*]\n* - omit if not objective event";
 	public String EVT_NUMBERS = "Occasion must be > -4. Delay must be >= 0.";
 	public String EVT_SPECIFY = "Specify occasion and delay.";
-	public String EVT_USAGE = "%cmd event [add|remove] [args]";
+	public String EVT_USAGE = "%cmd event <add|remove> [args]";
 	
 	public String EVT_MSG_TYPE = "Message";
-	public String EVT_MSG_USAGE = "%cmd event add msg {occasion} [delay] [message*]\n* - supports '&' colors and '\\n' newline";
+	public String EVT_MSG_USAGE = "%cmd event add msg {<occasion>} <delay> <message*>\n* - supports '&' colors and '\\n' newline";
 	
 	public String EVT_QUEST_TYPE = "Quest";
-	public String EVT_QUEST_USAGE = "%cmd event add quest {occasion} [delay] [quest_name]";
+	public String EVT_QUEST_USAGE = "%cmd event add quest {<occasion>} <delay> <quest_name>";
 	
 	public String EVT_TOGGLE_TYPE = "Toggle";
-	public String EVT_TOGGLE_USAGE = "%cmd event add toggle {occasion} [delay] [quest_ID]";
+	public String EVT_TOGGLE_USAGE = "%cmd event add toggle {<occasion>} <delay> <quest_ID>";
 	
 	public String EVT_OBJCOM_TYPE = "Objective complete";
-	public String EVT_OBJCOM_USAGE = "%cmd event add objcom {occasion} [delay] [objective_ID]";
+	public String EVT_OBJCOM_USAGE = "%cmd event add objcom {<occasion>} <delay> <objective_ID>";
 	
 	public String EVT_CANCEL_TYPE = "Cancel";
 	
 	public String EVT_CMD_TYPE = "Command";
-	public String EVT_CMD_USAGE = "%cmd event add cmd {occasion} [delay] [command*]\n* - without '/'";
+	public String EVT_CMD_USAGE = "%cmd event add cmd {<occasion>} <delay> <command*>\n* - without '/'";
 	
 	public String EVT_EXPL_TYPE = "Explosion";
-	public String EVT_EXPL_USAGE = "%cmd event add explosion {occasion} [delay] {location} [range*] [damage*]\n* - optional, default range = 0, default damage = false";
+	public String EVT_EXPL_USAGE = "%cmd event add explosion {<occasion>} <delay> {location} [range] [damage*]\n* - true/false, default is false";
 	
 	public String EVT_LIGHT_TYPE = "Lightning";
-	public String EVT_LIGHT_USAGE = "%cmd event add lightning {occasion} [delay] {location} [range*] [damage*]\n* - optional, default range = 0, default damage = false";
+	public String EVT_LIGHT_USAGE = "%cmd event add lightning {<occasion>} <delay> {location} [range] [damage*]\n* - true/false, default is false";
 	
 	public String EVT_TELE_TYPE = "Teleport";
-	public String EVT_TELE_USAGE = "%cmd event add tele {occasion} [delay] {location}";
+	public String EVT_TELE_USAGE = "%cmd event add tele {<occasion>} <delay> {location}";
 	
 	public String EVT_BLOCK_TYPE = "Block";
-	public String EVT_BLOCK_USAGE = "%cmd event add block {occasion} [delay] [block_id/name][:data*] {location}\n* - optional; location 'here' means block you are looking at";
+	public String EVT_BLOCK_USAGE = "%cmd event add block {<occasion>} <delay> {<block>} {location*}\n* - location 'here' means block you are looking at";
+	
+	public String EVT_SPAWN_TYPE = "Spawn";
+	public String EVT_SPAWN_USAGE = "%cmd event add spawn {<occasion>} <delay> {<entity>} <amount> {<location>} [range]";
 	
 	// ERROR STRINGS
 

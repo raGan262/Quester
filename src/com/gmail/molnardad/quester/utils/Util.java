@@ -1,11 +1,7 @@
 package com.gmail.molnardad.quester.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import static com.gmail.molnardad.quester.Quester.strings;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -259,6 +256,17 @@ public class Util {
 		return result;
 	}
 	
+	public static EntityType parseEntity(String arg) throws QuesterException {
+		EntityType ent = EntityType.fromName(arg.toUpperCase());
+		if(ent == null) {
+			ent = EntityType.fromId(Integer.parseInt(arg));
+			if(ent == null || ent.getTypeId() < 50) {
+				throw new QuesterException(strings.ERROR_CMD_ENTITY_UNKNOWN);
+			}
+		}
+		return ent;
+	}
+	
 	public static Map<String, Object> serializeLocation(Location loc) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
@@ -300,33 +308,13 @@ public class Util {
 	}
 	
 	public static Location move(Location loc, double d) {
+		if(d == 0)
+			return loc;
 		Location newLoc = loc.clone();
 		Vector v = new Vector(Quester.randGen.nextDouble()*d*2 - d, 0, Quester.randGen.nextDouble()*d*2 - d);
 		newLoc.add(v);
 		
 		return newLoc;
-	}
-	
-	// SAVE / LOAD OBJECT
-	public static void saveObject(Object obj, File path, String fileName) throws IOException {
-		File fajl = new File(path, fileName);
-		if(!fajl.exists()) {
-			fajl.createNewFile();
-		}
-		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fajl));
-		oos.writeObject(obj);
-		oos.flush();
-		oos.close();
-	}
- 
-	public static Object loadObject(File path, String fileName) throws IOException, ClassNotFoundException{
-		File fajl = new File(path, fileName);
-		if(!fajl.exists()) {
-			fajl.createNewFile();
-		}
-		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fajl));
-		Object result = ois.readObject();
-		return result;
 	}
 
 	public static <T> void moveListUnit(List<T> list, int which, int where) {
