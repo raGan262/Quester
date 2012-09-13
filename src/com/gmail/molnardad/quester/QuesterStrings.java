@@ -105,7 +105,6 @@ public class QuesterStrings extends CustomConfig {
 	public String Q_DEACTIVATED = "Quest deactivated.";
 	public String Q_WORLD_ADDED = "Quest world added.";
 	public String Q_WORLD_REMOVED = "Quest world removed.";
-	public String Q_MOVED = "Quest moved.";
 	
 	// HOLDER STRINGS
 	
