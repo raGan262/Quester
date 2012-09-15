@@ -17,8 +17,6 @@ import com.gmail.molnardad.quester.conditions.Condition;
 import com.gmail.molnardad.quester.exceptions.*;
 import com.gmail.molnardad.quester.objectives.Objective;
 import com.gmail.molnardad.quester.qevents.Qevent;
-import com.gmail.molnardad.quester.rewards.ItemReward;
-import com.gmail.molnardad.quester.rewards.Reward;
 import com.gmail.molnardad.quester.utils.Util;
 
 import static com.gmail.molnardad.quester.QuestData.allQuests;
@@ -81,8 +79,6 @@ public class QuestManager {
 	
 	public void completeCheck(Player player) throws QuesterException {
 		
-		Inventory inv = createInventory(player);
-		// check objectives
 		Quest quest = getPlayerQuest(player.getName());
 		List<Objective> objs = quest.getObjectives();
 		PlayerProfile prof = getProfile(player.getName());
@@ -101,18 +97,6 @@ public class QuestManager {
 		}
 		if(!all) {
 			throw new QuesterException(ExceptionType.Q_NOT_COMPLETED);
-		}
-		//check item rewards
-		List<Reward> rews = getPlayerQuest(player.getName()).getRewards();
-		for(Reward r : rews) {
-			if(r.getType().equalsIgnoreCase("ITEM")) {
-				ItemReward ir = (ItemReward) r;
-				if(ir.checkInventory(inv)) {
-					ir.giveInventory(inv);
-				} else {
-					throw new QuesterException(ExceptionType.REW_CANT_DO);
-				}
-			}
 		}
 	}
 	
@@ -407,23 +391,6 @@ public class QuestManager {
 		QuestData.saveQuests();
 	}
 	
-	public void addQuestReward(String changer, Reward newReward) throws QuesterException {
-		Quest quest = getSelected(changer);
-		modifyCheck(quest);
-		quest.addReward(newReward);
-		QuestData.saveQuests();
-	}
-	
-	public void removeQuestReward(String changer, int id) throws QuesterException {
-		Quest quest = getSelected(changer);
-		modifyCheck(quest);
-		if(!quest.removeReward(id)){
-			throw new QuesterException(ExceptionType.REW_NOT_EXIST);
-		} else {
-			QuestData.saveQuests();
-		}
-	}
-	
 	public void addQuestObjective(String changer, Objective newObjective) throws QuesterException {
 		Quest quest = getSelected(changer);
 		modifyCheck(quest);
@@ -617,8 +584,17 @@ public class QuestManager {
 	}
 	
 	// Quest management methods TODO
+	public void startQuest(Player player, int questID, boolean command) throws QuesterException {
+		Quest qst = getQuest(questID);
+		startQuest(player, qst, command);
+	}
+	
 	public void startQuest(Player player, String questName, boolean command) throws QuesterException {
 		Quest qst = getQuest(questName);
+		startQuest(player, qst, command);
+	}
+	
+	public void startQuest(Player player, Quest qst, boolean command) throws QuesterException {
 		String playerName = player.getName();
 		if(qst == null){
 			throw new QuesterException(ExceptionType.Q_NOT_EXIST);
@@ -631,7 +607,7 @@ public class QuestManager {
 		}
 		if(command && qst.hasFlag(QuestFlag.HIDDEN))
 			throw new QuesterException(ExceptionType.Q_NOT_CMD);
-		if(!areConditionsMet(player, questName))
+		if(!areConditionsMet(player, qst.getName()))
 			throw new QuesterException(ExceptionType.CON_NOT_MET);
 		assignQuest(playerName, qst);
 		if(QuestData.progMsgStart)
@@ -729,10 +705,6 @@ public class QuestManager {
 		List<Objective> objs = quest.getObjectives();
 		for(Objective o : objs) {
 			o.finish(player);
-		}
-		List<Reward> rews = quest.getRewards();
-		for(Reward r : rews) {
-			r.giveReward(player);
 		}
 		
 		unassignQuest(player.getName());
@@ -890,13 +862,6 @@ public class QuestManager {
 			sender.sendMessage(" [" + i + "] " + o.toString());
 			i++;
 		}
-		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_REWARDS + ":");
-		i = 0;
-		for(Reward r: qst.getRewards()){
-			sender.sendMessage(" [" + i + "] " + r.toString());
-			i++;
-			
-		}
 	}
 	
 	public void showQuestList(CommandSender sender) {
@@ -960,18 +925,20 @@ public class QuestManager {
 
 	public void showHolderInfo(CommandSender sender, int holderID) throws QuesterException {
 		QuestHolder qh;
-		int id = getProfile(sender.getName()).getHolderID();
-		if(holderID < 0)
-			qh = getHolder(id);
-		else
-			qh = getHolder(holderID);
+		int id;
+		if(holderID < 0) {
+			id = getProfile(sender.getName()).getHolderID();
+		} else {
+			id = getProfile(sender.getName()).getHolderID();
+		}
+		qh = getHolder(id);
 		if(qh == null) {
 			if(holderID < 0)
 				throw new QuesterException(ExceptionType.HOL_NOT_SELECTED);
 			else
 				throw new QuesterException(ExceptionType.HOL_NOT_EXIST);
 		}
-		sender.sendMessage(ChatColor.GOLD + "Holder ID: " + ChatColor.RESET + holderID);
+		sender.sendMessage(ChatColor.GOLD + "Holder ID: " + ChatColor.RESET + id);
 		qh.showQuestsModify(sender);
 	}
 	

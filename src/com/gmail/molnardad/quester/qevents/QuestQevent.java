@@ -1,22 +1,18 @@
 package com.gmail.molnardad.quester.qevents;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 
-@SerializableAs("QuesterQuestQevent") // what a name
 public final class QuestQevent extends Qevent {
 
-	private final String TYPE = "QUEST";
-	private final String quest;
+	public static final String TYPE = "QUEST";
+	private final int quest;
 	
-	public QuestQevent(int occ, int del, String qst) {
+	public QuestQevent(int occ, int del, int qst) {
 		super(occ, del);
 		this.quest = qst;
 	}
@@ -33,27 +29,23 @@ public final class QuestQevent extends Qevent {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": ON-" + parseOccasion(occasion) + "; QST: " + quest;
+		return TYPE + ": QST: " + quest;
 	}
 
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		
-		map.put("quest", quest);
-		map.put("occasion", occasion);
-		map.put("delay", delay);
-		
-		return map;
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section);
+		section.set("type", TYPE);
+		section.set("quest", quest);
 	}
 	
-	public static QuestQevent deserialize(Map<String, Object> map) {
-		String qst;
-		int occ, del;
+	public static QuestQevent deser(int occ, int del, ConfigurationSection section) {
+		int qst;
 		
-		qst = (String) map.get("quest");
-		occ = (Integer) map.get("occasion");
-		del = (Integer) map.get("delay");
+		if(section.isInt("quest"))
+			qst = section.getInt("quest");
+		else
+			return null;
 		
 		return new QuestQevent(occ, del, qst);
 	}

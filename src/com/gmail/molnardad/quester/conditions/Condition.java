@@ -1,14 +1,25 @@
 package com.gmail.molnardad.quester.conditions;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Method;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-public abstract class Condition implements ConfigurationSerializable {
+import com.gmail.molnardad.quester.QuestData;
+import com.gmail.molnardad.quester.Quester;
 
+public abstract class Condition {
+
+	@SuppressWarnings("unchecked")
+	private static Class<? extends Condition>[] classes = new Class[]{
+		ItemCondition.class,
+		MoneyCondition.class,
+		PermissionCondition.class,
+		PointCondition.class,
+		QuestCondition.class,
+		QuestNotCondition.class
+	};
 	String desc = "";
 	
 	public abstract String getType();
@@ -32,23 +43,57 @@ public abstract class Condition implements ConfigurationSerializable {
 	public abstract boolean isMet(Player player);
 	public abstract String show();
 	public abstract String toString();
-	
-	protected final void loadSuper(Map<String, Object> map) {
-		String d = "";
-		try{
-			if(map.get("description") != null)
-				d = (String) map.get("description");
-		} catch (Exception e) {}
-		desc = d;
+
+	public void serialize(ConfigurationSection section) {
+		if(!desc.isEmpty())
+			section.set("description", desc);
 	}
 	
-	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+	public static Condition deserialize(ConfigurationSection section) {
+		if(section == null) {
+			Quester.log.severe("Condition deserialization error: section null.");
+			return null;
+		}
+		Condition con = null;
+		String type = null, des = null;
 		
-		if(!desc.isEmpty())
-			map.put("description", desc);
+		if(section.isString("type"))
+			type = section.getString("type");
+		else {
+			Quester.log.severe("Condition type missing.");
+			return null;
+		}
+		if(section.isString("description"))
+			des = section.getString("description");
 		
-		return map;
+		boolean success = false;
+		for(Class<? extends Condition> c : classes) {
+			try {
+				if(((String) c.getField("TYPE").get(null)).equalsIgnoreCase(type)) {
+					try {
+						Method deser = c.getMethod("deser", ConfigurationSection.class);
+						con = (Condition) deser.invoke(null, section);
+						if(des != null)
+							con.addDescription(des);
+						success = true;
+						break;
+					} catch (Exception e) {
+						Quester.log.severe("Error when deserializing " + c.getName() + ". Method deser() missing or broken. " + e.getClass().getName());
+						if(QuestData.debug)
+							e.printStackTrace();
+						return null;
+					}
+				}
+			} catch (Exception e) {
+				Quester.log.severe("Error when deserializing " + c.getName() + ". Field 'TYPE' missing or access denied. " + e.getClass().getName());
+				if(QuestData.debug)
+					e.printStackTrace();
+				return null;
+			}
+		}
+		if(!success)
+			Quester.log.severe("Unknown condition type: '" + type  + "'");
+		
+		return con;
 	}
 }

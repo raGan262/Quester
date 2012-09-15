@@ -1,19 +1,15 @@
 package com.gmail.molnardad.quester.qevents;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Location;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.utils.Util;
 
-@SerializableAs("QuesterSpawnQevent")
 public final class SpawnQevent extends Qevent {
 
-	private final String TYPE = "SPAWN";
+	public static final String TYPE = "SPAWN";
 	private final Location location;
 	private final EntityType entity;
 	private final int range;
@@ -44,42 +40,38 @@ public final class SpawnQevent extends Qevent {
 			locStr = "PLAYER";
 		else
 			locStr = String.format("%.1f:%.1f:%.1f("+location.getWorld().getName()+")", location.getX(), location.getY(), location.getZ());
-		return TYPE + ": ON-" + parseOccasion(occasion) + "; LOC: " + locStr + "; RNG: " + range + "; ENT: " + entity.getName() + "; AMT: " + amount;
+		return TYPE + ": ENT: " + entity.getName() + "; AMT: " + amount + "; LOC: " + locStr + "; RNG: " + range;
 	}
 
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		
-		map.put("entity", entity.getTypeId());
-		map.put("amount", amount);
-		map.put("occasion", occasion);
-		map.put("delay", delay);
-		map.put("location", Util.serializeLocation(location));
-		map.put("range", range);
-		
-		return map;
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section);
+		section.set("type", TYPE);
+		if(amount != 1)
+			section.set("amount", amount);
+		section.set("entity", entity.getTypeId());
+		section.set("location", Util.serializeLocString(location));
+		if(range != 0)
+			section.set("range", range);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static SpawnQevent deserialize(Map<String, Object> map) {
-		int occ, del, rng = 0, amt = 1;
+	public static SpawnQevent deser(int occ, int del, ConfigurationSection section) {
+		int rng = 0, amt = 1;
 		EntityType ent = null;
 		Location loc = null;
 		try {
-			occ = (Integer) map.get("occasion");
-			del = (Integer) map.get("delay");
-			ent = EntityType.fromId((Integer) map.get("entity"));
-			
-			if(map.get("location") != null)
-				loc = Util.deserializeLocation((Map<String, Object>) map.get("location"));
-			if(map.get("range") != null)
-				rng = (Integer) map.get("range");
-			if(rng < 0)
-				rng = 0;
-			if(map.get("amount") != null)
-				amt = (Integer) map.get("amount");
-				
+			if(section.isString("location")) {
+				loc = Util.deserializeLocString(section.getString("location"));
+			}
+			if(section.isInt("range")) {
+				rng = section.getInt("range");
+				if(rng < 0)
+					rng = 0;
+			}
+			if(section.isInt("entity"))
+				ent = EntityType.fromId(section.getInt("entity"));
+			if(ent == null)
+				return null;
 		} catch (Exception e) {
 			return null;
 		}

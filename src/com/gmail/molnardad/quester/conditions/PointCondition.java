@@ -1,8 +1,7 @@
 package com.gmail.molnardad.quester.conditions;
 
-import java.util.Map;
-
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
@@ -11,7 +10,7 @@ import com.gmail.molnardad.quester.Quester;
 @SerializableAs("QuesterPointCondition")
 public final class PointCondition extends Condition {
 
-	private final String TYPE = "POINT";
+	public static final String TYPE = "POINT";
 	private final int amount;
 	
 	public PointCondition(int amount) {
@@ -42,24 +41,21 @@ public final class PointCondition extends Condition {
 	}
 	
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = super.serialize();
-		
-		map.put("amount", amount);
-		
-		return map;
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section);
+
+		section.set("type", TYPE);
+		section.set("amount", amount);
 	}
 
-	public static PointCondition deserialize(Map<String, Object> map) {
-		int qst;
-		try {
-			qst = (Integer) map.get("amount");
-		} catch (Exception e) {
-			return null;
-		}
+	public static MoneyCondition deser(ConfigurationSection section) {
+		int amt;
 		
-		PointCondition con = new PointCondition(qst);
-		con.loadSuper(map);
-		return con;
+		if(section.isInt("amount"))
+			amt = section.getInt("amount");
+		else
+			return null;
+		
+		return new MoneyCondition(amt);
 	}
 }

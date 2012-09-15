@@ -1,16 +1,12 @@
 package com.gmail.molnardad.quester.qevents;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-@SerializableAs("QuesterCommandQevent")
 public final class CommandQevent extends Qevent {
 
-	private final String TYPE = "CMD";
+	public static final String TYPE = "COMMAND";
 	private final String command;
 	
 	public CommandQevent(int occ, int del, String cmd) {
@@ -30,27 +26,23 @@ public final class CommandQevent extends Qevent {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": ON-" + parseOccasion(occasion) + "; - /" + command;
+		return TYPE + ": CMD: /" + command;
 	}
 
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		
-		map.put("command", command);
-		map.put("occasion", occasion);
-		map.put("delay", delay);
-		
-		return map;
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section);
+		section.set("type", TYPE);
+		section.set("command", command);
 	}
 	
-	public static CommandQevent deserialize(Map<String, Object> map) {
+	public static CommandQevent deser(int occ, int del, ConfigurationSection section) {
 		String cmd;
-		int occ, del;
 		
-		cmd = (String) map.get("command");
-		occ = (Integer) map.get("occasion");
-		del = (Integer) map.get("delay");
+		if(section.isString("command"))
+			cmd = section.getString("command");
+		else
+			return null;
 		
 		return new CommandQevent(occ, del, cmd);
 	}

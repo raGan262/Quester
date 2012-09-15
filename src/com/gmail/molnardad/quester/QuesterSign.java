@@ -31,20 +31,21 @@ public class QuesterSign {
 	public Map<String, Object> serialize() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
-		map.put("location", Util.serializeLocation(location));
+		map.put("location", Util.serializeLocString(location));
 		if(holder != -1)
 			map.put("holder", holder);
 		
 		return map;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static QuesterSign deserialize(Map<String, Object> map) {
 		Location loc;
 		QuesterSign sign = null;
 		
 		try{
-			loc = Util.deserializeLocation((Map<String, Object>) map.get("location"));
+			loc = Util.deserializeLocString((String) map.get("location"));
+			if(loc == null)
+				return null;
 			sign = new QuesterSign(loc);
 			
 			if(map.get("holder") != null) {

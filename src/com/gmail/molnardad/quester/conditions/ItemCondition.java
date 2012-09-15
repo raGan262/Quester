@@ -1,17 +1,16 @@
 package com.gmail.molnardad.quester.conditions;
 
-import java.util.Map;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-@SerializableAs("QuesterItemCondition")
+import com.gmail.molnardad.quester.utils.Util;
+
 public final class ItemCondition extends Condition {
 
-	private final String TYPE = "ITEM";
+	public static final String TYPE = "ITEM";
 	private final Material material;
 	private final short data;
 	private final int amount;
@@ -66,32 +65,34 @@ public final class ItemCondition extends Condition {
 	}
 	
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = super.serialize();
+	public void serialize(ConfigurationSection section) {
 		
-		map.put("material", material.getId());
-		map.put("data", data);
-		map.put("amount", amount);
+		super.serialize(section);
+
+		section.set("type", TYPE);
+		section.set("item", Util.serializeItem(material.getId(), data));
+		section.set("amount", amount);
 		
-		return map;
 	}
 
-	public static ItemCondition deserialize(Map<String, Object> map) {
-		int amt, dat;
+	public static ItemCondition deser(ConfigurationSection section) {
+		int amt = 1, dat;
 		Material mat;
 		try {
-			mat = Material.getMaterial((Integer) map.get("material"));
-			if(mat == null)
+			if(section.isString("item")) {
+				int[] itm = Util.parseItem(section.getString("item"));
+				mat = Material.getMaterial(itm[0]);
+				dat = itm[1];
+			}
+			else
 				return null;
-			amt = (Integer) map.get("amount");
-			dat = (Integer) map.get("data");
+			if(section.isInt("amount"))
+				amt = section.getInt("amount");
 			if(amt < 1)
-				return null;
+				amt = 1;
 		} catch (Exception e) {
 			return null;
 		}
-		ItemCondition con = new ItemCondition(mat, amt, dat);
-		con.loadSuper(map);
-		return con;
+		return new ItemCondition(mat, amt, dat);
 	}
 }

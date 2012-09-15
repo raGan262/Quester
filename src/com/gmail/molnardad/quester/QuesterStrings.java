@@ -27,7 +27,6 @@ public class QuesterStrings extends CustomConfig {
 	public String INFO_FLAGS = "Flags";
 	public String INFO_CONDITIONS = "Conditions";
 	public String INFO_OBJECTIVES = "Objectives";
-	public String INFO_REWARDS = "Rewards";
 	public String INFO_EVENTS = "Events";
 	public String INFO_FIRST_OBJECTIVE = "First objective";
 	public String INFO_QUEST_LIST = "Quest list";
@@ -132,9 +131,6 @@ public class QuesterStrings extends CustomConfig {
 	public String REW_USAGE = "%cmd reward [add|remove] [reward_type] [args].";
 	
 	public String REW_EFF_TYPE = "Effect";
-	public String REW_EFF_UNKNOWN = "Unknown effect.";
-	public String REW_EFF_NUMBERS = "Duration and power must be >= 0.";
-	public String REW_EFF_ARGS = "All arguments must be >= 0, first can be name.";
 	public String REW_EFF_USAGE = "%cmd reward add effect [effect_id/name] [duration_secs] [power].";
 	
 	public String REW_ITEM_TYPE = "Item";
@@ -309,6 +305,9 @@ public class QuesterStrings extends CustomConfig {
 	public String ERROR_CMD_ENCH_LEVEL = "Enchantment level must be > 0.";
 	public String ERROR_CMD_ENCH_INVALID = "Invalid enchantment.";
 	public String ERROR_CMD_ENCH_CANT = "One or more enchantments cannot be applied to specified item.";
+	public String ERROR_CMD_EFFECT_UNKNOWN = "Unknown effect.";
+	public String ERROR_CMD_EFFECT_DURATION = "Duration must be positive number.";
+	public String ERROR_CMD_EFFECT_AMPLIFIER = "Amplifier must be non-negative number.";
 	public String ERROR_CMD_AMOUNT_GENERAL = "Amount must be number.";
 	public String ERROR_CMD_AMOUNT_POSITIVE = "Amount must be positive number.";
 	public String ERROR_CMD_LOC_INVALID = "Invalid location.";

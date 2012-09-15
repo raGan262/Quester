@@ -1,6 +1,5 @@
 package com.gmail.molnardad.quester;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -18,13 +17,11 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffectType;
 
 import com.avaje.ebeaninternal.server.lib.util.InvalidDataException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.objectives.*;
 import com.gmail.molnardad.quester.qevents.*;
-import com.gmail.molnardad.quester.rewards.*;
 import com.gmail.molnardad.quester.conditions.*;
 import static com.gmail.molnardad.quester.Quester.strings;
 import static com.gmail.molnardad.quester.utils.Util.*;
@@ -36,7 +33,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 	
 	private final String OBJECTIVES = "break, place, item, exp, loc, death, world, mobkill, kill, craft, ench, smelt, shear, fish, milk, collect, tame, money";
 	private final String CONDITIONS = "quest, questnot, perm, money, item, point";
-	private final String REWARDS = "item, money, exp, effect, point";
+	//private final String REWARDS = "item, money, exp, effect, point";
 	private final String EVENTS = "msg, explosion, block, tele, lightning, cmd, quest, cancel, toggle, objcom, spawn";
 	
 	public QuesterCommandExecutor() {
@@ -613,7 +610,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 				}
 						
 				// QUEST REWARD TODO
-				if(args[0].equalsIgnoreCase("reward") || args[0].equalsIgnoreCase("rew")) {
+				/*if(args[0].equalsIgnoreCase("reward") || args[0].equalsIgnoreCase("rew")) {
 					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
 						return true;
 					}
@@ -624,26 +621,11 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							
 							// EFFECT REWARD
 							if(args[2].equalsIgnoreCase("effect")) {
-								if(args.length > 5) {
+								if(args.length > 3) {
 									try {
-										int dur = Integer.parseInt(args[4]);
-										int pow = Integer.parseInt(args[5]);
-										if(dur < 0 || pow < 0) {
-											sender.sendMessage(ChatColor.RED + strings.REW_EFF_NUMBERS);
-											return true;
-										}
-										PotionEffectType eff = PotionEffectType.getByName(args[3].toUpperCase());
-										if(eff == null) {
-											eff = PotionEffectType.getById(Integer.parseInt(args[3]));
-										}
-										if(eff == null) {
-											sender.sendMessage(ChatColor.RED + strings.REW_EFF_UNKNOWN);
-											return true;
-										}
-										qm.addQuestReward(sender.getName(), new EffectReward(eff.getId(), dur, pow));
+										PotionEffect eff = parseEffect(args[3]);
+										qm.addQuestReward(sender.getName(), new EffectReward(eff.getType().getId(), eff.getDuration(), eff.getAmplifier()));
 										sender.sendMessage(ChatColor.GREEN + strings.REW_ADDED.replaceAll("%type", strings.REW_EFF_TYPE));
-									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + strings.REW_EFF_ARGS);
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
 									}
@@ -672,34 +654,26 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_NUMBERS);
 										return true;
-									} catch (InvalidDataException e) {
-										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_UNKNOWN);
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
 										return true;
 									}
 									Map<Integer, Integer> enchs = new HashMap<Integer, Integer>();
-									if(args.length > 5) {
-										try {
+									try {
+										if(args.length > 5) {
 											enchs = parseEnchants(args, 5);
 											ItemStack test = new ItemStack(mat, amt, (short)dat);
 											for(Integer i : enchs.keySet()) {
 												test.addEnchantment(Enchantment.getById(i), enchs.get(i));
 											}
-										} catch (NumberFormatException e) {
-											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_LEVEL);
-											return true;
-										} catch (InvalidDataException e) {
-											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_INVALID);
-											return true;
-										} catch (IllegalArgumentException e){
-											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_CANT);
-											return true;
 										}
-									}
-									try {
 										qm.addQuestReward(sender.getName(), new ItemReward(mat, amt, dat, enchs));
 										sender.sendMessage(ChatColor.GREEN + strings.REW_ADDED.replaceAll("%type", strings.REW_ITEM_TYPE));
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
+									} catch (IllegalArgumentException e){
+										sender.sendMessage(strings.ERROR_CMD_ENCH_CANT);
+										return true;
 									}
 									return true;
 								}
@@ -796,7 +770,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					
 					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 					return true;
-				}
+				}*/
 				
 				// QUEST OBJECTIVE TODO
 				if(args[0].equalsIgnoreCase("objective") || args[0].equalsIgnoreCase("obj")) {
@@ -895,34 +869,26 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_NUMBERS);
 										return true;
-									} catch (InvalidDataException e) {
-										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_UNKNOWN);
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
 										return true;
 									}
-									Map<Integer, Integer> enchs = new HashMap<Integer, Integer>();
-									if(args.length > 5) {
-										try {
-											enchs = parseEnchants(args, 5);
+									try {
+										Map<Integer, Integer> enchs = null;
+										if(args.length > 5) {
+											enchs = parseEnchants(args[5]);
 											ItemStack test = new ItemStack(mat, amt, (short)dat);
 											for(Integer i : enchs.keySet()) {
 												test.addEnchantment(Enchantment.getById(i), enchs.get(i));
 											}
-										} catch (NumberFormatException e) {
-											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_LEVEL);
-											return true;
-										} catch (InvalidDataException e) {
-											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_INVALID);
-											return true;
-										} catch (IllegalArgumentException e){
-											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_CANT);
-											return true;
 										}
-									}
-									try {
 										qm.addQuestObjective(sender.getName(), new ItemObjective(mat, amt, dat, enchs));
 										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_ITEM_TYPE));
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
+									} catch (IllegalArgumentException e){
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_CANT);
+										return true;
 									}
 									return true;
 								}
@@ -975,31 +941,26 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.OBJ_ENCH_NUMBERS);
 										return true;
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+										return true;
 									}
-									Map<Integer, Integer> enchs = new HashMap<Integer, Integer>();
-									if(args.length > 5) {
-										try {
-											enchs = parseEnchants(args, 5);
+									try {
+										Map<Integer, Integer> enchs = null;
+										if(args.length > 5) {
+											enchs = parseEnchants(args[5]);
 											ItemStack test = new ItemStack(mat);
 											for(Integer i : enchs.keySet()) {
 												test.addEnchantment(Enchantment.getById(i), enchs.get(i));
 											}
-										} catch (NumberFormatException e) {
-											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_LEVEL);
-											return true;
-										} catch (InvalidDataException e) {
-											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_INVALID);
-											return true;
-										} catch (IllegalArgumentException e){
-											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_CANT);
-											return true;
 										}
-									}
-									try {
 										qm.addQuestObjective(sender.getName(), new EnchantObjective(mat, amt, enchs));
 										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_ENCH_TYPE));
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
+									} catch (IllegalArgumentException e){
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_CANT);
+										return true;
 									}
 									return true;
 								}
@@ -1731,12 +1692,14 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								// QUEST EVENT
 								if(args[2].equalsIgnoreCase("quest")) {
 									if(args.length > 5) {
-										String qst = implode(args, 5);
 										try {
+											int qst = Integer.parseInt(args[5]);
 											qm.addQevent(sender.getName(), new QuestQevent(occ, del, qst));
 											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_QUEST_TYPE));
 										} catch (QuesterException e) {
 											sender.sendMessage(e.message());
+										} catch (NumberFormatException e) {
+											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 										}
 										return true;
 									}

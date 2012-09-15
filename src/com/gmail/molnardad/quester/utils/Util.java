@@ -4,6 +4,7 @@ import static com.gmail.molnardad.quester.Quester.strings;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
@@ -16,6 +17,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.avaje.ebeaninternal.server.lib.util.InvalidDataException;
@@ -47,7 +50,7 @@ public class Util {
 		return lineColor + line1 + temp + line2;
 	}
 	
-	public static Location getLoc(CommandSender sender, String arg) throws NumberFormatException, QuesterException {
+	public static Location getLoc(CommandSender sender, String arg) throws QuesterException {
 		String args[] = arg.split(";");
 		Location loc;
 		if(args.length < 1)
@@ -128,24 +131,40 @@ public class Util {
 		return false;
 	}
 	
-	public static Map<Integer, Integer> parseEnchants(String[] args, int id) throws NumberFormatException, InvalidDataException {
+	public static String serializeEnchants(Map<Integer, Integer> enchs) {
+		String result = "";
+		boolean first = true;
+		for(int key : enchs.keySet()) {
+			if(!first)
+				result += ",";
+			else
+				first = false;
+			result += key + ":" + enchs.get(key);
+		}
+		if(result.isEmpty())
+			return null;
+		return result;
+	}
+	
+	public static Map<Integer, Integer> parseEnchants(String arg) throws QuesterException {
 		Map<Integer, Integer> enchs = new HashMap<Integer, Integer>();
-		for(int i = id; i < args.length; i++) {
+		String[] args = arg.split(",");
+		for(int i = 0; i < args.length; i++) {
 			Enchantment en = null;
 			int lvl = 0;
 			String[] s = args[i].split(":");
 			if(s.length != 2) {
-				throw new InvalidDataException("");
+				throw new QuesterException(strings.ERROR_CMD_ENCH_INVALID);
 			}
 			en = Enchantment.getByName(s[0].toUpperCase());
 			if(en == null) {
 				en = Enchantment.getById(Integer.parseInt(s[0]));
 			}
 			if(en == null)
-				throw new InvalidDataException("");
+				throw new QuesterException(strings.ERROR_CMD_ENCH_INVALID);
 			lvl = Integer.parseInt(s[1]);
 			if(lvl < 1) {
-				throw new NumberFormatException();
+				throw new QuesterException(strings.ERROR_CMD_ENCH_LEVEL);
 			}
 			
 			enchs.put(en.getId(), lvl);
@@ -154,28 +173,44 @@ public class Util {
 		return enchs;
 	}
 	
-	public static int[] parseItem(String arg) throws NumberFormatException, InvalidDataException {
+	public static String serializeItem(Material mat, short data) {
+		if(mat == null)
+			return null;
+		
+		return (mat.getId() + ":" +data);
+	}
+	
+	public static String serializeItem(int mat, short data) {
+		
+		return (mat + ":" +data);
+	}
+	
+	public static int[] parseItem(String arg) throws QuesterException {
 		int[] itm = new int[2];
 		String[] s = arg.split(":");
 		if(s.length > 2) {
-			throw new InvalidDataException("");
+			throw new QuesterException(strings.ERROR_CMD_ITEM_UNKNOWN);
 		}
 		Material mat = Material.getMaterial(s[0].toUpperCase());
 		if(mat == null) {
 			try {
 				itm[0] = Integer.parseInt(s[0]);
 			} catch (NumberFormatException e) {
-				throw new InvalidDataException("");
+				throw new QuesterException(strings.ERROR_CMD_ITEM_UNKNOWN);
 			}
 			if(Material.getMaterial(itm[0]) == null)
-				throw new InvalidDataException("");
+				throw new QuesterException(strings.ERROR_CMD_ITEM_UNKNOWN);
 		} else {
 			itm[0] = mat.getId();
 		}
 		if(s.length < 2) {
 			itm[1] = -1;
 		} else {
-			itm[1] = Integer.parseInt(s[1]);
+			try {
+				itm[1] = Integer.parseInt(s[1]);
+			} catch (NumberFormatException e) {
+				throw new QuesterException(strings.ERROR_CMD_ITEM_UNKNOWN);
+			}
 		}
 		return itm;
 	}
@@ -193,6 +228,48 @@ public class Util {
 		if(col == null)
 			throw new InvalidDataException("");
 		return col.getData();
+	}
+	
+	public static String serializeEffect(PotionEffect eff) {
+		if(eff == null)
+			return null;
+		return eff.getType().getId() + ":" + eff.getDuration() + ":" + eff.getAmplifier();
+	}
+	
+	public static PotionEffect parseEffect(String arg) throws QuesterException {
+		PotionEffectType type = null;
+		int dur = 0, amp = 0;
+		String[] s = arg.split(":");
+		if(s.length > 3 || s.length < 2) {
+			throw new QuesterException(strings.ERROR_CMD_EFFECT_UNKNOWN);
+		}
+		type = PotionEffectType.getByName(s[0]);
+		if(type == null) {
+			try {
+				type = PotionEffectType.getById(Integer.parseInt(s[0]));
+			} catch (NumberFormatException e) {
+				throw new QuesterException(strings.ERROR_CMD_EFFECT_UNKNOWN);
+			}
+			if(type == null)
+				throw new QuesterException(strings.ERROR_CMD_EFFECT_UNKNOWN);
+		}
+		try {
+			dur = Integer.parseInt(s[1]);
+			if(dur < 1)
+				throw new NumberFormatException();
+		} catch (NumberFormatException e) {
+			throw new QuesterException(strings.ERROR_CMD_EFFECT_DURATION);
+		}
+		try {
+			if(s.length > 2) {
+				amp = Integer.parseInt(s[2]);
+				if(amp < 0)
+					throw new NumberFormatException();
+			}
+		} catch (NumberFormatException e) {
+			throw new QuesterException(strings.ERROR_CMD_EFFECT_AMPLIFIER);
+		}
+		return new PotionEffect(type, dur, amp);
 	}
 	
 	public static String enchantName(int id, int lvl) {
@@ -267,22 +344,53 @@ public class Util {
 		return ent;
 	}
 	
-	public static Map<String, Object> serializeLocation(Location loc) {
-		Map<String, Object> map = new HashMap<String, Object>();
+	// LOCATION SERIALIZATION
+	
+	public static String serializeLocString(Location loc) {
+		String str = "";
 		
 		if(loc == null)
-			return map;
+			return null;
 		
-		map.put("x", loc.getX());
-		map.put("y", loc.getY());
-		map.put("z", loc.getZ());
-		map.put("world", loc.getWorld().getName());
-		map.put("yaw", loc.getYaw());
-		map.put("pitch", loc.getPitch());
+		str = String.format(Locale.ENGLISH, "%.2f;%.2f;%.2f;"+loc.getWorld().getName()+";%.2f;%.2f;", loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
 		
-		return map;
+		return str;
 	}
 	
+	public static Location deserializeLocString(String str) {
+		double x, y, z;
+		float yaw = 0;
+		float pitch = 0;
+		World world = null;
+		Location loc = null;
+		
+		String[] split = str.split(";");
+		
+		if(str.length() < 4) 
+			return null;
+		
+		
+		try {
+			x = Double.parseDouble(split[0]);
+			y = Double.parseDouble(split[1]);
+			z = Double.parseDouble(split[2]);
+			world = Bukkit.getWorld(split[3]);
+			if(world == null)
+				throw new IllegalArgumentException();
+			if(str.length() > 4)
+				yaw = Float.parseFloat(split[4]);
+			if(str.length() > 5)
+				pitch = Float.parseFloat(split[5]);
+			loc = new Location(world, x, y, z, yaw, pitch);
+		} catch (Exception e) {
+			if(QuestData.debug)
+				e.printStackTrace();
+		}
+		
+		return loc;
+	}
+	
+	@Deprecated
 	public static Location deserializeLocation(Map<String, Object> map) {
 		double x, y, z;
 		double yaw = 0;
@@ -307,6 +415,8 @@ public class Util {
 		return loc;
 	}
 	
+	// MOVE LOCATION
+	
 	public static Location move(Location loc, double d) {
 		if(d == 0)
 			return loc;
@@ -317,6 +427,8 @@ public class Util {
 		return newLoc;
 	}
 
+	// MOVE LIST UNIT
+	
 	public static <T> void moveListUnit(List<T> list, int which, int where) {
 		T temp = list.get(which);
 		int increment = (which > where ? -1 : 1);

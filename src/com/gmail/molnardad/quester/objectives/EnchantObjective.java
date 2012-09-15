@@ -23,7 +23,10 @@ public final class EnchantObjective extends Objective {
 	public EnchantObjective(Material mat, int amt, Map<Integer, Integer> enchs) {
 		material = mat;
 		amount = amt;
-		enchants = enchs;
+		if(enchs != null)
+			this.enchants = enchs;
+		else
+			this.enchants = new HashMap<Integer, Integer>();
 	}
 	
 	@Override

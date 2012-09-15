@@ -1,17 +1,14 @@
 package com.gmail.molnardad.quester.conditions;
 
-import java.util.Map;
-
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
 
-@SerializableAs("QuesterQuestCondition")
 public final class QuestCondition extends Condition {
 	
-	private final String TYPE = "QUEST";
+	public static final String TYPE = "QUEST";
 	private final String quest;
 	
 	public QuestCondition(String quest) {
@@ -42,24 +39,21 @@ public final class QuestCondition extends Condition {
 	}
 	
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = super.serialize();
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section);
 		
-		map.put("quest", quest);
-		
-		return map;
+		section.set("type", TYPE);
+		section.set("quest", quest);
 	}
 
-	public static QuestCondition deserialize(Map<String, Object> map) {
+	public static PermissionCondition deser(ConfigurationSection section) {
 		String qst;
-		try {
-			qst = (String) map.get("quest");
-		} catch (Exception e) {
-			return null;
-		}
 		
-		QuestCondition con = new QuestCondition(qst);
-		con.loadSuper(map);
-		return con;
+		if(section.isString("quest"))
+			qst = section.getString("quest");
+		else
+			return null;
+		
+		return new PermissionCondition(qst);
 	}
 }

@@ -1,18 +1,14 @@
 package com.gmail.molnardad.quester.qevents;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Location;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.utils.Util;
 
-@SerializableAs("QuesterLightningQevent")
 public final class LightningQevent extends Qevent {
 
-	private final String TYPE = "LIGHTNING";
+	public static final String TYPE = "LIGHTNING";
 	private final Location location;
 	private final boolean damage;
 	private final int range;
@@ -41,41 +37,41 @@ public final class LightningQevent extends Qevent {
 			locStr = "PLAYER";
 		else
 			locStr = String.format("%.1f:%.1f:%.1f("+location.getWorld().getName()+")", location.getX(), location.getY(), location.getZ());
-		return TYPE + ": ON-" + parseOccasion(occasion) + "; LOC: " + locStr + "; RNG: " + range + "; DMG: " + damage;
+		return TYPE + ": LOC: " + locStr + "; RNG: " + range + "; DMG: " + damage;
 	}
 
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		
-		map.put("damage", damage);
-		map.put("occasion", occasion);
-		map.put("delay", delay);
-		map.put("location", Util.serializeLocation(location));
-		map.put("range", range);
-		
-		return map;
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section);
+		section.set("type", TYPE);
+		if(damage)
+			section.set("damage", damage);
+		section.set("location", Util.serializeLocString(location));
+		if(range != 0)
+			section.set("range", range);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static LightningQevent deserialize(Map<String, Object> map) {
-		int occ, del, rng = 0;
-		boolean damage;
+	public static LightningQevent deser(int occ, int del, ConfigurationSection section) {
+		int rng = 0;
+		boolean dmg = false;
 		Location loc = null;
 		try {
-			occ = (Integer) map.get("occasion");
-			damage = (Boolean) map.get("damage");
-			del = (Integer) map.get("delay");
-			if(map.get("range") != null)
-				rng = (Integer) map.get("range");
+			if(section.isString("location")) {
+				loc = Util.deserializeLocString(section.getString("location"));
+			}
+			if(section.isInt("range")) {
+				rng = section.getInt("range");
+				if(rng < 0)
+					rng = 0;
+			}
+			if(section.isBoolean("damage"))
+				dmg = section.getBoolean("damage");
 			
-			if(map.get("location") != null)
-				loc = Util.deserializeLocation((Map<String, Object>) map.get("location"));
 		} catch (Exception e) {
 			return null;
 		}
 		
-		return new LightningQevent(occ, del, loc, rng, damage);
+		return new LightningQevent(occ, del, loc, rng, dmg);
 	}
 
 	@Override

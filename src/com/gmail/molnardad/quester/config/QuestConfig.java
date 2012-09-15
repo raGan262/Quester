@@ -13,8 +13,10 @@ public final class QuestConfig extends CustomConfig {
 
 	@Override
 	public void saveConfig() {
+		for(String key : config.getKeys(false))
+			config.set(key, null);
 		for(String key : QuestData.allQuests.keySet()) {
-			config.set(key, QuestData.allQuests.get(key));
+			QuestData.allQuests.get(key).serialize(config.createSection(key));
 		}
 		try {
 			config.save(conFile);

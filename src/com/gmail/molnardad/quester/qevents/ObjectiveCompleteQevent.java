@@ -1,21 +1,18 @@
 package com.gmail.molnardad.quester.qevents;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.exceptions.ExceptionType;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 
-@SerializableAs("QuesterObjCompleteQevent")
 public final class ObjectiveCompleteQevent extends Qevent {
 
-	private final String TYPE = "OBJCOM";
+	public static final String TYPE = "OBJCOM";
 	private final int objective;
 	
 	public ObjectiveCompleteQevent(int occ, int del, int obj) {
@@ -35,26 +32,23 @@ public final class ObjectiveCompleteQevent extends Qevent {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": ON-" + parseOccasion(occasion) + "; OBJ: " + objective;
+		return TYPE + ": OBJ: " + objective;
 	}
 
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		
-		map.put("objective", objective);
-		map.put("occasion", occasion);
-		map.put("delay", delay);
-		
-		return map;
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section);
+		section.set("type", TYPE);
+		section.set("objective", objective);
 	}
 	
-	public static ObjectiveCompleteQevent deserialize(Map<String, Object> map) {
-		int occ, del, obj;
+	public static ObjectiveCompleteQevent deser(int occ, int del, ConfigurationSection section) {
+		int obj;
 		
-		obj = (Integer) map.get("objective");
-		occ = (Integer) map.get("occasion");
-		del = (Integer) map.get("delay");
+		if(section.isInt("objective"))
+			obj = section.getInt("objective");
+		else
+			return null;
 		
 		return new ObjectiveCompleteQevent(occ, del, obj);
 	}

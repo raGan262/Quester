@@ -1,16 +1,12 @@
 package com.gmail.molnardad.quester.qevents;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-@SerializableAs("QuesterMessageQevent")
 public final class MessageQevent extends Qevent {
 
-	private final String TYPE = "MSG";
+	public static final String TYPE = "MESSAGE";
 	private final String message;
 	private final String rawmessage;
 	
@@ -32,27 +28,23 @@ public final class MessageQevent extends Qevent {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": ON-" + parseOccasion(occasion) + "; MSG: " + message;
+		return TYPE + ": MSG: " + message;
 	}
 
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		
-		map.put("message", rawmessage);
-		map.put("occasion", occasion);
-		map.put("delay", delay);
-		
-		return map;
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section);
+		section.set("type", TYPE);
+		section.set("message", message);
 	}
 	
-	public static MessageQevent deserialize(Map<String, Object> map) {
+	public static MessageQevent deser(int occ, int del, ConfigurationSection section) {
 		String msg;
-		int occ, del;
 		
-		msg = (String) map.get("message");
-		occ = (Integer) map.get("occasion");
-		del = (Integer) map.get("delay");
+		if(section.isString("message"))
+			msg = section.getString("message");
+		else
+			return null;
 		
 		return new MessageQevent(occ, del, msg);
 	}

@@ -9,20 +9,17 @@ import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 
 import com.gmail.molnardad.quester.conditions.Condition;
 import com.gmail.molnardad.quester.objectives.Objective;
 import com.gmail.molnardad.quester.qevents.Qevent;
-import com.gmail.molnardad.quester.rewards.Reward;
 import com.gmail.molnardad.quester.utils.Util;
 import com.gmail.molnardad.quester.QuestFlag;
-@SerializableAs("QeusterQuest")
-public class Quest implements ConfigurationSerializable{
+
+public class Quest {
 
 	private List<Objective> objectives = null;
-	private List<Reward> rewards = null;
 	private List<Condition> conditions = null;
 	private List<Qevent> qevents = null;
 	private Set<String> worlds = null;
@@ -38,7 +35,6 @@ public class Quest implements ConfigurationSerializable{
 		this.name = name;
 		description = "";
 		objectives = new ArrayList<Objective>();
-		rewards = new ArrayList<Reward>();
 		conditions = new ArrayList<Condition>();
 		qevents = new ArrayList<Qevent>();
 		worlds = new HashSet<String>();
@@ -153,39 +149,6 @@ public class Quest implements ConfigurationSerializable{
 		objectives.add(newObjective);
 	}
 
-	public Reward getReward(int id) {
-		if(id < rewards.size()){
-			return rewards.get(id);
-		}
-		return null;
-	}
-	
-	public List<Reward> getRewards() {
-		return rewards;
-	}
-	
-	public ArrayList<Reward> getRewards(String type) {
-		ArrayList<Reward> result = new ArrayList<Reward>();
-		for(Reward r: rewards){
-			if(r.getType().equalsIgnoreCase(type)){
-				result.add(r);
-			}
-		}
-		return result;
-	}
-	
-	public boolean removeReward(int id) {
-		if(id < rewards.size() && id >= 0){
-			rewards.remove(id);
-			return true;
-		}
-		return false;
-	}
-	
-	public void addReward(Reward newReward) {
-		rewards.add(newReward);
-	}
-
 	public Condition getCondition(int id) {
 		if(id < conditions.size()){
 			return conditions.get(id);
@@ -255,130 +218,125 @@ public class Quest implements ConfigurationSerializable{
 		return (worlds.contains(worldName.toLowerCase()) || worlds.isEmpty());
 	}
 	
-	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+	public void serialize(ConfigurationSection section) {
 		Map<Integer, Objective> objs = new HashMap<Integer, Objective>();
-		Map<Integer, Reward> rews = new HashMap<Integer, Reward>();
 		Map<Integer, Condition> cons = new HashMap<Integer, Condition>();
-		Map<Integer, Qevent> qvts = new HashMap<Integer, Qevent>();
 		
 		for(int i=0; i<objectives.size(); i++) {
 			objs.put(i, objectives.get(i));
 		}
-		for(int i=0; i<rewards.size(); i++) {
-			rews.put(i, rewards.get(i));
-		}
 		for(int i=0; i<conditions.size(); i++) {
 			cons.put(i, conditions.get(i));
 		}
-		for(int i=0; i<qevents.size(); i++) {
-			qvts.put(i, qevents.get(i));
-		}
 		
-		map.put("name", name);
+		section.set("name", name);
 		if(!description.isEmpty())
-			map.put("description", description);
+			section.set("description", description);
 		if(location != null) {
-			map.put("location", Util.serializeLocation(location));
+			section.set("location", Util.serializeLocString(location));
 			if(range > 1)
-				map.put("range", range);
+				section.set("range", range);
 		}
 		if(!worlds.isEmpty())
-			map.put("worlds", worlds.toArray(new String[0]));
+			section.set("worlds", worlds.toArray(new String[0]));
 		if(!flags.isEmpty())
-			map.put("flags", QuestFlag.serialize(flags));
+			section.set("flags", QuestFlag.serialize(flags));
 		if(!objs.isEmpty())
-			map.put("objectives", objs);
-		if(!rews.isEmpty())
-			map.put("rewards", rews);
+			section.set("objectives", objs);
 		if(!cons.isEmpty())
-			map.put("conditions", cons);
-		if(!qvts.isEmpty())
-			map.put("events", qvts);
-		if(hasID())
-			map.put("ID", ID);
+			section.set("conditions", cons);
+		if(!qevents.isEmpty()) {
+			ConfigurationSection subsection = section.createSection("events");
+			for(int i=0; i<qevents.size(); i++) {
+				qevents.get(i).serialize(subsection.createSection(String.valueOf(i)));
+			}
+		}
 		
-		return map;
+		if(hasID())
+			section.set("ID", ID);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static Quest deserialize(Map<String, Object> map) {
+	public static Quest deserialize(ConfigurationSection section) {
 		Quest quest;
 		try {
-			String name = (String) map.get("name");
-			if(name != null)
+			String name;
+			if(section.isString("name")) {
+				name = section.getString("name");
 				quest = new Quest(name);
-			else
+			} else
 				return null;
-			if(map.get("description") != null)
-				quest.setDescription((String) map.get("description"));
+			if(section.isString("description"))
+				quest.setDescription((String) section.getString("description"));
 			
-			if(map.get("location") != null) {
-				quest.setLocation(Util.deserializeLocation((Map<String, Object>) map.get("location")));
-				if(map.get("range") != null)
-					quest.setRange((Integer) map.get("range"));
+			if(section.isString("location")) {
+				quest.setLocation(Util.deserializeLocString(section.getString("location")));
+				if(section.isInt("range")) {
+					int rng = section.getInt("range");
+					if(rng > 1)
+						quest.setRange(rng);
+				}
 			}
 			
-			if(map.get("ID") != null) {
-				int id = (Integer) map.get("ID");
+			if(section.isInt("ID")) {
+				int id = (Integer) section.getInt("ID");
 				if(id >= 0) {
 					quest.setID(id);
 				}
 			}
 			
-			if(map.get("flags") != null) {
-				Set<QuestFlag> flags = QuestFlag.deserialize((String) map.get("flags"));
+			if(section.isString("flags")) {
+				Set<QuestFlag> flags = QuestFlag.deserialize(section.getString("flags"));
 				for(QuestFlag f : flags) {
 					quest.addFlag(f);
 				}
 			}
 			
-			if(map.get("worlds") != null) {
-				List<String> strs = (List<String>) map.get("worlds");
+			if(section.isList("worlds")) {
+				List<String> strs = (List<String>) section.getList("worlds", new ArrayList<String>());
 				for(String s : strs) {
 					if(s != null)
 						quest.addWorld(s);
 				}
 			}
 			
-			Map<Integer, Objective> objs = new HashMap<Integer, Objective>();
-			if(map.get("objectives") != null) {
-				objs = (Map<Integer, Objective>) map.get("objectives");
+			Map<String, Object> objs = new HashMap<String, Object>();
+			if(section.isConfigurationSection("objectives")) {
+				objs = section.getConfigurationSection("objectives").getValues(true);
 				for(int i=0; i<objs.size(); i++) {
-					if(objs.get(i) != null)
-						quest.addObjective(objs.get(i));
+					if(objs.get(String.valueOf(i)) != null)
+						quest.addObjective((Objective) objs.get(i));
 				}
 			}
 			
-			Map<Integer, Reward> rews = new HashMap<Integer, Reward>();
-			if(map.get("rewards") != null) {
-				rews = (Map<Integer, Reward>) map.get("rewards");
-				for(int i=0; i<rews.size(); i++) {
-					if(rews.get(i) != null)
-					quest.addReward(rews.get(i));
+			Condition con = null;
+			if(section.isConfigurationSection("conditions")) {
+				ConfigurationSection subsection = section.getConfigurationSection("conditions");
+				Set<String> keys = subsection.getKeys(false);
+				for(int i=0; i<keys.size(); i++) {
+					con = Condition.deserialize(subsection.getConfigurationSection(String.valueOf(i)));
+					if(con != null)
+						quest.addCondition(con);
+					else
+						Quester.log.severe("Error occured when deserializing condition ID " + i + " in quest '" + quest.getName() + "'.");
 				}
 			}
 			
-			Map<Integer, Condition> cons = new HashMap<Integer, Condition>();
-			if(map.get("conditions") != null) {
-				cons = (Map<Integer, Condition>) map.get("conditions");
-				for(int i=0; i<cons.size(); i++) {
-					if(cons.get(i) != null)
-					quest.addCondition(cons.get(i));
-				}
-			}
-			
-			Map<Integer, Qevent> qvts = new HashMap<Integer, Qevent>();
-			if(map.get("events") != null) {
-				qvts = (Map<Integer, Qevent>) map.get("events");
-				for(int i=0; i<qvts.size(); i++) {
-					if(qvts.get(i) != null)
-					quest.addQevent(qvts.get(i));
+			Qevent qvt = null;
+			if(section.isConfigurationSection("events")) {
+				ConfigurationSection subsection = section.getConfigurationSection("events");
+				Set<String> keys = subsection.getKeys(false);
+				for(int i=0; i<keys.size(); i++) {
+					qvt = Qevent.deserialize(subsection.getConfigurationSection(String.valueOf(i)));
+					if(qvt != null)
+						quest.addQevent(qvt);
+					else
+						Quester.log.severe("Error occured when deserializing event ID:" + i + " in quest '" + quest.getName() + "'.");
 				}
 			}
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 		

@@ -1,18 +1,14 @@
 package com.gmail.molnardad.quester.qevents;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Location;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.utils.Util;
 
-@SerializableAs("QuesterSetBlockQevent")
 public final class SetBlockQevent extends Qevent {
 
-	private final String TYPE = "BLOCK";
+	public static final String TYPE = "BLOCK";
 	private final Location location;
 	public final int material;
 	public final byte data;
@@ -37,34 +33,31 @@ public final class SetBlockQevent extends Qevent {
 	@Override
 	public String toString() {
 		String locStr = String.format("%.1f:%.1f:%.1f("+location.getWorld().getName()+")", location.getX(), location.getY(), location.getZ());
-		return TYPE + ": ON-" + parseOccasion(occasion) + "; LOC: " + locStr;
+		return TYPE + ": DEL: " + delay + "; BLOCK: " + material + ":" + data + "; " + "; LOC: " + locStr;
 	}
 
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section);
+		section.set("block", Util.serializeItem(material, data));
+		section.set("location", Util.serializeLocString(location));
 		
-		map.put("delay", delay);
-		map.put("occasion", occasion);
-		map.put("material", material);
-		map.put("data", data);
-		map.put("location", Util.serializeLocation(location));
-		
-		return map;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static SetBlockQevent deserialize(Map<String, Object> map) {
-		int occ, del, mat, dat;
+	public static SetBlockQevent deser(int occ, int del, ConfigurationSection section) {
+		int mat = 0, dat = 0;
 		Location loc = null;
 		try {
-			occ = (Integer) map.get("occasion");
-			del = (Integer) map.get("delay");
-			mat = (Integer) map.get("material");
-			dat = (Integer) map.get("data");
+			if(section.isString("block")) {
+				int[] itm = Util.parseItem(section.getString("block"));
+				mat = itm[0];
+				dat = itm[1];
+			}
+			else
+				return null;
 			
-			if(map.get("location") != null)
-				loc = Util.deserializeLocation((Map<String, Object>) map.get("location"));
+			if(section.isString("location"))
+				loc = Util.deserializeLocString(section.getString("location"));
 			if(loc == null)
 				return null;
 		} catch (Exception e) {

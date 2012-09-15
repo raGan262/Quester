@@ -19,9 +19,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.gmail.molnardad.quester.listeners.*;
 import com.gmail.molnardad.quester.objectives.*;
-import com.gmail.molnardad.quester.qevents.*;
-import com.gmail.molnardad.quester.rewards.*;
-import com.gmail.molnardad.quester.conditions.*;
 import com.gmail.molnardad.quester.config.*;
 
 public class Quester extends JavaPlugin {
@@ -49,8 +46,6 @@ public class Quester extends JavaPlugin {
 			plugin = this;
 			ConfigurationSerialization.registerClass(PlayerProfile.class);
 			
-			ConfigurationSerialization.registerClass(Quest.class);
-			
 			ConfigurationSerialization.registerClass(BreakObjective.class);
 			ConfigurationSerialization.registerClass(PlaceObjective.class);
 			ConfigurationSerialization.registerClass(DeathObjective.class);
@@ -69,33 +64,6 @@ public class Quester extends JavaPlugin {
 			ConfigurationSerialization.registerClass(CollectObjective.class);
 			ConfigurationSerialization.registerClass(TameObjective.class);
 			ConfigurationSerialization.registerClass(MoneyObjective.class);
-			
-			ConfigurationSerialization.registerClass(EffectReward.class);
-			ConfigurationSerialization.registerClass(ExpReward.class);
-			ConfigurationSerialization.registerClass(ItemReward.class);
-			ConfigurationSerialization.registerClass(MoneyReward.class);
-			ConfigurationSerialization.registerClass(TeleportReward.class);
-			ConfigurationSerialization.registerClass(CommandReward.class);
-			ConfigurationSerialization.registerClass(PointReward.class);
-			
-			ConfigurationSerialization.registerClass(QuestCondition.class);
-			ConfigurationSerialization.registerClass(QuestNotCondition.class);
-			ConfigurationSerialization.registerClass(PermissionCondition.class);
-			ConfigurationSerialization.registerClass(MoneyCondition.class);
-			ConfigurationSerialization.registerClass(ItemCondition.class);
-			ConfigurationSerialization.registerClass(PointCondition.class);
-
-			ConfigurationSerialization.registerClass(MessageQevent.class);
-			ConfigurationSerialization.registerClass(ExplosionQevent.class);
-			ConfigurationSerialization.registerClass(SetBlockQevent.class);
-			ConfigurationSerialization.registerClass(TeleportQevent.class);
-			ConfigurationSerialization.registerClass(CommandQevent.class);
-			ConfigurationSerialization.registerClass(LightningQevent.class);
-			ConfigurationSerialization.registerClass(QuestQevent.class);
-			ConfigurationSerialization.registerClass(CancelQevent.class);
-			ConfigurationSerialization.registerClass(ToggleQevent.class);
-			ConfigurationSerialization.registerClass(ObjectiveCompleteQevent.class);
-			ConfigurationSerialization.registerClass(SpawnQevent.class);
 		}
 		
 		@Override
@@ -212,7 +180,7 @@ public class Quester extends JavaPlugin {
 						if(QuestData.debug) {
 							Quester.log.info(f.getName() + " reset to default.");
 						}
-					} catch (IllegalArgumentException | IllegalAccessException e) {
+					} catch (Exception e) {
 						Quester.log.info("Error occured while setting values in local file.");
 						if(QuestData.debug) {
 							e.printStackTrace();
@@ -221,7 +189,7 @@ public class Quester extends JavaPlugin {
 				} else {
 					try {
 						f.set(strings, (String) val.replaceAll("%n", "\n"));
-					} catch (IllegalArgumentException | IllegalAccessException e) {
+					} catch (Exception e) {
 						Quester.log.info("Error occured while setting values in local object.");
 						if(QuestData.debug) {
 							e.printStackTrace();

@@ -1,20 +1,16 @@
 package com.gmail.molnardad.quester.qevents;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.gmail.molnardad.quester.utils.Util;
 
-@SerializableAs("QuesterTeleportQevent")
 public final class TeleportQevent extends Qevent {
 
-	private final String TYPE = "TELE";
+	public static final String TYPE = "TELEPORT";
 	private final Location location;
 	
 	public TeleportQevent(int occ, int del, Location loc) {
@@ -35,30 +31,21 @@ public final class TeleportQevent extends Qevent {
 	@Override
 	public String toString() {
 		String locStr = String.format("%.1f:%.1f:%.1f("+location.getWorld().getName()+")", location.getX(), location.getY(), location.getZ());
-		return TYPE + ": ON-" + parseOccasion(occasion) + "; LOC: " + locStr;
+		return TYPE + ": LOC: " + locStr;
 	}
 
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section);
+		section.set("location", Util.serializeLocString(location));
 		
-		map.put("occasion", occasion);
-		map.put("delay", delay);
-		map.put("location", Util.serializeLocation(location));
-		
-		return map;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static TeleportQevent deserialize(Map<String, Object> map) {
-		int occ, del;
+	public static TeleportQevent deser(int occ, int del, ConfigurationSection section) {
 		Location loc = null;
 		try {
-			occ = (Integer) map.get("occasion");
-			del = (Integer) map.get("delay");
-			
-			if(map.get("location") != null)
-				loc = Util.deserializeLocation((Map<String, Object>) map.get("location"));
+			if(section.isString("location"))
+				loc = Util.deserializeLocString(section.getString("location"));
 			if(loc == null)
 				return null;
 		} catch (Exception e) {
