@@ -42,8 +42,7 @@ public final class ExplosionQevent extends Qevent {
 
 	@Override
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section);
-		section.set("type", TYPE);
+		super.serialize(section, TYPE);
 		if(damage)
 			section.set("damage", damage);
 		section.set("location", Util.serializeLocString(location));

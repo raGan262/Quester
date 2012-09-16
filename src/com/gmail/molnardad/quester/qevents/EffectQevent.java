@@ -36,9 +36,8 @@ public class EffectQevent extends Qevent {
 
 	@Override
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section);
+		super.serialize(section, TYPE);
 		
-		section.set("type", TYPE);
 		section.set("effect", Util.serializeEffect(effect));
 	}
 	

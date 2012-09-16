@@ -36,7 +36,7 @@ public final class TeleportQevent extends Qevent {
 
 	@Override
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section);
+		super.serialize(section, TYPE);
 		section.set("location", Util.serializeLocString(location));
 		
 	}

@@ -55,7 +55,10 @@ public abstract class Qevent {
 		return 0;
 	}
 	
-	public void serialize(ConfigurationSection section) {
+	public abstract void serialize(ConfigurationSection section);
+	
+	void serialize(ConfigurationSection section, String type) {
+		section.set("type", type);
 		section.set("occasion", occasion);
 		if(delay != 0)
 			section.set("delay", delay);

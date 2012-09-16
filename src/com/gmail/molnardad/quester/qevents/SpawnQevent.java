@@ -45,8 +45,7 @@ public final class SpawnQevent extends Qevent {
 
 	@Override
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section);
-		section.set("type", TYPE);
+		super.serialize(section, TYPE);
 		if(amount != 1)
 			section.set("amount", amount);
 		section.set("entity", entity.getTypeId());

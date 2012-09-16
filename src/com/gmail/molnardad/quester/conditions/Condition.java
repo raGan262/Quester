@@ -44,7 +44,10 @@ public abstract class Condition {
 	public abstract String show();
 	public abstract String toString();
 
-	public void serialize(ConfigurationSection section) {
+	public abstract void serialize(ConfigurationSection section);
+	
+	void serialize(ConfigurationSection section, String type) {
+		section.set("type", type);
 		if(!desc.isEmpty())
 			section.set("description", desc);
 	}

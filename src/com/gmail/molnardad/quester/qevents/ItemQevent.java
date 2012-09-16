@@ -54,9 +54,8 @@ public final class ItemQevent extends Qevent {
 
 	@Override
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section);
+		super.serialize(section, TYPE);
 
-		section.set("type", TYPE);
 		section.set("item", Util.serializeItem(material, data));
 		section.set("enchants", Util.serializeEnchants(enchants));
 		section.set("amount", amount);

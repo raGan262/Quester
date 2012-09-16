@@ -34,8 +34,7 @@ public final class QuestQevent extends Qevent {
 
 	@Override
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section);
-		section.set("type", TYPE);
+		super.serialize(section, TYPE);
 		section.set("quest", quest);
 	}
 	

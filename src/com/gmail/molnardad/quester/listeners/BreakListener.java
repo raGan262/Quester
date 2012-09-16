@@ -38,8 +38,15 @@ public class BreakListener implements Listener {
 	    			if(obj.getType().equalsIgnoreCase("BREAK")) {
 	    				BreakObjective bObj = (BreakObjective) obj;
 	    				Block block = event.getBlock();
-		    			// compare block ID
-		    			if(block.getTypeId() == bObj.getMaterial().getId() && bObj.checkHand(player.getItemInHand().getTypeId())) {
+		    			// compare block ID // check for redstone
+	    				boolean passed;
+	    				int id = block.getTypeId();
+	    				if(id != Material.REDSTONE_ORE.getId()) {
+	    					passed = id == bObj.getMaterial().getId();
+	    				} else {
+	    					passed = id == Material.GLOWING_REDSTONE_ORE.getId() || id == Material.REDSTONE_ORE.getId();
+	    				}
+		    			if( passed && bObj.checkHand(player.getItemInHand().getTypeId())) {
 		    				// if DATA >= 0 compare
 		    				if(bObj.getData() < 0 || bObj.getData() == block.getData()) {
 		    					if(QuestData.brkNoDrops) {

@@ -38,7 +38,7 @@ public final class SetBlockQevent extends Qevent {
 
 	@Override
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section);
+		super.serialize(section, TYPE);
 		section.set("block", Util.serializeItem(material, data));
 		section.set("location", Util.serializeLocString(location));
 		

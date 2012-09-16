@@ -67,9 +67,8 @@ public final class ItemCondition extends Condition {
 	@Override
 	public void serialize(ConfigurationSection section) {
 		
-		super.serialize(section);
+		super.serialize(section, TYPE);
 
-		section.set("type", TYPE);
 		section.set("item", Util.serializeItem(material.getId(), data));
 		section.set("amount", amount);
 		

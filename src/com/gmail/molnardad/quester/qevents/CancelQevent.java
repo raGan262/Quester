@@ -32,8 +32,7 @@ public final class CancelQevent extends Qevent {
 
 	@Override
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section);
-		section.set("type", TYPE);
+		super.serialize(section, TYPE);
 	}
 	
 	public static Qevent deser(int occ, int del, ConfigurationSection section) {	
