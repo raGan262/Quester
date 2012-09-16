@@ -1,14 +1,11 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.Map;
-
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
 
-@SerializableAs("QuesterMoneyObjective")
 public final class MoneyObjective extends Objective {
 
 	private final String TYPE = "MONEY";
@@ -47,28 +44,19 @@ public final class MoneyObjective extends Objective {
 	}
 
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = super.serialize();
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section, TYPE);
 		
-		map.put("amount", amount);
-		
-		return map;
+		section.set("amount", amount);
 	}
-
-	public static MoneyObjective deserialize(Map<String, Object> map) {
-		double amt;
-		
-		try {
-			amt = (Double) map.get("amount");
-			if(amt <= 0)
-				return null;
-		} catch (Exception e) {
+	
+	public static Objective deser(ConfigurationSection section) {
+		int amt = 0;
+		if(section.isInt("amount"))
+			amt = section.getInt("amount");
+		if(amt < 1)
 			return null;
-		}
-		
-		MoneyObjective obj = new MoneyObjective(amt);
-		obj.loadSuper(map);
-		return obj;
+		return new MoneyObjective(amt);
 	}
 
 	@Override

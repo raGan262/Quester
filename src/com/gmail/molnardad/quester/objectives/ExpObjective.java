@@ -1,14 +1,11 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.Map;
-
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.utils.ExpManager;
 
-@SerializableAs("QuesterExpObjective")
 public final class ExpObjective extends Objective {
 
 	private final String TYPE = "EXPERIENCE";
@@ -35,12 +32,12 @@ public final class ExpObjective extends Objective {
 		if(!desc.isEmpty()) {
 			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(1 - progress)).replaceAll("%t", String.valueOf(amount));
 		}
-		return "Have " + String.valueOf(amount) + " experience points on completion.";
+		return "Have " + amount + " experience points on completion.";
 	}
 	
 	@Override
 	public String toString() {
-		return TYPE + ": " + String.valueOf(amount) + coloredDesc() + stringQevents();
+		return TYPE + ": " + amount + coloredDesc() + stringQevents();
 	}
 	
 	public int takeExp(int amt) {
@@ -48,28 +45,19 @@ public final class ExpObjective extends Objective {
 	}
 
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = super.serialize();
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section, TYPE);
 		
-		map.put("amount", amount);
-		
-		return map;
+		section.set("amount", amount);
 	}
-
-	public static ExpObjective deserialize(Map<String, Object> map) {
-		int amt;
-		
-		try {
-			amt = (Integer) map.get("amount");
-			if(amt < 1)
-				return null;
-		} catch (Exception e) {
+	
+	public static Objective deser(ConfigurationSection section) {
+		int amt = 0;
+		if(section.isInt("amount"))
+			amt = section.getInt("amount");
+		if(amt < 1)
 			return null;
-		}
-		
-		ExpObjective obj = new ExpObjective(amt);
-		obj.loadSuper(map);
-		return obj;
+		return new ExpObjective(amt);
 	}
 
 	@Override

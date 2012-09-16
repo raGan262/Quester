@@ -76,6 +76,8 @@ public abstract class Condition {
 					try {
 						Method deser = c.getMethod("deser", ConfigurationSection.class);
 						con = (Condition) deser.invoke(null, section);
+						if(con == null)
+							return null;
 						if(des != null)
 							con.addDescription(des);
 						success = true;

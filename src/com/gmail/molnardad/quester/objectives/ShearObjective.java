@@ -1,25 +1,21 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.Map;
-
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-@SerializableAs("QuesterShearObjective")
+import com.gmail.molnardad.quester.utils.Util;
+
 public final class ShearObjective extends Objective {
 
 	private final String TYPE = "SHEAR";
 	private final DyeColor color;
 	private final int amount;
 
-	public ShearObjective(int amt, byte dat) {
+	public ShearObjective(int amt, DyeColor col) {
 		amount = amt;
-		if(dat < 0)
-			color = null;
-		else
-			color = DyeColor.getByData(dat);
+		color = col;
 	}
 	
 	@Override
@@ -60,31 +56,25 @@ public final class ShearObjective extends Objective {
 	}
 
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = super.serialize();
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section, TYPE);
 		
-		map.put("amount", amount);
-		if(color == null)
-			map.put("color", -1);
-		else
-			map.put("color", color.getData());
-		
-		return map;
+		if(color != null)
+			section.set("color", Util.serializeColor(color));
+		if(amount > 1)
+			section.set("amount", amount);
 	}
-
-	public static ShearObjective deserialize(Map<String, Object> map) {
-		int amt, dat;
+	
+	public static Objective deser(ConfigurationSection section) {
+		int amt = 1;
+		DyeColor col = null;
 		try {
-			amt = (Integer) map.get("amount");
-			if(amt < 1)
-				return null;
-			dat = (Integer) map.get("color");
-			
-			ShearObjective obj = new ShearObjective(amt, (byte)dat);
-			obj.loadSuper(map);
-			return obj;
-		} catch (Exception e) {
-			return null;
-		}
+			col = Util.parseColor(section.getString("color"));
+		} catch (Exception ignore) {}
+		if(section.isInt("amount"))
+			amt = section.getInt("amount");
+		if(amt < 1)
+			amt = 1;
+		return new ShearObjective(amt, col);
 	}
 }

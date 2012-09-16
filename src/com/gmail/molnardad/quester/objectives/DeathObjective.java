@@ -1,38 +1,23 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.Map;
-
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-@SerializableAs("QuesterDeathObjective")
+import com.gmail.molnardad.quester.utils.Util;
+
 public final class DeathObjective extends Objective {
 
 	private final String TYPE = "DEATH";
-	private final double x;
-	private final double y;
-	private final double z;
-	private final String worldName;
+	private final Location location;
 	private final int amount;
 	private final int range;
 	
 	public DeathObjective(int amt, Location loc, int rng) {
 		amount = amt;
 		range = rng;
-		if(loc != null) {
-			x = loc.getX();
-			y = loc.getY();
-			z = loc.getZ();
-			worldName = loc.getWorld().getName();
-		} else {
-			x = 0;
-			y = -1;
-			z = 0;
-			worldName = "";
-		}
+		location = loc;
 	}
 	
 	@Override
@@ -55,69 +40,51 @@ public final class DeathObjective extends Objective {
 		if(!desc.isEmpty()) {
 			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
 		}
-		String locStr = y < 0 ? "anywhere " : String.format("max %d blocks from %.1f %.1f %.1f("+worldName+") ", range, x, y, z);
+		String locStr = location == null ? "anywhere " : String.format("max %d blocks from %.1f %.1f %.1f("+location.getWorld().getName()+") ", range, location.getX(), location.getY(), location.getZ());
 		return "Die " + locStr + String.valueOf(amount - progress)+"x.";
 	}
 	
 	@Override
 	public String toString() {
-		String locStr = y < 0 ? "ANY" : String.format("%.1f %.1f %.1f("+worldName+")", x, y, z);
+		String locStr = location == null ? "ANY" : String.format("%.1f %.1f %.1f("+location.getWorld().getName()+")", location.getX(), location.getY(), location.getZ());
 		return TYPE + ": LOC: " + locStr + "; AMT: "+ amount +"; RNG: "+ range + coloredDesc() + stringQevents();
 	}
 	
 	public boolean checkDeath(Location loc) {
-		if(y < 0) {
+		if(location == null) {
 			return true;
 		}
-		if(loc.getWorld().getName().equalsIgnoreCase(worldName)) {
-			return loc.distance(new Location(loc.getWorld(), x, y, z)) < range;
+		if(loc.getWorld().getName().equals(location.getWorld().getName())) {
+			return loc.distance(location) < range;
 		} 
 		return false;
 	}
 
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = super.serialize();
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section, TYPE);
 		
-		map.put("x", x);
-		map.put("y", y);
-		map.put("z", z);
-		map.put("world", worldName);
-		map.put("amount", amount);
-		map.put("range", range);
-		
-		return map;
+		if(location != null)
+			section.set("location", Util.serializeLocString(location));
+		if(amount != 1)
+			section.set("amount", amount);
+		if(range != 5)
+			section.set("range", range);
 	}
-
-	public static DeathObjective deserialize(Map<String, Object> map) {
-		double x, y, z;
-		String world;
+	
+	public static Objective deser(ConfigurationSection section) {
 		Location loc = null;
-		int amt, rng;
-		
-		try {
-			y = (Double) map.get("y");
-			if(y >= 0) {
-				x = (Double) map.get("x");
-				z = (Double) map.get("z");
-				world = (String) map.get("world");	
-				if(Bukkit.getWorld(world) != null)
-					loc = new Location(Bukkit.getWorld(world), x, y, z);
-				else
-					return null;
-			}
-			amt = (Integer) map.get("amount");
-			if(amt < 1)
-				return null;
-			rng = (Integer) map.get("range");
-			if(rng < 1)
-				return null;
-			DeathObjective obj = new DeathObjective(amt, loc, rng);
-			obj.loadSuper(map);
-			return obj;
-		} catch (Exception e) {
-			return null;
-		}
+		int amt = 1, rng = 5;
+		if(section.isString("location"))
+			loc = Util.deserializeLocString(section.getString("location"));
+		if(section.isInt("amount"))
+			amt = section.getInt("amount");
+		if(amt < 1)
+			amt = 1;
+		if(section.isInt("range"))
+			rng = section.getInt("range");
+		if(rng < 1)
+			rng = 5;
+		return new DeathObjective(amt, loc, rng);
 	}
-
 }

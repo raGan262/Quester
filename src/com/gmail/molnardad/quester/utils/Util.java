@@ -173,16 +173,18 @@ public class Util {
 		return enchs;
 	}
 	
-	public static String serializeItem(Material mat, short data) {
+	public static String serializeItem(Material mat, int data) {
 		if(mat == null)
 			return null;
 		
-		return (mat.getId() + ":" +data);
+		return serializeItem(mat.getId(), data);
 	}
 	
-	public static String serializeItem(int mat, short data) {
-		
-		return (mat + ":" +data);
+	public static String serializeItem(int mat, int data) {
+		String str = "";
+		if(data >= 0)
+			str = ":" + (short)data;
+		return (mat + str);
 	}
 	
 	public static int[] parseItem(String arg) throws QuesterException {
@@ -215,7 +217,13 @@ public class Util {
 		return itm;
 	}
 	
-	public static byte parseColor(String arg) throws InvalidDataException {
+	public static String serializeColor(DyeColor col) {
+		if(col == null)
+			return null;
+		return "" + col.getData();
+	}
+	
+	public static DyeColor parseColor(String arg) throws InvalidDataException {
 		DyeColor col = null;
 		col = DyeColor.valueOf(arg.toUpperCase());
 		if(col == null) {
@@ -227,7 +235,7 @@ public class Util {
 		}
 		if(col == null)
 			throw new InvalidDataException("");
-		return col.getData();
+		return col;
 	}
 	
 	public static String serializeEffect(PotionEffect eff) {
@@ -333,6 +341,12 @@ public class Util {
 		return result;
 	}
 	
+	public static String serializeEntity(EntityType ent) {
+		if(ent == null)
+			return null;
+		return "" + ent.getTypeId();
+	}
+	
 	public static EntityType parseEntity(String arg) throws QuesterException {
 		EntityType ent = EntityType.fromName(arg.toUpperCase());
 		if(ent == null) {
@@ -384,7 +398,7 @@ public class Util {
 			loc = new Location(world, x, y, z, yaw, pitch);
 		} catch (Exception e) {
 			if(QuestData.debug)
-				e.printStackTrace();
+				Quester.log.severe("Error when deserializing location.");
 		}
 		
 		return loc;

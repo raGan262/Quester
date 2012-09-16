@@ -18,7 +18,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.gmail.molnardad.quester.listeners.*;
-import com.gmail.molnardad.quester.objectives.*;
 import com.gmail.molnardad.quester.config.*;
 
 public class Quester extends JavaPlugin {
@@ -45,25 +44,6 @@ public class Quester extends JavaPlugin {
 			super();
 			plugin = this;
 			ConfigurationSerialization.registerClass(PlayerProfile.class);
-			
-			ConfigurationSerialization.registerClass(BreakObjective.class);
-			ConfigurationSerialization.registerClass(PlaceObjective.class);
-			ConfigurationSerialization.registerClass(DeathObjective.class);
-			ConfigurationSerialization.registerClass(ExpObjective.class);
-			ConfigurationSerialization.registerClass(ItemObjective.class);
-			ConfigurationSerialization.registerClass(LocObjective.class);
-			ConfigurationSerialization.registerClass(MobKillObjective.class);
-			ConfigurationSerialization.registerClass(PlayerKillObjective.class);
-			ConfigurationSerialization.registerClass(WorldObjective.class);
-			ConfigurationSerialization.registerClass(CraftObjective.class);
-			ConfigurationSerialization.registerClass(EnchantObjective.class);
-			ConfigurationSerialization.registerClass(ShearObjective.class);
-			ConfigurationSerialization.registerClass(FishObjective.class);
-			ConfigurationSerialization.registerClass(MilkObjective.class);
-			ConfigurationSerialization.registerClass(SmeltObjective.class);
-			ConfigurationSerialization.registerClass(CollectObjective.class);
-			ConfigurationSerialization.registerClass(TameObjective.class);
-			ConfigurationSerialization.registerClass(MoneyObjective.class);
 		}
 		
 		@Override

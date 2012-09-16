@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -1016,27 +1017,28 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							
 							// DEATH OBJECTIVE
 							if(args[2].equalsIgnoreCase("death")) {
-								if(args.length > 3) {
+								if(args.length > 2) {
 									int amt = 1;
 									Location loc = null;
 									int rng = 5;
 									try {
-										amt = Integer.parseInt(args[3]);
-										if(amt < 1) {
-											throw new QuesterException(ChatColor.RED + strings.ERROR_CMD_AMOUNT_POSITIVE);
-										}
-										if(args.length > 4) {
-											loc = getLoc(sender, args[4]);
-											
-											if(args.length > 5) {
-												rng = Integer.parseInt(args[5]);
+										if(args.length > 3) {
+											amt = Integer.parseInt(args[3]);
+											if(amt < 1) {
+												throw new QuesterException(ChatColor.RED + strings.ERROR_CMD_AMOUNT_POSITIVE);
+											}
+											if(args.length > 4) {
+												loc = getLoc(sender, args[4]);
 												
-												if(rng < 1) {
-													throw new NumberFormatException();
+												if(args.length > 5) {
+													rng = Integer.parseInt(args[5]);
+													
+													if(rng < 1) {
+														throw new NumberFormatException();
+													}
 												}
 											}
 										}
-										
 										qm.addQuestObjective(sender.getName(), new DeathObjective(amt, loc, rng));
 										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_DEATH_TYPE));
 									} catch (QuesterException e) {
@@ -1149,7 +1151,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										if(amt < 1 || dat < -1) {
 											throw new NumberFormatException();
 										}
-										qm.addQuestObjective(sender.getName(), new CraftObjective(mat, amt, dat));
+										qm.addQuestObjective(sender.getName(), new CraftObjective(amt, mat, dat));
 										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_CRAFT_TYPE));
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_NUMBERS);
@@ -1177,7 +1179,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										if(amt < 1 || dat < -1) {
 											throw new NumberFormatException();
 										}
-										qm.addQuestObjective(sender.getName(), new SmeltObjective(mat, amt, dat));
+										qm.addQuestObjective(sender.getName(), new SmeltObjective(amt, mat, dat));
 										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_SMELT_TYPE));
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_NUMBERS);
@@ -1196,13 +1198,13 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							if(args[2].equalsIgnoreCase("shear")) {
 								if(args.length > 3) {
 									try {
-										byte dat = -1;
+										DyeColor col = null;
 										int amt = Integer.parseInt(args[3]);
 										if(args.length > 4)
-											dat = parseColor(args[4]);
+											col = parseColor(args[4]);
 										if(amt < 1)
 											throw new NumberFormatException();
-										qm.addQuestObjective(sender.getName(), new ShearObjective(amt, dat));
+										qm.addQuestObjective(sender.getName(), new ShearObjective(amt, col));
 										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_SHEAR_TYPE));
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_POSITIVE);

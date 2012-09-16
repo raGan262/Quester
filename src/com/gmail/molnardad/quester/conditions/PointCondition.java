@@ -2,12 +2,10 @@ package com.gmail.molnardad.quester.conditions;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
 
-@SerializableAs("QuesterPointCondition")
 public final class PointCondition extends Condition {
 
 	public static final String TYPE = "POINT";

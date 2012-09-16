@@ -5,14 +5,13 @@ import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.molnardad.quester.utils.Util;
 
-@SerializableAs("QuesterEnchantObjective")
 public final class EnchantObjective extends Objective {
 
 	private final String TYPE = "ENCHANT";
@@ -84,37 +83,41 @@ public final class EnchantObjective extends Objective {
 	}
 
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = super.serialize();
-		
-		map.put("material", material.getId());
-		map.put("amount", amount);
-		map.put("enchants", enchants);
-		
-		return map;
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section, TYPE);
+
+
+		section.set("enchants", Util.serializeEnchants(enchants));
+		if(material != null)
+			section.set("item", Util.serializeItem(material, -1));
+		if(amount != 1)
+			section.set("amount", amount);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static EnchantObjective deserialize(Map<String, Object> map) {
-		Material mat;
-		int amt;
-		Map<Integer, Integer> enchs = new HashMap<Integer, Integer>();
-		
+	public static Objective deser(ConfigurationSection section) {
+		Material mat = null;
+		int amt = 1;
+		Map<Integer, Integer> enchs = null;
 		try {
-			mat = Material.getMaterial((Integer) map.get("material"));
-			if(mat == null)
-				return null;
-			amt = (Integer) map.get("amount");
-			if(amt < 1)
-				return null;
-			if(map.get("enchants") != null)
-				enchs = (Map<Integer, Integer>) map.get("enchants");
+			if(section.isString("item")) {
+				try {
+				mat = Material.getMaterial(Util.parseItem(section.getString("item"))[0]);
+				} catch (Exception ignore) {}
+			}
 			
-			EnchantObjective obj = new EnchantObjective(mat, amt, enchs);
-			obj.loadSuper(map);
-			return obj;
+			if(section.isInt("amount"))
+				amt = section.getInt("amount");
+			if(amt < 1)
+				amt = 1;
+			
+			if(section.isString("enchants"))
+				enchs = Util.parseEnchants(section.getString("enchants"));
+			else
+				return null;
 		} catch (Exception e) {
 			return null;
 		}
+		
+		return new EnchantObjective(mat, amt, enchs);
 	}
 }

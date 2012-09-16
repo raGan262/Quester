@@ -194,6 +194,8 @@ public class QuestData {
 		YamlConfiguration config = Quester.questConfig.getConfig();
 		for(String key : config.getKeys(false)) {
 			if(config.isConfigurationSection(key)) {
+				if(debug)
+					Quester.log.info("Deserializing quest " + key + ".");
 				Quest quest = Quest.deserialize(config.getConfigurationSection(key));
 				if(quest == null) {
 					Quester.log.severe("Quest " + key + " corrupted.");

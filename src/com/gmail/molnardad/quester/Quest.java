@@ -299,38 +299,49 @@ public class Quest {
 						quest.addWorld(s);
 				}
 			}
-			
+
+			if(QuestData.debug)
+				Quester.log.info("Deserializing objectives.");
 			Map<String, Object> objs = new HashMap<String, Object>();
 			if(section.isConfigurationSection("objectives")) {
 				objs = section.getConfigurationSection("objectives").getValues(true);
 				for(int i=0; i<objs.size(); i++) {
-					if(objs.get(String.valueOf(i)) != null)
+					if(objs.get(String.valueOf(i)) != null) {
 						quest.addObjective((Objective) objs.get(i));
+					}
 				}
 			}
-			
+
+			if(QuestData.debug)
+				Quester.log.info("Deserializing conditions.");
 			Condition con = null;
 			if(section.isConfigurationSection("conditions")) {
 				ConfigurationSection subsection = section.getConfigurationSection("conditions");
 				Set<String> keys = subsection.getKeys(false);
 				for(int i=0; i<keys.size(); i++) {
 					con = Condition.deserialize(subsection.getConfigurationSection(String.valueOf(i)));
-					if(con != null)
+					if(con != null) {
 						quest.addCondition(con);
-					else
+						if(QuestData.debug)
+							Quester.log.info("Condition " + i + " OK.");
+					} else
 						Quester.log.severe("Error occured when deserializing condition ID " + i + " in quest '" + quest.getName() + "'.");
 				}
 			}
-			
+
+			if(QuestData.debug)
+				Quester.log.info("Deserializing events.");
 			Qevent qvt = null;
 			if(section.isConfigurationSection("events")) {
 				ConfigurationSection subsection = section.getConfigurationSection("events");
 				Set<String> keys = subsection.getKeys(false);
 				for(int i=0; i<keys.size(); i++) {
 					qvt = Qevent.deserialize(subsection.getConfigurationSection(String.valueOf(i)));
-					if(qvt != null)
+					if(qvt != null) {
 						quest.addQevent(qvt);
-					else
+						if(QuestData.debug)
+							Quester.log.info("Event " + i + " OK.");
+					} else
 						Quester.log.severe("Error occured when deserializing event ID:" + i + " in quest '" + quest.getName() + "'.");
 				}
 			}

@@ -1,13 +1,13 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.Map;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-@SerializableAs("QuesterBreakObjective")
+import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.utils.Util;
+
 public final class BreakObjective extends Objective {
 
 	private final String TYPE = "BREAK";
@@ -16,10 +16,10 @@ public final class BreakObjective extends Objective {
 	private final int amount;
 	private final int inHand;
 	
-	public BreakObjective(int amt, Material mat, byte dat, int hnd) {
+	public BreakObjective(int amt, Material mat, int dat, int hnd) {
 		amount = amt;
 		material = mat;
-		data = dat;
+		data = (byte) dat;
 		inHand = hnd;
 	}
 	
@@ -55,50 +55,54 @@ public final class BreakObjective extends Objective {
 		if(!desc.isEmpty()) {
 			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
 		}
-		String datStr = data < 0 ? " of any type " : " of given type(" + data + ") ";
+		String datStr = data < 0 ? " " : " of given type(" + data + ") ";
 		String hand = (inHand < 0) ? "" : (inHand == 0) ? "with empty hand " : "with " + Material.getMaterial(inHand).name().toLowerCase().replace('_', ' ') + " ";
-		return "Break " + material.name().toLowerCase() + datStr + hand + "- " + (amount - progress) + "x.";
+		return "Break " + material.name().toLowerCase().replace('_', ' ') + datStr + hand + "- " + (amount - progress) + "x.";
 	}
 	
 	@Override
 	public String toString() {
-		String dataStr = (data < 0 ? "ANY" : String.valueOf(data));
-		return TYPE + ": " + material.name() + "[" + material.getId() + "] DATA: " + dataStr + "; AMT: " + amount + "; HND: " + inHand + coloredDesc() + stringQevents();
+		String dataStr = (data < 0 ? "" : ":" + data);
+		return TYPE + ": " + material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount + "; HND: " + inHand + coloredDesc() + stringQevents();
 	}
 
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = super.serialize();
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section, TYPE);
 		
-		map.put("material", material.getId());
-		map.put("data", data);
-		map.put("amount", amount);
-		map.put("in-hand", inHand);
-		
-		return map;
+		section.set("block", Util.serializeItem(material, data));
+		if(amount > 1)
+			section.set("amount", amount);
+		if(inHand > 0)
+			section.set("inhand", inHand);
 	}
-
-	public static BreakObjective deserialize(Map<String, Object> map) {
+	
+	public static Objective deser(ConfigurationSection section) {
 		Material mat;
-		int dat, amt;
+		int dat, amt = 1;
 		int hnd = -1;
-		
-		try {
-			mat = Material.getMaterial((Integer) map.get("material"));
-			if(mat == null)
+		if(section.isString("block")) {
+			try {
+			int[] itm = Util.parseItem(section.getString("block"));
+			mat = Material.getMaterial(itm[0]);
+			dat = itm[1];
+			} catch (QuesterException e) {
 				return null;
-			dat = (Integer) map.get("data");
-			amt = (Integer) map.get("amount");
+			}
+		} else 
+			return null;
+		if(section.isInt("amount")) {
+			amt = section.getInt("amount");
 			if(amt < 1)
 				return null;
-			if(map.get("in-hand") != null) {
-				hnd = (Integer) map.get("in-hand");
-			}
-			BreakObjective obj = new BreakObjective(amt, mat, (byte)dat, hnd);
-			obj.loadSuper(map);
-			return obj;
-		} catch (Exception e) {
+		} else 
 			return null;
+		if(section.isString("inhand")) {
+			try {
+				hnd = Util.parseItem(section.getString("inhand"))[0];
+			} catch (QuesterException e) {
+			}
 		}
+		return new BreakObjective(amt, mat, dat, hnd);
 	}
 }

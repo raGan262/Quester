@@ -1,12 +1,9 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.Map;
-
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-@SerializableAs("QuesterFishObjective")
 public final class FishObjective extends Objective {
 
 	private final String TYPE = "FISH";
@@ -43,33 +40,20 @@ public final class FishObjective extends Objective {
 	public String toString() {
 		return TYPE + ": " + amount + coloredDesc() + stringQevents();
 	}
-	
-	public int takeExp(int amt) {
-		return amt - amount;
-	}
 
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = super.serialize();
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section, TYPE);
 		
-		map.put("amount", amount);
-		
-		return map;
+		section.set("amount", amount);
 	}
-
-	public static FishObjective deserialize(Map<String, Object> map) {
-		int amt;
-		
-		try {
-			amt = (Integer) map.get("amount");
-			if(amt < 1)
-				return null;
-		} catch (Exception e) {
+	
+	public static Objective deser(ConfigurationSection section) {
+		int amt = 0;
+		if(section.isInt("amount"))
+			amt = section.getInt("amount");
+		if(amt < 1)
 			return null;
-		}
-		
-		FishObjective obj = new FishObjective(amt);
-		obj.loadSuper(map);
-		return obj;
+		return new FishObjective(amt);
 	}
 }

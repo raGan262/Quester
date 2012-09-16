@@ -92,6 +92,8 @@ public abstract class Qevent {
 					try {
 						Method deser = c.getMethod("deser", int.class, int.class, ConfigurationSection.class);
 						qev = (Qevent) deser.invoke(null, occ, del, section);
+						if(qev == null)
+							return null;
 						success = true;
 						break;
 					} catch (Exception e) {

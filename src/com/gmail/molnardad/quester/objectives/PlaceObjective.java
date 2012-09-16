@@ -1,13 +1,13 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.Map;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-@SerializableAs("QuesterPlaceObjective")
+import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.utils.Util;
+
 public final class PlaceObjective extends Objective {
 
 	private final String TYPE = "PLACE";
@@ -15,10 +15,10 @@ public final class PlaceObjective extends Objective {
 	private final byte data;
 	private final int amount;
 	
-	public PlaceObjective(int amt, Material mat, byte dat) {
+	public PlaceObjective(int amt, Material mat, int dat) {
 		amount = amt;
 		material = mat;
-		data = dat;
+		data = (byte)dat;
 	}
 	
 	@Override
@@ -49,45 +49,43 @@ public final class PlaceObjective extends Objective {
 		if(!desc.isEmpty()) {
 			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
 		}
-		String datStr = data < 0 ? " of any type " : " of given type(" + data + ") ";
-		return "Place " + material.name().toLowerCase() + datStr + "- " + (amount - progress) + "x.";
+		String datStr = data < 0 ? " " : " of given type(" + data + ") ";
+		return "Place " + material.name().toLowerCase().replace('_', ' ') + datStr + "- " + (amount - progress) + "x.";
 	}
 	
 	@Override
 	public String toString() {
-		String dataStr = (data < 0 ? "ANY" : String.valueOf(data));
-		return TYPE + ": " + material.name() + "[" + material.getId() + "] DATA: " + dataStr + "; AMT: " + amount + coloredDesc() + stringQevents();
+		String dataStr = (data < 0 ? "" : ":" + data);
+		return TYPE + ": " + material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount + coloredDesc() + stringQevents();
 	}
 
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = super.serialize();
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section, TYPE);
 		
-		map.put("material", material.getId());
-		map.put("data", data);
-		map.put("amount", amount);
-		
-		return map;
+		section.set("block", Util.serializeItem(material, data));
+		if(amount > 1)
+			section.set("amount", amount);
 	}
-
-	public static PlaceObjective deserialize(Map<String, Object> map) {
+	
+	public static Objective deser(ConfigurationSection section) {
 		Material mat;
-		int dat, amt;
-		
-		try {
-			mat = Material.getMaterial((Integer) map.get("material"));
-			if(mat == null)
+		int dat, amt = 1;
+		if(section.isString("block")) {
+			try {
+			int[] itm = Util.parseItem(section.getString("block"));
+			mat = Material.getMaterial(itm[0]);
+			dat = itm[1];
+			} catch (QuesterException e) {
 				return null;
-			dat = (Integer) map.get("data");
-			amt = (Integer) map.get("amount");
-			if(amt < 1)
-				return null;
-			
-			PlaceObjective obj = new PlaceObjective(amt, mat, (byte)dat);
-			obj.loadSuper(map);
-			return obj;
-		} catch (Exception e) {
+			}
+		} else 
 			return null;
+		if(section.isInt("amount")) {
+			amt = section.getInt("amount");
+			if(amt < 1)
+				amt = 1;
 		}
+		return new PlaceObjective(amt, mat, dat);
 	}
 }

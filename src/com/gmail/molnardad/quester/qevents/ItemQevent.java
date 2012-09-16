@@ -57,8 +57,10 @@ public final class ItemQevent extends Qevent {
 		super.serialize(section, TYPE);
 
 		section.set("item", Util.serializeItem(material, data));
-		section.set("enchants", Util.serializeEnchants(enchants));
-		section.set("amount", amount);
+		if(!enchants.isEmpty())
+			section.set("enchants", Util.serializeEnchants(enchants));
+		if(amount != 1)
+			section.set("amount", amount);
 	}
 	
 	public static ItemQevent deser(int occ, int del, ConfigurationSection section) {
@@ -70,8 +72,7 @@ public final class ItemQevent extends Qevent {
 				int[] itm = Util.parseItem(section.getString("item"));
 				mat = Material.getMaterial(itm[0]);
 				dat = itm[1];
-			}
-			else
+			} else
 				return null;
 			
 			if(section.isInt("amount"))

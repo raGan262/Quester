@@ -1,12 +1,9 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.Map;
-
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-@SerializableAs("QuesterPlayerKillObjective")
 public final class PlayerKillObjective extends Objective {
 
 	private final String TYPE = "PLAYERKILL";
@@ -38,18 +35,18 @@ public final class PlayerKillObjective extends Objective {
 		if(!desc.isEmpty()) {
 			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
 		}
-		String player = playerName.equals("") ? "any player" : "player named " + playerName;
+		String player = playerName.isEmpty() ? "any player" : "player named " + playerName;
 		return "Kill " + player + " - " + (amount - progress) + "x";
 	}
 	
 	@Override
 	public String toString() {
-		String player = playerName.equals("") ? "ANY" : playerName;
+		String player = playerName.isEmpty() ? "ANY" : playerName;
 		return TYPE + ": " + player + "; AMT: " + amount + coloredDesc() + stringQevents();
 	}
 	
 	public boolean checkPlayer(Player player) {
-		if(playerName.equals("")) {
+		if(playerName.isEmpty()) {
 			return true;
 		} else {
 			return player.getName().equalsIgnoreCase(playerName);
@@ -57,29 +54,23 @@ public final class PlayerKillObjective extends Objective {
 	}
 
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = super.serialize();
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section, TYPE);
 		
-		map.put("amount", amount);
-		map.put("wanted", playerName);
-		
-		return map;
+		if(amount > 1)
+			section.set("amount", amount);
+		if(!playerName.isEmpty())
+			section.set("name", playerName);
 	}
-
-	public static PlayerKillObjective deserialize(Map<String, Object> map) {
-		int amt;
-		String wanted;
-		try {
-			amt = (Integer) map.get("amount");
-			if(amt < 1)
-				return null;
-			wanted = (String) map.get("wanted");
-			
-			PlayerKillObjective obj = new PlayerKillObjective(amt, wanted);
-			obj.loadSuper(map);
-			return obj;
-		} catch (Exception e) {
-			return null;
-		}
+	
+	public static Objective deser(ConfigurationSection section) {
+		int amt = 1;
+		String name;
+		name = section.getString("name");
+		if(section.isInt("amount"))
+			amt = section.getInt("amount");
+		if(amt < 1)
+			amt = 1;
+		return new PlayerKillObjective(amt, name);
 	}
 }

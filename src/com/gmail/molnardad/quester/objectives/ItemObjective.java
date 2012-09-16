@@ -5,16 +5,16 @@ import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.utils.Util;
 
-@SerializableAs("QuesterItemObjective")
 public final class ItemObjective extends Objective {
 
 	private final String TYPE = "ITEM";
@@ -27,7 +27,10 @@ public final class ItemObjective extends Objective {
 		material = mat;
 		amount = amt;
 		data = (short)dat;
-		enchants = enchs;
+		if(enchs != null)
+			this.enchants = enchs;
+		else
+			this.enchants = new HashMap<Integer, Integer>();
 	}
 	
 	@Override
@@ -60,8 +63,8 @@ public final class ItemObjective extends Objective {
 	
 	@Override
 	public String toString() {
-		String dataStr = (data < 0 ? "ANY" : String.valueOf(data));
-		String itm = material.name()+"["+material.getId()+"]; DMG: "+dataStr+"; AMT: "+amount;
+		String dataStr = (data < 0 ? "" : ":" + data);
+		String itm = material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount;
 		String enchs = enchants.isEmpty() ? "" : "\n -- ENCH:";
 		for(Integer e : enchants.keySet()) {
 			enchs = enchs + " " + Enchantment.getById(e).getName() + ":" + enchants.get(e);
@@ -102,40 +105,44 @@ public final class ItemObjective extends Objective {
 	}
 
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = super.serialize();
-		
-		map.put("material", material.getId());
-		map.put("data", data);
-		map.put("amount", amount);
-		map.put("enchants", enchants);
-		
-		return map;
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section, TYPE);
+
+		section.set("item", Util.serializeItem(material, data));
+		if(!enchants.isEmpty())
+			section.set("enchants", Util.serializeEnchants(enchants));
+		if(amount != 1)
+			section.set("amount", amount);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static ItemObjective deserialize(Map<String, Object> map) {
-		Material mat;
-		int dat, amt;
-		Map<Integer, Integer> enchs = new HashMap<Integer, Integer>();
-		
+	public static Objective deser(ConfigurationSection section) {
+		Material mat = null;
+		int dat = 0, amt = 1;
+		Map<Integer, Integer> enchs = null;
 		try {
-			mat = Material.getMaterial((Integer) map.get("material"));
-			if(mat == null)
+			if(section.isString("item")) {
+				int[] itm = Util.parseItem(section.getString("item"));
+				mat = Material.getMaterial(itm[0]);
+				dat = itm[1];
+			} else
 				return null;
-			dat = (Integer) map.get("data");
-			amt = (Integer) map.get("amount");
-			if(amt < 1)
-				return null;
-			if(map.get("enchants") != null)
-				enchs = (Map<Integer, Integer>) map.get("enchants");
 			
-			ItemObjective obj = new ItemObjective(mat, amt, dat, enchs);
-			obj.loadSuper(map);
-			return obj;
+			if(section.isInt("amount"))
+				amt = section.getInt("amount");
+			if(amt < 1)
+				amt = 1;
+			
+			if(section.isString("enchants"))
+				try {
+					enchs = Util.parseEnchants(section.getString("enchants"));
+				} catch (QuesterException e) {
+					enchs = null;
+				}
 		} catch (Exception e) {
 			return null;
 		}
+		
+		return new ItemObjective(mat, dat, amt, enchs);
 	}
 
 	@Override

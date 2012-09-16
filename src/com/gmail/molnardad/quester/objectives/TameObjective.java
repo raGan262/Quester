@@ -1,13 +1,12 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.Map;
-
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-@SerializableAs("QuesterTameObjective")
+import com.gmail.molnardad.quester.utils.Util;
+
 public final class TameObjective extends Objective {
 
 	private final String TYPE = "TAME";
@@ -57,32 +56,25 @@ public final class TameObjective extends Objective {
 	}
 
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = super.serialize();
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section, TYPE);
 		
-		map.put("amount", amount);
-		if(entity == null)
-			map.put("entity", -1);
-		else
-			map.put("entity", entity.getTypeId());
-		
-		return map;
+		if(amount > 1)
+			section.set("amount", amount);
+		if(entity != null)
+			section.set("entity","" + entity.getTypeId());
 	}
-
-	public static TameObjective deserialize(Map<String, Object> map) {
-		int amt;
+	
+	public static Objective deser(ConfigurationSection section) {
+		int amt = 1;
 		EntityType ent = null;
 		try {
-			amt = (Integer) map.get("amount");
-			if(amt < 1)
-				return null;
-			ent = EntityType.fromId((Integer) map.get("entity"));
-			
-			TameObjective obj = new TameObjective(amt, ent);
-			obj.loadSuper(map);
-			return obj;
-		} catch (Exception e) {
-			return null;
-		}
+			ent = Util.parseEntity(section.getString("entity"));
+		} catch (Exception e) {}
+		if(section.isInt("amount"))
+			amt = section.getInt("amount");
+		if(amt < 1)
+			amt = 1;
+		return new MobKillObjective(amt, ent);
 	}
 }

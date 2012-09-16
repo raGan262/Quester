@@ -1,13 +1,13 @@
 package com.gmail.molnardad.quester.objectives;
 
-import java.util.Map;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-@SerializableAs("QuesterCollectObjective")
+import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.utils.Util;
+
 public final class CollectObjective extends Objective {
 
 	private final String TYPE = "COLLECT";
@@ -49,44 +49,43 @@ public final class CollectObjective extends Objective {
 		if(!desc.isEmpty()) {
 			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
 		}
-		String datStr = data < 0 ? " of any type " : " of given type(" + data + ") ";
-		return "Collect " + material.name().toLowerCase() + datStr + "- " + (amount - progress) + "x.";
+		String datStr = data < 0 ? " " : " of given type(" + data + ") ";
+		return "Collect " + material.name().toLowerCase().replace('_', ' ') + datStr + "- " + (amount - progress) + "x.";
 	}
 	
 	@Override
 	public String toString() {
-		String dataStr = (data < 0 ? "ANY" : String.valueOf(data));
-		return TYPE + ": " + material.name() + "[" + material.getId() + "] DATA: " + dataStr + "; AMT: " + amount + coloredDesc() + stringQevents();
+		String dataStr = (data < 0 ? "" : ":" + data);
+		return TYPE + ": " + material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount + coloredDesc() + stringQevents();
 	}
 
 	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = super.serialize();
+	public void serialize(ConfigurationSection section) {
+		super.serialize(section, TYPE);
 		
-		map.put("material", material.getId());
-		map.put("data", data);
-		map.put("amount", amount);
-		
-		return map;
+		section.set("item", Util.serializeItem(material, data));
+		section.set("amount", amount);
 	}
-
-	public static CollectObjective deserialize(Map<String, Object> map) {
+	
+	public static Objective deser(ConfigurationSection section) {
 		Material mat;
 		int dat, amt;
-		
-		try {
-			mat = Material.getMaterial((Integer) map.get("material"));
-			if(mat == null)
+		if(section.isString("item")) {
+			try {
+			int[] itm = Util.parseItem(section.getString("item"));
+			mat = Material.getMaterial(itm[0]);
+			dat = itm[1];
+			} catch (QuesterException e) {
 				return null;
-			dat = (Integer) map.get("data");
-			amt = (Integer) map.get("amount");
+			}
+		} else 
+			return null;
+		if(section.isInt("amount")) {
+			amt = section.getInt("amount");
 			if(amt < 1)
 				return null;
-			CollectObjective obj = new CollectObjective(amt, mat, (byte)dat);
-			obj.loadSuper(map);
-			return obj;
-		} catch (Exception e) {
+		} else 
 			return null;
-		}
+		return new CollectObjective(amt, mat, dat);
 	}
 }
