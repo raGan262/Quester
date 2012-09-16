@@ -38,7 +38,7 @@ public class BreakListener implements Listener {
 	    			if(obj.getType().equalsIgnoreCase("BREAK")) {
 	    				BreakObjective bObj = (BreakObjective) obj;
 	    				Block block = event.getBlock();
-		    			// compare block ID // check for redstone
+		    			// compare block ID && check for redstone
 	    				boolean passed;
 	    				int id = block.getTypeId();
 	    				if(id != Material.REDSTONE_ORE.getId()) {
@@ -46,7 +46,7 @@ public class BreakListener implements Listener {
 	    				} else {
 	    					passed = id == Material.GLOWING_REDSTONE_ORE.getId() || id == Material.REDSTONE_ORE.getId();
 	    				}
-		    			if( passed && bObj.checkHand(player.getItemInHand().getTypeId())) {
+		    			if(passed && bObj.checkHand(player.getItemInHand().getTypeId())) {
 		    				// if DATA >= 0 compare
 		    				if(bObj.getData() < 0 || bObj.getData() == block.getData()) {
 		    					if(QuestData.brkNoDrops) {
@@ -68,8 +68,15 @@ public class BreakListener implements Listener {
 	    			}
 	    			BreakObjective obj = (BreakObjective)objs.get(i);
 	    			Block block = event.getBlock();
-	    			// compare block ID
-	    			if(block.getTypeId() == obj.getMaterial().getId() && obj.checkHand(player.getItemInHand().getTypeId())) {
+	    			// compare block ID && check for redstone
+	    			boolean passed;
+    				int id = block.getTypeId();
+    				if(id != Material.REDSTONE_ORE.getId()) {
+    					passed = id == obj.getMaterial().getId();
+    				} else {
+    					passed = id == Material.GLOWING_REDSTONE_ORE.getId() || id == Material.REDSTONE_ORE.getId();
+    				}
+	    			if(passed && obj.checkHand(player.getItemInHand().getTypeId())) {
 	    				// if DATA >= 0 compare
 	    				if(obj.getData() < 0 || obj.getData() == block.getData()) {
 	    					if(QuestData.brkNoDrops) {
