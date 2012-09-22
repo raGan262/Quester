@@ -8,7 +8,7 @@ import com.gmail.molnardad.quester.utils.ExpManager;
 
 public final class ExpObjective extends Objective {
 
-	private final String TYPE = "EXPERIENCE";
+	public static final String TYPE = "EXP";
 	private final int amount;
 	
 	public ExpObjective(int amt) {

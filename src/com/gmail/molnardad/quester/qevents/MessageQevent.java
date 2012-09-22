@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 public final class MessageQevent extends Qevent {
 
-	public static final String TYPE = "MESSAGE";
+	public static final String TYPE = "MSG";
 	private final String message;
 	private final String rawmessage;
 	

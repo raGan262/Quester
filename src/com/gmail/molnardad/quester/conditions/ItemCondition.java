@@ -78,13 +78,9 @@ public final class ItemCondition extends Condition {
 		int amt = 1, dat;
 		Material mat;
 		try {
-			if(section.isString("item")) {
-				int[] itm = Util.parseItem(section.getString("item"));
-				mat = Material.getMaterial(itm[0]);
-				dat = itm[1];
-			}
-			else
-				return null;
+			int[] itm = Util.parseItem(section.getString("item"));
+			mat = Material.getMaterial(itm[0]);
+			dat = itm[1];
 			if(section.isInt("amount"))
 				amt = section.getInt("amount");
 			if(amt < 1)

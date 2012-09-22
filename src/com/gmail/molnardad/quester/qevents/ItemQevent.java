@@ -68,13 +68,11 @@ public final class ItemQevent extends Qevent {
 		int dat = 0, amt = 1;
 		Map<Integer, Integer> enchs = null;
 		try {
-			if(section.isString("item")) {
-				int[] itm = Util.parseItem(section.getString("item"));
-				mat = Material.getMaterial(itm[0]);
-				dat = itm[1];
-			} else
-				return null;
-			
+			int[] itm = Util.parseItem(section.getString("item"));
+			mat = Material.getMaterial(itm[0]);
+			dat = itm[1];
+			if(dat < 0)
+				dat = 0;
 			if(section.isInt("amount"))
 				amt = section.getInt("amount");
 			if(amt < 1)

@@ -17,7 +17,7 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public final class ItemObjective extends Objective {
 
-	private final String TYPE = "ITEM";
+	public static final String TYPE = "ITEM";
 	private final Material material;
 	private final short data;
 	private final int amount;
@@ -120,12 +120,9 @@ public final class ItemObjective extends Objective {
 		int dat = 0, amt = 1;
 		Map<Integer, Integer> enchs = null;
 		try {
-			if(section.isString("item")) {
-				int[] itm = Util.parseItem(section.getString("item"));
-				mat = Material.getMaterial(itm[0]);
-				dat = itm[1];
-			} else
-				return null;
+			int[] itm = Util.parseItem(section.getString("item", ""));
+			mat = Material.getMaterial(itm[0]);
+			dat = itm[1];
 			
 			if(section.isInt("amount"))
 				amt = section.getInt("amount");

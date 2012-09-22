@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 public final class MilkObjective extends Objective {
 
-	private final String TYPE = "MILK";
+	public static final String TYPE = "MILK";
 	private final int amount;
 	
 	public MilkObjective(int amt) {

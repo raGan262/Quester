@@ -5,7 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 public final class WorldObjective extends Objective {
 
-	private final String TYPE = "WORLD";
+	public static final String TYPE = "WORLD";
 	private final String worldName;
 	
 	public WorldObjective(String wName) {

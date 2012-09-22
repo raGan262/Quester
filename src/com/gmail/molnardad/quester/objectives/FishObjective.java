@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 public final class FishObjective extends Objective {
 
-	private final String TYPE = "FISH";
+	public static final String TYPE = "FISH";
 	private final int amount;
 	
 	public FishObjective(int amt) {

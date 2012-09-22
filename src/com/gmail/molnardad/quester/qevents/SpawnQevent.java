@@ -67,8 +67,9 @@ public final class SpawnQevent extends Qevent {
 				if(rng < 0)
 					rng = 0;
 			}
-			if(section.isInt("entity"))
-				ent = EntityType.fromId(section.getInt("entity"));
+			try {
+				ent = Util.parseEntity(section.getString("entity"));
+			} catch (Exception ignore) {}
 			if(ent == null)
 				return null;
 		} catch (Exception e) {

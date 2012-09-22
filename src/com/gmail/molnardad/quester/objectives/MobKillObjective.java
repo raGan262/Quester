@@ -9,7 +9,7 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public final class MobKillObjective extends Objective {
 
-	private final String TYPE = "MOBKILL";
+	public static final String TYPE = "MOBKILL";
 	private final EntityType entity;
 	private final int amount;
 

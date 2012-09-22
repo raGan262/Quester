@@ -8,7 +8,7 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public final class LocObjective extends Objective {
 
-	private final String TYPE = "LOCATION";
+	public static final String TYPE = "LOCATION";
 	private final Location location;
 	private final int range;
 	

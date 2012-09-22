@@ -146,6 +146,8 @@ public abstract class Objective {
 					Qevent qv = Qevent.deserialize(evs.getConfigurationSection(key));
 					if(qv != null)
 						qvts.add(qv);
+					else
+						Quester.log.severe("Error occured when deserializing event ID:" + key + " in objective.");
 				}
 			}
 		}

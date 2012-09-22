@@ -1,10 +1,8 @@
 package com.gmail.molnardad.quester;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
@@ -219,15 +217,6 @@ public class Quest {
 	}
 	
 	public void serialize(ConfigurationSection section) {
-		Map<Integer, Objective> objs = new HashMap<Integer, Objective>();
-		Map<Integer, Condition> cons = new HashMap<Integer, Condition>();
-		
-		for(int i=0; i<objectives.size(); i++) {
-			objs.put(i, objectives.get(i));
-		}
-		for(int i=0; i<conditions.size(); i++) {
-			cons.put(i, conditions.get(i));
-		}
 		
 		section.set("name", name);
 		if(!description.isEmpty())
@@ -241,10 +230,19 @@ public class Quest {
 			section.set("worlds", worlds.toArray(new String[0]));
 		if(!flags.isEmpty())
 			section.set("flags", QuestFlag.serialize(flags));
-		if(!objs.isEmpty())
-			section.set("objectives", objs);
-		if(!cons.isEmpty())
-			section.set("conditions", cons);
+		
+		if(!objectives.isEmpty()) {
+			ConfigurationSection subsection = section.createSection("objectives");
+			for(int i=0; i<objectives.size(); i++) {
+				objectives.get(i).serialize(subsection.createSection(String.valueOf(i)));
+			}
+		}
+		if(!conditions.isEmpty()) {
+			ConfigurationSection subsection = section.createSection("conditions");
+			for(int i=0; i<conditions.size(); i++) {
+				conditions.get(i).serialize(subsection.createSection(String.valueOf(i)));
+			}
+		}
 		if(!qevents.isEmpty()) {
 			ConfigurationSection subsection = section.createSection("events");
 			for(int i=0; i<qevents.size(); i++) {
@@ -302,13 +300,18 @@ public class Quest {
 
 			if(QuestData.debug)
 				Quester.log.info("Deserializing objectives.");
-			Map<String, Object> objs = new HashMap<String, Object>();
+			Objective obj = null;
 			if(section.isConfigurationSection("objectives")) {
-				objs = section.getConfigurationSection("objectives").getValues(true);
-				for(int i=0; i<objs.size(); i++) {
-					if(objs.get(String.valueOf(i)) != null) {
-						quest.addObjective((Objective) objs.get(i));
-					}
+				ConfigurationSection subsection = section.getConfigurationSection("objectives");
+				Set<String> keys = subsection.getKeys(false);
+				for(int i=0; i<keys.size(); i++) {
+					obj = Objective.deserialize(subsection.getConfigurationSection(String.valueOf(i)));
+					if(obj != null) {
+						quest.addObjective(obj);
+						if(QuestData.debug)
+							Quester.log.info("Objective " + i + " OK.");
+					} else
+						Quester.log.severe("Error occured when deserializing objective ID " + i + " in quest '" + quest.getName() + "'.");
 				}
 			}
 

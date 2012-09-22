@@ -9,7 +9,7 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public final class DeathObjective extends Objective {
 
-	private final String TYPE = "DEATH";
+	public static final String TYPE = "DEATH";
 	private final Location location;
 	private final int amount;
 	private final int range;

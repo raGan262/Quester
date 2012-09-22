@@ -9,7 +9,7 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public final class ShearObjective extends Objective {
 
-	private final String TYPE = "SHEAR";
+	public static final String TYPE = "SHEAR";
 	private final DyeColor color;
 	private final int amount;
 

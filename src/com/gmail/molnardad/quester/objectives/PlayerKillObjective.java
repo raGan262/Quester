@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 public final class PlayerKillObjective extends Objective {
 
-	private final String TYPE = "PLAYERKILL";
+	public static final String TYPE = "PLAYERKILL";
 	private final String playerName;
 	private final int amount;
 	

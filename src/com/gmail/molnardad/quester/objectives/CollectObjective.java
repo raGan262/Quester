@@ -10,7 +10,7 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public final class CollectObjective extends Objective {
 
-	private final String TYPE = "COLLECT";
+	public static final String TYPE = "COLLECT";
 	private final Material material;
 	private final short data;
 	private final int amount;
@@ -70,16 +70,13 @@ public final class CollectObjective extends Objective {
 	public static Objective deser(ConfigurationSection section) {
 		Material mat;
 		int dat, amt;
-		if(section.isString("item")) {
-			try {
-			int[] itm = Util.parseItem(section.getString("item"));
+		try {
+			int[] itm = Util.parseItem(section.getString("item", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
 			} catch (QuesterException e) {
 				return null;
-			}
-		} else 
-			return null;
+		}
 		if(section.isInt("amount")) {
 			amt = section.getInt("amount");
 			if(amt < 1)

@@ -9,7 +9,7 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public final class TameObjective extends Objective {
 
-	private final String TYPE = "TAME";
+	public static final String TYPE = "TAME";
 	private final EntityType entity;
 	private final int amount;
 

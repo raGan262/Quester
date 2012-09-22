@@ -8,7 +8,7 @@ import com.gmail.molnardad.quester.Quester;
 
 public final class MoneyObjective extends Objective {
 
-	private final String TYPE = "MONEY";
+	public static final String TYPE = "MONEY";
 	private final double amount;
 	
 	public MoneyObjective(double amt) {
@@ -51,9 +51,9 @@ public final class MoneyObjective extends Objective {
 	}
 	
 	public static Objective deser(ConfigurationSection section) {
-		int amt = 0;
-		if(section.isInt("amount"))
-			amt = section.getInt("amount");
+		double amt = 0;
+		if(section.isInt("amount") || section.isDouble("amount"))
+			amt = section.getDouble("amount");
 		if(amt < 1)
 			return null;
 		return new MoneyObjective(amt);

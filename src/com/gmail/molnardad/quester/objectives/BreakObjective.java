@@ -10,7 +10,7 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public final class BreakObjective extends Objective {
 
-	private final String TYPE = "BREAK";
+	public static final String TYPE = "BREAK";
 	private final Material material;
 	private final byte data;
 	private final int amount;
@@ -56,7 +56,7 @@ public final class BreakObjective extends Objective {
 			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
 		}
 		String datStr = data < 0 ? " " : " of given type(" + data + ") ";
-		String hand = (inHand < 0) ? "" : (inHand == 0) ? "with empty hand " : "with " + Material.getMaterial(inHand).name().toLowerCase().replace('_', ' ') + " ";
+		String hand = (inHand < 0) ? " " : (inHand == 0) ? "with empty hand " : "with " + Material.getMaterial(inHand).name().toLowerCase().replace('_', ' ') + " ";
 		return "Break " + material.name().toLowerCase().replace('_', ' ') + datStr + hand + "- " + (amount - progress) + "x.";
 	}
 	
@@ -81,27 +81,22 @@ public final class BreakObjective extends Objective {
 		Material mat;
 		int dat, amt = 1;
 		int hnd = -1;
-		if(section.isString("block")) {
-			try {
-			int[] itm = Util.parseItem(section.getString("block"));
+		try {
+			int[] itm = Util.parseItem(section.getString("block", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
 			} catch (QuesterException e) {
 				return null;
-			}
-		} else 
-			return null;
+		}
 		if(section.isInt("amount")) {
 			amt = section.getInt("amount");
 			if(amt < 1)
 				return null;
 		} else 
 			return null;
-		if(section.isString("inhand")) {
-			try {
-				hnd = Util.parseItem(section.getString("inhand"))[0];
+		try {
+				hnd = Util.parseItem(section.getString("inhand", ""))[0];
 			} catch (QuesterException e) {
-			}
 		}
 		return new BreakObjective(amt, mat, dat, hnd);
 	}

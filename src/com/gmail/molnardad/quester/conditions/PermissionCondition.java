@@ -8,7 +8,7 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public final class PermissionCondition extends Condition {
 	
-	public static final String TYPE = "PERMISSION";
+	public static final String TYPE = "PERM";
 	private final String perm;
 	
 	public PermissionCondition(String perm) {

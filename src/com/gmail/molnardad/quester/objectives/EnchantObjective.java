@@ -14,7 +14,7 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public final class EnchantObjective extends Objective {
 
-	private final String TYPE = "ENCHANT";
+	public static final String TYPE = "ENCHANT";
 	private final Material material;
 	private final int amount;
 	private final Map<Integer, Integer> enchants;

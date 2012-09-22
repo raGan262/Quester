@@ -48,14 +48,11 @@ public final class SetBlockQevent extends Qevent {
 		int mat = 0, dat = 0;
 		Location loc = null;
 		try {
-			if(section.isString("block")) {
-				int[] itm = Util.parseItem(section.getString("block"));
-				mat = itm[0];
-				dat = itm[1];
-			}
-			else
-				return null;
-			
+			int[] itm = Util.parseItem(section.getString("block"));
+			mat = itm[0];
+			dat = itm[1];
+			if(dat < 0)
+				dat = 0;
 			if(section.isString("location"))
 				loc = Util.deserializeLocString(section.getString("location"));
 			if(loc == null)

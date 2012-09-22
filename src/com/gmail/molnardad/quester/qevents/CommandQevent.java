@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 public final class CommandQevent extends Qevent {
 
-	public static final String TYPE = "COMMAND";
+	public static final String TYPE = "CMD";
 	private final String command;
 	
 	public CommandQevent(int occ, int del, String cmd) {

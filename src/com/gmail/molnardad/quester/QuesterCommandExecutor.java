@@ -18,6 +18,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
 import com.avaje.ebeaninternal.server.lib.util.InvalidDataException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
@@ -34,8 +35,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 	
 	private final String OBJECTIVES = "break, place, item, exp, loc, death, world, mobkill, kill, craft, ench, smelt, shear, fish, milk, collect, tame, money";
 	private final String CONDITIONS = "quest, questnot, perm, money, item, point";
-	//private final String REWARDS = "item, money, exp, effect, point";
-	private final String EVENTS = "msg, explosion, block, tele, lightning, cmd, quest, cancel, toggle, objcom, spawn";
+	private final String EVENTS = "msg, explosion, block, tele, lightning, cmd, quest, cancel, toggle, objcom, spawn, item, money, exp, effect, point";
 	
 	public QuesterCommandExecutor() {
 		qm = Quester.qMan;
@@ -609,169 +609,6 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.HOL_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 					return true;
 				}
-						
-				// QUEST REWARD TODO
-				/*if(args[0].equalsIgnoreCase("reward") || args[0].equalsIgnoreCase("rew")) {
-					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
-						return true;
-					}
-					if(args.length > 2){
-						
-						// ADD REWARD
-						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
-							
-							// EFFECT REWARD
-							if(args[2].equalsIgnoreCase("effect")) {
-								if(args.length > 3) {
-									try {
-										PotionEffect eff = parseEffect(args[3]);
-										qm.addQuestReward(sender.getName(), new EffectReward(eff.getType().getId(), eff.getDuration(), eff.getAmplifier()));
-										sender.sendMessage(ChatColor.GREEN + strings.REW_ADDED.replaceAll("%type", strings.REW_EFF_TYPE));
-									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
-									}
-									return true;
-								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_EFF_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
-								return true;
-							}
-							
-							// ITEM REWARD
-							if(args[2].equalsIgnoreCase("item")) {
-								if(args.length > 3) {
-									Material mat;
-									int amt = 1;
-									int dat = 0;
-									try {
-										int[] itm = parseItem(args[3]);
-										mat = Material.getMaterial(itm[0]);
-										dat = itm[1] == -1 ? 0 : itm[1];
-										if(args.length > 4) {
-											amt = Integer.parseInt(args[4]);
-										}
-										if(amt < 1 || dat < 0) {
-											throw new NumberFormatException();
-										}
-									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_NUMBERS);
-										return true;
-									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
-										return true;
-									}
-									Map<Integer, Integer> enchs = new HashMap<Integer, Integer>();
-									try {
-										if(args.length > 5) {
-											enchs = parseEnchants(args, 5);
-											ItemStack test = new ItemStack(mat, amt, (short)dat);
-											for(Integer i : enchs.keySet()) {
-												test.addEnchantment(Enchantment.getById(i), enchs.get(i));
-											}
-										}
-										qm.addQuestReward(sender.getName(), new ItemReward(mat, amt, dat, enchs));
-										sender.sendMessage(ChatColor.GREEN + strings.REW_ADDED.replaceAll("%type", strings.REW_ITEM_TYPE));
-									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
-									} catch (IllegalArgumentException e){
-										sender.sendMessage(strings.ERROR_CMD_ENCH_CANT);
-										return true;
-									}
-									return true;
-								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_ITEM_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
-								return true;
-							}
-							
-							// MONEY REWARD
-							if(args[2].equalsIgnoreCase("money")) {
-								if(args.length > 3) {
-									try {
-										double amt = Double.parseDouble(args[3]);
-										qm.addQuestReward(sender.getName(), new MoneyReward(amt));
-										sender.sendMessage(ChatColor.GREEN + strings.REW_ADDED.replaceAll("%type", strings.REW_MONEY_TYPE));
-									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_GENERAL);
-									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
-									}
-									return true;
-								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_MONEY_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
-								return true;
-							}
-							
-							// EXPERIENCE REWARD
-							if(args[2].equalsIgnoreCase("exp")) {
-								if(args.length > 3) {
-									try {
-										int amt = Integer.parseInt(args[3]);
-										qm.addQuestReward(sender.getName(), new ExpReward(amt));
-										sender.sendMessage(ChatColor.GREEN + strings.REW_ADDED.replaceAll("%type", strings.REW_EXP_TYPE));
-									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_GENERAL);
-									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
-									}
-									return true;
-								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_EXP_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
-								return true;
-							}
-							
-							// POINT REWARD
-							if(args[2].equalsIgnoreCase("point")) {
-								if(args.length > 3) {
-									try {
-										int amt = Integer.parseInt(args[3]);
-										qm.addQuestReward(sender.getName(), new PointReward(amt));
-										sender.sendMessage(ChatColor.GREEN + strings.REW_ADDED.replaceAll("%type", strings.REW_POINT_TYPE));
-									} catch (NumberFormatException e) {
-										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_GENERAL);
-									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
-									}
-									return true;
-								}
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_POINT_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
-								return true;
-							}
-							
-							sender.sendMessage(ChatColor.RED + strings.REW_USAGE_AVAILABLE + ChatColor.WHITE + REWARDS);
-							return true;
-						}
-						
-						// REMOVE REWARD
-						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")){
-							try {
-								int id = Integer.parseInt(args[2]);
-								qm.removeQuestReward(sender.getName(), id);
-								sender.sendMessage(ChatColor.GREEN + strings.REW_REMOVED.replaceAll("%id", args[2]));
-							} catch (NumberFormatException e) {
-								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_USAGE_REMOVE.replaceAll("%cmd", QuestData.displayedCmd));
-							} catch (QuesterException e) {
-								sender.sendMessage(e.message());
-							}
-							return true;
-						}
-						
-						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
-						return true;
-					}
-					
-					if(args.length > 1) {
-						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
-							sender.sendMessage(ChatColor.RED + strings.REW_USAGE_AVAILABLE + ChatColor.WHITE + REWARDS);
-							return true;
-						}
-						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")) {
-							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_USAGE_REMOVE.replaceAll("%cmd", QuestData.displayedCmd));
-							return true;
-						}
-					}
-					
-					sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.REW_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
-					return true;
-				}*/
 				
 				// QUEST OBJECTIVE TODO
 				if(args[0].equalsIgnoreCase("objective") || args[0].equalsIgnoreCase("obj")) {
@@ -1661,13 +1498,13 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						// ADD EVENT
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
 							
-							if(args.length > 4){
+							if(args.length > 3){
 								
 								int occ;
 								int del;
 								try {
-									occ = Integer.parseInt(args[3]);
-									del = Integer.parseInt(args[4]);
+									occ = Integer.parseInt(args[2]);
+									del = Integer.parseInt(args[3]);
 									if(occ < -3 || del < 0)
 										throw new NumberFormatException();
 								} catch (NumberFormatException e) {
@@ -1675,250 +1512,369 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									return true;
 								}
 								
-								// MESSAGE EVENT
-								if(args[2].equalsIgnoreCase("msg")) {
-									if(args.length > 5) {
-										String msg = implode(args, 5);
-										try {
-											qm.addQevent(sender.getName(), new MessageQevent(occ, del, msg));
-											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_MSG_TYPE));
-										} catch (QuesterException e) {
-											sender.sendMessage(e.message());
-										}
-										return true;
-									}
-									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_MSG_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
-									return true;
-								}
-								
-								// QUEST EVENT
-								if(args[2].equalsIgnoreCase("quest")) {
-									if(args.length > 5) {
-										try {
-											int qst = Integer.parseInt(args[5]);
-											qm.addQevent(sender.getName(), new QuestQevent(occ, del, qst));
-											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_QUEST_TYPE));
-										} catch (QuesterException e) {
-											sender.sendMessage(e.message());
-										} catch (NumberFormatException e) {
-											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
-										}
-										return true;
-									}
-									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_QUEST_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
-									return true;
-								}
-								
-								// TOGGLE EVENT
-								if(args[2].equalsIgnoreCase("toggle")) {
-									if(args.length > 5) {
-										try {
-											int qst = Integer.parseInt(args[5]);
-											qm.addQevent(sender.getName(), new ToggleQevent(occ, del, qst));
-											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_TOGGLE_TYPE));
-										} catch (QuesterException e) {
-											sender.sendMessage(e.message());
-										} catch (NumberFormatException e) {
-											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
-										}
-										return true;
-									}
-									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_TOGGLE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
-									return true;
-								}
-								
-								// OBJECTIVE COMPLETE EVENT
-								if(args[2].equalsIgnoreCase("objcom")) {
-									if(args.length > 5) {
-										try {
-											int obj = Integer.parseInt(args[5]);
-											qm.addQevent(sender.getName(), new ObjectiveCompleteQevent(occ, del, obj));
-											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_OBJCOM_TYPE));
-										} catch (QuesterException e) {
-											sender.sendMessage(e.message());
-										} catch (NumberFormatException e) {
-											sender.sendMessage(ChatColor.RED + strings.OBJ_BAD_ID);
-										}
-										return true;
-									}
-									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_OBJCOM_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
-									return true;
-								}
-								
-								// CANCEL EVENT
-								if(args[2].equalsIgnoreCase("cancel")) {
-										try {
-											qm.addQevent(sender.getName(), new CancelQevent(occ, del));
-											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_CANCEL_TYPE));
-										} catch (QuesterException e) {
-											sender.sendMessage(e.message());
-										}
-									return true;
-								}
-								
-								// COMMAND EVENT
-								if(args[2].equalsIgnoreCase("cmd")) {
-									if(args.length > 5) {
-										String comm = implode(args, 5);
-										try {
-											qm.addQevent(sender.getName(), new CommandQevent(occ, del, comm));
-											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_CMD_TYPE));
-										} catch (QuesterException e) {
-											sender.sendMessage(e.message());
-										}
-										return true;
-									}
-									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_CMD_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
-									return true;
-								}
-								
-								// EXPLOSION EVENT
-								if(args[2].equalsIgnoreCase("explosion")) {
-									if(args.length > 5) {
-										boolean damage = false;
-										Location loc = null;
-										int rng = 0;
-										try {
-											if(!args[5].equalsIgnoreCase(QuestData.locLabelPlayer))
-												loc = getLoc(sender, args[5]);
-											if(args.length > 6) {
-												rng = Integer.parseInt(args[6]);
-												if(rng < 0) {
-													throw new NumberFormatException();
-												}
-												if(args.length > 7)
-													damage = Boolean.parseBoolean(args[7]);
-											}
-											qm.addQevent(sender.getName(), new ExplosionQevent(occ, del, loc, rng, damage));
-											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_EXPL_TYPE));
-										} catch (QuesterException e) {
-											sender.sendMessage(e.message());
-										} catch (NumberFormatException e) {
-											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_RANGE_INVALID);
-										}
-										return true;
-									}
-									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_EXPL_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
-									return true;
-								}
-								
-								// LIGHTNING EVENT
-								if(args[2].equalsIgnoreCase("lightning")) {
-									if(args.length > 5) {
-										boolean damage = false;
-										Location loc = null;
-										int rng = 0;
-										try {
-											if(!args[5].equalsIgnoreCase(QuestData.locLabelPlayer))
-												loc = getLoc(sender, args[5]);
-											if(args.length > 6) {
-												rng = Integer.parseInt(args[6]);
-												if(rng < 0) {
-													throw new NumberFormatException();
-												}
-												if(args.length > 7)
-													damage = Boolean.parseBoolean(args[7]);
-											}
-											qm.addQevent(sender.getName(), new LightningQevent(occ, del, loc, rng, damage));
-											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_LIGHT_TYPE));
-										} catch (QuesterException e) {
-											sender.sendMessage(e.message());
-										} catch (NumberFormatException e) {
-											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_RANGE_INVALID);
-										}
-										return true;
-									}
-									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_LIGHT_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
-									return true;
-								}
-								
-								// EXPLOSION EVENT
-								if(args[2].equalsIgnoreCase("spawn")) {
-									if(args.length > 7) {
-										int amt;
-										EntityType ent;
-										Location loc = null;
-										int rng = 0;
-										try {
-											ent = parseEntity(args[5]);
+								if(args.length > 4){
+									
+									// MESSAGE EVENT
+									if(args[4].equalsIgnoreCase("msg")) {
+										if(args.length > 5) {
+											String msg = implode(args, 5);
 											try {
-												amt = Integer.parseInt(args[6]);
-												if(amt < 1)
-													throw new NumberFormatException();
+												qm.addQevent(sender.getName(), new MessageQevent(occ, del, msg));
+												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_MSG_TYPE));
+											} catch (QuesterException e) {
+												sender.sendMessage(e.message());
+											}
+											return true;
+										}
+										sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_MSG_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+										return true;
+									}
+									
+									// QUEST EVENT
+									if(args[4].equalsIgnoreCase("quest")) {
+										if(args.length > 5) {
+											try {
+												int qst = Integer.parseInt(args[5]);
+												qm.addQevent(sender.getName(), new QuestQevent(occ, del, qst));
+												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_QUEST_TYPE));
+											} catch (QuesterException e) {
+												sender.sendMessage(e.message());
 											} catch (NumberFormatException e) {
-												throw new QuesterException(strings.ERROR_CMD_AMOUNT_POSITIVE);
+												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 											}
-											if(!args[7].equalsIgnoreCase(QuestData.locLabelPlayer))
-												loc = getLoc(sender, args[7]);
-											if(args.length > 8) {
-												rng = Integer.parseInt(args[8]);
-												if(rng < 0) {
+											return true;
+										}
+										sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_QUEST_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+										return true;
+									}
+									
+									// TOGGLE EVENT
+									if(args[4].equalsIgnoreCase("toggle")) {
+										if(args.length > 5) {
+											try {
+												int qst = Integer.parseInt(args[5]);
+												qm.addQevent(sender.getName(), new ToggleQevent(occ, del, qst));
+												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_TOGGLE_TYPE));
+											} catch (QuesterException e) {
+												sender.sendMessage(e.message());
+											} catch (NumberFormatException e) {
+												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
+											}
+											return true;
+										}
+										sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_TOGGLE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+										return true;
+									}
+									
+									// OBJECTIVE COMPLETE EVENT
+									if(args[4].equalsIgnoreCase("objcom")) {
+										if(args.length > 5) {
+											try {
+												int obj = Integer.parseInt(args[5]);
+												qm.addQevent(sender.getName(), new ObjectiveCompleteQevent(occ, del, obj));
+												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_OBJCOM_TYPE));
+											} catch (QuesterException e) {
+												sender.sendMessage(e.message());
+											} catch (NumberFormatException e) {
+												sender.sendMessage(ChatColor.RED + strings.OBJ_BAD_ID);
+											}
+											return true;
+										}
+										sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_OBJCOM_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+										return true;
+									}
+									
+									// CANCEL EVENT
+									if(args[4].equalsIgnoreCase("cancel")) {
+											try {
+												qm.addQevent(sender.getName(), new CancelQevent(occ, del));
+												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_CANCEL_TYPE));
+											} catch (QuesterException e) {
+												sender.sendMessage(e.message());
+											}
+										return true;
+									}
+									
+									// COMMAND EVENT
+									if(args[4].equalsIgnoreCase("cmd")) {
+										if(args.length > 5) {
+											String comm = implode(args, 5);
+											try {
+												qm.addQevent(sender.getName(), new CommandQevent(occ, del, comm));
+												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_CMD_TYPE));
+											} catch (QuesterException e) {
+												sender.sendMessage(e.message());
+											}
+											return true;
+										}
+										sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_CMD_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+										return true;
+									}
+									
+									// EXPLOSION EVENT
+									if(args[4].equalsIgnoreCase("explosion")) {
+										if(args.length > 5) {
+											boolean damage = false;
+											Location loc = null;
+											int rng = 0;
+											try {
+												if(!args[5].equalsIgnoreCase(QuestData.locLabelPlayer))
+													loc = getLoc(sender, args[5]);
+												if(args.length > 6) {
+													rng = Integer.parseInt(args[6]);
+													if(rng < 0) {
+														throw new NumberFormatException();
+													}
+													if(args.length > 7)
+														damage = Boolean.parseBoolean(args[7]);
+												}
+												qm.addQevent(sender.getName(), new ExplosionQevent(occ, del, loc, rng, damage));
+												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_EXPL_TYPE));
+											} catch (QuesterException e) {
+												sender.sendMessage(e.message());
+											} catch (NumberFormatException e) {
+												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_RANGE_INVALID);
+											}
+											return true;
+										}
+										sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_EXPL_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+										return true;
+									}
+									
+									// LIGHTNING EVENT
+									if(args[4].equalsIgnoreCase("lightning")) {
+										if(args.length > 5) {
+											boolean damage = false;
+											Location loc = null;
+											int rng = 0;
+											try {
+												if(!args[5].equalsIgnoreCase(QuestData.locLabelPlayer))
+													loc = getLoc(sender, args[5]);
+												if(args.length > 6) {
+													rng = Integer.parseInt(args[6]);
+													if(rng < 0) {
+														throw new NumberFormatException();
+													}
+													if(args.length > 7)
+														damage = Boolean.parseBoolean(args[7]);
+												}
+												qm.addQevent(sender.getName(), new LightningQevent(occ, del, loc, rng, damage));
+												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_LIGHT_TYPE));
+											} catch (QuesterException e) {
+												sender.sendMessage(e.message());
+											} catch (NumberFormatException e) {
+												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_RANGE_INVALID);
+											}
+											return true;
+										}
+										sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_LIGHT_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+										return true;
+									}
+									
+									// EXPLOSION EVENT
+									if(args[4].equalsIgnoreCase("spawn")) {
+										if(args.length > 7) {
+											int amt;
+											EntityType ent;
+											Location loc = null;
+											int rng = 0;
+											try {
+												ent = parseEntity(args[5]);
+												try {
+													amt = Integer.parseInt(args[6]);
+													if(amt < 1)
+														throw new NumberFormatException();
+												} catch (NumberFormatException e) {
+													throw new QuesterException(strings.ERROR_CMD_AMOUNT_POSITIVE);
+												}
+												if(!args[7].equalsIgnoreCase(QuestData.locLabelPlayer))
+													loc = getLoc(sender, args[7]);
+												if(args.length > 8) {
+													rng = Integer.parseInt(args[8]);
+													if(rng < 0) {
+														throw new NumberFormatException();
+													}
+												}
+												qm.addQevent(sender.getName(), new SpawnQevent(occ, del, loc, rng, ent, amt));
+												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_SPAWN_TYPE));
+											} catch (QuesterException e) {
+												sender.sendMessage(e.message());
+											} catch (NumberFormatException e) {
+												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_RANGE_INVALID);
+											}
+											return true;
+										}
+										sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_SPAWN_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+										return true;
+									}
+									
+									// TELEPORT EVENT
+									if(args[4].equalsIgnoreCase("tele")) {
+										if(args.length > 5) {
+											Location loc = null;
+											
+											try {
+												loc = getLoc(sender, args[5]);
+												
+												qm.addQevent(sender.getName(), new TeleportQevent(occ, del, loc));
+												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_TELE_TYPE));
+											} catch (QuesterException e) {
+												sender.sendMessage(e.message());
+											}
+											return true;
+										}
+										sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_TELE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+										return true;
+									}
+									
+									// SETBLOCK EVENT
+									if(args[4].equalsIgnoreCase("block")) {
+										if(args.length > 6) {
+											Location loc = null;
+											try {
+												int[] itm = parseItem(args[5]);
+												if(itm[0] > 255)
+													throw new QuesterException(strings.ERROR_CMD_BLOCK_UNKNOWN);
+												int dat = itm[1] < 0 ? 0 : itm[1];
+												if(args[6].equalsIgnoreCase(QuestData.locLabelHere)) {
+													if(player != null) {
+														List<Block> blcks = player.getLastTwoTargetBlocks(null, 6);
+														if(!blcks.isEmpty())
+															loc = blcks.get(blcks.size()-1).getLocation();
+														else {
+															throw new QuesterException(strings.ERROR_CMD_BLOCK_LOOK);
+														}
+													} else {
+														throw new QuesterException(strings.ERROR_CMD_LOC_HERE.replaceAll("%here", QuestData.locLabelHere));
+													}
+												} else
+													loc = getLoc(sender, args[6]);
+												qm.addQevent(sender.getName(), new SetBlockQevent(occ, del, itm[0], dat, loc));
+												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_BLOCK_TYPE));
+											} catch (QuesterException e) {
+												sender.sendMessage(e.message());
+											}
+											return true;
+										}
+										sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_BLOCK_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+										return true;
+									}
+									
+									// EFFECT EVENT
+									if(args[4].equalsIgnoreCase("effect")) {
+										if(args.length > 5) {
+											try {
+												PotionEffect eff = parseEffect(args[5]);
+												qm.addQevent(sender.getName(), new EffectQevent(occ, del, eff));
+												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_EFF_TYPE));
+											} catch (QuesterException e) {
+												sender.sendMessage(e.message());
+											}
+											return true;
+										}
+										sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_EFF_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+										return true;
+									}
+									
+									// ITEM EVENT
+									if(args[4].equalsIgnoreCase("item")) {
+										if(args.length > 5) {
+											Material mat;
+											int dat;
+											int amt = 1;
+											try {
+												int[] itm = parseItem(args[5]);
+												mat = Material.getMaterial(itm[0]);
+												dat = itm[1];
+												if(args.length > 6) {
+													amt = Integer.parseInt(args[6]);
+												}
+												if(amt < 1 || dat < -1) {
 													throw new NumberFormatException();
 												}
+											} catch (NumberFormatException e) {
+												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_NUMBERS);
+												return true;
+											} catch (QuesterException e) {
+												sender.sendMessage(e.message());
+												return true;
 											}
-											qm.addQevent(sender.getName(), new SpawnQevent(occ, del, loc, rng, ent, amt));
-											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_SPAWN_TYPE));
-										} catch (QuesterException e) {
-											sender.sendMessage(e.message());
-										} catch (NumberFormatException e) {
-											sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_RANGE_INVALID);
-										}
-										return true;
-									}
-									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_SPAWN_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
-									return true;
-								}
-								
-								// TELEPORT EVENT
-								if(args[2].equalsIgnoreCase("tele")) {
-									if(args.length > 5) {
-										Location loc = null;
-										
-										try {
-											loc = getLoc(sender, args[5]);
-											
-											qm.addQevent(sender.getName(), new TeleportQevent(occ, del, loc));
-											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_TELE_TYPE));
-										} catch (QuesterException e) {
-											sender.sendMessage(e.message());
-										}
-										return true;
-									}
-									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_TELE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
-									return true;
-								}
-								
-								// SETBLOCK EVENT
-								if(args[2].equalsIgnoreCase("block")) {
-									if(args.length > 6) {
-										Location loc = null;
-										try {
-											int[] itm = parseItem(args[5]);
-											if(itm[0] > 255)
-												throw new QuesterException(strings.ERROR_CMD_BLOCK_UNKNOWN);
-											int dat = itm[1] < 0 ? 0 : itm[1];
-											if(args[6].equalsIgnoreCase(QuestData.locLabelHere)) {
-												if(player != null) {
-													List<Block> blcks = player.getLastTwoTargetBlocks(null, 6);
-													if(!blcks.isEmpty())
-														loc = blcks.get(blcks.size()-1).getLocation();
-													else {
-														throw new QuesterException(strings.ERROR_CMD_BLOCK_LOOK);
+											try {
+												Map<Integer, Integer> enchs = null;
+												if(args.length > 7) {
+													enchs = parseEnchants(args[7]);
+													ItemStack test = new ItemStack(mat, amt, (short)dat);
+													for(Integer i : enchs.keySet()) {
+														test.addEnchantment(Enchantment.getById(i), enchs.get(i));
 													}
-												} else {
-													throw new QuesterException(strings.ERROR_CMD_LOC_HERE.replaceAll("%here", QuestData.locLabelHere));
 												}
-											} else
-												loc = getLoc(sender, args[6]);
-											qm.addQevent(sender.getName(), new SetBlockQevent(occ, del, itm[0], dat, loc));
-											sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_BLOCK_TYPE));
-										} catch (QuesterException e) {
-											sender.sendMessage(e.message());
+												qm.addQevent(sender.getName(), new ItemQevent(occ, del, mat, dat, amt, enchs));
+												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_ITEM_TYPE));
+											} catch (QuesterException e) {
+												sender.sendMessage(e.message());
+											} catch (IllegalArgumentException e){
+												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_CANT);
+												return true;
+											}
+											return true;
 										}
+										sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_ITEM_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 										return true;
 									}
-									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_BLOCK_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
-									return true;
+									
+									// MONEY EVENT
+									if(args[4].equalsIgnoreCase("money")) {
+										if(args.length > 5) {
+											try {
+												double amt = Double.parseDouble(args[5]);
+												qm.addQevent(sender.getName(), new MoneyQevent(occ, del, amt));
+												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_MONEY_TYPE));
+											} catch (NumberFormatException e) {
+												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_GENERAL);
+											} catch (QuesterException e) {
+												sender.sendMessage(e.message());
+											}
+											return true;
+										}
+										sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_MONEY_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+										return true;
+									}
+									
+									// EXPERIENCE EVENT
+									if(args[4].equalsIgnoreCase("exp")) {
+										if(args.length > 5) {
+											try {
+												int amt = Integer.parseInt(args[5]);
+												qm.addQevent(sender.getName(), new ExperienceQevent(occ, del, amt));
+												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_EXP_TYPE));
+											} catch (NumberFormatException e) {
+												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_GENERAL);
+											} catch (QuesterException e) {
+												sender.sendMessage(e.message());
+											}
+											return true;
+										}
+										sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_EXP_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+										return true;
+									}
+									
+									// POINT EVENT
+									if(args[4].equalsIgnoreCase("point")) {
+										if(args.length > 5) {
+											try {
+												int amt = Integer.parseInt(args[5]);
+												qm.addQevent(sender.getName(), new PointQevent(occ, del, amt));
+												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_POINT_TYPE));
+											} catch (NumberFormatException e) {
+												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_GENERAL);
+											} catch (QuesterException e) {
+												sender.sendMessage(e.message());
+											}
+											return true;
+										}
+										sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_POINT_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+										return true;
+									}
 								}
 								
 								sender.sendMessage(ChatColor.RED + strings.EVT_ADD_AVAILABLE + ChatColor.WHITE + EVENTS);

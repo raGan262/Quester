@@ -10,9 +10,9 @@ import com.gmail.molnardad.quester.Quester;
 public final class MoneyQevent extends Qevent {
 
 	public static final String TYPE = "MONEY";
-	private final int amount;
+	private final double amount;
 	
-	public MoneyQevent(int occ, int del, int amt) {
+	public MoneyQevent(int occ, int del, double amt) {
 		super(occ, del);
 		this.amount = amt;
 	}
@@ -39,10 +39,10 @@ public final class MoneyQevent extends Qevent {
 	}
 	
 	public static MoneyQevent deser(int occ, int del, ConfigurationSection section) {
-		int amt;
+		double amt;
 		
-		if(section.isInt("amount"))
-			amt = section.getInt("amount");
+		if(section.isInt("amount") || section.isDouble("amount"))
+			amt = section.getDouble("amount");
 		else
 			return null;
 		

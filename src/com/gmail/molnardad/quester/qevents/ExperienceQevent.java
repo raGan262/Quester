@@ -7,7 +7,7 @@ import com.gmail.molnardad.quester.utils.ExpManager;
 
 public final class ExperienceQevent extends Qevent {
 
-	public static final String TYPE = "EXPERIENCE";
+	public static final String TYPE = "EXP";
 	private final int amount;
 	
 	public ExperienceQevent(int occ, int del, int amt) {

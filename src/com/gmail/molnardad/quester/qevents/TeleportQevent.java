@@ -10,7 +10,7 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public final class TeleportQevent extends Qevent {
 
-	public static final String TYPE = "TELEPORT";
+	public static final String TYPE = "TELE";
 	private final Location location;
 	
 	public TeleportQevent(int occ, int del, Location loc) {

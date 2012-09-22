@@ -10,7 +10,7 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public final class PlaceObjective extends Objective {
 
-	private final String TYPE = "PLACE";
+	public static final String TYPE = "PLACE";
 	private final Material material;
 	private final byte data;
 	private final int amount;
@@ -71,16 +71,13 @@ public final class PlaceObjective extends Objective {
 	public static Objective deser(ConfigurationSection section) {
 		Material mat;
 		int dat, amt = 1;
-		if(section.isString("block")) {
-			try {
-			int[] itm = Util.parseItem(section.getString("block"));
+		try {
+			int[] itm = Util.parseItem(section.getString("block", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
 			} catch (QuesterException e) {
 				return null;
-			}
-		} else 
-			return null;
+		}
 		if(section.isInt("amount")) {
 			amt = section.getInt("amount");
 			if(amt < 1)

@@ -122,29 +122,6 @@ public class QuesterStrings extends CustomConfig {
 	public String HOL_INFO_USAGE = "%cmd holder info [HOLDER ID]";
 	public String HOL_SELECT_USAGE = "%cmd holder select <HOLDER ID>";
 
-	// REWARD STRINGS
-	
-	public String REW_ADDED = "%type reward added."; // %type = reward type;
-	public String REW_REMOVED = "Reward %id removed."; // %id = reward ID;
-	public String REW_USAGE_AVAILABLE = "Available reward types: ";
-	public String REW_USAGE_REMOVE = "%cmd reward remove [id_number].";
-	public String REW_USAGE = "%cmd reward [add|remove] [reward_type] [args].";
-	
-	public String REW_EFF_TYPE = "Effect";
-	public String REW_EFF_USAGE = "%cmd reward add effect [effect_id/name] [duration_secs] [power].";
-	
-	public String REW_ITEM_TYPE = "Item";
-	public String REW_ITEM_USAGE = "%cmd reward add item [item_id/name][:data*] [amount*] {ench1*}... .\n{ench} - [enchantment_id/name]:[level] ; * - optional";
-	
-	public String REW_MONEY_TYPE = "Money";
-	public String REW_MONEY_USAGE = "%cmd reward add money [amount].";
-	
-	public String REW_EXP_TYPE = "Experience";
-	public String REW_EXP_USAGE = "%cmd reward add exp [amount].";
-	
-	public String REW_POINT_TYPE = "Point";
-	public String REW_POINT_USAGE = "%cmd reward add point [amount].";
-			
 	// OBJECTIVE STRINGS
 	
 	public String OBJ_ADD = "%type objective added."; // %type = objective type;
@@ -290,6 +267,21 @@ public class QuesterStrings extends CustomConfig {
 	
 	public String EVT_SPAWN_TYPE = "Spawn";
 	public String EVT_SPAWN_USAGE = "%cmd event add spawn {<occasion>} <delay> {<entity>} <amount> {<location>} [range]";
+
+	public String EVT_EFF_TYPE = "Effect";
+	public String EVT_EFF_USAGE = "%cmd event add {occasion} <delay> effect {<potion effect>}.";
+	
+	public String EVT_ITEM_TYPE = "Item";
+	public String EVT_ITEM_USAGE = "%cmd event add {occasion} <delay> item {<item>} [amount] {[enchants]}...";
+	
+	public String EVT_MONEY_TYPE = "Money";
+	public String EVT_MONEY_USAGE = "%cmd event add {occasion} <delay> money <amount>.";
+	
+	public String EVT_EXP_TYPE = "Experience";
+	public String EVT_EXP_USAGE = "%cmd event add {occasion} <delay> exp <amount>.";
+	
+	public String EVT_POINT_TYPE = "Point";
+	public String EVT_POINT_USAGE = "%cmd event add {occasion} <delay> point <amount>.";
 	
 	// ERROR STRINGS
 
