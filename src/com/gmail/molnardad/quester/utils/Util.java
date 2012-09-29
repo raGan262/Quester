@@ -3,9 +3,11 @@ package com.gmail.molnardad.quester.utils;
 import static com.gmail.molnardad.quester.Quester.strings;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -356,6 +358,44 @@ public class Util {
 			}
 		}
 		return ent;
+	}
+	
+	public static Set<Integer> parsePrerequisites(String[] args, int from) {
+		Set<Integer> result = new HashSet<Integer>();
+		for(int i=from; i < args.length; i++) {
+			try {
+				result.add(Integer.parseInt(args[i]));
+			} catch (Exception ignore) {}
+		}
+		return result;
+	}
+	
+	public static Set<Integer> deserializePrerequisites(String arg) throws NumberFormatException {
+		Set<Integer> result = new HashSet<Integer>();
+		String[] args = arg.split(";");
+		for(int i=0; i < args.length; i++) {
+			result.add(Integer.parseInt(args[i]));
+		}
+		return result;
+	}
+	
+	public static String serializePrerequisites(Set<Integer> prereq, String glue) {
+		String result = "";
+		boolean first = true;
+		for(int i : prereq) {
+			if(first) {
+				result += i;
+				first = false;
+			}
+			else {
+				result += glue + i;
+			}
+		}
+		return result;
+	}
+	
+	public static String serializePrerequisites(Set<Integer> prereq) {
+		return serializePrerequisites(prereq, ";");
 	}
 	
 	// LOCATION SERIALIZATION

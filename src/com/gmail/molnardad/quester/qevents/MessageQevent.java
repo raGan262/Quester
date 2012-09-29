@@ -28,7 +28,7 @@ public final class MessageQevent extends Qevent {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": MSG: " + message;
+		return TYPE + ": " + message;
 	}
 
 	@Override

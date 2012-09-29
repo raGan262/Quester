@@ -137,6 +137,11 @@ public class QuesterStrings extends CustomConfig {
 	public String OBJ_DESC_ADD_USAGE = "%cmd objective desc add [obj_ID] [description*].\n* - %r = remaining amount, %t = total required amount";
 	public String OBJ_DESC_REMOVE = "Description of objective %id removed."; // %id = objective ID;
 	public String OBJ_DESC_USAGE = "%cmd objective desc [add|remove] [obj_ID].";
+	public String OBJ_REQ_ADD = "Prerequisites to objective %id added."; // %id = objective ID;
+	public String OBJ_REQ_ADD_USAGE = "%cmd objective prereq add <obj_ID> <prerequisites>";
+	public String OBJ_REQ_REMOVE = "Prerequisites of objective %id removed."; // %id = objective ID;
+	public String OBJ_REQ_REMOVE_USAGE = "%cmd objective prereq remove <obj_ID> <prerequisites>";
+	public String OBJ_REQ_USAGE = "%cmd objective prereq <add|remove> <obj_ID> <prerequisites>.";
 	public String OBJ_USAGE = "%cmd objective [add|remove|swap|move|desc] [args].";
 	
 	public String OBJ_BREAK_TYPE = "Break";
@@ -237,36 +242,36 @@ public class QuesterStrings extends CustomConfig {
 	public String EVT_USAGE = "%cmd event <add|remove> [args]";
 	
 	public String EVT_MSG_TYPE = "Message";
-	public String EVT_MSG_USAGE = "%cmd event add msg {<occasion>} <delay> <message*>\n* - supports '&' colors and '\\n' newline";
+	public String EVT_MSG_USAGE = "%cmd event add {<occasion>} <delay> msg <message*>\n* - supports '&' colors and '\\n' newline";
 	
 	public String EVT_QUEST_TYPE = "Quest";
-	public String EVT_QUEST_USAGE = "%cmd event add quest {<occasion>} <delay> <quest_name>";
+	public String EVT_QUEST_USAGE = "%cmd event add {<occasion>} <delay> quest <quest_name>";
 	
 	public String EVT_TOGGLE_TYPE = "Toggle";
-	public String EVT_TOGGLE_USAGE = "%cmd event add toggle {<occasion>} <delay> <quest_ID>";
+	public String EVT_TOGGLE_USAGE = "%cmd event add {<occasion>} <delay> toggle <quest_ID>";
 	
 	public String EVT_OBJCOM_TYPE = "Objective complete";
-	public String EVT_OBJCOM_USAGE = "%cmd event add objcom {<occasion>} <delay> <objective_ID>";
+	public String EVT_OBJCOM_USAGE = "%cmd event add {<occasion>} <delay> objcom <objective_ID>";
 	
 	public String EVT_CANCEL_TYPE = "Cancel";
 	
 	public String EVT_CMD_TYPE = "Command";
-	public String EVT_CMD_USAGE = "%cmd event add cmd {<occasion>} <delay> <command*>\n* - without '/'";
+	public String EVT_CMD_USAGE = "%cmd event add {<occasion>} <delay> cmd <command*>\n* - without '/'";
 	
 	public String EVT_EXPL_TYPE = "Explosion";
-	public String EVT_EXPL_USAGE = "%cmd event add explosion {<occasion>} <delay> {location} [range] [damage*]\n* - true/false, default is false";
+	public String EVT_EXPL_USAGE = "%cmd event add {<occasion>} <delay> explosion {location} [range] [damage*]\n* - true/false, default is false";
 	
 	public String EVT_LIGHT_TYPE = "Lightning";
-	public String EVT_LIGHT_USAGE = "%cmd event add lightning {<occasion>} <delay> {location} [range] [damage*]\n* - true/false, default is false";
+	public String EVT_LIGHT_USAGE = "%cmd event add {<occasion>} <delay> lightning {location} [range] [damage*]\n* - true/false, default is false";
 	
 	public String EVT_TELE_TYPE = "Teleport";
-	public String EVT_TELE_USAGE = "%cmd event add tele {<occasion>} <delay> {location}";
+	public String EVT_TELE_USAGE = "%cmd event add {<occasion>} <delay> tele {location}";
 	
 	public String EVT_BLOCK_TYPE = "Block";
-	public String EVT_BLOCK_USAGE = "%cmd event add block {<occasion>} <delay> {<block>} {location*}\n* - location 'here' means block you are looking at";
+	public String EVT_BLOCK_USAGE = "%cmd event add {<occasion>} <delay> block {<block>} {location*}\n* - location 'here' means block you are looking at";
 	
 	public String EVT_SPAWN_TYPE = "Spawn";
-	public String EVT_SPAWN_USAGE = "%cmd event add spawn {<occasion>} <delay> {<entity>} <amount> {<location>} [range]";
+	public String EVT_SPAWN_USAGE = "%cmd event add {<occasion>} <delay> spawn {<entity>} <amount> {<location>} [range]";
 
 	public String EVT_EFF_TYPE = "Effect";
 	public String EVT_EFF_USAGE = "%cmd event add {occasion} <delay> effect {<potion effect>}.";

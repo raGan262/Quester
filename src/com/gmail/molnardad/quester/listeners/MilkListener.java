@@ -9,7 +9,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 
 import com.gmail.molnardad.quester.Quest;
-import com.gmail.molnardad.quester.QuestFlag;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.objectives.Objective;
@@ -27,21 +26,9 @@ public class MilkListener implements Listener {
 		    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
 		    		return;
 				List<Objective> objs = quest.getObjectives();
-				// if quest is ordered, process current objective
-				if(quest.hasFlag(QuestFlag.ORDERED)) {
-					int curr = qm.getCurrentObjective(player);
-					Objective obj = objs.get(curr);
-					if(obj != null) {
-						if(obj.getType().equalsIgnoreCase("MILK")) {
-							qm.incProgress(player, curr);
-			    			return;
-						}
-					}
-					return;
-				}
 		    	for(int i = 0; i < objs.size(); i++) {
 		    		if(objs.get(i).getType().equalsIgnoreCase("MILK")) {
-			    		if(qm.achievedTarget(player, i)){
+		    			if(!qm.isObjectiveActive(player, i)){
 		    				continue;
 		    			}
 		    			qm.incProgress(player, i);

@@ -75,6 +75,6 @@ public final class TameObjective extends Objective {
 			amt = section.getInt("amount");
 		if(amt < 1)
 			amt = 1;
-		return new MobKillObjective(amt, ent);
+		return new TameObjective(amt, ent);
 	}
 }

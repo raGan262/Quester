@@ -38,25 +38,9 @@ public class DeathListener implements Listener {
 	    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
 	    		return;
 	    	List<Objective> objs = quest.getObjectives();
-	    	// if quest is ordered, process current objective
-	    	if(quest.hasFlag(QuestFlag.ORDERED)) {
-	    		int curr = qm.getCurrentObjective(player);
-	    		Objective obj = objs.get(curr);
-	    		if(obj != null) {
-	    			if(obj.getType().equalsIgnoreCase("DEATH")) {
-	    				DeathObjective dObj = (DeathObjective)obj;
-		    			if(dObj.checkDeath(player.getLocation())) {
-		    				qm.incProgress(player, curr);
-		    				return;
-		    			}
-	    			}
-	    		}
-	    		return;
-	    	}
 	    	for(int i = 0; i < objs.size(); i++) {
 	    		if(objs.get(i).getType().equalsIgnoreCase("DEATH")) {
-		    		// already completed objective ?
-		    		if(qm.achievedTarget(player, i)){
+	    			if(!qm.isObjectiveActive(player, i)){
 	    				continue;
 	    			}
 	    			DeathObjective obj = (DeathObjective)objs.get(i);
@@ -88,24 +72,8 @@ public class DeathListener implements Listener {
 		    	if(!quest.allowedWorld(killer.getWorld().getName().toLowerCase()))
 		    		return;
 	    		List<Objective> objs = quest.getObjectives();
-	    		// if quest is ordered, process current objective
-	    		if(quest.hasFlag(QuestFlag.ORDERED)) {
-	    			int curr = qm.getCurrentObjective(player);
-	    			Objective obj = objs.get(curr);
-	    			if(obj != null) {
-	    				if(obj.getType().equalsIgnoreCase("PLAYERKILL")) {
-	    					PlayerKillObjective kObj = (PlayerKillObjective)obj;
-			    			if(kObj.checkPlayer(player)) {
-			    				qm.incProgress(killer, curr);
-			    				return;
-			    			}
-	    				}
-	    			}
-	    			return;
-	    		}
 		    	for(int i = 0; i < objs.size(); i++) {
-		    		// already completed objective ?
-		    		if(qm.achievedTarget(killer, i)){
+		    		if(!qm.isObjectiveActive(player, i)){
 	    				continue;
 	    			}
 		    		if(objs.get(i).getType().equalsIgnoreCase("PLAYERKILL")) {

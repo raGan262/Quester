@@ -6,7 +6,6 @@ import java.util.Set;
 public enum QuestFlag {
 
 	ACTIVE (0),
-	ORDERED (1),
 	UNCANCELLABLE (2),
 	ONLYFIRST (3),
 	HIDDEN (4),

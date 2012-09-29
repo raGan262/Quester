@@ -44,7 +44,7 @@ public final class QuestNotCondition extends Condition {
 		section.set("quest", quest);
 	}
 
-	public static PermissionCondition deser(ConfigurationSection section) {
+	public static QuestNotCondition deser(ConfigurationSection section) {
 		String qst;
 		
 		if(section.isString("quest"))
@@ -52,6 +52,6 @@ public final class QuestNotCondition extends Condition {
 		else
 			return null;
 		
-		return new PermissionCondition(qst);
+		return new QuestNotCondition(qst);
 	}
 }

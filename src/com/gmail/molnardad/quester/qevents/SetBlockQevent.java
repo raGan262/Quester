@@ -33,7 +33,7 @@ public final class SetBlockQevent extends Qevent {
 	@Override
 	public String toString() {
 		String locStr = String.format("%.1f:%.1f:%.1f("+location.getWorld().getName()+")", location.getX(), location.getY(), location.getZ());
-		return TYPE + ": DEL: " + delay + "; BLOCK: " + material + ":" + data + "; " + "; LOC: " + locStr;
+		return TYPE + ": " + material + ":" + data + "; " + "; LOC: " + locStr;
 	}
 
 	@Override

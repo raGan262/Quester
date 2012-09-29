@@ -32,30 +32,9 @@ public class PositionListener implements Runnable {
 		    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
 		    		return;
 		    	List<Objective> objs = quest.getObjectives();
-		    	// if quest is ordered, process current objective
-		    	if(quest.hasFlag(QuestFlag.ORDERED)) {
-		    		int curr = qm.getCurrentObjective(player);
-		    		Objective obj = objs.get(curr);
-		    		if(obj != null) {
-		    			if(obj.getType().equalsIgnoreCase("LOCATION")) {
-			    			LocObjective lObj = (LocObjective)obj;
-			    			if(lObj.checkLocation(player.getLocation())) {
-			    				qm.incProgress(player, curr);
-			    				return;
-			    			}
-			    		} else if(obj.getType().equalsIgnoreCase("WORLD")) {
-			    			WorldObjective wObj = (WorldObjective)obj;
-			    			if(wObj.checkWorld(player.getWorld().getName())) {
-			    				qm.incProgress(player, curr);
-			    				return;
-			    			}
-			    		}
-		    		}
-		    		return;
-		    	}
 		    	for(int i = 0; i < objs.size(); i++) {
 		    		if(objs.get(i).getType().equalsIgnoreCase("LOCATION")) {
-			    		if(qm.achievedTarget(player, i)){
+		    			if(!qm.isObjectiveActive(player, i)){
 		    				continue;
 		    			}
 		    			LocObjective obj = (LocObjective)objs.get(i);
@@ -64,7 +43,7 @@ public class PositionListener implements Runnable {
 		    				return;
 		    			}
 		    		} else if(objs.get(i).getType().equalsIgnoreCase("WORLD")) {
-			    		if(qm.achievedTarget(player, i)){
+		    			if(!qm.isObjectiveActive(player, i)){
 		    				continue;
 		    			}
 		    			WorldObjective obj = (WorldObjective)objs.get(i);

@@ -3,6 +3,7 @@ package com.gmail.molnardad.quester;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -84,15 +85,13 @@ public class QuestManager {
 		PlayerProfile prof = getProfile(player.getName());
 		boolean all = true;
 		for(int i = 0; i < objs.size(); i++) {
-			if(objs.get(i).isComplete(player, prof.getProgress().get(i)))
+			if(objs.get(i).isComplete(player, prof.getProgress().get(i))) {
 				continue;
-			
-			if(objs.get(i).tryToComplete(player)) {
-				incProgress(player, i, false);
-			} else {
-				all = false;
-				if(quest.hasFlag(QuestFlag.ORDERED))
-					throw new QuesterException(ExceptionType.OBJ_CANT_DO);
+			}
+			if(isObjectiveActive(player, i)) {
+				if(objs.get(i).tryToComplete(player)) {
+					incProgress(player, i, false);
+				}
 			}
 		}
 		if(!all) {
@@ -118,6 +117,24 @@ public class QuestManager {
 		}
 		
 		return -1;
+	}
+	
+	public boolean isObjectiveActive(Player player, int id) {
+		List<Objective> objs = getPlayerQuest(player.getName()).getObjectives();
+		List<Integer> progress = getProgress(player.getName());
+		Set<Integer> prereq = objs.get(id).getPrerequisites();
+		if(objs.get(id).isComplete(player, progress.get(id))) {
+			return false;
+		}
+		for(int i : prereq) {
+			try {
+				if(!objs.get(i).isComplete(player, progress.get(i))) {
+					return false;
+				}
+			} catch (IndexOutOfBoundsException ignore) {
+			}
+		}
+		return true;
 	}
 	
 	public boolean areObjectivesCompleted(Player player) {
@@ -162,11 +179,6 @@ public class QuestManager {
 	
 	public boolean hasProfile(String playerName) {
 		return profiles.get(playerName.toLowerCase()) != null;
-	}
-	
-	public boolean achievedTarget(Player player, int id) {
-		String playerName = player.getName();
-		return getPlayerQuest(playerName).getObjectives().get(id).isComplete(player, getProgress(playerName).get(id));
 	}
 	
 	public boolean hasQuest(String playerName) {
@@ -461,6 +473,34 @@ public class QuestManager {
 		QuestData.saveQuests();
 	}
 	
+	public void addObjectivePrerequisites(String changer, int id, Set<Integer> prereq) throws QuesterException {
+		Quest quest = getSelected(changer);
+		modifyCheck(quest);
+		List<Objective> objs = quest.getObjectives();
+		if(id >= objs.size() || id < 0) {
+			throw new QuesterException(ExceptionType.OBJ_NOT_EXIST);
+		}
+		for(int i : prereq) {
+			if(i >= objs.size() || i < 0 || i != id) {
+				objs.get(id).addPrerequisity(i);
+			}
+		}
+		QuestData.saveQuests();
+	}
+	
+	public void removeObjectivePrerequisites(String changer, int id, Set<Integer> prereq) throws QuesterException {
+		Quest quest = getSelected(changer);
+		modifyCheck(quest);
+		List<Objective> objs = quest.getObjectives();
+		if(id >= objs.size() || id < 0) {
+			throw new QuesterException(ExceptionType.OBJ_NOT_EXIST);
+		}
+		for(int i : prereq) {
+			objs.get(id).removePrerequisity(i);
+		}
+		QuestData.saveQuests();
+	}
+	
 	public void addQuestCondition(String changer, Condition newCondition) throws QuesterException {
 		Quest quest = getSelected(changer);
 		modifyCheck(quest);
@@ -669,11 +709,8 @@ public class QuestManager {
 			throw new QuesterException(ExceptionType.Q_NOT_CMD);
     	if(!quest.allowedWorld(player.getWorld().getName()))
     		throw new QuesterException(ExceptionType.Q_BAD_WORLD);
-		if(quest.hasFlag(QuestFlag.ORDERED)) {
-			completeObjective(player);
-		} else {
-			completeQuest(player);
-		}
+    	
+		completeObjective(player);
 	}
 	
 	public void completeObjective(Player player) throws QuesterException {
@@ -684,11 +721,13 @@ public class QuestManager {
 		int i = 0;
 		while(i<objs.size()) {
 			if(!objs.get(i).isComplete(player, prof.getProgress().get(i))) {
-				if(objs.get(i).tryToComplete(player)) {
-					incProgress(player, i, false);
-					return;
-				} else {
-					throw new QuesterException(ExceptionType.OBJ_CANT_DO);
+				if(isObjectiveActive(player, i)) {
+					if(objs.get(i).tryToComplete(player)) {
+						incProgress(player, i, false);
+						return;
+					} else {
+						throw new QuesterException(ExceptionType.OBJ_CANT_DO);
+					}
 				}
 			}
 			i++;
@@ -804,15 +843,11 @@ public class QuestManager {
 		}
 		if(!qst.hasFlag(QuestFlag.HIDDENOBJS)) {
 			List<Objective> objs = qst.getObjectives();
-			if(QuestData.ordOnlyCurrent && qst.hasFlag(QuestFlag.ORDERED)) {
-				sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_FIRST_OBJECTIVE + ":");
-				if(objs.get(0) != null)
-					sender.sendMessage(ChatColor.WHITE + " - " + objs.get(0).progress(0));
-				return;
-			}
 			sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_OBJECTIVES + ":");
 			for(int i = 0; i < objs.size(); i++) {
-				sender.sendMessage(ChatColor.WHITE + " - " + objs.get(i).progress(0));
+				if(objs.get(i).getPrerequisites().isEmpty() || !QuestData.ordOnlyCurrent) {
+					sender.sendMessage(ChatColor.WHITE + " - " + objs.get(i).progress(0));
+				}
 			}
 		}
 	}
@@ -899,17 +934,16 @@ public class QuestManager {
 			player.sendMessage(Quester.strings.INFO_PROGRESS.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 			List<Objective> objs = quest.getObjectives();
 			List<Integer> progress = getProgress(player.getName());
-			if(QuestData.ordOnlyCurrent && quest.hasFlag(QuestFlag.ORDERED)) {
-				int curr = getCurrentObjective(player);
-				player.sendMessage(ChatColor.GOLD + " - " + objs.get(curr).progress(progress.get(curr)));
-			} else {
-				for(int i = 0; i < objs.size(); i++) {
-					if(objs.get(i).isComplete(player, progress.get(i))) {
-							player.sendMessage(ChatColor.GREEN + " - " + Quester.strings.INFO_PROGRESS_COMPLETED);
-					} else {
-							player.sendMessage(ChatColor.RED + " - " + objs.get(i).progress(progress.get(i)));
+			for(int i = 0; i < objs.size(); i++) {
+				if(objs.get(i).isComplete(player, progress.get(i))) {
+					player.sendMessage(ChatColor.GREEN + " - " + Quester.strings.INFO_PROGRESS_COMPLETED);
+				} else {
+					boolean active = isObjectiveActive(player, i);
+					if(active || !QuestData.ordOnlyCurrent) {
+						ChatColor col = active ? ChatColor.YELLOW : ChatColor.RED;
+						player.sendMessage(col + " - " + objs.get(i).progress(progress.get(i)));
 					}
-				} 
+				}
 			}
 		} else {
 			player.sendMessage(Quester.LABEL + Quester.strings.INFO_PROGRESS_HIDDEN);

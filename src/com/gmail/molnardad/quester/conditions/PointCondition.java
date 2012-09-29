@@ -44,7 +44,7 @@ public final class PointCondition extends Condition {
 		section.set("amount", amount);
 	}
 
-	public static MoneyCondition deser(ConfigurationSection section) {
+	public static PointCondition deser(ConfigurationSection section) {
 		int amt;
 		
 		if(section.isInt("amount"))
@@ -52,6 +52,6 @@ public final class PointCondition extends Condition {
 		else
 			return null;
 		
-		return new MoneyCondition(amt);
+		return new PointCondition(amt);
 	}
 }

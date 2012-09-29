@@ -12,7 +12,6 @@ import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.molnardad.quester.Quest;
-import com.gmail.molnardad.quester.QuestFlag;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.objectives.EnchantObjective;
@@ -31,27 +30,10 @@ public class EnchantListener implements Listener {
 	    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
 	    		return;
 	    	List<Objective> objs = quest.getObjectives();
-	    	// if quest is ordered, process current objective
-	    	if(quest.hasFlag(QuestFlag.ORDERED)) {
-	    		int curr = qm.getCurrentObjective(player);
-	    		Objective obj = objs.get(curr);
-	    		if(obj != null) {
-	    			if(obj.getType().equalsIgnoreCase("ENCHANT")) {
-	    				EnchantObjective eObj = (EnchantObjective)obj;
-		    			ItemStack item = event.getItem();
-		    			Map<Enchantment, Integer> enchs = event.getEnchantsToAdd();
-		    			if(eObj.check(item, enchs)) {
-		    				qm.incProgress(player, curr);
-		    				return;
-		    			}
-	    			}
-	    		}
-	    		return;
-	    	}
 	    	for(int i = 0; i < objs.size(); i++) {
 	    		// check if Objective is type CRAFT
 	    		if(objs.get(i).getType().equalsIgnoreCase("ENCHANT")) {
-		    		if(qm.achievedTarget(player, i)){
+	    			if(!qm.isObjectiveActive(player, i)){
 	    				continue;
 	    			}
 	    			EnchantObjective obj = (EnchantObjective)objs.get(i);

@@ -40,7 +40,7 @@ public final class SpawnQevent extends Qevent {
 			locStr = "PLAYER";
 		else
 			locStr = String.format("%.1f:%.1f:%.1f("+location.getWorld().getName()+")", location.getX(), location.getY(), location.getZ());
-		return TYPE + ": ENT: " + entity.getName() + "; AMT: " + amount + "; LOC: " + locStr + "; RNG: " + range;
+		return TYPE + ": " + entity.getName() + "; AMT: " + amount + "; LOC: " + locStr + "; RNG: " + range;
 	}
 
 	@Override

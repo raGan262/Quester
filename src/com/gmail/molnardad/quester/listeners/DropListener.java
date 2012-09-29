@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestData;
-import com.gmail.molnardad.quester.QuestFlag;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.objectives.CollectObjective;
@@ -30,37 +29,15 @@ public class DropListener implements Listener {
 		    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
 		    		return;
 		    	List<Objective> objs = quest.getObjectives();
-		    	// if quest is ordered, process current objective
-		    	if(quest.hasFlag(QuestFlag.ORDERED)) {
-		    		int curr = qm.getCurrentObjective(player);
-		    		Objective obj = objs.get(curr);
-		    		if(obj != null) {
-		    			if(obj.getType().equalsIgnoreCase("COLLECT")) {
-		    				CollectObjective cObj = (CollectObjective)obj;
-			    			ItemStack item = event.getItemDrop().getItemStack();
-			    			// compare block ID
-			    			if(item.getTypeId() == cObj.getMaterial().getId()) {
-			    				// if DATA >= 0 compare
-			    				if(cObj.getData() < 0 || cObj.getData() == item.getDurability()) {
-			    					qm.incProgress(player, curr, -item.getAmount());
-			    					return;
-			    				}
-			    			}
-		    			}
-		    		}
-		    		return;
-		    	}
 		    	for(int i = 0; i < objs.size(); i++) {
 		    		// check if Objective is type COLLECT
 		    		if(objs.get(i).getType().equalsIgnoreCase("COLLECT")) {
-			    		if(qm.achievedTarget(player, i)){
+		    			if(!qm.isObjectiveActive(player, i)){
 		    				continue;
 		    			}
 		    			CollectObjective obj = (CollectObjective)objs.get(i);
 		    			ItemStack item = event.getItemDrop().getItemStack();
-		    			// compare block ID
 		    			if(item.getTypeId() == obj.getMaterial().getId()) {
-		    				// if DATA >= 0 compare
 		    				if(obj.getData() < 0 || obj.getData() == item.getDurability()) {
 		    					qm.incProgress(player, i, -item.getAmount());
 		    					return;

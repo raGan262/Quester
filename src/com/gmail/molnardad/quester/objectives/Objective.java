@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.qevents.Qevent;
+import com.gmail.molnardad.quester.utils.Util;
 
 public abstract class Objective {
 
@@ -70,10 +71,25 @@ public abstract class Objective {
 		return result;
 	}
 	
+	public Set<Integer> getPrerequisites() {
+		return prerequisites;
+	}
+	
+	public void addPrerequisity(int newPre) {
+		prerequisites.add(newPre);
+	}
+	
+	public void removePrerequisity(int pre) {
+		prerequisites.remove(pre);
+	}
+	
 	public String coloredDesc() {
 		String des = "";
+		if(!prerequisites.isEmpty()) {
+			des += " PRE: " + Util.serializePrerequisites(prerequisites, ",");
+		}
 		if(!desc.isEmpty()) {
-			des = "\n  - " + ChatColor.translateAlternateColorCodes('&', desc) + ChatColor.RESET;
+			des += "\n  - " + ChatColor.translateAlternateColorCodes('&', desc) + ChatColor.RESET;
 		}
 		return des;
 	}
@@ -112,7 +128,7 @@ public abstract class Objective {
 		if(!desc.isEmpty())
 			section.set("description", desc);
 		if(!prerequisites.isEmpty())
-			section.set("prerequisites", prerequisites);
+			section.set("prerequisites", Util.serializePrerequisites(prerequisites));
 		if(!qevents.isEmpty()) {
 			ConfigurationSection sub = section.createSection("events");
 			for(int i=0; i<qevents.size(); i++) {
@@ -129,6 +145,7 @@ public abstract class Objective {
 		Objective obj = null;
 		String type = null, des = null;
 		List<Qevent> qvts = new ArrayList<Qevent>();
+		Set<Integer> prereq = new HashSet<Integer>();
 		
 		if(section.isString("type"))
 			type = section.getString("type");
@@ -138,6 +155,11 @@ public abstract class Objective {
 		}
 		if(section.isString("description")) {
 			des = section.getString("description");
+		}
+		if(section.isString("prerequisites")) {
+			try {
+				prereq = Util.deserializePrerequisites(section.getString("prerequisites"));
+			} catch (Exception ignore) {}
 		}
 		if(section.isConfigurationSection("events")) {
 			ConfigurationSection evs = section.getConfigurationSection("events");
@@ -167,6 +189,11 @@ public abstract class Objective {
 						if(!qvts.isEmpty()) {
 							for(Qevent q : qvts) {
 								obj.addQevent(q);
+							}
+						}
+						if(!prereq.isEmpty()) {
+							for(int i : prereq) {
+								obj.addPrerequisity(i);
 							}
 						}
 						break;

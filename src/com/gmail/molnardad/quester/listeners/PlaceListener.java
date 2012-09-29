@@ -11,7 +11,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestData;
-import com.gmail.molnardad.quester.QuestFlag;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.objectives.BreakObjective;
@@ -31,42 +30,11 @@ public class PlaceListener implements Listener {
 	    		return;
 	    	List<Objective> objs = quest.getObjectives();
 			Block block = event.getBlock();
-	    	// if quest is ordered, process current objective
-	    	if(quest.hasFlag(QuestFlag.ORDERED)) {
-	    		int curr = qm.getCurrentObjective(player);
-	    		Objective obj = objs.get(curr);
-	    		if(obj != null) {
-	    			if(obj.getType().equalsIgnoreCase("PLACE")) {
-	    				PlaceObjective pObj = (PlaceObjective)obj;
-		    			// compare block ID
-		    			if(block.getTypeId() == pObj.getMaterial().getId()) {
-		    				// if DATA >= 0 compare
-		    				if(pObj.getData() < 0 || pObj.getData() == block.getData()) {
-		    					qm.incProgress(player, curr);
-		    					return;
-		    				}
-		    			}
-	    			} else if(obj.getType().equalsIgnoreCase("BREAK")) {
-	    				if(QuestData.brkSubOnPlace) {
-	    					BreakObjective bObj = (BreakObjective)obj;
-			    			// compare block ID
-			    			if(block.getTypeId() == bObj.getMaterial().getId()) {
-			    				// if DATA >= 0 compare
-			    				if(bObj.getData() < 0 || bObj.getData() == block.getData()) {
-			    					qm.incProgress(player, curr, -1);
-			    					return;
-			    				}
-			    			}
-	    				}
-	    			}
-	    		}
-	    		return;
-	    	}
 	    	if(QuestData.brkSubOnPlace) {
 		    	for(int i = 0; i < objs.size(); i++) {
 		    		// check if Objective is type BREAK
 		    		if(objs.get(i).getType().equalsIgnoreCase("BREAK")) {
-			    		if(qm.achievedTarget(player, i)){
+		    			if(!qm.isObjectiveActive(player, i)){
 		    				continue;
 		    			}
 			    		BreakObjective obj = (BreakObjective)objs.get(i);
@@ -84,7 +52,7 @@ public class PlaceListener implements Listener {
 	    	for(int i = 0; i < objs.size(); i++) {
 	    		// check if Objective is type PLACE
 	    		if(objs.get(i).getType().equalsIgnoreCase("PLACE")) {
-		    		if(qm.achievedTarget(player, i)){
+	    			if(!qm.isObjectiveActive(player, i)){
 	    				continue;
 	    			}
 		    		PlaceObjective obj = (PlaceObjective)objs.get(i);

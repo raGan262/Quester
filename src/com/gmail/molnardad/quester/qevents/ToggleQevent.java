@@ -29,7 +29,7 @@ public final class ToggleQevent extends Qevent {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": QST: " + quest;
+		return TYPE + ": " + quest;
 	}
 
 	@Override

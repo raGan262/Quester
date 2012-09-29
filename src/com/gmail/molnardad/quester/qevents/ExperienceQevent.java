@@ -27,7 +27,7 @@ public final class ExperienceQevent extends Qevent {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": AMT: " + amount;
+		return TYPE + ": " + amount;
 	}
 
 	@Override

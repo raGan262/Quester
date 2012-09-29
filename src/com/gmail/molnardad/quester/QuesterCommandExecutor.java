@@ -1255,6 +1255,56 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							return true;
 						}
 						
+						// OBJECTIVE PREREQUISITES
+						if(args[1].equalsIgnoreCase("prereq")){
+							if(args.length > 3) {
+								int obj;
+								try {
+									obj = Integer.parseInt(args[3]);
+								} catch (NumberFormatException e) {
+									sender.sendMessage(ChatColor.RED + strings.OBJ_BAD_ID);
+									return true;
+								}
+								
+								if(args[2].equalsIgnoreCase("add") || args[2].equalsIgnoreCase("a")) {
+									
+									if(args.length > 4) {
+										Set<Integer> prereq = parsePrerequisites(args, 4);
+										try {
+											qm.addObjectivePrerequisites(sender.getName(), obj, prereq);
+											sender.sendMessage(ChatColor.GREEN + strings.OBJ_REQ_ADD.replaceAll("%id", String.valueOf(obj)));
+										} catch (QuesterException e) {
+											sender.sendMessage(e.message());
+										}
+										return true;
+									}
+										
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_REQ_ADD_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+									return true;	
+								}
+								
+								if(args[2].equalsIgnoreCase("remove") || args[2].equalsIgnoreCase("r")) {
+									if(args.length > 4) {
+										Set<Integer> prereq = parsePrerequisites(args, 4);
+										try {
+											qm.removeObjectivePrerequisites(sender.getName(), obj, prereq);
+											sender.sendMessage(ChatColor.GREEN + strings.OBJ_REQ_REMOVE.replaceAll("%id", String.valueOf(obj)));
+										} catch (QuesterException e) {
+											sender.sendMessage(e.message());
+										}
+										return true;
+									}
+									
+									sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_REQ_REMOVE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+									return true;
+								}
+								
+							}	
+								
+							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_REQ_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+							return true;
+						}
+						
 						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 						return true;
 					}

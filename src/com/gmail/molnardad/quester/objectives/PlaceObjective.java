@@ -49,7 +49,7 @@ public final class PlaceObjective extends Objective {
 		if(!desc.isEmpty()) {
 			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
 		}
-		String datStr = data < 0 ? " " : " of given type(" + data + ") ";
+		String datStr = data < 0 ? " " : " (data " + data + ") ";
 		return "Place " + material.name().toLowerCase().replace('_', ' ') + datStr + "- " + (amount - progress) + "x.";
 	}
 	
