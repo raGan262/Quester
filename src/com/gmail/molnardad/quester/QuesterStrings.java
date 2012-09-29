@@ -127,114 +127,114 @@ public class QuesterStrings extends CustomConfig {
 	public String OBJ_ADD = "%type objective added."; // %type = objective type;
 	public String OBJ_ADD_AVAILABLE = "Available objective types: ";
 	public String OBJ_REMOVE = "Objective %id removed."; // %id = objective ID;
-	public String OBJ_REMOVE_USAGE = "%cmd objective remove [id_number].";
+	public String OBJ_REMOVE_USAGE = "%cmd objective remove <id_number>.";
 	public String OBJ_SWAP = "Objectives %id1 and %id2 swapped.";// %id1 = objective ID 1; %id2 = objective ID 2;
-	public String OBJ_SWAP_USAGE = "%cmd objective swap [id_1] [id_2].";
+	public String OBJ_SWAP_USAGE = "%cmd objective swap <id_1> <id_2>.";
 	public String OBJ_MOVE = "Objective moved from %id1 to %id2.";// %id1 = objective ID 1; %id2 = objective ID 2;
-	public String OBJ_MOVE_USAGE = "%cmd objective move [from] [to].";
+	public String OBJ_MOVE_USAGE = "%cmd objective move <from> <to>.";
 	public String OBJ_BAD_ID = "Objective ID must be number.";
 	public String OBJ_DESC_ADD = "Description to objective %id added."; // %id = objective ID;
-	public String OBJ_DESC_ADD_USAGE = "%cmd objective desc add [obj_ID] [description*].\n* - %r = remaining amount, %t = total required amount";
+	public String OBJ_DESC_ADD_USAGE = "%cmd objective desc add <obj_ID> <description*>\n* - %r = remaining amount, %t = total required amount";
 	public String OBJ_DESC_REMOVE = "Description of objective %id removed."; // %id = objective ID;
-	public String OBJ_DESC_USAGE = "%cmd objective desc [add|remove] [obj_ID].";
+	public String OBJ_DESC_USAGE = "%cmd objective desc <add|remove> <obj_ID>.";
 	public String OBJ_REQ_ADD = "Prerequisites to objective %id added."; // %id = objective ID;
 	public String OBJ_REQ_ADD_USAGE = "%cmd objective prereq add <obj_ID> <prerequisites>";
 	public String OBJ_REQ_REMOVE = "Prerequisites of objective %id removed."; // %id = objective ID;
 	public String OBJ_REQ_REMOVE_USAGE = "%cmd objective prereq remove <obj_ID> <prerequisites>";
 	public String OBJ_REQ_USAGE = "%cmd objective prereq <add|remove> <obj_ID> <prerequisites>.";
-	public String OBJ_USAGE = "%cmd objective [add|remove|swap|move|desc] [args].";
+	public String OBJ_USAGE = "%cmd objective [add|remove|swap|move|desc|prereq] [args].";
 	
 	public String OBJ_BREAK_TYPE = "Break";
-	public String OBJ_BREAK_USAGE = "%cmd objective add break [block_id/name][:data*] [amount] [hand*].\n* - optional";
+	public String OBJ_BREAK_USAGE = "%cmd objective add break {<item>} <amount> [hand]";
 	
 	public String OBJ_PLACE_TYPE = "Place";
-	public String OBJ_PLACE_USAGE = "%cmd objective add place [block_id/name][:data*] [amount].\n* - optional";
+	public String OBJ_PLACE_USAGE = "%cmd objective add place {<item>} <amount>";
 	
 	public String OBJ_ITEM_TYPE = "Item";
-	public String OBJ_ITEM_USAGE = "%cmd objective add item [item_id/name][:data*] [amount*] {ench1*}... .\n{ench} - [enchantment_id/name]:[level] ; * - optional";
+	public String OBJ_ITEM_USAGE = "%cmd objective add item {<item>} [amount] {[ench1]}...";
 	
 	public String OBJ_COLLECT_TYPE = "Collect";
-	public String OBJ_COLLECT_USAGE = "%cmd objective add collect [block_id/name][:data*] [amount].\n* - optional";
+	public String OBJ_COLLECT_USAGE = "%cmd objective add collect {<item>} <amount>";
 	
 	public String OBJ_ENCH_TYPE = "Enchant";
 	public String OBJ_ENCH_NUMBERS = "Amount must be > 0.";
-	public String OBJ_ENCH_USAGE = "%cmd objective add ench [item_id/name] [amount*] {ench1*}... .\n{ench} - [enchantment_id/name]:[level] ; * - optional";
+	public String OBJ_ENCH_USAGE = "%cmd objective add ench {<item>} [amount] {[ench1]}...";
 	
 	public String OBJ_EXP_TYPE = "Experience";
-	public String OBJ_EXP_USAGE = "%cmd objective add exp [amount].";
+	public String OBJ_EXP_USAGE = "%cmd objective add exp <amount>";
 	
 	public String OBJ_LOC_TYPE = "Location";
-	public String OBJ_LOC_USAGE = "%cmd objective add loc {location} [range*].\n{location} - [X];[Y];[Z];[world or 'this'] // * - optional";
+	public String OBJ_LOC_USAGE = "%cmd objective add loc {<location>} [range]";
 	
 	public String OBJ_DEATH_TYPE = "Death";
-	public String OBJ_DEATH_USAGE = "%cmd objective add death [amount] {location*} [range*].\n{location} - [X];[Y];[Z];[world or '%this'] , * - optional";// %this = world label;
+	public String OBJ_DEATH_USAGE = "%cmd objective add death <amount> {[location]} [range]";// %this = world label;
 	
 	public String OBJ_WORLD_TYPE = "World";
-	public String OBJ_WORLD_USAGE = "%cmd objective add world [world or '%this']";// %this = world label;
+	public String OBJ_WORLD_USAGE = "%cmd objective add world {<world>}";// %this = world label;
 	
 	public String OBJ_MOBKILL_TYPE = "Mob kill";
-	public String OBJ_MOBKILL_USAGE = "%cmd objective add mobkill [amount] [entity_id/name*]* - optional";
+	public String OBJ_MOBKILL_USAGE = "%cmd objective add mobkill <amount> {[entity]}";
 	
 	public String OBJ_KILL_TYPE = "Player kill";
-	public String OBJ_KILL_USAGE = "%cmd objective add kill [amount] [player_name*]* - optional";
+	public String OBJ_KILL_USAGE = "%cmd objective add kill <amount> [player]";
 	
 	public String OBJ_CRAFT_TYPE = "Craft";
-	public String OBJ_CRAFT_USAGE = "%cmd objective add craft [item_id/name][:data*] [amount].\n* - optional";
+	public String OBJ_CRAFT_USAGE = "%cmd objective add craft {<item>} <amount>";
 	
 	public String OBJ_SMELT_TYPE = "Smelt";
-	public String OBJ_SMELT_USAGE = "%cmd objective add smelt [item_id/name][:data*] [amount].\n* - optional";
+	public String OBJ_SMELT_USAGE = "%cmd objective add smelt {<item>} <amount>";
 	
 	public String OBJ_SHEAR_TYPE = "Shear";
-	public String OBJ_SHEAR_USAGE = "%cmd objective add shear [amount] [color_id/name*].\n* - optional";
+	public String OBJ_SHEAR_USAGE = "%cmd objective add shear <amount> {[color]}";
 	
 	public String OBJ_FISH_TYPE = "Fish";
-	public String OBJ_FISH_USAGE = "%cmd objective add fish [amount].";
+	public String OBJ_FISH_USAGE = "%cmd objective add fish <amount>";
 	
 	public String OBJ_MILK_TYPE = "Milk";
-	public String OBJ_MILK_USAGE = "%cmd objective add milk [amount].";
+	public String OBJ_MILK_USAGE = "%cmd objective add milk <amount>";
 	
 	public String OBJ_TAME_TYPE = "Tame";
-	public String OBJ_TAME_USAGE = "%cmd objective add tame [amount] [entity_id/name*]* - optional";
+	public String OBJ_TAME_USAGE = "%cmd objective add tame <amount> {[entity]}";
 	
 	public String OBJ_MONEY_TYPE = "Money";
-	public String OBJ_MONEY_USAGE = "%cmd objective add money [amount].";
+	public String OBJ_MONEY_USAGE = "%cmd objective add money <amount>";
 	
 	// CONDITION STRINGS
 
 	public String CON_ADD = "%type condition added."; // %type = condition type;
 	public String CON_ADD_AVAILABLE = "Available condition types: ";
 	public String CON_REMOVE = "Condition %id removed."; // %id = condition ID;
-	public String CON_REMOVE_USAGE = "%cmd condition remove [id_number].";
+	public String CON_REMOVE_USAGE = "%cmd condition remove <con_ID>";
 	public String CON_BAD_ID = "Condition ID must be number.";
 	public String CON_DESC_ADD = "Description to condition %id added."; // %id = condition ID;
-	public String CON_DESC_ADD_USAGE = "%cmd condition desc add [con_ID] [description*].\n* - %amt = amount, %id = item id, %data = data, %perm = permission, %qst = quest";
+	public String CON_DESC_ADD_USAGE = "%cmd condition desc add <con_ID> <description*>.\n* - %amt = amount, %id = item id, %data = data, %perm = permission, %qst = quest";
 	public String CON_DESC_REMOVE = "Description of condition %id removed."; // %id = condition ID;
-	public String CON_DESC_USAGE = "%cmd condition desc [add|remove] [con_ID].";
-	public String CON_USAGE = "%cmd condition [add|remove|desc] [args].";
+	public String CON_DESC_USAGE = "%cmd condition desc <add|remove> <con_ID> [args].";
+	public String CON_USAGE = "%cmd condition <add|remove|desc> [args].";
 	
 	public String CON_QUEST_TYPE = "Quest";
-	public String CON_QUEST_USAGE = "%cmd condition add quest [quest_name]";
+	public String CON_QUEST_USAGE = "%cmd condition add quest <quest_name>";
 	
 	public String CON_QUESTNOT_TYPE = "QuestNot";
-	public String CON_QUESTNOT_USAGE = "%cmd condition add questnot [quest_name]";
+	public String CON_QUESTNOT_USAGE = "%cmd condition add questnot <quest_name>";
 	
 	public String CON_PERM_TYPE = "Permission";
-	public String CON_PERM_USAGE = "%cmd condition add perm [quest_name]";
+	public String CON_PERM_USAGE = "%cmd condition add perm <quest_name>";
 	
 	public String CON_MONEY_TYPE = "Money";
-	public String CON_MONEY_USAGE = "%cmd condition add money [amount]";
+	public String CON_MONEY_USAGE = "%cmd condition add money <amount>";
 	
 	public String CON_ITEM_TYPE = "Item";
-	public String CON_ITEM_USAGE = "%cmd condition add item [item_id/name][:data*] [amount]";
+	public String CON_ITEM_USAGE = "%cmd condition add item {<item>} <amount>";
 	
 	public String CON_POINT_TYPE = "Point";
-	public String CON_POINT_USAGE = "%cmd condition add point [amount]";
+	public String CON_POINT_USAGE = "%cmd condition add point <amount>";
 	
 	// EVENT STRINGS
 	
 	public String EVT_ADD = "%type event added."; // %type = event type;
 	public String EVT_ADD_AVAILABLE = "Available event types: ";
-	public String EVT_ADD_USAGE = "%cmd event add <event_type> {<occasion>} <delay> [args]";
+	public String EVT_ADD_USAGE = "%cmd event add {<occasion>} <event_type> [args]";
 	public String EVT_REMOVE = "Event %id removed.";// %id = event ID;
 	public String EVT_REMOVE_USAGE = "%cmd event remove <id_number>";
 	public String EVT_NUMBERS = "Occasion must be > -4. Delay must be >= 0.";
@@ -242,51 +242,51 @@ public class QuesterStrings extends CustomConfig {
 	public String EVT_USAGE = "%cmd event <add|remove> [args]";
 	
 	public String EVT_MSG_TYPE = "Message";
-	public String EVT_MSG_USAGE = "%cmd event add {<occasion>} <delay> msg <message*>\n* - supports '&' colors and '\\n' newline";
+	public String EVT_MSG_USAGE = "%cmd event add {<occasion>} msg <message*>\n* - supports '&' colors and '\\n' newline";
 	
 	public String EVT_QUEST_TYPE = "Quest";
-	public String EVT_QUEST_USAGE = "%cmd event add {<occasion>} <delay> quest <quest_name>";
+	public String EVT_QUEST_USAGE = "%cmd event add {<occasion>} quest <quest_name>";
 	
 	public String EVT_TOGGLE_TYPE = "Toggle";
-	public String EVT_TOGGLE_USAGE = "%cmd event add {<occasion>} <delay> toggle <quest_ID>";
+	public String EVT_TOGGLE_USAGE = "%cmd event add {<occasion>} toggle <quest_ID>";
 	
 	public String EVT_OBJCOM_TYPE = "Objective complete";
-	public String EVT_OBJCOM_USAGE = "%cmd event add {<occasion>} <delay> objcom <objective_ID>";
+	public String EVT_OBJCOM_USAGE = "%cmd event add {<occasion>} objcom <objective_ID>";
 	
 	public String EVT_CANCEL_TYPE = "Cancel";
 	
 	public String EVT_CMD_TYPE = "Command";
-	public String EVT_CMD_USAGE = "%cmd event add {<occasion>} <delay> cmd <command*>\n* - without '/'";
+	public String EVT_CMD_USAGE = "%cmd event add {<occasion>} cmd <command*>\n* - without '/'";
 	
 	public String EVT_EXPL_TYPE = "Explosion";
-	public String EVT_EXPL_USAGE = "%cmd event add {<occasion>} <delay> explosion {location} [range] [damage*]\n* - true/false, default is false";
+	public String EVT_EXPL_USAGE = "%cmd event add {<occasion>} explosion {<location>} [range] [damage*]\n* - true/false, default is false";
 	
 	public String EVT_LIGHT_TYPE = "Lightning";
-	public String EVT_LIGHT_USAGE = "%cmd event add {<occasion>} <delay> lightning {location} [range] [damage*]\n* - true/false, default is false";
+	public String EVT_LIGHT_USAGE = "%cmd event add {<occasion>} lightning {<location>} [range] [damage*]\n* - true/false, default is false";
 	
 	public String EVT_TELE_TYPE = "Teleport";
-	public String EVT_TELE_USAGE = "%cmd event add {<occasion>} <delay> tele {location}";
+	public String EVT_TELE_USAGE = "%cmd event add {<occasion>} tele {<location>}";
 	
 	public String EVT_BLOCK_TYPE = "Block";
-	public String EVT_BLOCK_USAGE = "%cmd event add {<occasion>} <delay> block {<block>} {location*}\n* - location 'here' means block you are looking at";
+	public String EVT_BLOCK_USAGE = "%cmd event add {<occasion>} block {<block>} {<location>*}\n* - location 'here' means block you are looking at";
 	
 	public String EVT_SPAWN_TYPE = "Spawn";
-	public String EVT_SPAWN_USAGE = "%cmd event add {<occasion>} <delay> spawn {<entity>} <amount> {<location>} [range]";
+	public String EVT_SPAWN_USAGE = "%cmd event add {<occasion>} spawn {<entity>} <amount> {<location>} [range]";
 
 	public String EVT_EFF_TYPE = "Effect";
-	public String EVT_EFF_USAGE = "%cmd event add {occasion} <delay> effect {<potion effect>}.";
+	public String EVT_EFF_USAGE = "%cmd event add {<occasion>} effect {<potion effect>}";
 	
 	public String EVT_ITEM_TYPE = "Item";
-	public String EVT_ITEM_USAGE = "%cmd event add {occasion} <delay> item {<item>} [amount] {[enchants]}...";
+	public String EVT_ITEM_USAGE = "%cmd event add {<occasion>} item {<item>} [amount] {[enchants]}...";
 	
 	public String EVT_MONEY_TYPE = "Money";
-	public String EVT_MONEY_USAGE = "%cmd event add {occasion} <delay> money <amount>.";
+	public String EVT_MONEY_USAGE = "%cmd event add {<occasion>} money <amount>";
 	
 	public String EVT_EXP_TYPE = "Experience";
-	public String EVT_EXP_USAGE = "%cmd event add {occasion} <delay> exp <amount>.";
+	public String EVT_EXP_USAGE = "%cmd event add {<occasion>} exp <amount>";
 	
 	public String EVT_POINT_TYPE = "Point";
-	public String EVT_POINT_USAGE = "%cmd event add {occasion} <delay> point <amount>.";
+	public String EVT_POINT_USAGE = "%cmd event add {<occasion>} point <amount>";
 	
 	// ERROR STRINGS
 
