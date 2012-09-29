@@ -431,9 +431,9 @@ public class Util {
 			world = Bukkit.getWorld(split[3]);
 			if(world == null)
 				throw new IllegalArgumentException();
-			if(str.length() > 4)
+			if(split.length > 4)
 				yaw = Float.parseFloat(split[4]);
-			if(str.length() > 5)
+			if(split.length > 5)
 				pitch = Float.parseFloat(split[5]);
 			loc = new Location(world, x, y, z, yaw, pitch);
 		} catch (Exception e) {
