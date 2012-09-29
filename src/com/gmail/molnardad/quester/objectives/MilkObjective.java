@@ -38,7 +38,7 @@ public final class MilkObjective extends Objective {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": " + amount + coloredDesc() + stringQevents();
+		return TYPE + ": " + amount + coloredDesc();
 	}
 	
 	public int takeExp(int amt) {

@@ -59,7 +59,7 @@ public final class CraftObjective extends Objective {
 	@Override
 	public String toString() {
 		String dataStr = (data < 0 ? "" : ":" + data);
-		return TYPE + ": " + material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount + coloredDesc() + stringQevents();
+		return TYPE + ": " + material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount + coloredDesc();
 	}
 
 	@Override

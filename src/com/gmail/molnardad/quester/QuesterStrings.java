@@ -236,7 +236,7 @@ public class QuesterStrings extends CustomConfig {
 	public String EVT_ADD_AVAILABLE = "Available event types: ";
 	public String EVT_ADD_USAGE = "%cmd event add <event_type> {<occasion>} <delay> [args]";
 	public String EVT_REMOVE = "Event %id removed.";// %id = event ID;
-	public String EVT_REMOVE_USAGE = "%cmd event remove <id_number> [objective_number*]\n* - omit if not objective event";
+	public String EVT_REMOVE_USAGE = "%cmd event remove <id_number>";
 	public String EVT_NUMBERS = "Occasion must be > -4. Delay must be >= 0.";
 	public String EVT_SPECIFY = "Specify occasion and delay.";
 	public String EVT_USAGE = "%cmd event <add|remove> [args]";

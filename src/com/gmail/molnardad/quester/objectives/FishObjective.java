@@ -38,7 +38,7 @@ public final class FishObjective extends Objective {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": " + amount + coloredDesc() + stringQevents();
+		return TYPE + ": " + amount + coloredDesc();
 	}
 
 	@Override

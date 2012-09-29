@@ -29,7 +29,7 @@ public final class QuestQevent extends Qevent {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": " + quest;
+		return TYPE + ": " + quest + appendSuper();
 	}
 
 	@Override

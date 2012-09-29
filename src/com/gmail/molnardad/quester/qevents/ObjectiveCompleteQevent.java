@@ -32,7 +32,7 @@ public final class ObjectiveCompleteQevent extends Qevent {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": " + objective;
+		return TYPE + ": " + objective + appendSuper();
 	}
 
 	@Override

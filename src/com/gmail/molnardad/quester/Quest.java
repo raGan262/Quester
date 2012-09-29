@@ -1,8 +1,10 @@
 package com.gmail.molnardad.quester;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
@@ -179,6 +181,21 @@ public class Quest {
 	
 	public List<Qevent> getQevents() {
 		return qevents;
+	}
+	
+	public Map<Integer, Map<Integer, Qevent>> getQeventMap() {
+		Map<Integer, Map<Integer, Qevent>> result = new HashMap<Integer, Map<Integer, Qevent>>();
+		Qevent q = null;
+		int occ = 0;
+		for(int i=0; i<qevents.size(); i++) {
+			q = qevents.get(i);
+			occ = q.getOccasion();
+			if(result.get(occ) == null) {
+				result.put(occ, new HashMap<Integer, Qevent>());
+			}
+			result.get(occ).put(i, q);
+		}
+		return result;
 	}
 	
 	public boolean removeQevent(int id) {

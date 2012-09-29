@@ -26,7 +26,7 @@ public final class CommandQevent extends Qevent {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": /" + command;
+		return TYPE + ": /" + command + appendSuper();
 	}
 
 	@Override

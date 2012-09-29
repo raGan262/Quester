@@ -31,7 +31,7 @@ public final class TeleportQevent extends Qevent {
 	@Override
 	public String toString() {
 		String locStr = String.format("%.1f:%.1f:%.1f("+location.getWorld().getName()+")", location.getX(), location.getY(), location.getZ());
-		return TYPE + ": " + locStr;
+		return TYPE + ": " + locStr + appendSuper();
 	}
 
 	@Override

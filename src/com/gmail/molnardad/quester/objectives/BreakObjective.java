@@ -63,7 +63,7 @@ public final class BreakObjective extends Objective {
 	@Override
 	public String toString() {
 		String dataStr = (data < 0 ? "" : ":" + data);
-		return TYPE + ": " + material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount + "; HND: " + inHand + coloredDesc() + stringQevents();
+		return TYPE + ": " + material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount + "; HND: " + inHand + coloredDesc();
 	}
 
 	@Override

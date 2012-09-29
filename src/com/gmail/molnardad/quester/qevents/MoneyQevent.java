@@ -29,7 +29,7 @@ public final class MoneyQevent extends Qevent {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": " + amount;
+		return TYPE + ": " + amount + appendSuper();
 	}
 
 	@Override

@@ -49,7 +49,7 @@ public final class ItemQevent extends Qevent {
 		for(Integer e : enchants.keySet()) {
 			enchs = enchs + " " + Enchantment.getById(e).getName() + ":" + enchants.get(e);
 		}
-		return TYPE+": "+itm+enchs;
+		return TYPE+": "+itm + appendSuper() + enchs;
 	}
 
 	@Override

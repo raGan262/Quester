@@ -50,7 +50,7 @@ public final class SmeltObjective extends Objective {
 	
 	public String toString() {
 		String dataStr = (data < 0 ? "" : ":" + data);
-		return TYPE + ": " + material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount + coloredDesc() + stringQevents();
+		return TYPE + ": " + material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount + coloredDesc();
 	}
 	
 	public boolean check(ItemStack item) {

@@ -33,7 +33,7 @@ public final class LocObjective extends Objective {
 	
 	@Override
 	public String toString() {
-		return TYPE+": "+Util.serializeLocString(location)+"; RNG: "+ range + coloredDesc() + stringQevents();
+		return TYPE+": "+Util.serializeLocString(location)+"; RNG: "+ range + coloredDesc();
 	}
 
 	public boolean checkLocation(Location loc) {

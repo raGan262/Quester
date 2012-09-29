@@ -1,9 +1,7 @@
 package com.gmail.molnardad.quester.objectives;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
@@ -12,7 +10,6 @@ import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.Quester;
-import com.gmail.molnardad.quester.qevents.Qevent;
 import com.gmail.molnardad.quester.utils.Util;
 
 public abstract class Objective {
@@ -38,38 +35,11 @@ public abstract class Objective {
 		TameObjective.class,
 		WorldObjective.class
 	};
-	List<Qevent> qevents = new ArrayList<Qevent>();
 	String desc = "";
 	Set<Integer> prerequisites = new HashSet<Integer>();
 	
 	public abstract String getType();
 	
-	public void addQevent(Qevent newQevent) {
-		qevents.add(newQevent);
-	}
-	
-	public void removeQevent(int id) {
-		if(id >= 0 && id < qevents.size())
-			qevents.remove(id);
-	}
-	
-	public List<Qevent> getQevents() {
-		return qevents;
-	}
-	
-	public void runQevents(Player player) {
-		for(Qevent qv : qevents) {
-			qv.execute(player);
-		}
-	}
-	
-	public String stringQevents() {
-		String result = "";
-		for(int i=0; i<qevents.size(); i++) {
-			result += "\n " + ChatColor.RESET + " <" + i + "> " + qevents.get(i).toString();
-		}
-		return result;
-	}
 	
 	public Set<Integer> getPrerequisites() {
 		return prerequisites;
@@ -129,12 +99,6 @@ public abstract class Objective {
 			section.set("description", desc);
 		if(!prerequisites.isEmpty())
 			section.set("prerequisites", Util.serializePrerequisites(prerequisites));
-		if(!qevents.isEmpty()) {
-			ConfigurationSection sub = section.createSection("events");
-			for(int i=0; i<qevents.size(); i++) {
-				qevents.get(i).serialize(sub.createSection("" + i));
-			}
-		}
 	}
 	
 	public static Objective deserialize(ConfigurationSection section) {
@@ -144,7 +108,6 @@ public abstract class Objective {
 		}
 		Objective obj = null;
 		String type = null, des = null;
-		List<Qevent> qvts = new ArrayList<Qevent>();
 		Set<Integer> prereq = new HashSet<Integer>();
 		
 		if(section.isString("type"))
@@ -161,18 +124,6 @@ public abstract class Objective {
 				prereq = Util.deserializePrerequisites(section.getString("prerequisites"));
 			} catch (Exception ignore) {}
 		}
-		if(section.isConfigurationSection("events")) {
-			ConfigurationSection evs = section.getConfigurationSection("events");
-			for(String key : evs.getKeys(false)) {
-				if(evs.isConfigurationSection(key)) {
-					Qevent qv = Qevent.deserialize(evs.getConfigurationSection(key));
-					if(qv != null)
-						qvts.add(qv);
-					else
-						Quester.log.severe("Error occured when deserializing event ID:" + key + " in objective.");
-				}
-			}
-		}
 		
 		boolean success = false;
 		for(Class<? extends Objective> c : classes) {
@@ -186,11 +137,6 @@ public abstract class Objective {
 							return null;
 						if(des != null)
 							obj.addDescription(des);
-						if(!qvts.isEmpty()) {
-							for(Qevent q : qvts) {
-								obj.addQevent(q);
-							}
-						}
 						if(!prereq.isEmpty()) {
 							for(int i : prereq) {
 								obj.addPrerequisity(i);

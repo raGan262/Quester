@@ -1938,11 +1938,8 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						// REMOVE EVENT
 						if(args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("r")){
 							try {
-								int obj = -1;
 								int id = Integer.parseInt(args[2]);
-								if(args.length > 3)
-									obj = Integer.parseInt(args[3]);
-								qm.removeQevent(sender.getName(), id, obj);
+								qm.removeQevent(sender.getName(), id);
 								sender.sendMessage(ChatColor.GREEN + strings.EVT_REMOVE.replaceAll("%id", args[2]));
 							} catch (NumberFormatException e) {
 								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_REMOVE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));

@@ -37,7 +37,7 @@ public final class ExplosionQevent extends Qevent {
 			locStr = "PLAYER";
 		else
 			locStr = String.format("%.1f:%.1f:%.1f("+location.getWorld().getName()+")", location.getX(), location.getY(), location.getZ());
-		return TYPE + ": " + locStr + "; RNG: " + range + "; DMG: " + damage;
+		return TYPE + ": " + locStr + "; RNG: " + range + "; DMG: " + damage + appendSuper();
 	}
 
 	@Override

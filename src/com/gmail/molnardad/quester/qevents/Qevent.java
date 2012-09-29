@@ -43,6 +43,26 @@ public abstract class Qevent {
 	public abstract String toString();
 	public abstract void run(Player player);
 
+	String appendSuper() {
+		return "; DEL: " + delay;
+	}
+	
+	public static String parseOccasion(int occ) {
+		if(occ == -1) {
+			return "On start";
+		}
+		if(occ == -2) {
+			return "On cancel";
+		}
+		if(occ == -3) {
+			return "On complete";
+		}
+		if(occ >= 0) {
+			return "On objective";
+		}
+		return "Unknown";
+	}
+	
 	public int execute(final Player player) {
 		if(delay > 0)
 			return Bukkit.getScheduler().scheduleSyncDelayedTask(Quester.plugin, new Runnable() {

@@ -3,6 +3,7 @@ package com.gmail.molnardad.quester;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -547,26 +548,15 @@ public class QuestManager {
 		if(occasion < -3 || occasion >= quest.getObjectives().size() ) {
 			throw new QuesterException(ExceptionType.OCC_NOT_EXIST);
 		}
-		if(occasion < 0)
-			quest.addQevent(newQevent);
-		else
-			quest.getObjective(occasion).addQevent(newQevent);
+		quest.addQevent(newQevent);
 		QuestData.saveQuests();
 	}
 	
-	public void removeQevent(String changer, int id, int objective) throws QuesterException {
+	public void removeQevent(String changer, int id) throws QuesterException {
 		Quest quest = getSelected(changer);
 		modifyCheck(quest);
-		if(objective < 0) {
-			if(!quest.removeQevent(id)){
-				throw new QuesterException(ExceptionType.EVT_NOT_EXIST);
-			}
-		} else {
-			Objective obj = quest.getObjective(objective);
-			if(obj == null){
-				throw new QuesterException(ExceptionType.OCC_NOT_EXIST);
-			}
-			obj.removeQevent(id);
+		if(!quest.removeQevent(id)){
+			throw new QuesterException(ExceptionType.EVT_NOT_EXIST);
 		}
 		QuestData.saveQuests();
 	}
@@ -783,8 +773,10 @@ public class QuestManager {
 		if(obj.getTargetAmount() <= newValue) {
 			if(QuestData.progMsgObj)
 				player.sendMessage(Quester.LABEL + Quester.strings.MSG_OBJ_COMPLETED);
-			for(Qevent qv : obj.getQevents()) {
-				qv.execute(player);
+			for(Qevent qv : q.getQevents()) {
+				if(qv.getOccasion() == id) {
+					qv.execute(player);
+				}
 			}
 			if(checkAll) {
 				if(areObjectivesCompleted(player)) {
@@ -877,12 +869,15 @@ public class QuestManager {
 		String worlds = qst.getWorlds().isEmpty() ? "ANY" : qst.getWorldNames();
 		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_WORLDS + ": " + ChatColor.WHITE + worlds);
 		int i;
+		Map<Integer, Map<Integer, Qevent>> qmap = qst.getQeventMap();
 		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_EVENTS + ":");
-		i = 0;
-		for(Qevent e: qst.getQevents()){
-			sender.sendMessage(" [" + i + "] " + e.toString());
-			i++;
-			
+		for(i=-1; i > -4; i--){
+			if(qmap.get(i) != null) {
+				sender.sendMessage(ChatColor.GOLD + " " + Qevent.parseOccasion(i) + ":");
+				for(int j : qmap.get(i).keySet()) {
+					sender.sendMessage("  <" + j + "> " + qmap.get(i).get(j).toString());
+				}
+			}
 		}
 		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_CONDITIONS + ":");
 		i = 0;
@@ -895,6 +890,11 @@ public class QuestManager {
 		i = 0;
 		for(Objective o: qst.getObjectives()){
 			sender.sendMessage(" [" + i + "] " + o.toString());
+			if(qmap.get(i) != null) {
+				for(int j : qmap.get(i).keySet()) {
+					sender.sendMessage("  <" + j + "> " + qmap.get(i).get(j).toString());
+				}
+			}
 			i++;
 		}
 	}

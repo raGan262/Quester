@@ -45,7 +45,7 @@ public final class MobKillObjective extends Objective {
 	@Override
 	public String toString() {
 		String entStr = entity == null ? "ANY" : entity.getName();
-		return TYPE + ": " + entStr + "; AMT: " + amount + coloredDesc() + stringQevents();
+		return TYPE + ": " + entStr + "; AMT: " + amount + coloredDesc();
 	}
 	
 	public boolean check(EntityType ent) {
