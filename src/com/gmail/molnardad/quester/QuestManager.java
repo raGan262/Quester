@@ -781,13 +781,9 @@ public class QuestManager {
 				}
 			}
 			if(checkAll) {
-				if(areObjectivesCompleted(player)) {
-					try{
-						complete(player, false);
-					} catch (QuesterException e) {
-						player.sendMessage(e.message());
-					}
-				}
+				try{
+					complete(player, false);
+				} catch (QuesterException ignore) {}
 			}
 			QuestData.saveProfiles();
 		} 
