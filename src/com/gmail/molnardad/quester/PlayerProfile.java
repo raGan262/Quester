@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 
@@ -112,27 +113,22 @@ public class PlayerProfile implements ConfigurationSerializable{
 		rank = newRank;
 	}
 	
-	public Map<String, Object> serialize() {
-		final Map<String, Object> map = new HashMap<String, Object>();
-		map.put("name", name);
-		map.put("points", points);
+	public void serialize(ConfigurationSection section) {
+		
+		section.set("name", name);
+		if(points != 0) {
+			section.set("points", points);
+		}
 		
 		if(!completed.isEmpty()) {
-			final String[] completedmap = completed.toArray(new String[0]);
-			map.put("completed", completedmap);
+			section.set("completed", completed.toArray(new String[0]));
 		}
 		
 		if(!quest.isEmpty()) {
-			map.put("quest", quest);
+			section.set("quest", quest);
 			
-			int i = 0;
-			final Map<Integer, Object> progressmap = new HashMap<Integer, Object>();
-			for(Integer j : progress) {
-				progressmap.put(i++, j);
-			}
-			map.put("progress", progressmap);
+			section.set("progress", Util.implodeInt(progress.toArray(new Integer[0]), "|"));
 		}
-		return map;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -183,5 +179,61 @@ public class PlayerProfile implements ConfigurationSerializable{
 		}
 		
 		return profile;
+	}
+	
+	public static PlayerProfile sectionDeserialize(ConfigurationSection section) {
+		PlayerProfile prof = null;
+		
+		if(section.isString("name")) {
+			prof = new PlayerProfile(section.getString("name"));
+		}
+		else {
+			if(QuestData.debug) {
+				Quester.log.info("Profile name not found.");
+			}
+			return null;
+		}
+		
+		if(section.isInt("points")) {
+			prof.addPoints(section.getInt("points"));
+		}
+		
+		if(section.isList("completed")) {
+			List<String> l = section.getStringList("completed");
+			for(String s : l) {
+				prof.addCompleted(s);
+			}
+		}
+		
+		if(section.isString("quest")) {
+			if(section.isString("progress")) {
+				try {
+					String[] strs = section.getString("progress").split("\\|");
+					List<Integer> list = new ArrayList<Integer>();
+					for(String s : strs) {
+						list.add(Integer.parseInt(s));
+					}
+					prof.setQuest(section.getString("quest"));
+					prof.setProgress(list);
+				} catch (Exception e) {
+					if(QuestData.debug) {
+						Quester.log.info("Invalid progress in profile.");
+					}
+				}
+			}
+			else {
+				if(QuestData.debug) {
+					Quester.log.info("Invalid or missing progress in profile.");
+				}
+			}
+		}
+		
+		return prof;
+	}
+
+	// needs to be here to remain configuration serializable
+	@Override
+	public Map<String, Object> serialize() {
+		return new HashMap<String, Object>();
 	}
 }

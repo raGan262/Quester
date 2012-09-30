@@ -1548,26 +1548,25 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						// ADD EVENT
 						if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("a")){
 							
-							if(args.length > 3){
+							if(args.length > 2){
 								
 								int occ;
 								int del;
 								try {
-									occ = Integer.parseInt(args[2]);
-									del = Integer.parseInt(args[3]);
-									if(occ < -3 || del < 0)
-										throw new NumberFormatException();
+									int[] arr = deserializeOccasion(args[2]);
+									occ = arr[0];
+									del = arr[1];
 								} catch (NumberFormatException e) {
 									sender.sendMessage(ChatColor.RED + strings.EVT_NUMBERS);
 									return true;
 								}
 								
-								if(args.length > 4){
+								if(args.length > 3){
 									
 									// MESSAGE EVENT
-									if(args[4].equalsIgnoreCase("msg")) {
-										if(args.length > 5) {
-											String msg = implode(args, 5);
+									if(args[3].equalsIgnoreCase("msg")) {
+										if(args.length > 4) {
+											String msg = implode(args, 4);
 											try {
 												qm.addQevent(sender.getName(), new MessageQevent(occ, del, msg));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_MSG_TYPE));
@@ -1581,10 +1580,10 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									
 									// QUEST EVENT
-									if(args[4].equalsIgnoreCase("quest")) {
-										if(args.length > 5) {
+									if(args[3].equalsIgnoreCase("quest")) {
+										if(args.length > 4) {
 											try {
-												int qst = Integer.parseInt(args[5]);
+												int qst = Integer.parseInt(args[4]);
 												qm.addQevent(sender.getName(), new QuestQevent(occ, del, qst));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_QUEST_TYPE));
 											} catch (QuesterException e) {
@@ -1599,10 +1598,10 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									
 									// TOGGLE EVENT
-									if(args[4].equalsIgnoreCase("toggle")) {
-										if(args.length > 5) {
+									if(args[3].equalsIgnoreCase("toggle")) {
+										if(args.length > 4) {
 											try {
-												int qst = Integer.parseInt(args[5]);
+												int qst = Integer.parseInt(args[4]);
 												qm.addQevent(sender.getName(), new ToggleQevent(occ, del, qst));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_TOGGLE_TYPE));
 											} catch (QuesterException e) {
@@ -1617,10 +1616,10 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									
 									// OBJECTIVE COMPLETE EVENT
-									if(args[4].equalsIgnoreCase("objcom")) {
-										if(args.length > 5) {
+									if(args[3].equalsIgnoreCase("objcom")) {
+										if(args.length > 4) {
 											try {
-												int obj = Integer.parseInt(args[5]);
+												int obj = Integer.parseInt(args[4]);
 												qm.addQevent(sender.getName(), new ObjectiveCompleteQevent(occ, del, obj));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_OBJCOM_TYPE));
 											} catch (QuesterException e) {
@@ -1635,7 +1634,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									
 									// CANCEL EVENT
-									if(args[4].equalsIgnoreCase("cancel")) {
+									if(args[3].equalsIgnoreCase("cancel")) {
 											try {
 												qm.addQevent(sender.getName(), new CancelQevent(occ, del));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_CANCEL_TYPE));
@@ -1646,9 +1645,9 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									
 									// COMMAND EVENT
-									if(args[4].equalsIgnoreCase("cmd")) {
-										if(args.length > 5) {
-											String comm = implode(args, 5);
+									if(args[3].equalsIgnoreCase("cmd")) {
+										if(args.length > 4) {
+											String comm = implode(args, 4);
 											try {
 												qm.addQevent(sender.getName(), new CommandQevent(occ, del, comm));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_CMD_TYPE));
@@ -1662,21 +1661,21 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									
 									// EXPLOSION EVENT
-									if(args[4].equalsIgnoreCase("explosion")) {
-										if(args.length > 5) {
+									if(args[3].equalsIgnoreCase("explosion")) {
+										if(args.length > 4) {
 											boolean damage = false;
 											Location loc = null;
 											int rng = 0;
 											try {
 												if(!args[5].equalsIgnoreCase(QuestData.locLabelPlayer))
-													loc = getLoc(sender, args[5]);
-												if(args.length > 6) {
-													rng = Integer.parseInt(args[6]);
+													loc = getLoc(sender, args[4]);
+												if(args.length > 5) {
+													rng = Integer.parseInt(args[5]);
 													if(rng < 0) {
 														throw new NumberFormatException();
 													}
-													if(args.length > 7)
-														damage = Boolean.parseBoolean(args[7]);
+													if(args.length > 6)
+														damage = Boolean.parseBoolean(args[6]);
 												}
 												qm.addQevent(sender.getName(), new ExplosionQevent(occ, del, loc, rng, damage));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_EXPL_TYPE));
@@ -1692,21 +1691,21 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									
 									// LIGHTNING EVENT
-									if(args[4].equalsIgnoreCase("lightning")) {
-										if(args.length > 5) {
+									if(args[3].equalsIgnoreCase("lightning")) {
+										if(args.length > 4) {
 											boolean damage = false;
 											Location loc = null;
 											int rng = 0;
 											try {
 												if(!args[5].equalsIgnoreCase(QuestData.locLabelPlayer))
-													loc = getLoc(sender, args[5]);
-												if(args.length > 6) {
-													rng = Integer.parseInt(args[6]);
+													loc = getLoc(sender, args[4]);
+												if(args.length > 5) {
+													rng = Integer.parseInt(args[5]);
 													if(rng < 0) {
 														throw new NumberFormatException();
 													}
-													if(args.length > 7)
-														damage = Boolean.parseBoolean(args[7]);
+													if(args.length > 6)
+														damage = Boolean.parseBoolean(args[6]);
 												}
 												qm.addQevent(sender.getName(), new LightningQevent(occ, del, loc, rng, damage));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_LIGHT_TYPE));
@@ -1722,25 +1721,25 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									
 									// EXPLOSION EVENT
-									if(args[4].equalsIgnoreCase("spawn")) {
-										if(args.length > 7) {
+									if(args[3].equalsIgnoreCase("spawn")) {
+										if(args.length > 6) {
 											int amt;
 											EntityType ent;
 											Location loc = null;
 											int rng = 0;
 											try {
-												ent = parseEntity(args[5]);
+												ent = parseEntity(args[4]);
 												try {
-													amt = Integer.parseInt(args[6]);
+													amt = Integer.parseInt(args[5]);
 													if(amt < 1)
 														throw new NumberFormatException();
 												} catch (NumberFormatException e) {
 													throw new QuesterException(strings.ERROR_CMD_AMOUNT_POSITIVE);
 												}
 												if(!args[7].equalsIgnoreCase(QuestData.locLabelPlayer))
-													loc = getLoc(sender, args[7]);
-												if(args.length > 8) {
-													rng = Integer.parseInt(args[8]);
+													loc = getLoc(sender, args[6]);
+												if(args.length > 7) {
+													rng = Integer.parseInt(args[7]);
 													if(rng < 0) {
 														throw new NumberFormatException();
 													}
@@ -1759,12 +1758,12 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									
 									// TELEPORT EVENT
-									if(args[4].equalsIgnoreCase("tele")) {
-										if(args.length > 5) {
+									if(args[3].equalsIgnoreCase("tele")) {
+										if(args.length > 4) {
 											Location loc = null;
 											
 											try {
-												loc = getLoc(sender, args[5]);
+												loc = getLoc(sender, args[4]);
 												
 												qm.addQevent(sender.getName(), new TeleportQevent(occ, del, loc));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_TELE_TYPE));
@@ -1778,11 +1777,11 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									
 									// SETBLOCK EVENT
-									if(args[4].equalsIgnoreCase("block")) {
-										if(args.length > 6) {
+									if(args[3].equalsIgnoreCase("block")) {
+										if(args.length > 5) {
 											Location loc = null;
 											try {
-												int[] itm = parseItem(args[5]);
+												int[] itm = parseItem(args[4]);
 												if(itm[0] > 255)
 													throw new QuesterException(strings.ERROR_CMD_BLOCK_UNKNOWN);
 												int dat = itm[1] < 0 ? 0 : itm[1];
@@ -1798,7 +1797,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 														throw new QuesterException(strings.ERROR_CMD_LOC_HERE.replaceAll("%here", QuestData.locLabelHere));
 													}
 												} else
-													loc = getLoc(sender, args[6]);
+													loc = getLoc(sender, args[5]);
 												qm.addQevent(sender.getName(), new SetBlockQevent(occ, del, itm[0], dat, loc));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_BLOCK_TYPE));
 											} catch (QuesterException e) {
@@ -1811,10 +1810,10 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									
 									// EFFECT EVENT
-									if(args[4].equalsIgnoreCase("effect")) {
-										if(args.length > 5) {
+									if(args[3].equalsIgnoreCase("effect")) {
+										if(args.length > 4) {
 											try {
-												PotionEffect eff = parseEffect(args[5]);
+												PotionEffect eff = parseEffect(args[4]);
 												qm.addQevent(sender.getName(), new EffectQevent(occ, del, eff));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_EFF_TYPE));
 											} catch (QuesterException e) {
@@ -1827,17 +1826,17 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									
 									// ITEM EVENT
-									if(args[4].equalsIgnoreCase("item")) {
-										if(args.length > 5) {
+									if(args[3].equalsIgnoreCase("item")) {
+										if(args.length > 4) {
 											Material mat;
 											int dat;
 											int amt = 1;
 											try {
-												int[] itm = parseItem(args[5]);
+												int[] itm = parseItem(args[4]);
 												mat = Material.getMaterial(itm[0]);
 												dat = itm[1];
-												if(args.length > 6) {
-													amt = Integer.parseInt(args[6]);
+												if(args.length > 5) {
+													amt = Integer.parseInt(args[5]);
 												}
 												if(amt < 1 || dat < -1) {
 													throw new NumberFormatException();
@@ -1851,8 +1850,8 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											}
 											try {
 												Map<Integer, Integer> enchs = null;
-												if(args.length > 7) {
-													enchs = parseEnchants(args[7]);
+												if(args.length > 6) {
+													enchs = parseEnchants(args[6]);
 													ItemStack test = new ItemStack(mat, amt, (short)dat);
 													for(Integer i : enchs.keySet()) {
 														test.addEnchantment(Enchantment.getById(i), enchs.get(i));
@@ -1873,10 +1872,10 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									
 									// MONEY EVENT
-									if(args[4].equalsIgnoreCase("money")) {
-										if(args.length > 5) {
+									if(args[3].equalsIgnoreCase("money")) {
+										if(args.length > 4) {
 											try {
-												double amt = Double.parseDouble(args[5]);
+												double amt = Double.parseDouble(args[4]);
 												qm.addQevent(sender.getName(), new MoneyQevent(occ, del, amt));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_MONEY_TYPE));
 											} catch (NumberFormatException e) {
@@ -1891,10 +1890,10 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									
 									// EXPERIENCE EVENT
-									if(args[4].equalsIgnoreCase("exp")) {
-										if(args.length > 5) {
+									if(args[3].equalsIgnoreCase("exp")) {
+										if(args.length > 4) {
 											try {
-												int amt = Integer.parseInt(args[5]);
+												int amt = Integer.parseInt(args[4]);
 												qm.addQevent(sender.getName(), new ExperienceQevent(occ, del, amt));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_EXP_TYPE));
 											} catch (NumberFormatException e) {
@@ -1909,10 +1908,10 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									}
 									
 									// POINT EVENT
-									if(args[4].equalsIgnoreCase("point")) {
-										if(args.length > 5) {
+									if(args[3].equalsIgnoreCase("point")) {
+										if(args.length > 4) {
 											try {
-												int amt = Integer.parseInt(args[5]);
+												int amt = Integer.parseInt(args[4]);
 												qm.addQevent(sender.getName(), new PointQevent(occ, del, amt));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_POINT_TYPE));
 											} catch (NumberFormatException e) {

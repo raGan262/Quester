@@ -307,6 +307,7 @@ public class QuestManager {
 				}
 			}
 		}
+		QuestData.saveProfiles();
 	}
 	
 	public void toggleQuest(CommandSender changer) throws QuesterException {
@@ -706,24 +707,25 @@ public class QuestManager {
 	public void completeObjective(Player player) throws QuesterException {
 		Quest quest = getPlayerQuest(player.getName());
 		List<Objective> objs = quest.getObjectives();
-		PlayerProfile prof = getProfile(player.getName());
 		
 		int i = 0;
+		boolean completed = false;
 		while(i<objs.size()) {
-			if(!objs.get(i).isComplete(player, prof.getProgress().get(i))) {
-				if(isObjectiveActive(player, i)) {
-					if(objs.get(i).tryToComplete(player)) {
-						incProgress(player, i, false);
-						return;
-					} else {
-						throw new QuesterException(ExceptionType.OBJ_CANT_DO);
-					}
-				}
+			if(isObjectiveActive(player, i)) {
+				if(objs.get(i).tryToComplete(player)) {
+					incProgress(player, i, false);
+					completed = true;
+				} 
 			}
 			i++;
 		}
-		
-		completeQuest(player);
+
+		if(!completed) {
+			throw new QuesterException(ExceptionType.OBJ_CANT_DO);
+		}
+		if(areObjectivesCompleted(player)) {
+			completeQuest(player);
+		}
 	}
 	
 	public void completeQuest(Player player) throws QuesterException {
@@ -963,7 +965,7 @@ public class QuestManager {
 		if(holderID < 0) {
 			id = getProfile(sender.getName()).getHolderID();
 		} else {
-			id = getProfile(sender.getName()).getHolderID();
+			id = holderID;
 		}
 		qh = getHolder(id);
 		if(qh == null) {

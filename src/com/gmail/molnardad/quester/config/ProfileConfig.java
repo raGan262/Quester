@@ -14,8 +14,10 @@ public final class ProfileConfig extends CustomConfig {
 	
 	@Override
 	public void saveConfig() {
+		for(String key : config.getKeys(false))
+			config.set(key, null);
 		for(String key : QuestData.profiles.keySet()) {
-			config.set(key, QuestData.profiles.get(key));
+			QuestData.profiles.get(key).serialize(config.createSection(key));
 		}
 		try {
 			config.save(conFile);

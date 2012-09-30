@@ -145,32 +145,33 @@ public class QuestData {
 	static void loadProfiles() {
 		try {
 			YamlConfiguration config = Quester.profileConfig.getConfig();
+			PlayerProfile prof;
 			for(String key : config.getKeys(false)) {
-				if(config.get(key) != null) {
-					if(config.get(key) instanceof PlayerProfile) {
-						PlayerProfile prof = (PlayerProfile) config.get(key);
-						if(!prof.getQuest().isEmpty()) {
-							if(Quester.qMan.isQuestActive(prof.getQuest())) {
-								if(Quester.qMan.getObjectiveAmount(prof.getQuest()) != prof.getProgress().size()) {
-									prof.unsetQuest();
-									if(verbose) {
-										Quester.log.info("Invalid progress: " + key);
-									}
-								}
-							} else {
-								prof.unsetQuest();
-								if(verbose) {
-									Quester.log.info("Invalid progress: " + key);
-								}
-							}
-						}
-						Quester.qMan.checkRank(prof);
-						profiles.put(prof.getName().toLowerCase(), prof);
-					} else {
-						if(verbose) {
-							Quester.log.info("Invalid key in profiles.yml: " + key);
+				prof = null;
+				if(config.isConfigurationSection(key)) {
+					if(debug) {
+						Quester.log.info("Deserializing profile: " + key);
+					}
+					prof = PlayerProfile.sectionDeserialize(config.getConfigurationSection(key));
+				} 
+				else if(config.get(key) instanceof PlayerProfile) {
+					if(debug) {
+						Quester.log.info("Using deserialization method on profile: " + key);
+					}
+					prof = (PlayerProfile) config.get(key);
+				}
+				if(prof != null) {
+					if(!prof.getQuest().isEmpty()) {
+						if(!Quester.qMan.isQuestActive(prof.getQuest()) || 
+								(Quester.qMan.getObjectiveAmount(prof.getQuest()) != prof.getProgress().size())) {
+							prof.unsetQuest();
+							Quester.log.info("Incorrect quest info in profile: " + key);
 						}
 					}
+					Quester.qMan.checkRank(prof);
+					profiles.put(prof.getName().toLowerCase(), prof);
+				} else {
+					Quester.log.info("Invalid key in profiles.yml: " + key);
 				}
 			}
 			saveProfiles();

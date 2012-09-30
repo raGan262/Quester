@@ -120,6 +120,19 @@ public class Util {
 		return result;
 	}
 	
+	public static String implodeInt(Integer[] ints, String glue) {
+		String result = "";
+		boolean first = true;
+		for(int i = 0; i < ints.length; i++) {
+			if(first) {
+				result += ints[i];
+				first = false;
+			} else 
+				result += glue + ints[i];
+		}
+		return result;
+	}
+	
 	public static boolean permCheck(Player player, String perm, boolean message) {
 		return permCheck((CommandSender) player, perm, message);
 	}
@@ -396,6 +409,31 @@ public class Util {
 	
 	public static String serializePrerequisites(Set<Integer> prereq) {
 		return serializePrerequisites(prereq, ";");
+	}
+	
+	public static int[] deserializeOccasion(String arg) {
+		int[] arr = new int[2];
+		arr[1] = 0;
+		String[] s = arg.split(":");
+		if(s.length > 2 || s.length < 1) {
+			throw new NumberFormatException();
+		}
+		arr[0] = Integer.parseInt(s[0]);
+		if(s.length > 1) {
+			arr[1] = Integer.parseInt(s[1]);
+		}
+		if(arr[0] < -3 || arr[1] < 0)
+			throw new NumberFormatException();
+		return arr;
+	} 
+	
+	public static String serializeOccasion(int occ, int del) {
+		if(del != 0) {
+			return occ + ":" + del;
+		}
+		else {
+			return "" + occ;
+		}
 	}
 	
 	// LOCATION SERIALIZATION
