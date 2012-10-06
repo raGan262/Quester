@@ -66,7 +66,7 @@ public final class PlayerKillObjective extends Objective {
 	public static Objective deser(ConfigurationSection section) {
 		int amt = 1;
 		String name;
-		name = section.getString("name");
+		name = section.getString("name", "");
 		if(section.isInt("amount"))
 			amt = section.getInt("amount");
 		if(amt < 1)

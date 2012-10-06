@@ -221,7 +221,7 @@ public class QuestManager {
 	
 	public int getSelectedHolderID(String playerName) {
 		int id = getProfile(playerName).getHolderID();
-		if(getQuest(id) != null)
+		if(getHolder(id) != null)
 			return id;
 		return -1;
 	}
