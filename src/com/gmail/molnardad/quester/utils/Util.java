@@ -436,7 +436,31 @@ public class Util {
 		}
 	}
 	
+	public static int parseAction(String arg) {
+		if(arg.equalsIgnoreCase("left")) {
+			return 1;
+		}
+		if(arg.equalsIgnoreCase("right")) {
+			return 2;
+		}
+		if(arg.equalsIgnoreCase("push")) {
+			return 3;
+		}
+		return 0;
+	}
+	
 	// LOCATION SERIALIZATION
+	
+	public static String displayLocation(Location loc) {
+		String str = "";
+		
+		if(loc == null)
+			return null;
+		
+		str = String.format(Locale.ENGLISH, "%.1f;%.1f;%.1f;"+loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ());
+		
+		return str;
+	}
 	
 	public static String serializeLocString(Location loc) {
 		String str = "";

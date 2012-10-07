@@ -198,6 +198,9 @@ public class QuesterStrings extends CustomConfig {
 	
 	public String OBJ_MONEY_TYPE = "Money";
 	public String OBJ_MONEY_USAGE = "%cmd objective add money <amount>";
+
+	public String OBJ_ACTION_TYPE = "Action";
+	public String OBJ_ACTION_USAGE = "%cmd objective add action {<click>} {[block]} {[item]} {[location]} [range]";
 	
 	// CONDITION STRINGS
 

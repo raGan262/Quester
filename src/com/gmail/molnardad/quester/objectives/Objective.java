@@ -33,7 +33,8 @@ public abstract class Objective {
 		ShearObjective.class,
 		SmeltObjective.class,
 		TameObjective.class,
-		WorldObjective.class
+		WorldObjective.class,
+		ActionObjective.class
 	};
 	String desc = "";
 	Set<Integer> prerequisites = new HashSet<Integer>();

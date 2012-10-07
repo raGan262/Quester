@@ -202,6 +202,7 @@ public class Quester extends JavaPlugin {
 			getServer().getPluginManager().registerEvents(new DropListener(), this);
 			getServer().getPluginManager().registerEvents(new TameListener(), this);
 			getServer().getPluginManager().registerEvents(new SignListeners(), this);
+			getServer().getPluginManager().registerEvents(new ActionListener(), this);
 			if(citizens2) {
 				getServer().getPluginManager().registerEvents(new Citizens2Listener(), this);
 			}

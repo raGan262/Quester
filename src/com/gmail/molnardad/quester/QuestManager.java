@@ -720,11 +720,11 @@ public class QuestManager {
 			i++;
 		}
 
-		if(!completed) {
-			throw new QuesterException(ExceptionType.OBJ_CANT_DO);
-		}
 		if(areObjectivesCompleted(player)) {
 			completeQuest(player);
+		}
+		if(!completed) {
+			throw new QuesterException(ExceptionType.OBJ_CANT_DO);
 		}
 	}
 	

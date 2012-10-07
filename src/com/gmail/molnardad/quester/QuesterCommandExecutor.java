@@ -33,9 +33,11 @@ public class QuesterCommandExecutor implements CommandExecutor {
 	Player player = null;
 	QuestManager qm = null;
 	
-	private final String OBJECTIVES = "break, place, item, exp, loc, death, world, mobkill, kill, craft, ench, smelt, shear, fish, milk, collect, tame, money";
+	private final String OBJECTIVES = "break, place, item, exp, loc, death, world, mobkill, kill, " +
+			"craft, ench, smelt, shear, fish, milk, collect, tame, money, action";
 	private final String CONDITIONS = "quest, questnot, perm, money, item, point";
-	private final String EVENTS = "msg, explosion, block, tele, lightning, cmd, quest, cancel, toggle, objcom, spawn, item, money, exp, effect, point";
+	private final String EVENTS = "msg, explosion, block, tele, lightning, cmd, quest, cancel, " +
+			"toggle, objcom, spawn, item, money, exp, effect, point";
 	
 	public QuesterCommandExecutor() {
 		qm = Quester.qMan;
@@ -1155,6 +1157,51 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									return true;
 								}
 								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_MONEY_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+								return true;
+							}
+							
+							// ACTION OBJECTIVE
+							if(args[2].equalsIgnoreCase("action")) {
+								if(args.length > 3) {
+									try {
+										Material mat = null, hmat = null;
+										int dat = -1, hdat = -1, rng = 0, click = 0;
+										Location loc = null;
+										int[] itm;
+										click = parseAction(args[3]);
+										if(args.length > 4) {
+											try {
+												itm = parseItem(args[4]);
+												mat = Material.getMaterial(itm[0]);
+												dat = itm[1];
+											} catch (QuesterException ignore) {}
+											
+											if(args.length > 5) {
+												try {
+													itm = parseItem(args[5]);
+													hmat = Material.getMaterial(itm[0]);
+													hdat = itm[1];
+												} catch (QuesterException ignore) {}
+
+												if(args.length > 6) {
+													loc = getLoc(sender, args[6]);
+													
+													if(args.length > 7) {
+														rng = Integer.parseInt(args[7]);	
+													}
+												}
+											}
+										}
+										qm.addQuestObjective(sender.getName(), new ActionObjective(mat, dat, hmat, hdat, click, loc, rng));
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_ACTION_TYPE));
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_RANGE_INVALID);
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_ACTION_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							
