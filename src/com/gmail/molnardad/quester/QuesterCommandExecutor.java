@@ -1184,8 +1184,22 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												} catch (QuesterException ignore) {}
 
 												if(args.length > 6) {
-													loc = getLoc(sender, args[6]);
-													
+													if(args[6].equalsIgnoreCase(QuestData.locLabelHere)) {
+														if(player != null) {
+															List<Block> blcks = player.getLastTwoTargetBlocks(null, 6);
+															if(!blcks.isEmpty())
+																loc = blcks.get(blcks.size()-1).getLocation();
+															else {
+																throw new QuesterException(strings.ERROR_CMD_BLOCK_LOOK);
+															}
+														} else {
+															throw new QuesterException(strings.ERROR_CMD_LOC_HERE.replaceAll("%here", QuestData.locLabelHere));
+														}
+													} 
+													else {
+														loc = getLoc(sender, args[6]);
+													}
+														
 													if(args.length > 7) {
 														rng = Integer.parseInt(args[7]);	
 													}
@@ -1868,7 +1882,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 														throw new QuesterException(strings.ERROR_CMD_LOC_HERE.replaceAll("%here", QuestData.locLabelHere));
 													}
 												} else
-													loc = getLoc(sender, args[5]);
+													loc = getLoc(sender, args[6]);
 												qm.addQevent(sender.getName(), new SetBlockQevent(occ, del, itm[0], dat, loc));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_BLOCK_TYPE));
 											} catch (QuesterException e) {
