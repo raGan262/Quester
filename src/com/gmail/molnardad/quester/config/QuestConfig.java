@@ -1,7 +1,5 @@
 package com.gmail.molnardad.quester.config;
 
-import java.io.IOException;
-
 import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.Quester;
 
@@ -18,10 +16,6 @@ public final class QuestConfig extends CustomConfig {
 		for(String key : QuestData.allQuests.keySet()) {
 			QuestData.allQuests.get(key).serialize(config.createSection(key));
 		}
-		try {
-			config.save(conFile);
-		} catch (IOException ex) {
-			plugin.getLogger().severe("Can't Write To File '" + conFile.getName() + "'!");
-	    }
+		super.saveConfig();
 	}
 }

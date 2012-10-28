@@ -1,6 +1,5 @@
 package com.gmail.molnardad.quester.config;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,11 +28,7 @@ public class HolderConfig extends CustomConfig {
 		for(int key : QuestData.holderIds.keySet()) {
 			config.set("holders." + key, QuestData.holderIds.get(key).serialize());
 		}
-		try {
-			config.save(conFile);
-		} catch (IOException ex) {
-			plugin.getLogger().severe("Can't Write To File '" + conFile.getName() + "'!");
-	    }
+		super.saveConfig();
 	}
 	
 }

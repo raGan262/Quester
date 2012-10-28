@@ -67,7 +67,6 @@ public class QuesterStrings extends CustomConfig {
 	public String HELP_CONDITION = "- condition manipulation";
 	public String HELP_OBJECTIVE = "- objective manipulation";
 	public String HELP_EVENT = "- event manipulation";
-	public String HELP_REWARD = "- reward manipulation";
 	public String HELP_STARTSAVE = "- starts scheduled profile saving";
 	public String HELP_STOPSAVE = "- stops scheduled profile saving";
 	public String HELP_SAVE = "- saves profiles";

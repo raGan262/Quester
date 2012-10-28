@@ -34,7 +34,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 	QuestManager qm = null;
 	
 	private final String OBJECTIVES = "break, place, item, exp, loc, death, world, mobkill, kill, " +
-			"craft, ench, smelt, shear, fish, milk, collect, tame, money, action";
+			"craft, ench, smelt, shear, fish, milk, collect, tame, money, action, npc";
 	private final String CONDITIONS = "quest, questnot, perm, money, item, point";
 	private final String EVENTS = "msg, explosion, block, tele, lightning, cmd, quest, cancel, " +
 			"toggle, objcom, spawn, item, money, exp, effect, point";
@@ -98,7 +98,6 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						sender.sendMessage(ChatColor.GOLD + command + " condition add\\remove " + ChatColor.GRAY + strings.HELP_CONDITION);
 						sender.sendMessage(ChatColor.GOLD + command + " objective add\\remove\\swap\\desc " + ChatColor.GRAY + strings.HELP_OBJECTIVE);
 						sender.sendMessage(ChatColor.GOLD + command + " event add\\remove " + ChatColor.GRAY + strings.HELP_EVENT);
-						sender.sendMessage(ChatColor.GOLD + command + " reward add\\remove " + ChatColor.GRAY + strings.HELP_REWARD);
 					}
 					if(permCheck(sender, QuestData.ADMIN_PERM, false)) {
 						sender.sendMessage(line(ChatColor.BLUE, strings.HELP_SECTION_ADMIN, ChatColor.GOLD));
