@@ -1205,6 +1205,26 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								return true;
 							}
 							
+							// NPC OBJECTIVE
+							if(args[2].equalsIgnoreCase("npc")) {
+								if(args.length > 3) {
+									try {
+										int id = Integer.parseInt(args[3]);
+										if(id < 0)
+											throw new NumberFormatException();
+										qm.addQuestObjective(sender.getName(), new NpcObjective(id));
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_NPC_TYPE));
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_NPC_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+								return true;
+							}
+							
 							sender.sendMessage(ChatColor.RED + strings.OBJ_ADD_AVAILABLE + ChatColor.WHITE + OBJECTIVES);
 							return true;
 						}

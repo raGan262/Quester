@@ -11,20 +11,24 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.QuestHolder;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.QuesterTrait;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.objectives.NpcObjective;
+import com.gmail.molnardad.quester.objectives.Objective;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class Citizens2Listener implements Listener {
 	
+	QuestManager qm = Quester.qMan;
+	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onLeftClick(NPCLeftClickEvent event) {
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
-			QuestManager qm = Quester.qMan;
 			QuestHolder qh = qm.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
 			Player player = event.getClicker();
 			if(!Util.permCheck(player, QuestData.PERM_USE_NPC, true)) {
@@ -121,5 +125,29 @@ public class Citizens2Listener implements Listener {
 				player.sendMessage(ChatColor.RED + "No quest selected.");
 			}
 		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onAnyClick(NPCRightClickEvent event) {
+		Player player = event.getClicker();
+	    if(qm.hasQuest(player.getName())) {
+	    	Quest quest = qm.getPlayerQuest(player.getName());
+	    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
+	    		return;
+	    	List<Objective> objs = quest.getObjectives();
+	    	for(int i = 0; i < objs.size(); i++) {
+	    		if(objs.get(i).getType().equalsIgnoreCase("NPC")) {
+		    		if(!qm.isObjectiveActive(player, i)){
+	    				continue;
+	    			}
+	    			NpcObjective obj = (NpcObjective)objs.get(i);
+	    			if(obj.checkNpc(event.getNPC())) {
+	    				qm.incProgress(player, i);
+	    				event.setCancelled(true);
+	    				return;
+	    			}
+	    		}
+	    	}
+	    }
 	}
 }

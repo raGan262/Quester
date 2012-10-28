@@ -201,6 +201,9 @@ public class QuesterStrings extends CustomConfig {
 
 	public String OBJ_ACTION_TYPE = "Action";
 	public String OBJ_ACTION_USAGE = "%cmd objective add action {<click>} {[block]} {[item]} {[location]} [range]";
+
+	public String OBJ_NPC_TYPE = "Npc";
+	public String OBJ_NPC_USAGE = "%cmd objective add npc <id>";
 	
 	// CONDITION STRINGS
 

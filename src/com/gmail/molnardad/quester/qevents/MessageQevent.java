@@ -34,14 +34,14 @@ public final class MessageQevent extends Qevent {
 	@Override
 	public void serialize(ConfigurationSection section) {
 		super.serialize(section, TYPE);
-		section.set("message", message);
+		section.set("message", rawmessage);
 	}
 	
 	public static MessageQevent deser(int occ, int del, ConfigurationSection section) {
 		String msg;
 		
 		if(section.isString("message"))
-			msg = section.getString("message");
+			msg = ChatColor.translateAlternateColorCodes('&', section.getString("message")).replaceAll("\\\\n", "\n");
 		else
 			return null;
 		
@@ -50,6 +50,6 @@ public final class MessageQevent extends Qevent {
 
 	@Override
 	public void run(Player player) {
-		player.sendMessage(message);
+		player.sendMessage(message.replace("%p", player.getName()));
 	}
 }

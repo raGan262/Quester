@@ -31,19 +31,12 @@ public class ActionListener implements Listener {
 			Block block = event.getClickedBlock();
 			ItemStack item = player.getItemInHand();
 	    	for(int i = 0; i < objs.size(); i++) {
-	    		// check if Objective is type BREAK
 	    		if(objs.get(i).getType().equalsIgnoreCase("ACTION")) {
 		    		if(!qm.isObjectiveActive(player, i)){
 	    				continue;
 	    			}
 	    			ActionObjective obj = (ActionObjective)objs.get(i);
-	    			// compare block ID && check for redstone
-	    			player.sendMessage("" + i + ". --------");
-	    			player.sendMessage("Check click: " + obj.checkClick(event.getAction()));
-	    			player.sendMessage("Check block: " + obj.checkBlock(block));
-	    			player.sendMessage("Check hand: " + obj.checkHand(item));
 	    			if(block != null) {
-    	    			player.sendMessage("Check location: " + obj.checkLocation(block.getLocation()));
 	    				if(!obj.checkLocation(block.getLocation())) {
 	    					continue;
 	    				}

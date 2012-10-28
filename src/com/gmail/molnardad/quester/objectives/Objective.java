@@ -34,7 +34,8 @@ public abstract class Objective {
 		SmeltObjective.class,
 		TameObjective.class,
 		WorldObjective.class,
-		ActionObjective.class
+		ActionObjective.class,
+		NpcObjective.class
 	};
 	String desc = "";
 	Set<Integer> prerequisites = new HashSet<Integer>();
