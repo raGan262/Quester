@@ -8,9 +8,15 @@ public final class NpcObjective extends Objective {
 
 	public static final String TYPE = "NPC";
 	private final int index;
+	private final boolean cancel;
 	
-	public NpcObjective(int id) {
+	public NpcObjective(int id, boolean ccl) {
 		index = id;
+		cancel = ccl;
+	}
+	
+	public boolean getCancel() {
+		return cancel;
 	}
 	
 	@Override
@@ -28,7 +34,7 @@ public final class NpcObjective extends Objective {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": " + index + coloredDesc();
+		return TYPE + ": " + index + "; CANCEL: " + cancel + coloredDesc();
 	}
 	
 	public boolean checkNpc(NPC npc) {
@@ -40,14 +46,19 @@ public final class NpcObjective extends Objective {
 		super.serialize(section, TYPE);
 		
 		section.set("index", index);
+		if(cancel) {
+			section.set("cancel", cancel);
+		}
 	}
 	
 	public static Objective deser(ConfigurationSection section) {
 		int id = 0;
+		boolean ccl = false;
 		if(section.isInt("index"))
 			id = section.getInt("index");
 		if(id < 1)
 			return null;
-		return new NpcObjective(id);
+		ccl = section.getBoolean("cancel", false);
+		return new NpcObjective(id, ccl);
 	}
 }

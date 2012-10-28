@@ -1210,9 +1210,13 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								if(args.length > 3) {
 									try {
 										int id = Integer.parseInt(args[3]);
+										boolean ccl = false;
 										if(id < 0)
 											throw new NumberFormatException();
-										qm.addQuestObjective(sender.getName(), new NpcObjective(id));
+										if(args.length > 4) {
+											ccl = args[4].equalsIgnoreCase("true");
+										}
+										qm.addQuestObjective(sender.getName(), new NpcObjective(id, ccl));
 										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_NPC_TYPE));
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
