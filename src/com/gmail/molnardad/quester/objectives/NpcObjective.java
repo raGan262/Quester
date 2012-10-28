@@ -52,11 +52,10 @@ public final class NpcObjective extends Objective {
 	}
 	
 	public static Objective deser(ConfigurationSection section) {
-		int id = 0;
+		int id = -1;
 		boolean ccl = false;
-		if(section.isInt("index"))
-			id = section.getInt("index");
-		if(id < 1)
+		id = section.getInt("index", -1);
+		if(id < 0)
 			return null;
 		ccl = section.getBoolean("cancel", false);
 		return new NpcObjective(id, ccl);
