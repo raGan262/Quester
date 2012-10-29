@@ -7,15 +7,21 @@ import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.utils.Util;
 
-public final class ShearObjective extends Objective {
+public final class DyeObjective extends Objective {
 
-	public static final String TYPE = "SHEAR";
-	private final DyeColor color;
+	public static final String TYPE = "DYE";
 	private final int amount;
-
-	public ShearObjective(int amt, DyeColor col) {
+	private final DyeColor color;
+	private final String colorName;
+	
+	public DyeObjective(int amt, DyeColor col) {
 		amount = amt;
 		color = col;
+		if(col != null) {
+			colorName = " " + col.name().toLowerCase().replaceAll("_", " ");
+		} else {
+			colorName = "";
+		}
 	}
 	
 	@Override
@@ -30,49 +36,44 @@ public final class ShearObjective extends Objective {
 
 	@Override
 	public boolean isComplete(Player player, int progress) {
-		return amount <= progress;
+		return progress >= amount;
 	}
-
+	
 	@Override
 	public String progress(int progress) {
 		if(!desc.isEmpty()) {
 			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
 		}
-		String strCol = (color == null) ? "any" : color.name().replace('_', ' ').toLowerCase() ;
-		return "Shear " + strCol + " sheep - " + (amount - progress) + "x";
+		return "Dye sheep" +  colorName + " - " + (amount - progress) + "x";
 	}
 	
 	@Override
 	public String toString() {
-		String strCol = (color == null) ? "ANY" : color.name() ;
-		return TYPE + ": " + strCol + "; AMT: " + amount + coloredDesc();
-	}
-	
-	public boolean check(DyeColor col) {
-		if(col == color || color == null) {
-			return true;	
-		}
-		return false;
+		return TYPE + ": " + amount + "; COLOR:" + (colorName.isEmpty() ? " ANY" : colorName + "(" + (15 - color.getData()) + ")") + coloredDesc();
 	}
 
+	public boolean checkDye(int data) {
+		return (color == null) || (color.getData() == data);
+	}
+	
 	@Override
 	public void serialize(ConfigurationSection section) {
 		super.serialize(section, TYPE);
 		
-		if(color != null)
-			section.set("color", Util.serializeColor(color));
 		if(amount > 1)
 			section.set("amount", amount);
+		if(color != null) {
+			section.set("color", Util.serializeColor(color));
+		}
 	}
 	
 	public static Objective deser(ConfigurationSection section) {
 		int amt = 1;
 		DyeColor col = null;
-		col = Util.parseColor(section.getString("color"));
-		if(section.isInt("amount"))
-			amt = section.getInt("amount");
+		amt = section.getInt("amount", 1);
 		if(amt < 1)
-			amt = 1;
-		return new ShearObjective(amt, col);
+			return null;
+		col = Util.parseColor(section.getString("color", "default"));
+		return new DyeObjective(amt, col);
 	}
 }

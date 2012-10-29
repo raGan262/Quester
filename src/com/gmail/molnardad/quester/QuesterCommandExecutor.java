@@ -34,7 +34,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 	QuestManager qm = null;
 	
 	private final String OBJECTIVES = "break, place, item, exp, loc, death, world, mobkill, kill, " +
-			"craft, ench, smelt, shear, fish, milk, collect, tame, money, action, npc";
+			"craft, ench, smelt, shear, fish, milk, collect, tame, money, action, npc, dye";
 	private final String CONDITIONS = "quest, questnot, perm, money, item, point";
 	private final String EVENTS = "msg, explosion, block, tele, lightning, cmd, quest, cancel, " +
 			"toggle, objcom, spawn, item, money, exp, effect, point";
@@ -92,12 +92,12 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						sender.sendMessage(ChatColor.GOLD + command + " info [name*] " + ChatColor.GRAY + strings.HELP_INFO);
 						sender.sendMessage(line(ChatColor.DARK_GRAY, strings.HELP_SECTION_MODIFY_SELECTED));
 						sender.sendMessage(ChatColor.GOLD + command + " name [newName] " + ChatColor.GRAY + strings.HELP_NAME);
-						sender.sendMessage(ChatColor.GOLD + command + " desc set\\add " + ChatColor.GRAY + strings.HELP_DESC);
-						sender.sendMessage(ChatColor.GOLD + command + " world add\\remove " + ChatColor.GRAY + strings.HELP_WORLD);
-						sender.sendMessage(ChatColor.GOLD + command + " flag add\\remove " + ChatColor.GRAY + strings.HELP_FLAG);
-						sender.sendMessage(ChatColor.GOLD + command + " condition add\\remove " + ChatColor.GRAY + strings.HELP_CONDITION);
-						sender.sendMessage(ChatColor.GOLD + command + " objective add\\remove\\swap\\desc " + ChatColor.GRAY + strings.HELP_OBJECTIVE);
-						sender.sendMessage(ChatColor.GOLD + command + " event add\\remove " + ChatColor.GRAY + strings.HELP_EVENT);
+						sender.sendMessage(ChatColor.GOLD + command + " desc " + ChatColor.GRAY + strings.HELP_DESC);
+						sender.sendMessage(ChatColor.GOLD + command + " world " + ChatColor.GRAY + strings.HELP_WORLD);
+						sender.sendMessage(ChatColor.GOLD + command + " flag " + ChatColor.GRAY + strings.HELP_FLAG);
+						sender.sendMessage(ChatColor.GOLD + command + " condition " + ChatColor.GRAY + strings.HELP_CONDITION);
+						sender.sendMessage(ChatColor.GOLD + command + " objective " + ChatColor.GRAY + strings.HELP_OBJECTIVE);
+						sender.sendMessage(ChatColor.GOLD + command + " event " + ChatColor.GRAY + strings.HELP_EVENT);
 					}
 					if(permCheck(sender, QuestData.ADMIN_PERM, false)) {
 						sender.sendMessage(line(ChatColor.BLUE, strings.HELP_SECTION_ADMIN, ChatColor.GOLD));
@@ -1038,8 +1038,12 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									try {
 										DyeColor col = null;
 										int amt = Integer.parseInt(args[3]);
-										if(args.length > 4)
+										if(args.length > 4) {
 											col = parseColor(args[4]);
+											if(col == null) {
+												throw new InvalidDataException("");
+											}
+										}
 										if(amt < 1)
 											throw new NumberFormatException();
 										qm.addQuestObjective(sender.getName(), new ShearObjective(amt, col));
@@ -1239,6 +1243,35 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									return true;
 								}
 								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_NPC_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+								return true;
+							}
+							
+							// DYE OBJECTIVE
+							if(args[2].equalsIgnoreCase("dye")) {
+								if(args.length > 3) {
+									try {
+										int id = Integer.parseInt(args[3]);
+										DyeColor col = null;
+										if(id < 0)
+											throw new NumberFormatException();
+										if(args.length > 4) {
+											col = parseColor(args[4]);
+											if(col == null) {
+												throw new InvalidDataException("");
+											}
+										}
+										qm.addQuestObjective(sender.getName(), new DyeObjective(id, col));
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_DYE_TYPE));
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_POSITIVE);
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									} catch (InvalidDataException e) {
+										sender.sendMessage(strings.ERROR_CMD_COLOR_UNKNOWN);
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_DYE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							

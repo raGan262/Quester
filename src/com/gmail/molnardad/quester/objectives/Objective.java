@@ -35,7 +35,8 @@ public abstract class Objective {
 		TameObjective.class,
 		WorldObjective.class,
 		ActionObjective.class,
-		NpcObjective.class
+		NpcObjective.class,
+		DyeObjective.class
 	};
 	String desc = "";
 	Set<Integer> prerequisites = new HashSet<Integer>();

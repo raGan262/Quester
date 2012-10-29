@@ -12,6 +12,7 @@ import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -81,6 +82,8 @@ public class Quester extends JavaPlugin {
 			
 			startSaving();
 			loaded = true;
+			
+			debugMethod();
 		}
 
 		@Override
@@ -203,6 +206,7 @@ public class Quester extends JavaPlugin {
 			getServer().getPluginManager().registerEvents(new TameListener(), this);
 			getServer().getPluginManager().registerEvents(new SignListeners(), this);
 			getServer().getPluginManager().registerEvents(new ActionListener(), this);
+			getServer().getPluginManager().registerEvents(new DyeListener(), this);
 			if(citizens2) {
 				getServer().getPluginManager().registerEvents(new Citizens2Listener(), this);
 			}
@@ -231,5 +235,10 @@ public class Quester extends JavaPlugin {
 				return true;
 			}
 			return false;
+		}
+		
+		private void debugMethod() {
+			for(DyeColor col : DyeColor.values())
+				log.info(col.getData() + " " + col.name());
 		}
 }

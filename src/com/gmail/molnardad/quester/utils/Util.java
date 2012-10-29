@@ -240,16 +240,14 @@ public class Util {
 	
 	public static DyeColor parseColor(String arg) throws InvalidDataException {
 		DyeColor col = null;
-		col = DyeColor.valueOf(arg.toUpperCase());
+		try {
+			col = DyeColor.valueOf(arg.toUpperCase());
+		} catch (Exception ignore) {}
 		if(col == null) {
 			try {
 				col = DyeColor.getByData(Byte.parseByte(arg));
-			} catch (NumberFormatException e) {
-				throw new InvalidDataException("");
-			}
+			} catch (NumberFormatException ignore) {}
 		}
-		if(col == null)
-			throw new InvalidDataException("");
 		return col;
 	}
 	

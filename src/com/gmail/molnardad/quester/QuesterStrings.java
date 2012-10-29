@@ -204,6 +204,9 @@ public class QuesterStrings extends CustomConfig {
 	public String OBJ_NPC_TYPE = "Npc";
 	public String OBJ_NPC_USAGE = "%cmd objective add npc <id> [cancel*]\n* - true/false, default is false";
 	
+	public String OBJ_DYE_TYPE = "Dye";
+	public String OBJ_DYE_USAGE = "%cmd objective add dye <amount> {[color]}";
+	
 	// CONDITION STRINGS
 
 	public String CON_ADD = "%type condition added."; // %type = condition type;
