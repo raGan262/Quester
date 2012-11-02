@@ -38,7 +38,7 @@ public final class LocObjective extends Objective {
 
 	public boolean checkLocation(Location loc) {
 		if(loc.getWorld().getName().equalsIgnoreCase(location.getWorld().getName())) {
-			return loc.distance(location) < range;
+			return loc.distanceSquared(location) < range*range;
 		} else {
 			return false;
 		}

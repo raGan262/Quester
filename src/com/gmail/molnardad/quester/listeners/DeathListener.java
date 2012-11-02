@@ -61,19 +61,12 @@ public class DeathListener implements Listener {
 	    if(killer != null ) {
     		Quest quest = qm.getPlayerQuest(killer.getName());
 	    	if(quest != null) {
-	    		if(quest.hasFlag(QuestFlag.DEATHCANCEL)) {
-		    		try {
-						qm.cancelQuest(player, false);
-					} catch (QuesterException e) {
-					}
-		    		return;
-		    	}
 	    		// PLAYERKILL CHECK
 		    	if(!quest.allowedWorld(killer.getWorld().getName().toLowerCase()))
 		    		return;
 	    		List<Objective> objs = quest.getObjectives();
 		    	for(int i = 0; i < objs.size(); i++) {
-		    		if(!qm.isObjectiveActive(player, i)){
+		    		if(!qm.isObjectiveActive(killer, i)){
 	    				continue;
 	    			}
 		    		if(objs.get(i).getType().equalsIgnoreCase("PLAYERKILL")) {

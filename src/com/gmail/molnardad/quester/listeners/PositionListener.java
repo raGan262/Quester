@@ -60,7 +60,7 @@ public class PositionListener implements Runnable {
 		    		Quest qst = qm.getQuest(ID);
 		    		Location loc2 = QuestData.questLocations.get(ID);
 		    		if(loc2.getWorld().getName().equals(loc.getWorld().getName())) {
-			    		if(loc2.distance(loc) <= qst.getRange() && qst.hasFlag(QuestFlag.ACTIVE)) {
+			    		if(loc2.distanceSquared(loc) <= qst.getRange()*qst.getRange() && qst.hasFlag(QuestFlag.ACTIVE)) {
 			    			try {
 								qm.startQuest(player, qst.getName(), false);
 							} catch (QuesterException e) {
