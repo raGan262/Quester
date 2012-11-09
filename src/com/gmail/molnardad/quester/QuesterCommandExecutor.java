@@ -34,7 +34,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 	QuestManager qm = null;
 	
 	private final String OBJECTIVES = "break, place, item, exp, loc, death, world, mobkill, kill, " +
-			"craft, ench, smelt, shear, fish, milk, collect, tame, money, action, npc, dye";
+			"craft, ench, smelt, shear, fish, milk, collect, tame, money, action, npc, dye, boss";
 	private final String CONDITIONS = "quest, questnot, perm, money, item, point";
 	private final String EVENTS = "msg, explosion, block, tele, lightning, cmd, quest, cancel, " +
 			"toggle, objcom, spawn, item, money, exp, effect, point";
@@ -1272,6 +1272,31 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									return true;
 								}
 								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_DYE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+								return true;
+							}
+							
+							// BOSS OBJECTIVE
+							if(args[2].equalsIgnoreCase("boss")) {
+								if(args.length > 3) {
+									try {
+										int amt = 1;
+										String boss = args[3];
+										if(args.length > 4) {
+											amt = Integer.parseInt(args[4]);
+											if(amt < 1) {
+												throw new NumberFormatException();
+											}
+										}
+										qm.addQuestObjective(sender.getName(), new BossObjective(boss, amt));
+										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_BOSS_TYPE));
+									} catch (NumberFormatException e) {
+										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_POSITIVE);
+									} catch (QuesterException e) {
+										sender.sendMessage(e.message());
+									}
+									return true;
+								}
+								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_BOSS_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
 							

@@ -207,6 +207,9 @@ public class QuesterStrings extends CustomConfig {
 	public String OBJ_DYE_TYPE = "Dye";
 	public String OBJ_DYE_USAGE = "%cmd objective add dye <amount> {[color]}";
 	
+	public String OBJ_BOSS_TYPE = "Boss";
+	public String OBJ_BOSS_USAGE = "%cmd objective add boss <name> [amount]";
+	
 	// CONDITION STRINGS
 
 	public String CON_ADD = "%type condition added."; // %type = condition type;

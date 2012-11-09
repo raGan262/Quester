@@ -29,13 +29,14 @@ public class Quester extends JavaPlugin {
 		public static Permission perms = null;
 		public static Economy econ = null;
 		public static QuestManager qMan = null;
-		public static boolean citizens2 = false;
 		public static ProfileConfig profileConfig;
 		public static QuestConfig questConfig;
 		public static HolderConfig holderConfig;
 		public static QuesterStrings strings;
 		private boolean loaded = false;
 		private int saveID = 0;
+		public static boolean citizens2 = false;
+		public static boolean epicboss = false;
 
 		public YamlConfiguration config = null;
 		
@@ -64,6 +65,9 @@ public class Quester extends JavaPlugin {
 		
 			if(this.setupCitizens()) {
 				log.info("Citizens 2 found and hooked...");
+			}
+			if(this.setupEpicBoss()) {
+				log.info("EpicBoss found and hooked...");
 			}
 			
 			this.initializeConfig();
@@ -142,6 +146,11 @@ public class Quester extends JavaPlugin {
 		    citizens2 = true;
 		    return true;
 		}
+		
+		private boolean setupEpicBoss() {
+			epicboss = (getServer().getPluginManager().getPlugin("EpicBoss") != null);
+		    return epicboss;
+		}
 
 		public void initializeConfig() {
 			config = (new BaseConfig("config.yml")).getConfig();
@@ -209,6 +218,9 @@ public class Quester extends JavaPlugin {
 			getServer().getPluginManager().registerEvents(new DyeListener(), this);
 			if(citizens2) {
 				getServer().getPluginManager().registerEvents(new Citizens2Listener(), this);
+			}
+			if(epicboss) {
+				getServer().getPluginManager().registerEvents(new BossDeathListener(), this);
 			}
 		}
 		
