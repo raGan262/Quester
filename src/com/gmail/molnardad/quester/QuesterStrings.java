@@ -44,6 +44,7 @@ public class QuesterStrings extends CustomConfig {
 	public String HELP_SECTION_USE = "Quester help";
 	public String HELP_SECTION_MODIFY = "Modify help";
 	public String HELP_SECTION_MODIFY_SELECTED = "Applies only to selected quest";
+	public String HELP_SECTION_MODIFY_HOLDER_SELECTED = "Applies only to selected quest holder";
 	public String HELP_SECTION_ADMIN = "Admin help";
 	public String HELP_HELP = "- this";
 	public String HELP_LIST = "- displays quest list";
@@ -71,6 +72,15 @@ public class QuesterStrings extends CustomConfig {
 	public String HELP_STOPSAVE = "- stops scheduled profile saving";
 	public String HELP_SAVE = "- saves profiles";
 	public String HELP_RELOAD = "- reloads config and local file";
+	public String HELP_LOCATION = "- set the quest location";
+	public String HELP_HOL_CREATE = "- creates a holder";
+	public String HELP_HOL_DELETE = "- deletes a holder";
+	public String HELP_HOL_ADD = "- adds quest to holder";
+	public String HELP_HOL_REMOVE = "- removes quest from holder";
+	public String HELP_HOL_MOVE = "- moves quest in holder";
+	public String HELP_HOL_LIST = "- lists quest holders";
+	public String HELP_HOL_INFO = "- shows info about holder";
+	public String HELP_HOL_SELECT = "- selects holder";
 	
 	public String USAGE_LABEL = "Usage: ";
 	public String USAGE_FLAG_AVAIL = "Available flags: ";

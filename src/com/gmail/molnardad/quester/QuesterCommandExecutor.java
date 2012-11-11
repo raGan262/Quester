@@ -84,20 +84,30 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						sender.sendMessage(ChatColor.GOLD + command + " profile " + ChatColor.GRAY + strings.HELP_PROFILE_USE);
 					if(permCheck(sender, QuestData.MODIFY_PERM, false)) {
 						sender.sendMessage(line(ChatColor.BLUE, strings.HELP_SECTION_MODIFY, ChatColor.GOLD));
-						sender.sendMessage(ChatColor.GOLD + command + " profile [name] " + ChatColor.GRAY + strings.HELP_PROFILE_MOD);
-						sender.sendMessage(ChatColor.GOLD + command + " create [name] " + ChatColor.GRAY + strings.HELP_CREATE);
-						sender.sendMessage(ChatColor.GOLD + command + " remove [name] " + ChatColor.GRAY + strings.HELP_REMOVE);
-						sender.sendMessage(ChatColor.GOLD + command + " select [name] " + ChatColor.GRAY + strings.HELP_SELECT);
-						sender.sendMessage(ChatColor.GOLD + command + " toggle [name*] " + ChatColor.GRAY + strings.HELP_TOGGLE);
-						sender.sendMessage(ChatColor.GOLD + command + " info [name*] " + ChatColor.GRAY + strings.HELP_INFO);
+						sender.sendMessage(ChatColor.GOLD + command + " profile <name> " + ChatColor.GRAY + strings.HELP_PROFILE_MOD);
+						sender.sendMessage(ChatColor.GOLD + command + " create <name> " + ChatColor.GRAY + strings.HELP_CREATE);
+						sender.sendMessage(ChatColor.GOLD + command + " remove <name> " + ChatColor.GRAY + strings.HELP_REMOVE);
+						sender.sendMessage(ChatColor.GOLD + command + " select <name> " + ChatColor.GRAY + strings.HELP_SELECT);
+						sender.sendMessage(ChatColor.GOLD + command + " toggle [name] " + ChatColor.GRAY + strings.HELP_TOGGLE);
+						sender.sendMessage(ChatColor.GOLD + command + " info [name] " + ChatColor.GRAY + strings.HELP_INFO);
+						sender.sendMessage(ChatColor.GOLD + command + " holder create " + ChatColor.GRAY + strings.HELP_HOL_CREATE);
+						sender.sendMessage(ChatColor.GOLD + command + " holder delete " + ChatColor.GRAY + strings.HELP_HOL_DELETE);
+						sender.sendMessage(ChatColor.GOLD + command + " holder info [ID]" + ChatColor.GRAY + strings.HELP_HOL_INFO);
+						sender.sendMessage(ChatColor.GOLD + command + " holder select " + ChatColor.GRAY + strings.HELP_HOL_SELECT);
+						sender.sendMessage(ChatColor.GOLD + command + " holder list " + ChatColor.GRAY + strings.HELP_HOL_LIST);
 						sender.sendMessage(line(ChatColor.DARK_GRAY, strings.HELP_SECTION_MODIFY_SELECTED));
 						sender.sendMessage(ChatColor.GOLD + command + " name [newName] " + ChatColor.GRAY + strings.HELP_NAME);
 						sender.sendMessage(ChatColor.GOLD + command + " desc " + ChatColor.GRAY + strings.HELP_DESC);
+						sender.sendMessage(ChatColor.GOLD + command + " location " + ChatColor.GRAY + strings.HELP_LOCATION);
 						sender.sendMessage(ChatColor.GOLD + command + " world " + ChatColor.GRAY + strings.HELP_WORLD);
 						sender.sendMessage(ChatColor.GOLD + command + " flag " + ChatColor.GRAY + strings.HELP_FLAG);
 						sender.sendMessage(ChatColor.GOLD + command + " condition " + ChatColor.GRAY + strings.HELP_CONDITION);
 						sender.sendMessage(ChatColor.GOLD + command + " objective " + ChatColor.GRAY + strings.HELP_OBJECTIVE);
 						sender.sendMessage(ChatColor.GOLD + command + " event " + ChatColor.GRAY + strings.HELP_EVENT);
+						sender.sendMessage(line(ChatColor.DARK_GRAY, strings.HELP_SECTION_MODIFY_HOLDER_SELECTED));
+						sender.sendMessage(ChatColor.GOLD + command + " holder add " + ChatColor.GRAY + strings.HELP_HOL_ADD);
+						sender.sendMessage(ChatColor.GOLD + command + " holder remove " + ChatColor.GRAY + strings.HELP_HOL_REMOVE);
+						sender.sendMessage(ChatColor.GOLD + command + " holder move " + ChatColor.GRAY + strings.HELP_HOL_MOVE);
 					}
 					if(permCheck(sender, QuestData.ADMIN_PERM, false)) {
 						sender.sendMessage(line(ChatColor.BLUE, strings.HELP_SECTION_ADMIN, ChatColor.GOLD));
