@@ -22,6 +22,9 @@ public final class MoneyCondition extends Condition {
 
 	@Override
 	public boolean isMet(Player player) {
+		if(!Quester.vault) {
+			return true;
+		}
 		return Quester.econ.getBalance(player.getName()) >= amount;
 	}
 	
@@ -30,7 +33,12 @@ public final class MoneyCondition extends Condition {
 		if(!desc.isEmpty()) {
 			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%amt", amount+"");
 		}
-		return "Must have " + amount + " " + Quester.econ.currencyNamePlural();
+		if(Quester.vault) {
+			return "Must have " + amount + " " + Quester.econ.currencyNamePlural();
+		}
+		else {
+			return "Money condition (Met)";
+		}
 	}
 	
 	@Override

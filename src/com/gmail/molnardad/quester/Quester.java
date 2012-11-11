@@ -8,7 +8,6 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitFactory;
 import net.citizensnpcs.api.trait.TraitInfo;
 import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,7 +24,6 @@ public class Quester extends JavaPlugin {
 		public static Quester plugin = null;
 		public static Logger log = null;
 		public static Random randGen = new Random();
-		public static Permission perms = null;
 		public static Economy econ = null;
 		public static QuestManager qMan = null;
 		public static ProfileConfig profileConfig;
@@ -36,6 +34,7 @@ public class Quester extends JavaPlugin {
 		private int saveID = 0;
 		public static boolean citizens2 = false;
 		public static boolean epicboss = false;
+		public static boolean vault = false;
 
 		public YamlConfiguration config = null;
 		
@@ -56,11 +55,9 @@ public class Quester extends JavaPlugin {
 			questConfig = new QuestConfig("quests.yml");
 			holderConfig = new HolderConfig("holders.yml");
 			
-			if(!this.setupEconomy()) {
-				return;
+			if(this.setupEconomy()) {
+				log.info("Vault found and hooked...");
 			}
-			
-			this.setupPerms();
 		
 			if(this.setupCitizens()) {
 				log.info("Citizens 2 found and hooked...");
@@ -101,33 +98,26 @@ public class Quester extends JavaPlugin {
 			QuestData.wipeData();
 			plugin = null;
 			log = null;
-			perms = null;
 			econ = null;
 			qMan = null;
-		}
-
-		private void setupPerms() {
-			RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-	        perms = rsp.getProvider();
-	        if(perms == null){
-	            log.info("Permissions hook failed, disabling Quester.");
-	            getServer().getPluginManager().disablePlugin(this);
-	        }
+			citizens2 = false;
+			epicboss = false;
+			vault = false;
 		}
 
 		private boolean setupEconomy() {
 			if (getServer().getPluginManager().getPlugin("Vault") == null) {
-	            log.info("Vault not found, disabling Quester.");
-	            getServer().getPluginManager().disablePlugin(this);
+				log.info("Vault not found, economy support disabled.");
 	            return false;
 	        }
 	        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
 	        if (rsp == null) {
-	            log.info("Economy plugin not found, disabling Quester.");
+				log.info("Economy plugin not found, economy support disabled.");
 	            getServer().getPluginManager().disablePlugin(this);
 	            return false;
 	        }
 	        econ = rsp.getProvider();
+	        vault = true;
 	        return true;
 		}
 		

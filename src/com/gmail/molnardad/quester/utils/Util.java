@@ -138,7 +138,7 @@ public class Util {
 	}
 	
 	public static boolean permCheck(CommandSender sender, String perm, boolean message) {
-		if(sender.isOp() || Quester.perms.has(sender, perm)) {
+		if(sender.isOp() || sender.hasPermission(perm)) {
 			return true;
 		}
 		if(message)

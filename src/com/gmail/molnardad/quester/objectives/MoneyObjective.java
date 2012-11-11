@@ -22,7 +22,9 @@ public final class MoneyObjective extends Objective {
 	
 	@Override
 	public boolean finish(Player player) {
-		Quester.econ.withdrawPlayer(player.getName(), amount);
+		if(Quester.vault) {
+			Quester.econ.withdrawPlayer(player.getName(), amount);
+		}
 		return true;
 	}
 	
@@ -31,7 +33,12 @@ public final class MoneyObjective extends Objective {
 		if(!desc.isEmpty()) {
 			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(1 - progress)).replaceAll("%t", String.valueOf(amount));
 		}
-		return "Get " + amount + " " + Quester.econ.currencyNamePlural();
+		if(Quester.vault) {
+			return "Get " + amount + " " + Quester.econ.currencyNamePlural();
+		}
+		else {
+			return "Economy support disabled. (Completed)";
+		}
 	}
 	
 	@Override
@@ -61,6 +68,9 @@ public final class MoneyObjective extends Objective {
 
 	@Override
 	public boolean tryToComplete(Player player) {
+		if(!Quester.vault) {
+			return true;
+		}
 		double money = Quester.econ.getBalance(player.getName());
 		if(money >= amount) {
 			finish(player);
