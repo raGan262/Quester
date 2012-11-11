@@ -962,6 +962,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								if(args.length > 3) {
 									int amt = 1;
 									String name = "";
+									boolean perm = false;
 									try {
 										amt = Integer.parseInt(args[3]);
 										if(amt < 1) {
@@ -972,10 +973,17 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										return true;
 									}
 									if(args.length > 4) {
-										name = args[4];
+										String[] strs = args[4].split(":");
+										if(strs[0].equalsIgnoreCase("p") && strs.length > 1) {
+											name = args[4].split(":")[1];
+											perm = true;
+										}
+										else {
+											name = args[4];
+										}
 									}
 									try {
-										qm.addQuestObjective(sender.getName(), new PlayerKillObjective(amt, name));
+										qm.addQuestObjective(sender.getName(), new PlayerKillObjective(amt, name, perm));
 										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_KILL_TYPE));
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());

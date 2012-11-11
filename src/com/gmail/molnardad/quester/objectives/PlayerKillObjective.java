@@ -9,10 +9,12 @@ public final class PlayerKillObjective extends Objective {
 	public static final String TYPE = "PLAYERKILL";
 	private final String playerName;
 	private final int amount;
+	private final boolean perm;
 	
-	public PlayerKillObjective(int amt, String name) {
+	public PlayerKillObjective(int amt, String name, boolean perm) {
 		amount = amt;
 		playerName = name;
+		this.perm = perm;
 	}
 	
 	@Override
@@ -36,19 +38,26 @@ public final class PlayerKillObjective extends Objective {
 			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
 		}
 		String player = playerName.isEmpty() ? "any player" : "player named " + playerName;
+		if(perm) {
+			player = "player with permission " + playerName;
+		}
 		return "Kill " + player + " - " + (amount - progress) + "x";
 	}
 	
 	@Override
 	public String toString() {
 		String player = playerName.isEmpty() ? "ANY" : playerName;
-		return TYPE + ": " + player + "; AMT: " + amount + coloredDesc();
+		return TYPE + ": " + player + "; AMT: " + amount + "; PERM: " + perm + coloredDesc();
 	}
 	
 	public boolean checkPlayer(Player player) {
-		if(playerName.isEmpty()) {
+		if(perm) {
+			return player.hasPermission(playerName);
+		}
+		else if(playerName.isEmpty()) {
 			return true;
-		} else {
+		} 
+		else {
 			return player.getName().equalsIgnoreCase(playerName);
 		}
 	}
@@ -61,16 +70,20 @@ public final class PlayerKillObjective extends Objective {
 			section.set("amount", amount);
 		if(!playerName.isEmpty())
 			section.set("name", playerName);
+		if(perm)
+			section.set("perm", true);
 	}
 	
 	public static Objective deser(ConfigurationSection section) {
 		int amt = 1;
 		String name = "";
+		boolean prm = false;
 		name = section.getString("name", "");
 		if(section.isInt("amount"))
 			amt = section.getInt("amount");
 		if(amt < 1)
 			amt = 1;
-		return new PlayerKillObjective(amt, name);
+		prm = section.getBoolean("perm", false);
+		return new PlayerKillObjective(amt, name, prm);
 	}
 }
