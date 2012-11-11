@@ -220,6 +220,9 @@ public class QuesterStrings extends CustomConfig {
 	public String OBJ_BOSS_TYPE = "Boss";
 	public String OBJ_BOSS_USAGE = "%cmd objective add boss <name> [amount]";
 	
+	public String OBJ_NPCKILL_TYPE = "Npckill";
+	public String OBJ_NPCKILL_USAGE = "%cmd objective add npckill <name*> [amount]\n* - 'ANY' for any npc";
+	
 	// CONDITION STRINGS
 
 	public String CON_ADD = "%type condition added."; // %type = condition type;

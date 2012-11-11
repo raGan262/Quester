@@ -2,6 +2,7 @@ package com.gmail.molnardad.quester.listeners;
 
 import java.util.List;
 
+import net.citizensnpcs.api.event.NPCDamageByEntityEvent;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 
@@ -18,6 +19,7 @@ import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.QuesterTrait;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.objectives.NpcKillObjective;
 import com.gmail.molnardad.quester.objectives.NpcObjective;
 import com.gmail.molnardad.quester.objectives.Objective;
 import com.gmail.molnardad.quester.utils.Util;
@@ -146,6 +148,35 @@ public class Citizens2Listener implements Listener {
 	    				if(obj.getCancel()) {
 	    					event.setCancelled(true);
 	    				}
+	    				return;
+	    			}
+	    		}
+	    	}
+	    }
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onNpcDeath(NPCDamageByEntityEvent event) {
+		if(event.getNPC().getBukkitEntity().getHealth()-event.getDamage() > 0) {
+			return;
+		}
+		Player player = event.getNPC().getBukkitEntity().getKiller();
+		if(player == null) {
+			return;
+		}
+	    if(qm.hasQuest(player.getName())) {
+	    	Quest quest = qm.getPlayerQuest(player.getName());
+	    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
+	    		return;
+	    	List<Objective> objs = quest.getObjectives();
+	    	for(int i = 0; i < objs.size(); i++) {
+	    		if(objs.get(i).getType().equalsIgnoreCase("NPCKILL")) {
+		    		if(!qm.isObjectiveActive(player, i)){
+	    				continue;
+	    			}
+	    			NpcKillObjective obj = (NpcKillObjective)objs.get(i);
+	    			if(obj.checkNpc(event.getNPC().getName())) {
+	    				qm.incProgress(player, i);
 	    				return;
 	    			}
 	    		}
