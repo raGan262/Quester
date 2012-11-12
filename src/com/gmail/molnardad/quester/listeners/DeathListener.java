@@ -58,6 +58,9 @@ public class DeathListener implements Listener {
 	    // PLAYER KILL OBJECTIVE
 	    Player killer = event.getEntity().getKiller();
 	    Player player = event.getEntity();
+	    if(player.hasMetadata("NPC")) {
+	    	return;
+	    }
 	    if(killer != null ) {
     		Quest quest = qm.getPlayerQuest(killer.getName());
 	    	if(quest != null) {
