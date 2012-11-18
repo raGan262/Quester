@@ -61,7 +61,7 @@ public final class MoneyObjective extends Objective {
 		double amt = 0;
 		if(section.isInt("amount") || section.isDouble("amount"))
 			amt = section.getDouble("amount");
-		if(amt < 1)
+		if(amt <= 0)
 			return null;
 		return new MoneyObjective(amt);
 	}

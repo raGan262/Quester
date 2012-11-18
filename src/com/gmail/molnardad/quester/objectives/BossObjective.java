@@ -16,6 +16,9 @@ public final class BossObjective extends Objective {
 	}
 	
 	public boolean nameCheck(String boss) {
+		if(name.isEmpty()) {
+			return true;
+		}
 		return name.equalsIgnoreCase(boss);
 	}
 	

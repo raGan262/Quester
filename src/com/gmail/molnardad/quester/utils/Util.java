@@ -23,7 +23,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import com.avaje.ebeaninternal.server.lib.util.InvalidDataException;
 import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
@@ -238,7 +237,7 @@ public class Util {
 		return "" + col.getData();
 	}
 	
-	public static DyeColor parseColor(String arg) throws InvalidDataException {
+	public static DyeColor parseColor(String arg) {
 		DyeColor col = null;
 		try {
 			col = DyeColor.valueOf(arg.toUpperCase());

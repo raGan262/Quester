@@ -1299,6 +1299,9 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									try {
 										int amt = 1;
 										String boss = args[3];
+										if(boss.equals("ANY")) {
+											boss = "";
+										}
 										if(args.length > 4) {
 											amt = Integer.parseInt(args[4]);
 											if(amt < 1) {

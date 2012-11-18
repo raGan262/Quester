@@ -108,9 +108,11 @@ public class Citizens2Listener implements Listener {
 				try {
 					qm.complete(player, false);
 				} catch (QuesterException e) {
+					player.sendMessage(e.message());
 					try {
 						qm.showProgress(player);
 					} catch (QuesterException f) {
+						player.sendMessage(f.message());
 						player.sendMessage(ChatColor.DARK_PURPLE + "Interesting error, you don't have and have quest at once !");
 					}
 				}

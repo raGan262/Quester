@@ -68,7 +68,7 @@ public final class ShearObjective extends Objective {
 	public static Objective deser(ConfigurationSection section) {
 		int amt = 1;
 		DyeColor col = null;
-		col = Util.parseColor(section.getString("color"));
+		col = Util.parseColor(section.getString("color", "default"));
 		if(section.isInt("amount"))
 			amt = section.getInt("amount");
 		if(amt < 1)
