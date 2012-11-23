@@ -1911,7 +1911,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										return true;
 									}
 									
-									// EXPLOSION EVENT
+									// SPAWN EVENT
 									if(args[3].equalsIgnoreCase("spawn")) {
 										if(args.length > 6) {
 											int amt;

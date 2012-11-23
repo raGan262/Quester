@@ -67,6 +67,7 @@ public final class SpawnQevent extends Qevent {
 				if(rng < 0)
 					rng = 0;
 			}
+			amt = section.getInt("amount", 1);
 			try {
 				ent = Util.parseEntity(section.getString("entity"));
 			} catch (Exception ignore) {}
