@@ -31,7 +31,7 @@ public class EffectQevent extends Qevent {
 
 	@Override
 	public String toString() {
-		return TYPE + ": " + effect.getType().getName() + "; DUR: " + effect.getDuration() + "s; AMP: " + effect.getAmplifier() + appendSuper();
+		return TYPE + ": " + effect.getType().getName() + "; DUR: " + ((int)(effect.getDuration()/20)) + "s; AMP: " + effect.getAmplifier() + appendSuper();
 	}
 
 	@Override

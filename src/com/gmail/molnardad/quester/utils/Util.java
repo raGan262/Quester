@@ -277,6 +277,7 @@ public class Util {
 			dur = Integer.parseInt(s[1]);
 			if(dur < 1)
 				throw new NumberFormatException();
+			dur *= 20;
 		} catch (NumberFormatException e) {
 			throw new QuesterException(strings.ERROR_CMD_EFFECT_DURATION);
 		}
