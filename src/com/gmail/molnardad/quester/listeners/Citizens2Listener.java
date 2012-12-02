@@ -145,7 +145,7 @@ public class Citizens2Listener implements Listener {
 	    				continue;
 	    			}
 	    			NpcObjective obj = (NpcObjective)objs.get(i);
-	    			if(obj.checkNpc(event.getNPC())) {
+	    			if(obj.checkNpc(event.getNPC().getId())) {
 	    				qm.incProgress(player, i);
 	    				if(obj.getCancel()) {
 	    					event.setCancelled(true);

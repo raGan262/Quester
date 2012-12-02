@@ -1,9 +1,9 @@
 package com.gmail.molnardad.quester.objectives;
 
-import net.citizensnpcs.api.npc.NPC;
-
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+
+import com.gmail.molnardad.quester.exceptions.QuesterException;
 public final class NpcObjective extends Objective {
 
 	public static final String TYPE = "NPC";
@@ -37,8 +37,8 @@ public final class NpcObjective extends Objective {
 		return TYPE + ": " + index + "; CANCEL: " + cancel + coloredDesc();
 	}
 	
-	public boolean checkNpc(NPC npc) {
-		return npc.getId() == index;
+	public boolean checkNpc(int npc) {
+		return npc == index;
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public final class NpcObjective extends Objective {
 		}
 	}
 	
-	public static Objective deser(ConfigurationSection section) {
+	public static Objective deser(ConfigurationSection section) throws QuesterException {
 		int id = -1;
 		boolean ccl = false;
 		id = section.getInt("index", -1);

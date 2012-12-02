@@ -117,14 +117,14 @@ public abstract class Qevent {
 						success = true;
 						break;
 					} catch (Exception e) {
-						Quester.log.severe("Error when deserializing " + c.getName() + ". Method deser() missing or broken. " + e.getClass().getName());
+						Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Method deser() missing or broken. " + e.getClass().getName());
 						if(QuestData.debug)
 							e.printStackTrace();
 						return null;
 					}
 				}
 			} catch (Exception e) {
-				Quester.log.severe("Error when deserializing " + c.getName() + ". Field 'TYPE' missing or access denied. " + e.getClass().getName());
+				Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Field 'TYPE' missing or access denied. " + e.getClass().getName());
 				if(QuestData.debug)
 					e.printStackTrace();
 				return null;
