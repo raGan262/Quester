@@ -330,7 +330,8 @@ public class QuestManager {
 	}
 	
 	public void changeQuestName(String changer, String newName) throws QuesterException {
-		Quest quest = getSelected(changer);
+		int questId = getSelectedID(changer);
+		Quest quest = getQuest(questId);
 		if(isQuest(newName)) {
 			throw new QuesterException(ExceptionType.Q_EXIST);
 		}
@@ -339,7 +340,9 @@ public class QuestManager {
 		allQuests.remove(quest.getName().toLowerCase());
 		Quester.questConfig.getConfig().set(quest.getName().toLowerCase(), null);
 		quest.setName(newName);
-		allQuests.put(quest.getName().toLowerCase(), quest);
+		allQuests.put(newName.toLowerCase(), quest);
+		questIds.remove(questId);
+		questIds.put(questId, newName.toLowerCase());
 		QuestData.saveQuests();
 	}
 	
