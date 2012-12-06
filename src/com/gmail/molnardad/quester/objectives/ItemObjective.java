@@ -139,7 +139,7 @@ public final class ItemObjective extends Objective {
 			return null;
 		}
 		
-		return new ItemObjective(mat, dat, amt, enchs);
+		return new ItemObjective(mat, amt, dat, enchs);
 	}
 
 	@Override
