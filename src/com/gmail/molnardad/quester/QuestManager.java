@@ -726,7 +726,7 @@ public class QuestManager {
 		if(areObjectivesCompleted(player)) {
 			completeQuest(player);
 		}
-		if(!completed) {
+		if(!completed && i != 0) {
 			throw new QuesterException(ExceptionType.OBJ_CANT_DO);
 		}
 	}
