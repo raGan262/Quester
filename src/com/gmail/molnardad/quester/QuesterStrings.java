@@ -237,7 +237,7 @@ public class QuesterStrings extends CustomConfig {
 	public String CON_USAGE = "%cmd condition <add|remove|desc> [args].";
 	
 	public String CON_QUEST_TYPE = "Quest";
-	public String CON_QUEST_USAGE = "%cmd condition add quest <quest_name>";
+	public String CON_QUEST_USAGE = "%cmd condition add quest [t:<time_secs>] <quest_name>";
 	
 	public String CON_QUESTNOT_TYPE = "QuestNot";
 	public String CON_QUESTNOT_USAGE = "%cmd condition add questnot [t:<time_secs>] <quest_name>";

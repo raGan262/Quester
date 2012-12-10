@@ -1535,10 +1535,16 @@ public class QuesterCommandExecutor implements CommandExecutor {
 
 							// QUEST CONDITION
 							if(args[2].equalsIgnoreCase("quest")) {
-								if(args.length > 3) {
-									String questName = implode(args, 3);
+								if(args.length > 4) {
+									int start = 3;
+									int time = 0;
 									try {
-										qm.addQuestCondition(sender.getName(), new QuestCondition(questName));
+										time = Integer.parseInt(flagArgument('t', args[3]));
+										start = 4;
+									} catch (Exception ignore) {}
+									String questName = implode(args, start);
+									try {
+										qm.addQuestCondition(sender.getName(), new QuestCondition(questName, time));
 										sender.sendMessage(ChatColor.GREEN + strings.CON_ADD.replaceAll("%type", strings.CON_QUEST_TYPE));
 									} catch (QuesterException e) {
 										sender.sendMessage(e.message());
