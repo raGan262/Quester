@@ -447,6 +447,15 @@ public class Util {
 		return 0;
 	}
 	
+	public static String flagArgument(char flag, String arg) {
+		if(arg.startsWith(flag + ":") && arg.length() > 2) {
+			return arg.substring(2);
+		}
+		else {
+			return "";
+		}
+	}
+	
 	// LOCATION SERIALIZATION
 	
 	public static String displayLocation(Location loc) {
