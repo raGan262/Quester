@@ -2,10 +2,8 @@ package com.gmail.molnardad.quester;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -17,7 +15,7 @@ import com.gmail.molnardad.quester.utils.Util;
 public class PlayerProfile implements ConfigurationSerializable{
 
 	private final String name;
-	private Set<String> completed;
+	private Map<String, Integer> completed;
 	private int selected;
 	private int holder;
 	private String quest;
@@ -27,7 +25,7 @@ public class PlayerProfile implements ConfigurationSerializable{
 	
 	public PlayerProfile(String player) {
 		name = player;
-		completed = new HashSet<String>();
+		completed = new HashMap<String, Integer>();
 		quest = "";
 		progress = new ArrayList<Integer>();
 		selected = -1;
@@ -41,15 +39,27 @@ public class PlayerProfile implements ConfigurationSerializable{
 	}
 	
 	public String getCompletedNames() {
-		return Util.implode(completed.toArray(new String[0]), ',');
+		return Util.implode(completed.keySet().toArray(new String[0]), ',');
 	}
 	
 	public void addCompleted(String questName) {
-		completed.add(questName.toLowerCase());
+		addCompleted(questName, 0);
 	}
 	
-	public Set<String> getCompleted() {
-		return completed;
+	public void addCompleted(String questName, int time) {
+		completed.put(questName.toLowerCase(), time);
+	}
+	
+	public boolean isCompleted(String questName) {
+		return completed.containsKey(questName.toLowerCase());
+	}
+	
+	public int getCompletionTime(String questName) {
+		Integer time = completed.get(questName.toLowerCase());
+		if(time == null) {
+			return 0;
+		}
+		return time;
 	}
 	
 	private void setQuest(String questName) {
@@ -116,14 +126,22 @@ public class PlayerProfile implements ConfigurationSerializable{
 	public void serialize(ConfigurationSection section) {
 		
 		section.set("name", name);
+		
+		section.set("points", null);
 		if(points != 0) {
 			section.set("points", points);
 		}
 		
+		section.set("completed", null);
 		if(!completed.isEmpty()) {
-			section.set("completed", completed.toArray(new String[0]));
+			ConfigurationSection subsection = section.createSection("completed");
+			for(String name : completed.keySet()) {
+				subsection.set(name, completed.get(name));
+			}
 		}
 		
+		section.set("quest", null);
+		section.set("progress", null);
 		if(!quest.isEmpty()) {
 			section.set("quest", quest);
 			
@@ -202,6 +220,12 @@ public class PlayerProfile implements ConfigurationSerializable{
 			List<String> l = section.getStringList("completed");
 			for(String s : l) {
 				prof.addCompleted(s);
+			}
+		}
+		else if(section.isConfigurationSection("completed")) {
+			ConfigurationSection subsection = section.getConfigurationSection("completed");
+			for(String key : subsection.getKeys(false)) {
+				prof.addCompleted(key, subsection.getInt(key, 0));
 			}
 		}
 		

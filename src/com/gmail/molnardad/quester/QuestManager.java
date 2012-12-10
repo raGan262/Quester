@@ -750,7 +750,7 @@ public class QuestManager {
 			if(qv.getOccasion() == -3)
 				qv.execute(player);
 		}
-		getProfile(player.getName()).addCompleted(quest.getName());
+		getProfile(player.getName()).addCompleted(quest.getName(), (int) (System.currentTimeMillis() / 1000));
 		QuestData.saveProfiles();
 		if(quest.hasFlag(QuestFlag.ONLYFIRST)) {
 			deactivateQuest(quest);

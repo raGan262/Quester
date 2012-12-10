@@ -22,7 +22,7 @@ public final class QuestNotCondition extends Condition {
 
 	@Override
 	public boolean isMet(Player player) {
-		return !Quester.qMan.getProfile(player.getName()).getCompleted().contains(quest.toLowerCase());
+		return !Quester.qMan.getProfile(player.getName()).isCompleted(quest);
 	}
 	
 	@Override
