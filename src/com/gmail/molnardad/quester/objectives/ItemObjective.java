@@ -117,7 +117,7 @@ public final class ItemObjective extends Objective {
 	
 	public static Objective deser(ConfigurationSection section) {
 		Material mat = null;
-		int dat = 0, amt = 1;
+		int dat = -1, amt = 1;
 		Map<Integer, Integer> enchs = null;
 		try {
 			int[] itm = Util.parseItem(section.getString("item", ""));
