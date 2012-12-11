@@ -1988,7 +1988,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												if(itm[0] > 255)
 													throw new QuesterException(strings.ERROR_CMD_BLOCK_UNKNOWN);
 												int dat = itm[1] < 0 ? 0 : itm[1];
-												if(args[6].equalsIgnoreCase(QuestData.locLabelHere)) {
+												if(args[5].equalsIgnoreCase(QuestData.locLabelHere)) {
 													if(player != null) {
 														List<Block> blcks = player.getLastTwoTargetBlocks(null, 6);
 														if(!blcks.isEmpty())
@@ -2000,7 +2000,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 														throw new QuesterException(strings.ERROR_CMD_LOC_HERE.replaceAll("%here", QuestData.locLabelHere));
 													}
 												} else
-													loc = getLoc(sender, args[6]);
+													loc = getLoc(sender, args[5]);
 												qm.addQevent(sender.getName(), new SetBlockQevent(occ, del, itm[0], dat, loc));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_BLOCK_TYPE));
 											} catch (QuesterException e) {
