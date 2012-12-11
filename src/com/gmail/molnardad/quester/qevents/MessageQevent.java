@@ -41,7 +41,7 @@ public final class MessageQevent extends Qevent {
 		String msg;
 		
 		if(section.isString("message"))
-			msg = ChatColor.translateAlternateColorCodes('&', section.getString("message")).replaceAll("\\\\n", "\n");
+			msg = section.getString("message");
 		else
 			return null;
 		
