@@ -1870,7 +1870,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											Location loc = null;
 											int rng = 0;
 											try {
-												if(!args[5].equalsIgnoreCase(QuestData.locLabelPlayer))
+												if(!args[4].equalsIgnoreCase(QuestData.locLabelPlayer))
 													loc = getLoc(sender, args[4]);
 												if(args.length > 5) {
 													rng = Integer.parseInt(args[5]);
@@ -1900,7 +1900,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											Location loc = null;
 											int rng = 0;
 											try {
-												if(!args[5].equalsIgnoreCase(QuestData.locLabelPlayer))
+												if(!args[4].equalsIgnoreCase(QuestData.locLabelPlayer))
 													loc = getLoc(sender, args[4]);
 												if(args.length > 5) {
 													rng = Integer.parseInt(args[5]);
