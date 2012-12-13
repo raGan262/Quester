@@ -1939,7 +1939,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												} catch (NumberFormatException e) {
 													throw new QuesterException(strings.ERROR_CMD_AMOUNT_POSITIVE);
 												}
-												if(!args[7].equalsIgnoreCase(QuestData.locLabelPlayer))
+												if(!args[6].equalsIgnoreCase(QuestData.locLabelPlayer))
 													loc = getLoc(sender, args[6]);
 												if(args.length > 7) {
 													rng = Integer.parseInt(args[7]);
