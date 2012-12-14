@@ -26,7 +26,6 @@ public class CraftSmeltListener implements Listener {
 
 	private QuestManager qm = Quester.qMan;
 	
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onCraft(CraftItemEvent event) {
 		if(!(event.getWhoClicked() instanceof Player)) {
@@ -58,7 +57,6 @@ public class CraftSmeltListener implements Listener {
 		    				int amtCrafted = Math.min(spc, count);
 		    				if(amtCrafted > 0) {
 		    					qm.incProgress(player, i, item.getAmount()*amtCrafted);
-		    			        player.updateInventory();
 			    				return;
 		    				}
 	    				}
@@ -66,7 +64,6 @@ public class CraftSmeltListener implements Listener {
 	    				ItemStack inHand = event.getCursor();
 	    				if(obj.check(item) && checkHand(inHand, item)) {
 	    					qm.incProgress(player, i, item.getAmount());
-	    			        player.updateInventory();
 	    					return;
 	    				}
 	    			}

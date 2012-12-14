@@ -91,7 +91,6 @@ public final class ItemQevent extends Qevent {
 		return new ItemQevent(occ, del, mat, dat, amt, enchs);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void run(Player player) {
 		int maxSize = material.getMaxStackSize();
@@ -124,7 +123,7 @@ public final class ItemQevent extends Qevent {
         }
 
         if(toGive > 0) {
-            numSpaces = (int) Math.ceil(toGive/maxSize);
+            numSpaces = (int) Math.ceil((double)toGive / (double)maxSize);
         	for(int k=0; k<numSpaces; k++) {
         		given = Math.min(toGive, maxSize);
 	        	item = new ItemStack(material, given, data);
@@ -135,6 +134,5 @@ public final class ItemQevent extends Qevent {
 	        	toGive -= given;
         	}
         }
-        player.updateInventory();
 	}
 }
