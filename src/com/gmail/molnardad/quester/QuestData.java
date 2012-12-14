@@ -267,8 +267,6 @@ public class QuestData {
 						Quester.log.info("Invalid holder: '" + key + "'");
 					}
 				}
-			} else {
-				Quester.log.info("null");
 			}
 			adjustHolderID();
 			

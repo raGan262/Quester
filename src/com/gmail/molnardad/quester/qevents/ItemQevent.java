@@ -102,15 +102,14 @@ public final class ItemQevent extends Qevent {
         for (ItemStack i : contents) {
             if (i == null) {
                 numSpaces += maxSize;
-            } else if (i.getType().equals(material) && enchants.isEmpty()) {
-            	if(i.getDurability() == data) {
-                    numSpaces += (maxSize - i.getAmount());
-            	}
+            } 
+            else if (i.getType().equals(material) && enchants.isEmpty() && i.getDurability() == data) {
+                   numSpaces += (maxSize - i.getAmount());
             }
         }
         given = Math.min(toGive, numSpaces);
         toGive -= given;
-        numSpaces = (int) Math.ceil(given/maxSize);
+        numSpaces = (int) Math.ceil((double)given / (double)maxSize);
         int round;
         ItemStack item;
         PlayerInventory inv = player.getInventory();
@@ -123,7 +122,7 @@ public final class ItemQevent extends Qevent {
 	        inv.addItem(item);
 	        given -= round;
         }
-        
+
         if(toGive > 0) {
             numSpaces = (int) Math.ceil(toGive/maxSize);
         	for(int k=0; k<numSpaces; k++) {

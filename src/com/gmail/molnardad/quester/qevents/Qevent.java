@@ -64,14 +64,15 @@ public abstract class Qevent {
 	}
 	
 	public int execute(final Player player) {
-		if(delay > 0)
+		if(delay > 0) {
 			return Bukkit.getScheduler().scheduleSyncDelayedTask(Quester.plugin, new Runnable() {
 				  public void run() {
 					    Qevent.this.run(player);
 					  }
 			}, delay*20);
-		else
+		} else {
 			Qevent.this.run(player);
+		}
 		return 0;
 	}
 	
