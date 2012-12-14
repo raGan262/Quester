@@ -510,7 +510,8 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.HOL_CREATE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
 							}
-							qm.createHolder(implode(args, 2));
+							int id = qm.createHolder(implode(args, 2));
+							qm.getProfile(sender.getName()).setHolderID(id);
 							sender.sendMessage(ChatColor.GREEN + strings.HOL_CREATED);
 							return true;
 						}

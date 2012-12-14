@@ -116,7 +116,7 @@ public class QuesterStrings extends CustomConfig {
 	
 	// HOLDER STRINGS
 	
-	public String HOL_CREATED = "Holder created.";
+	public String HOL_CREATED = "Holder created and selected.";
 	public String HOL_REMOVED = "Holder deleted.";
 	public String HOL_SELECTED = "Holder selected.";
 	public String HOL_Q_ADDED = "Quest added to holder.";
