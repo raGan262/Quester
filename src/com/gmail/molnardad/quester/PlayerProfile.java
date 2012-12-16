@@ -103,18 +103,28 @@ public class PlayerProfile {
 		return progresses.size();
 	}
 	
-	public void setQuest(int index) {
+	public boolean setQuest(int index) {
 		try {
 			quest = progresses.get(index);
-		} catch (Exception ignore) {}
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
 	}
 	
-	public void setQuest(String questName) {
+	public boolean setQuest(String questName) {
 		for(int i=0; i<progresses.size(); i++) {
 			if(progresses.get(i) != null && questName.equalsIgnoreCase(progresses.get(i).quest)) {
 				quest = progresses.get(i);
-				break;
+				return true;
 			}
+		}
+		return false;
+	}
+	
+	public void refreshActive() {
+		if(quest == null) {
+			setQuest(0);
 		}
 	}
 	
@@ -141,6 +151,9 @@ public class PlayerProfile {
 	
 	public void unsetQuest(int index) {
 		try {
+			if(progresses.get(index).equals(quest)) {
+				quest = null;
+			}
 			progresses.remove(index);
 		} catch (Exception ignore) {}
 	}
@@ -149,6 +162,9 @@ public class PlayerProfile {
 		try {
 			Progress prg = new Progress(questName);
 			progresses.remove(prg);
+			if(prg.equals(quest)) {
+				quest = null;
+			}
 		} catch (Exception ignore) {}
 	}
 	
@@ -173,6 +189,10 @@ public class PlayerProfile {
 			}
 		}
 		return false;
+	}
+	
+	public int getActiveIndex() {
+		return progresses.indexOf(quest);
 	}
 	
 	public int getSelected() {

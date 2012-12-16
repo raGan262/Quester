@@ -24,7 +24,6 @@ import com.avaje.ebeaninternal.server.lib.util.InvalidDataException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.objectives.*;
 import com.gmail.molnardad.quester.qevents.*;
-import com.gmail.molnardad.quester.utils.Util;
 import com.gmail.molnardad.quester.conditions.*;
 import static com.gmail.molnardad.quester.Quester.strings;
 import static com.gmail.molnardad.quester.utils.Util.*;
@@ -79,13 +78,16 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						sender.sendMessage(ChatColor.GOLD + command + " cancel " + ChatColor.GRAY + strings.HELP_CANCEL);
 					if(permCheck(sender, QuestData.PERM_USE_DONE, false))
 						sender.sendMessage(ChatColor.GOLD + command + " done " + ChatColor.GRAY + strings.HELP_DONE);
+					if(permCheck(sender, QuestData.PERM_USE_SWITCH, false))
+						sender.sendMessage(ChatColor.GOLD + command + " switch <id> " + ChatColor.GRAY + strings.HELP_SWITCH);
 					if(permCheck(sender, QuestData.PERM_USE_PROGRESS, false))
-						sender.sendMessage(ChatColor.GOLD + command + " progress " + ChatColor.GRAY + strings.HELP_PROGRESS);
+						sender.sendMessage(ChatColor.GOLD + command + " progress [id]" + ChatColor.GRAY + strings.HELP_PROGRESS);
 					if(permCheck(sender, QuestData.PERM_USE_PROFILE, false))
 						sender.sendMessage(ChatColor.GOLD + command + " profile " + ChatColor.GRAY + strings.HELP_PROFILE_USE);
+					if(permCheck(sender, QuestData.PERM_USE_QUESTS, false))
+						sender.sendMessage(ChatColor.GOLD + command + " quests " + ChatColor.GRAY + strings.HELP_QUESTS_USE);
 					if(permCheck(sender, QuestData.MODIFY_PERM, false)) {
 						sender.sendMessage(line(ChatColor.BLUE, strings.HELP_SECTION_MODIFY, ChatColor.GOLD));
-						sender.sendMessage(ChatColor.GOLD + command + " profile <name> " + ChatColor.GRAY + strings.HELP_PROFILE_MOD);
 						sender.sendMessage(ChatColor.GOLD + command + " create <name> " + ChatColor.GRAY + strings.HELP_CREATE);
 						sender.sendMessage(ChatColor.GOLD + command + " remove <name> " + ChatColor.GRAY + strings.HELP_REMOVE);
 						sender.sendMessage(ChatColor.GOLD + command + " select <name> " + ChatColor.GRAY + strings.HELP_SELECT);
@@ -112,6 +114,8 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					}
 					if(permCheck(sender, QuestData.ADMIN_PERM, false)) {
 						sender.sendMessage(line(ChatColor.BLUE, strings.HELP_SECTION_ADMIN, ChatColor.GOLD));
+						sender.sendMessage(ChatColor.GOLD + command + " profile <name> " + ChatColor.GRAY + strings.HELP_PROFILE_MOD);
+						sender.sendMessage(ChatColor.GOLD + command + " quests <player> " + ChatColor.GRAY + strings.HELP_QUESTS_MOD);
 						sender.sendMessage(ChatColor.GOLD + command + " startsave " + ChatColor.GRAY + strings.HELP_STARTSAVE);
 						sender.sendMessage(ChatColor.GOLD + command + " stopsave " + ChatColor.GRAY + strings.HELP_STOPSAVE);
 						sender.sendMessage(ChatColor.GOLD + command + " save " + ChatColor.GRAY + strings.HELP_SAVE);
@@ -123,17 +127,13 @@ public class QuesterCommandExecutor implements CommandExecutor {
 				
 				// QUEST PROFILE
 				if(args[0].equalsIgnoreCase("profile")) {
-					if(args.length > 1){
-						if(permCheck(sender, QuestData.MODIFY_PERM, false)) {
-							String name = args[1];
-							qm.showProfile(sender, name);
-							return true;
-						}
+					if(args.length > 1 && permCheck(sender, QuestData.ADMIN_PERM, false)) {
+						String name = args[1];
+						qm.showProfile(sender, name);
 					}
-					if(!permCheck(sender, QuestData.PERM_USE_PROFILE, true)) {
-						return true;
+					else if(permCheck(sender, QuestData.PERM_USE_PROFILE, true)) {
+						qm.showProfile(sender);
 					}
-					qm.showProfile(sender);
 					return true;
 				}
 				
@@ -146,7 +146,8 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						} catch (QuesterException e) {
 							sender.sendMessage(e.message());
 						}
-					} else {
+					} 
+					else {
 						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_SHOW.replaceAll("%cmd", QuestData.displayedCmd));
 					}
 					return true;
@@ -158,9 +159,9 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						String questName = implode(args, 1);
 						try {
 							if(permCheck(sender, QuestData.MODIFY_PERM, false)) {
-								int id = Integer.parseInt(args[1]);
-								qm.showQuestInfo(sender, id);
-							} else {
+								qm.showQuestInfo(sender, Integer.parseInt(args[1]));
+							} 
+							else {
 								qm.showQuest(sender, questName);
 							}
 						} catch (QuesterException e) {
@@ -168,11 +169,13 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						} catch (NumberFormatException e) {
 							sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 						}
-					} else {
+					} 
+					else {
 						try {
 							if(permCheck(sender, QuestData.MODIFY_PERM, false)) {
 								qm.showQuestInfo(sender);
-							} else {
+							} 
+							else {
 								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_INFO_USER.replaceAll("%cmd", QuestData.displayedCmd));
 							}
 						} catch (QuesterException e) {
@@ -2186,10 +2189,8 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							}
 							String questName = implode(args, 1);
 							qm.startQuest(player, questName, true);
-						} else {
-							if(!permCheck(sender, QuestData.PERM_USE_START_RANDOM, true)) {
-								return true;
-							}
+						} 
+						else if(permCheck(sender, QuestData.PERM_USE_START_RANDOM, true)) {
 							qm.startRandomQuest(player);
 						}
 					} catch (QuesterException e) {
@@ -2234,12 +2235,38 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					}
 					if(player == null) {
 						sender.sendMessage(ChatColor.RED + strings.MSG_ONLY_PLAYER);
-						return true;
 					}
-					try {
-						qm.complete(player, true);
-					} catch (QuesterException e) {
-						sender.sendMessage(e.message());
+					else {
+						try {
+							qm.complete(player, true);
+						} catch (QuesterException e) {
+							sender.sendMessage(e.message());
+						}
+					}
+					return true;
+				}
+				
+				// QUEST SWITCH
+				if(args[0].equalsIgnoreCase("switch")) {
+					if(player == null) {
+						sender.sendMessage(ChatColor.RED + strings.MSG_ONLY_PLAYER);
+					}
+					else if(args.length > 1) {
+						if(permCheck(sender, QuestData.PERM_USE_SWITCH, true)) {
+							try {
+								if(qm.switchQuest(player, Integer.parseInt(args[1]))) {
+									sender.sendMessage(ChatColor.GREEN + strings.Q_SWITCHED);
+								}
+								else {
+									sender.sendMessage(ChatColor.GREEN + strings.ERROR_Q_NOT_EXIST);
+								}
+							} catch (NumberFormatException e) {
+								sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
+							}
+						}
+					}
+					else {
+						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_SWITCH.replaceAll("%cmd", QuestData.displayedCmd));
 					}
 					return true;
 				}
@@ -2255,13 +2282,14 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						if(args.length > 1) {
 							try {
 								qm.showProgress(player, Integer.parseInt(args[1]));
-								return true;
 							} catch (Exception ignore) { }
 						}
-						try {
+						else {
+							try {
 							qm.showProgress(player);
 						} catch (QuesterException e) {
 							sender.sendMessage(e.message());
+						}
 						}
 					}
 					return true;
@@ -2269,17 +2297,17 @@ public class QuesterCommandExecutor implements CommandExecutor {
 				
 				// PLAYER QUESTS
 				if(args[0].equalsIgnoreCase("quests")) {
-					if(!permCheck(sender, QuestData.PERM_USE_PROGRESS, true)) {
+					if(!permCheck(sender, QuestData.PERM_USE_QUESTS, true)) {
 						return true;
 					}
-					if(player == null) {
+					if(args.length > 1 && permCheck(sender, QuestData.ADMIN_PERM, false)) {
+						qm.showTakenQuests(sender, args[1]);
+					}
+					else if(player == null) {
 						sender.sendMessage(ChatColor.RED + strings.MSG_ONLY_PLAYER);
-					} else {
-						PlayerProfile prof = qm.getProfile(player.getName());
-						for(int i=0; i<prof.getQuestAmount(); i++) {
-							player.sendMessage(prof.getQuest(i));
-							player.sendMessage(Util.implodeInt(prof.getProgress(i).toArray(new Integer[0]), ", "));
-						}
+					} 
+					else {
+						qm.showTakenQuests(sender);
 					}
 					return true;
 				}

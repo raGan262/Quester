@@ -11,6 +11,7 @@ objectives:
     remove-on-pickup: true
     subtract-on-drop: false
 quests:
+  max-amount: 1
   messages:
     start-show: true
     cancel-show: true

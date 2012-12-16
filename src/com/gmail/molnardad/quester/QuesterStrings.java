@@ -16,7 +16,7 @@ public class QuesterStrings extends CustomConfig {
 	public String MSG_Q_STARTED = "You have started quest %q";// %q = quest name;
 	public String MSG_Q_COMPLETED = "Quest %q completed.";// %q = quest name;
 	public String MSG_Q_CANCELLED = "Quest %q cancelled.";// %q = quest name;
-	public String MSG_Q_DEACTIVATED = "Your current quest hes been deactivated.";
+	public String MSG_Q_DEACTIVATED = "One of your quests has been deactivated.";
 	public String MSG_OBJ_COMPLETED = "You completed a quest objective.";
 
 	
@@ -36,7 +36,6 @@ public class QuesterStrings extends CustomConfig {
 	public String INFO_PROGRESS_COMPLETED = "Completed";
 	public String INFO_PROFILE_POINTS = "Quest points";
 	public String INFO_PROFILE_RANK = "Quester rank";
-	public String INFO_PROFILE_CURRENT = "Current quest";
 	public String INFO_PROFILE_COMPLETED = "Completed quests";
 	public String INFO_PROFILE_NOT_EXIST = "%p does not have profile.";// %p = player name;
 	public String INFO_HOLDER_LIST = "Holder list";
@@ -53,7 +52,10 @@ public class QuesterStrings extends CustomConfig {
 	public String HELP_START_RANDOM = "- starts random quest";
 	public String HELP_CANCEL = "- cancels current quest";
 	public String HELP_DONE = "- completes current quest";
-	public String HELP_PROGRESS = "- shows current quest progress";
+	public String HELP_SWITCH = "- switches current quest";
+	public String HELP_PROGRESS = "- shows quest progress";
+	public String HELP_QUESTS_USE = "- shows held quests";
+	public String HELP_QUESTS_MOD = "- shows quests of other player";
 	public String HELP_PROFILE_USE = "- displays your quester profile";
 	public String HELP_PROFILE_MOD = "- shows player's profile";
 	public String HELP_CREATE = "- creates a quest";
@@ -96,6 +98,7 @@ public class QuesterStrings extends CustomConfig {
 	public String USAGE_LOC = "%cmd location [set|remove].";
 	public String USAGE_FLAG = "%cmd flag [add|remove] [flag_1]... .";
 	public String USAGE_WORLD = "%cmd world [add|remove] [world_name or '%this'].";// %this = world label;
+	public String USAGE_SWITCH = "%cmd switch <index in '/q quests'>.";
 	
 	// QUEST STRINGs
 	
@@ -113,6 +116,7 @@ public class QuesterStrings extends CustomConfig {
 	public String Q_DEACTIVATED = "Quest deactivated.";
 	public String Q_WORLD_ADDED = "Quest world added.";
 	public String Q_WORLD_REMOVED = "Quest world removed.";
+	public String Q_SWITCHED = "Quest switched.";
 	
 	// HOLDER STRINGS
 	

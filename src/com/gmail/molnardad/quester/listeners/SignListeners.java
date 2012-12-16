@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.QuestHolder;
 import com.gmail.molnardad.quester.QuestManager;
@@ -113,24 +114,28 @@ public class SignListeners implements Listener {
 				}
 				int selected = qh.getSelected();
 				List<Integer> qsts = qh.getQuests();
-				int questID = qm.getPlayerQuest(player.getName()) == null ? -1 : qm.getPlayerQuest(player.getName()).getID();
-				// player has quest and quest giver does not accept this quest
-				if(questID >= 0 && !qsts.contains(questID)) {
-					player.sendMessage(ChatColor.RED + "You can't complete your quest here.");
-					return;
-				}
-				// player has quest and quest giver accepts this quest
-				if(questID >= 0 && qsts.contains(questID)) {
-					try {
-						qm.complete(player, false);
-					} catch (QuesterException e) {
-						try {
-							qm.showProgress(player);
-						} catch (QuesterException f) {
-							player.sendMessage(ChatColor.DARK_PURPLE + "Interesting error, you don't have and have quest at once !");
-						}
+				
+				Quest currentQuest = qm.getPlayerQuest(player.getName());
+				if(!player.isSneaking()) {
+					int questID = currentQuest == null ? -1 : currentQuest.getID();
+					// player has quest and quest giver does not accept this quest
+					if(questID >= 0 && !qsts.contains(questID)) {
+						player.sendMessage(ChatColor.RED + "You can't complete your quest here.");
+						return;
 					}
-					return;
+					// player has quest and quest giver accepts this quest
+					if(questID >= 0 && qsts.contains(questID)) {
+						try {
+							qm.complete(player, false);
+						} catch (QuesterException e) {
+							try {
+								qm.showProgress(player);
+							} catch (QuesterException f) {
+								player.sendMessage(ChatColor.DARK_PURPLE + "Interesting error, you don't have and have quest at once !");
+							}
+						}
+						return;
+					}
 				}
 				// player doesn't have quest
 				if(qm.isQuestActive(selected)) {

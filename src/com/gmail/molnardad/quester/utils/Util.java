@@ -137,7 +137,7 @@ public class Util {
 	}
 	
 	public static boolean permCheck(CommandSender sender, String perm, boolean message) {
-		if(sender.isOp() || sender.hasPermission(perm)) {
+		if(sender.isOp() || sender.hasPermission(perm) || sender.hasPermission(QuestData.ADMIN_PERM)) {
 			return true;
 		}
 		if(message)

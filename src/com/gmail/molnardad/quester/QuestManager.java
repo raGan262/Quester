@@ -54,11 +54,17 @@ public class QuestManager {
 	}
 	
 	private void unassignQuest(String playerName) {
-		getProfile(playerName).unsetQuest();
 	}
 	
 	private void unassignQuest(String playerName, int index) {
-		getProfile(playerName).unsetQuest(index);
+		PlayerProfile prof = getProfile(playerName);
+		if(index < 0) {
+			prof.unsetQuest();
+		}
+		else {
+			prof.unsetQuest(index);
+		}
+		prof.refreshActive();
 	}
 	
 	private PlayerProfile createProfile(String playerName) {
@@ -322,6 +328,7 @@ public class QuestManager {
 					player.sendMessage(Quester.LABEL + Quester.strings.MSG_Q_DEACTIVATED);
 				}
 			}
+			prof.refreshActive();
 		}
 		QuestData.saveProfiles();
 	}
@@ -683,10 +690,11 @@ public class QuestManager {
 		Collection<Quest> qsts = getQuests();
 		ArrayList<Quest> aqsts = new ArrayList<Quest>();
 		for(Quest q : qsts) {
-			if(q.hasFlag(QuestFlag.ACTIVE) && !q.hasFlag(QuestFlag.HIDDEN)) {
-				if(areConditionsMet(player, q)) {
-					aqsts.add(q);
-				}
+			if(q.hasFlag(QuestFlag.ACTIVE) 
+					&& !q.hasFlag(QuestFlag.HIDDEN) 
+					&& !hasQuest(player.getName(), q.getName()) 
+					&& areConditionsMet(player, q)) {
+				aqsts.add(q);
 			}
 		}
 		qsts = null;
@@ -713,12 +721,7 @@ public class QuestManager {
 		if(command && quest.hasFlag(QuestFlag.UNCANCELLABLE)) {
 			throw new QuesterException(ExceptionType.Q_CANT_CANCEL);
 		}
-		if(index < 0) {
-			unassignQuest(player.getName());
-		}
-		else {
-			unassignQuest(player.getName(), index);
-		}
+		unassignQuest(player.getName(), index);
 		if(QuestData.progMsgCancel)
 			player.sendMessage(Quester.LABEL + Quester.strings.MSG_Q_CANCELLED.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 		if(QuestData.verbose)
@@ -792,6 +795,10 @@ public class QuestManager {
 		}
 	}
 	
+	public boolean switchQuest(Player player, int id) {
+		return getProfile(player.getName()).setQuest(id);
+	}
+	
 	public void incProgress(Player player, int id) {
 		incProgress(player, id, 1, true);
 	}
@@ -841,7 +848,6 @@ public class QuestManager {
 		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_NAME + ": " + ChatColor.GOLD + prof.getName());
 		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_PROFILE_POINTS + ": " + ChatColor.WHITE + prof.getPoints());
 		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_PROFILE_RANK + ": " + ChatColor.GOLD + prof.getRank());
-		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_PROFILE_CURRENT + ": " + ChatColor.WHITE + prof.getQuest());
 		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_PROFILE_COMPLETED + ": " + ChatColor.WHITE + prof.getCompletedNames());
 		
 	}
@@ -1024,6 +1030,24 @@ public class QuestManager {
 		qh.showQuestsModify(sender);
 	}
 	
+	public void showTakenQuests(CommandSender sender) {
+		showTakenQuests(sender, sender.getName());
+	}
+	
+	public void showTakenQuests(CommandSender sender, String name) {
+		if(!hasProfile(name)) {
+			sender.sendMessage(ChatColor.RED + Quester.strings.INFO_PROFILE_NOT_EXIST.replaceAll("%p", name));
+			return;
+		}
+		PlayerProfile prof = getProfile(name);
+		sender.sendMessage(ChatColor.BLUE + (sender.getName().equalsIgnoreCase(name) ? "Your quests: " : prof.getName() + "\'s quests: " ) 
+				+ "(Limit: " + QuestData.maxQuests + ")");
+		int current = prof.getActiveIndex();
+		for(int i=0; i<prof.getQuestAmount(); i++) {
+			sender.sendMessage("[" + i + "] " + (current == i ? ChatColor.GREEN : ChatColor.YELLOW) + getQuest(prof.getQuest(i)).getName());
+		}
+		
+	}
 	// Utility TODO
 	public static Inventory createInventory(Player player) {
 		

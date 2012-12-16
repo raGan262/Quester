@@ -49,6 +49,8 @@ public class QuestData {
 	public static final String PERM_USE_DONE = "quester.use.done";
 	public static final String PERM_USE_CANCEL = "quester.use.cancel";
 	public static final String PERM_USE_PROGRESS = "quester.use.progress";
+	public static final String PERM_USE_QUESTS = "quester.use.quests";
+	public static final String PERM_USE_SWITCH = "quester.use.switch";
 	public static final String MODIFY_PERM = "quester.modify";
 	public static final String ADMIN_PERM = "quester.admin";
 
