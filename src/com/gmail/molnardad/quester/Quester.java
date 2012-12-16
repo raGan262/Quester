@@ -12,7 +12,6 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -43,7 +42,6 @@ public class Quester extends JavaPlugin {
 		public Quester() {
 			super();
 			plugin = this;
-			ConfigurationSerialization.registerClass(PlayerProfile.class);
 		}
 		
 		@Override

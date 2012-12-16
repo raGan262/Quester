@@ -25,8 +25,8 @@ public class EnchantListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onEnchant(EnchantItemEvent event) {
 	    Player player = event.getEnchanter();
-	    if(qm.hasQuest(player.getName())) {
-	    	Quest quest = qm.getPlayerQuest(player.getName());
+    	Quest quest = qm.getPlayerQuest(player.getName());
+	    if(quest != null) {
 	    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
 	    		return;
 	    	List<Objective> objs = quest.getObjectives();

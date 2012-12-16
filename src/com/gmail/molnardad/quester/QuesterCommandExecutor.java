@@ -24,6 +24,7 @@ import com.avaje.ebeaninternal.server.lib.util.InvalidDataException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.objectives.*;
 import com.gmail.molnardad.quester.qevents.*;
+import com.gmail.molnardad.quester.utils.Util;
 import com.gmail.molnardad.quester.conditions.*;
 import static com.gmail.molnardad.quester.Quester.strings;
 import static com.gmail.molnardad.quester.utils.Util.*;
@@ -2206,7 +2207,16 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						sender.sendMessage(ChatColor.RED + strings.MSG_ONLY_PLAYER);
 					} else {
 						try {
-							qm.cancelQuest(player, true);
+							int index = -1;
+							if(args.length > 1) {
+								try {
+									index = Integer.parseInt(args[1]);
+								} catch (Exception e) {
+									sender.sendMessage(ChatColor.RED + strings.ERROR_Q_NOT_ASSIGNED);
+									return true;
+								}
+							}
+							qm.cancelQuest(player, index, true);
 							if(QuestData.verbose) {
 								Quester.log.info(player.getName() + " cancelled his/her quest.");
 							}
@@ -2242,10 +2252,33 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					if(player == null) {
 						sender.sendMessage(ChatColor.RED + strings.MSG_ONLY_PLAYER);
 					} else {
+						if(args.length > 1) {
+							try {
+								qm.showProgress(player, Integer.parseInt(args[1]));
+								return true;
+							} catch (Exception ignore) { }
+						}
 						try {
 							qm.showProgress(player);
 						} catch (QuesterException e) {
 							sender.sendMessage(e.message());
+						}
+					}
+					return true;
+				}
+				
+				// PLAYER QUESTS
+				if(args[0].equalsIgnoreCase("quests")) {
+					if(!permCheck(sender, QuestData.PERM_USE_PROGRESS, true)) {
+						return true;
+					}
+					if(player == null) {
+						sender.sendMessage(ChatColor.RED + strings.MSG_ONLY_PLAYER);
+					} else {
+						PlayerProfile prof = qm.getProfile(player.getName());
+						for(int i=0; i<prof.getQuestAmount(); i++) {
+							player.sendMessage(prof.getQuest(i));
+							player.sendMessage(Util.implodeInt(prof.getProgress(i).toArray(new Integer[0]), ", "));
 						}
 					}
 					return true;

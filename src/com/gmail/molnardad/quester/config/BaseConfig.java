@@ -76,6 +76,14 @@ public class BaseConfig extends CustomConfig {
 		checkBoolean(path);
 		QuestData.colSubOnDrop = this.config.getBoolean(path);
 		
+		// MAX QUESTS
+		path = "quests.max-amount";
+		if(this.config.getInt(path) < 1) {
+			this.config.set(path, 1);
+			wrongConfig(path);
+		}
+		QuestData.maxQuests = this.config.getInt(path);
+		
 		// PROGRES MESSAGES
 		path = "quests.messages.start-show";
 		checkBoolean(path);

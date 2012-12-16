@@ -18,6 +18,7 @@ public class QuestData {
 	public static int saveInterval = 15;
 	public static boolean debug = true;
 	// OBJECTIVE SECTION
+	public static boolean ordOnlyCurrent = true;
 		// BREAK
 	public static boolean brkNoDrops = false;
 	public static boolean brkSubOnPlace = true;
@@ -25,7 +26,7 @@ public class QuestData {
 	public static boolean colRemPickup = true;
 	public static boolean colSubOnDrop = false;
 	// QUEST SECTION
-	public static boolean ordOnlyCurrent = true;
+	public static int maxQuests = 1;
 		// MESSAGES
 	public static boolean progMsgStart = true;
 	public static boolean progMsgCancel = true;
@@ -152,14 +153,8 @@ public class QuestData {
 					if(debug) {
 						Quester.log.info("Deserializing profile: " + key);
 					}
-					prof = PlayerProfile.sectionDeserialize(config.getConfigurationSection(key));
+					prof = PlayerProfile.deserialize(config.getConfigurationSection(key));
 				} 
-				else if(config.get(key) instanceof PlayerProfile) {
-					if(debug) {
-						Quester.log.info("Using deserialization method on profile: " + key);
-					}
-					prof = (PlayerProfile) config.get(key);
-				}
 				if(prof != null) {
 					if(!prof.getQuest().isEmpty()) {
 						if(!Quester.qMan.isQuestActive(prof.getQuest()) || 

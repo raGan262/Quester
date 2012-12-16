@@ -45,12 +45,20 @@ public class QuestManager {
 		return getProfile(playerName).getProgress();
 	}
 	
+	private List<Integer> getProgress(String playerName, int index) {
+		return getProfile(playerName).getProgress(index);
+	}
+	
 	private void assignQuest(String playerName, Quest quest) {
-		getProfile(playerName).setQuest(quest.getName().toLowerCase(), quest.getObjectives().size());
+		getProfile(playerName).addQuest(quest.getName(), quest.getObjectives().size());
 	}
 	
 	private void unassignQuest(String playerName) {
 		getProfile(playerName).unsetQuest();
+	}
+	
+	private void unassignQuest(String playerName, int index) {
+		getProfile(playerName).unsetQuest(index);
 	}
 	
 	private PlayerProfile createProfile(String playerName) {
@@ -160,7 +168,6 @@ public class QuestManager {
 	public boolean areConditionsMet(Player player, Quest quest) throws QuesterException {
 		if(quest == null)
 			throw new QuesterException(ExceptionType.Q_NOT_EXIST);
-		
 		for(Condition c : quest.getConditions()) {
 			if(!c.isMet(player))
 				return false;
@@ -182,12 +189,21 @@ public class QuestManager {
 		return profiles.get(playerName.toLowerCase()) != null;
 	}
 	
-	public boolean hasQuest(String playerName) {
-		return !getProfile(playerName).getQuest().isEmpty();
+	public boolean hasQuest(String playerName, String questName) {
+		return getProfile(playerName).hasQuest(questName);
 	}
 
 	public Quest getPlayerQuest(String playerName) {
 		return getQuest(getProfile(playerName).getQuest());
+	}
+	
+	public Quest getPlayerQuest(String playerName, int index) {
+		if(index < 0) {
+			return null;
+		}
+		else {
+			return getQuest(getProfile(playerName).getQuest(index));
+		}
 	}
 	
 	public int getObjectiveAmount(int id) {
@@ -299,8 +315,8 @@ public class QuestManager {
 		q.removeFlag(QuestFlag.ACTIVE);
 		QuestData.saveQuests();
 		for(PlayerProfile prof: profiles.values()) {
-			if(prof.getQuest().equalsIgnoreCase(q.getName())) {
-				prof.unsetQuest();
+			while(prof.hasQuest(q.getName())) {
+				prof.unsetQuest(q.getName());
 				Player player = Bukkit.getServer().getPlayerExact(prof.getName());
 				if(player != null){
 					player.sendMessage(Quester.LABEL + Quester.strings.MSG_Q_DEACTIVATED);
@@ -633,16 +649,22 @@ public class QuestManager {
 		if(qst == null){
 			throw new QuesterException(ExceptionType.Q_NOT_EXIST);
 		}
-		if(hasQuest(playerName)) {
+		PlayerProfile prof = getProfile(playerName);
+		if(prof.hasQuest(qst.getName())) {
 			throw new QuesterException(ExceptionType.Q_ASSIGNED);
+		}
+		if(prof.getQuestAmount() >= QuestData.maxQuests) {
+			throw new QuesterException(ExceptionType.Q_MAX_AMOUNT);
 		}
 		if(!qst.hasFlag(QuestFlag.ACTIVE)) {
 			throw new QuesterException(ExceptionType.Q_NOT_EXIST);
 		}
 		if(command && qst.hasFlag(QuestFlag.HIDDEN))
 			throw new QuesterException(ExceptionType.Q_NOT_CMD);
-		if(!areConditionsMet(player, qst.getName()))
-			throw new QuesterException(ExceptionType.CON_NOT_MET);
+		if (!Util.permCheck(player, QuestData.ADMIN_PERM, false)){
+			if(!areConditionsMet(player, qst.getName()))
+				throw new QuesterException(ExceptionType.CON_NOT_MET);
+		}
 		assignQuest(playerName, qst);
 		if(QuestData.progMsgStart)
 			player.sendMessage(Quester.LABEL + Quester.strings.MSG_Q_STARTED.replaceAll("%q", ChatColor.GOLD + qst.getName() + ChatColor.BLUE));
@@ -674,16 +696,29 @@ public class QuestManager {
 		int id = Quester.randGen.nextInt(aqsts.size());
 		startQuest(player, aqsts.get(id).getName(), false);
 	}
-	
 	public void cancelQuest(Player player, boolean command) throws QuesterException {
-		Quest quest = getPlayerQuest(player.getName());
+		cancelQuest(player, -1, command);
+	}
+	public void cancelQuest(Player player, int index, boolean command) throws QuesterException {
+		Quest quest = null;
+		if(index < 0) {
+			quest = getPlayerQuest(player.getName());
+		}
+		else {
+			quest = getPlayerQuest(player.getName(), index);
+		}
 		if(quest == null) {
 			throw new QuesterException(ExceptionType.Q_NOT_ASSIGNED);
 		}
 		if(command && quest.hasFlag(QuestFlag.UNCANCELLABLE)) {
 			throw new QuesterException(ExceptionType.Q_CANT_CANCEL);
 		}
-		unassignQuest(player.getName());
+		if(index < 0) {
+			unassignQuest(player.getName());
+		}
+		else {
+			unassignQuest(player.getName(), index);
+		}
 		if(QuestData.progMsgCancel)
 			player.sendMessage(Quester.LABEL + Quester.strings.MSG_Q_CANCELLED.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 		if(QuestData.verbose)
@@ -927,14 +962,26 @@ public class QuestManager {
 	}
 	
 	public void showProgress(Player player) throws QuesterException {
-		Quest quest = getPlayerQuest(player.getName());
+		showProgress(player, -1);
+	}
+	
+	public void showProgress(Player player, int index) throws QuesterException {
+		Quest quest = null;
+		List<Integer> progress = null;
+		if(index < 0) {
+			quest = getPlayerQuest(player.getName());
+			progress = getProgress(player.getName());
+		}
+		else {
+			quest = getPlayerQuest(player.getName(), index);
+			progress = getProgress(player.getName(), index);
+		}
 		if(quest == null) {
 			throw new QuesterException(ExceptionType.Q_NOT_ASSIGNED);
 		}
 		if(!quest.hasFlag(QuestFlag.HIDDENOBJS)) {
 			player.sendMessage(Quester.strings.INFO_PROGRESS.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 			List<Objective> objs = quest.getObjectives();
-			List<Integer> progress = getProgress(player.getName());
 			for(int i = 0; i < objs.size(); i++) {
 				if(objs.get(i).isComplete(player, progress.get(i))) {
 					player.sendMessage(ChatColor.GREEN + " - " + Quester.strings.INFO_PROGRESS_COMPLETED);

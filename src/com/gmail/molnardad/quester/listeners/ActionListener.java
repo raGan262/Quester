@@ -22,9 +22,8 @@ public class ActionListener implements Listener {
 	public void onAction(PlayerInteractEvent event) {
 	    QuestManager qm = Quester.qMan;
 	    Player player = event.getPlayer();
-	    if(qm.hasQuest(player.getName())) {
-	    	
-	    	Quest quest = qm.getPlayerQuest(player.getName());
+    	Quest quest = qm.getPlayerQuest(player.getName());
+	    if(quest != null) {
 	    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
 	    		return;
 	    	List<Objective> objs = quest.getObjectives();

@@ -22,8 +22,8 @@ public class FishListener implements Listener {
 	public void onFish(PlayerFishEvent event) {
 		if(event.getState() == State.CAUGHT_FISH) {
 			Player player = event.getPlayer();
-			if(qm.hasQuest(player.getName())) {
-				Quest quest = qm.getPlayerQuest(player.getName());
+	    	Quest quest = qm.getPlayerQuest(player.getName());
+		    if(quest != null) {
 		    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
 		    		return;
 				List<Objective> objs = quest.getObjectives();

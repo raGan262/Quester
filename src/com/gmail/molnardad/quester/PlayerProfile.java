@@ -6,28 +6,65 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.configuration.serialization.SerializableAs;
 
 import com.gmail.molnardad.quester.utils.Util;
 
-@SerializableAs("QuesterPlayerProfile")
-public class PlayerProfile implements ConfigurationSerializable{
+public class PlayerProfile {
 
 	private final String name;
 	private Map<String, Integer> completed;
 	private int selected;
 	private int holder;
-	private String quest;
-	private List<Integer> progress;
+	private Progress quest;
+	private List<Progress> progresses;
 	private int points;
 	private String rank;
+	
+	private class Progress {
+		String quest = "";
+		List<Integer> progress;
+		
+		Progress(String quest) {
+			if(quest != null) {
+				this.quest = quest;
+			}
+			progress = new ArrayList<Integer>();
+		}
+		
+		Progress(String quest, int numObjs) {
+			if(quest != null) {
+				this.quest = quest;
+			}
+			if(numObjs > 0) {
+				progress = new ArrayList<Integer>();
+				for(int i=0; i<numObjs; i++) {
+					progress.add(0);
+				}
+			}
+			else {
+				progress = new ArrayList<Integer>();
+			}
+		}
+		
+		void addToProgress(int value) {
+			progress.add(value);
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if(obj != null && obj instanceof Progress) {
+				Progress prg = (Progress) obj;
+				return this.quest.equalsIgnoreCase(prg.quest);
+			}
+			return false;
+		}
+	}
 	
 	public PlayerProfile(String player) {
 		name = player;
 		completed = new HashMap<String, Integer>();
-		quest = "";
-		progress = new ArrayList<Integer>();
+		quest = null;
+		progresses = new ArrayList<Progress>();
 		selected = -1;
 		holder = -1;
 		points = 0;
@@ -43,7 +80,7 @@ public class PlayerProfile implements ConfigurationSerializable{
 	}
 	
 	public void addCompleted(String questName) {
-		addCompleted(questName, 0);
+		addCompleted(questName.toLowerCase(), 0);
 	}
 	
 	public void addCompleted(String questName, int time) {
@@ -51,7 +88,7 @@ public class PlayerProfile implements ConfigurationSerializable{
 	}
 	
 	public boolean isCompleted(String questName) {
-		return completed.containsKey(questName.toLowerCase());
+		return completed.containsKey(questName);
 	}
 	
 	public int getCompletionTime(String questName) {
@@ -62,25 +99,80 @@ public class PlayerProfile implements ConfigurationSerializable{
 		return time;
 	}
 	
-	private void setQuest(String questName) {
-		quest = questName;
+	public int getQuestAmount() {
+		return progresses.size();
 	}
 	
-	public void setQuest(String questName, int progSize) {
-		quest = questName;
-		progress.clear();
-		for(int i=0; i<progSize; i++) {
-			progress.add(0);
+	public void setQuest(int index) {
+		try {
+			quest = progresses.get(index);
+		} catch (Exception ignore) {}
+	}
+	
+	public void setQuest(String questName) {
+		for(int i=0; i<progresses.size(); i++) {
+			if(progresses.get(i) != null && questName.equalsIgnoreCase(progresses.get(i).quest)) {
+				quest = progresses.get(i);
+				break;
+			}
+		}
+	}
+	
+	public void addQuest(String questName, int progSize) {
+		Progress prg = new Progress(questName, progSize);
+		if(!progresses.contains(prg)) {
+			progresses.add(prg);
+			setQuest(progresses.size()-1);
+		}
+	}
+	
+	private void addQuest(Progress prg) {
+		if(!progresses.contains(prg)) {
+			progresses.add(prg);
 		}
 	}
 
 	public void unsetQuest() {
-		quest = "";
-		progress = new ArrayList<Integer>();
+		try {
+			progresses.remove(quest);
+			quest = null;
+		} catch (Exception ignore) {}
+	}
+	
+	public void unsetQuest(int index) {
+		try {
+			progresses.remove(index);
+		} catch (Exception ignore) {}
+	}
+	
+	public void unsetQuest(String questName) {
+		try {
+			Progress prg = new Progress(questName);
+			progresses.remove(prg);
+		} catch (Exception ignore) {}
 	}
 	
 	public String getQuest() {
-		return quest;
+		try {
+			return quest.quest;
+		} catch (Exception ignore) {}
+		return "";
+	}
+	
+	public String getQuest(int index) {
+		try {
+			return progresses.get(index).quest;
+		} catch (Exception ignore) {}
+		return "";
+	}
+	
+	public boolean hasQuest(String questName) {
+		for(int i=0; i<progresses.size(); i++) {
+			if(progresses.get(i) != null && questName.equalsIgnoreCase(progresses.get(i).quest)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public int getSelected() {
@@ -99,12 +191,18 @@ public class PlayerProfile implements ConfigurationSerializable{
 		holder = newID;
 	}
 	
-	private void setProgress(List<Integer> list) {
-		progress = list;
+	public List<Integer> getProgress() {
+		if(quest == null) {
+			return null;
+		}
+		return quest.progress;
 	}
 	
-	public List<Integer> getProgress() {
-		return progress;
+	public List<Integer> getProgress(int index) {
+		try {
+			return progresses.get(index).progress;
+		} catch (Exception ignore) {}
+		return null;
 	}
 	
 	public int getPoints() {
@@ -140,66 +238,26 @@ public class PlayerProfile implements ConfigurationSerializable{
 			}
 		}
 		
-		section.set("quest", null);
-		section.set("progress", null);
-		if(!quest.isEmpty()) {
-			section.set("quest", quest);
-			
-			section.set("progress", Util.implodeInt(progress.toArray(new Integer[0]), "|"));
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	public static PlayerProfile deserialize(Map<String, Object> map) {
-		PlayerProfile profile;
-		String buildName;
-		if(map.get("name") != null) {
-			buildName = (String) map.get("name");
-			profile = new PlayerProfile(buildName);
-		} else {
-			return null;
-		}
-		
-		if(map.get("points") != null) {
-			int pts = (Integer) map.get("points");
-			profile.addPoints(pts);
-		}
-		
-		if(map.get("completed") != null) {
-			List<String> strings = (List<String>) map.get("completed");
-			for(String s : strings) {
-				profile.addCompleted(s);
+		section.set("active", null);
+		if(quest != null) {
+			int index = progresses.indexOf(quest);
+			if(index > -1) {
+				section.set("active", index);
 			}
 		}
 		
-		if(map.get("quest") != null) {
-			String qst = (String) map.get("quest");
-			if(map.get("progress") != null) {
-				
-				Map<Integer, Integer> intmap;
-				try {
-					intmap = (Map<Integer, Integer>) map.get("progress");
-				} catch (Exception e) {
-					return profile;
+		section.set("quests", null);
+		if(!progresses.isEmpty()) {
+			ConfigurationSection prgs = section.createSection("quests");
+			for(Progress prg : progresses) {
+				if(prg != null) {
+					prgs.set(prg.quest, Util.implodeInt(prg.progress.toArray(new Integer[0]), "|"));
 				}
-				
-				List<Integer> list = new ArrayList<Integer>();
-				for(int i=0; i<intmap.size(); i++) {
-					if(intmap.get(i) == null) {
-						return profile;
-					}
-					list.add(intmap.get(i));
-				}
-				
-				profile.setQuest(qst);
-				profile.setProgress(list);
 			}
 		}
-		
-		return profile;
 	}
 	
-	public static PlayerProfile sectionDeserialize(ConfigurationSection section) {
+	public static PlayerProfile deserialize(ConfigurationSection section) {
 		PlayerProfile prof = null;
 		
 		if(section.isString("name")) {
@@ -232,32 +290,55 @@ public class PlayerProfile implements ConfigurationSerializable{
 		if(section.isString("quest")) {
 			if(section.isString("progress")) {
 				try {
-					String[] strs = section.getString("progress").split("\\|");
-					List<Integer> list = new ArrayList<Integer>();
+					Progress prg = prof.new Progress(section.getString("quest"));
+					String[] strs = section.getString("progress", "").split("\\|");
 					for(String s : strs) {
-						list.add(Integer.parseInt(s));
+						prg.addToProgress(Integer.parseInt(s));
 					}
-					prof.setQuest(section.getString("quest"));
-					prof.setProgress(list);
+					prof.addQuest(prg);
+					prof.setQuest(0);
 				} catch (Exception e) {
-					if(QuestData.debug) {
+					if(QuestData.verbose) {
 						Quester.log.info("Invalid progress in profile.");
 					}
 				}
 			}
 			else {
-				if(QuestData.debug) {
-					Quester.log.info("Invalid or missing progress in profile.");
+				if(QuestData.verbose) {
+					Quester.log.info("Invalid or missing progress for quest '" + section.getString("quest", "non-existant") + "' in profile.");
 				}
 			}
 		}
 		
+		if(section.isConfigurationSection("quests")) {
+			ConfigurationSection subsection = section.getConfigurationSection("quests");
+			for(String key : subsection.getKeys(false)) {
+				if(subsection.isString(key)) {
+					try {
+						Progress prg = prof.new Progress(key);
+						String[] strs = subsection.getString(key).split("\\|");
+						if(strs.length != 1 || !strs[0].isEmpty()) {
+							for(String s : strs) {
+								prg.addToProgress(Integer.parseInt(s));
+							}
+						}		
+						prof.addQuest(prg);
+					} catch (Exception e) {
+						if(QuestData.verbose) {
+							Quester.log.info("Invalid progress in profile.");
+						}
+					}
+				}
+				else {
+					if(QuestData.verbose) {
+						Quester.log.info("Invalid or missing progress for quest '" + key + "' in profile.");
+					}
+				}
+			}
+		}
+		
+		prof.setQuest(section.getInt("active"));
+		
 		return prof;
-	}
-
-	// needs to be here to remain configuration serializable
-	@Override
-	public Map<String, Object> serialize() {
-		return new HashMap<String, Object>();
 	}
 }

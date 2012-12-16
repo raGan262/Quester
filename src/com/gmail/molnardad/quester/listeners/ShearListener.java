@@ -25,8 +25,8 @@ public class ShearListener implements Listener {
 		if(event.getEntity().getType() == EntityType.SHEEP) {
 			Player player = event.getPlayer();
 			Sheep sheep = (Sheep) event.getEntity();
-			if(qm.hasQuest(player.getName())) {
-				Quest quest = qm.getPlayerQuest(player.getName());
+	    	Quest quest = qm.getPlayerQuest(player.getName());
+		    if(quest != null) {
 		    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
 		    		return;
 				List<Objective> objs = quest.getObjectives();

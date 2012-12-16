@@ -346,12 +346,13 @@ public class QuesterStrings extends CustomConfig {
 	public String ERROR_Q_CANT_MODIFY = "Modification of active quests is not allowed.";
 	public String ERROR_Q_NONE = "No quest available.";
 	public String ERROR_Q_NONE_ACTIVE = "No quest active.";
-	public String ERROR_Q_ASSIGNED = "Other quest already assigned.";
-	public String ERROR_Q_NOT_ASSIGNED = "No quest assigned.";
+	public String ERROR_Q_ASSIGNED = "Quest is already assigned.";
+	public String ERROR_Q_NOT_ASSIGNED = "Quest not assigned.";
 	public String ERROR_Q_CANT_CANCEL = "This quest cannot be cancelled.";
 	public String ERROR_Q_NOT_COMPLETED = "One or more objectives are not completed.";
 	public String ERROR_Q_BAD_WORLD = "Quest cannot be completed in this world.";
 	public String ERROR_Q_NOT_CMD = "Quest cannot be started or completed by command.";
+	public String ERROR_Q_MAX_AMOUNT = "Maximum quest amount reached.";
 	public String ERROR_HOL_NOT_EXIST = "Holder does not exist.";
 	public String ERROR_HOL_NOT_SELECTED = "No holder selected.";
 	public String ERROR_CON_NOT_MET = "One or more conditions are not met.";

@@ -24,8 +24,8 @@ public class DropListener implements Listener {
 	public void onDrop(PlayerDropItemEvent event) {
 		if(QuestData.colSubOnDrop) {
 		    Player player = event.getPlayer();
-		    if(qm.hasQuest(player.getName())) {
-		    	Quest quest = qm.getPlayerQuest(player.getName());
+	    	Quest quest = qm.getPlayerQuest(player.getName());
+		    if(quest != null) {
 		    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
 		    		return;
 		    	List<Objective> objs = quest.getObjectives();

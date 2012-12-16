@@ -24,8 +24,8 @@ public class PlaceListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onBreak(BlockPlaceEvent event) {
 	    Player player = event.getPlayer();
-	    if(qm.hasQuest(player.getName())) {
-	    	Quest quest = qm.getPlayerQuest(player.getName());
+    	Quest quest = qm.getPlayerQuest(player.getName());
+	    if(quest != null) {
 	    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
 	    		return;
 	    	List<Objective> objs = quest.getObjectives();

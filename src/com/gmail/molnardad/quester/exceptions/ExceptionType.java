@@ -20,6 +20,7 @@ public enum ExceptionType {
 	Q_NOT_COMPLETED(ChatColor.RED + Quester.strings.ERROR_Q_NOT_COMPLETED),
 	Q_BAD_WORLD(ChatColor.RED + Quester.strings.ERROR_Q_BAD_WORLD),
 	Q_NOT_CMD(ChatColor.RED + Quester.strings.ERROR_Q_NOT_CMD),
+	Q_MAX_AMOUNT(ChatColor.RED + Quester.strings.ERROR_Q_MAX_AMOUNT),
 	
 	HOL_NOT_EXIST(ChatColor.RED + Quester.strings.ERROR_HOL_NOT_EXIST),
 	HOL_NOT_SELECTED(ChatColor.RED + Quester.strings.ERROR_HOL_NOT_SELECTED),
