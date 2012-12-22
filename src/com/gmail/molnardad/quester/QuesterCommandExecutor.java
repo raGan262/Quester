@@ -1540,21 +1540,23 @@ public class QuesterCommandExecutor implements CommandExecutor {
 
 							// QUEST CONDITION
 							if(args[2].equalsIgnoreCase("quest")) {
-								if(args.length > 4) {
+								if(args.length > 3) {
 									int start = 3;
 									int time = 0;
 									try {
 										time = Integer.parseInt(flagArgument('t', args[3]));
 										start = 4;
 									} catch (Exception ignore) {}
-									String questName = implode(args, start);
-									try {
-										qm.addQuestCondition(sender.getName(), new QuestCondition(questName, time));
-										sender.sendMessage(ChatColor.GREEN + strings.CON_ADD.replaceAll("%type", strings.CON_QUEST_TYPE));
-									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+									if(args.length > start) {
+										String questName = implode(args, start);
+										try {
+											qm.addQuestCondition(sender.getName(), new QuestCondition(questName, time));
+											sender.sendMessage(ChatColor.GREEN + strings.CON_ADD.replaceAll("%type", strings.CON_QUEST_TYPE));
+										} catch (QuesterException e) {
+											sender.sendMessage(e.message());
+										}
+										return true;
 									}
-									return true;
 								}
 								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_QUEST_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
@@ -1562,21 +1564,23 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							
 							// QUESTNOT CONDITION
 							if(args[2].equalsIgnoreCase("questnot")) {
-								if(args.length > 4) {
+								if(args.length > 3) {
 									int start = 3;
 									int time = 0;
 									try {
 										time = Integer.parseInt(flagArgument('t', args[3]));
 										start = 4;
 									} catch (Exception ignore) {}
-									String questName = implode(args, start);
-									try {
-										qm.addQuestCondition(sender.getName(), new QuestNotCondition(questName, time));
-										sender.sendMessage(ChatColor.GREEN + strings.CON_ADD.replaceAll("%type", strings.CON_QUESTNOT_TYPE));
-									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+									if(args.length > start) {
+										String questName = implode(args, start);
+										try {
+											qm.addQuestCondition(sender.getName(), new QuestNotCondition(questName, time));
+											sender.sendMessage(ChatColor.GREEN + strings.CON_ADD.replaceAll("%type", strings.CON_QUESTNOT_TYPE));
+										} catch (QuesterException e) {
+											sender.sendMessage(e.message());
+										}
+										return true;
 									}
-									return true;
 								}
 								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_QUESTNOT_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 								return true;
