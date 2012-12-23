@@ -675,8 +675,9 @@ public class QuestManager {
 		assignQuest(playerName, qst);
 		if(QuestData.progMsgStart)
 			player.sendMessage(Quester.LABEL + Quester.strings.MSG_Q_STARTED.replaceAll("%q", ChatColor.GOLD + qst.getName() + ChatColor.BLUE));
-		if(!qst.getDescription().isEmpty() && !qst.hasFlag(QuestFlag.NODESC))
-			player.sendMessage(qst.getDescription());
+		String description = qst.getDescription(playerName);
+		if(!description.isEmpty() && !qst.hasFlag(QuestFlag.NODESC))
+			player.sendMessage(description);
 		if(QuestData.verbose)
 			Quester.log.info(playerName + " started quest '" + qst.getName() + "'.");
 		for(Qevent qv : qst.getQevents()) {
@@ -862,17 +863,20 @@ public class QuestManager {
 			}
 		}
 		Player player = null;
-		if(sender instanceof Player)
+		if(sender instanceof Player) {
 			player = (Player) sender;
+		}
 		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_NAME + ": " + ChatColor.GOLD + qst.getName());
-		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_DESCRIPTION + ": " + ChatColor.WHITE + qst.getDescription());
+		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_DESCRIPTION + ": " + ChatColor.WHITE + qst.getDescription(sender.getName()));
 		List<Condition> cons = getQuest(questName).getConditions();
-		if(!cons.isEmpty())
+		if(!cons.isEmpty()) {
 			sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_CONDITIONS + ":");
+		}
 		ChatColor color = ChatColor.WHITE;
 		for(int i = 0; i < cons.size(); i++) {
-			if(player != null)
+			if(player != null) {
 				color = cons.get(i).isMet(player) ? ChatColor.GREEN : ChatColor.RED;
+			}
 			sender.sendMessage(color + " - " + cons.get(i).show());
 		}
 		if(!qst.hasFlag(QuestFlag.HIDDENOBJS)) {
@@ -899,13 +903,14 @@ public class QuestManager {
 	}
 	
 	public void showQuestInfo(CommandSender sender, Quest qst) throws QuesterException {
-		if(qst == null)
+		if(qst == null) {
 			throw new QuesterException(ExceptionType.Q_NOT_EXIST);
+		}
 		
 		sender.sendMessage(Util.line(ChatColor.BLUE, Quester.strings.INFO_QUEST_INFO, ChatColor.GOLD));
 		
 		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_NAME + ": " + "[" + qst.getID() + "]" + ChatColor.GOLD + qst.getName());
-		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_DESCRIPTION + ": " + ChatColor.WHITE + qst.getDescription());
+		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_DESCRIPTION + ": " + ChatColor.WHITE + qst.getDescription("%p"));
 		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_LOCATION + ": " + ChatColor.WHITE + qst.getLocationString());
 		sender.sendMessage(ChatColor.BLUE + Quester.strings.INFO_FLAGS + ": " + ChatColor.WHITE + QuestFlag.stringize(qst.getFlags()));
 		String worlds = qst.getWorlds().isEmpty() ? "ANY" : qst.getWorldNames();

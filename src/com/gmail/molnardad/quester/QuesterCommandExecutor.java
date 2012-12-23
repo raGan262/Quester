@@ -626,7 +626,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				
-				// QUEST OBJECTIVE TODO
+				// QUEST OBJECTIVE
 				if(args[0].equalsIgnoreCase("objective") || args[0].equalsIgnoreCase("obj")) {
 					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
 						return true;
@@ -1528,7 +1528,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				
-				// QUEST CONDITION TODO
+				// QUEST CONDITION
 				if(args[0].equalsIgnoreCase("condition") || args[0].equalsIgnoreCase("con")) {
 					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
 						return true;
@@ -1750,7 +1750,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				
-				// QUEST EVENT TODO
+				// QUEST EVENT
 				if(args[0].equalsIgnoreCase("event") || args[0].equalsIgnoreCase("evt")) {
 					if(!permCheck(sender, QuestData.MODIFY_PERM, true)) {
 						return true;
@@ -2180,7 +2180,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				
-				// QUEST START TODO
+				// QUEST START
 				if(args[0].equalsIgnoreCase("start")) {
 					if(player == null) {
 						sender.sendMessage(ChatColor.RED + strings.MSG_ONLY_PLAYER);

@@ -77,8 +77,8 @@ public class Quest {
 		name = newName;
 	}
 	
-	public String getDescription() {
-		return ChatColor.translateAlternateColorCodes('&', description);
+	public String getDescription(String playerName) {
+		return ChatColor.translateAlternateColorCodes('&', description).replaceAll("%p", playerName);
 	}
 	
 	public void setDescription(String newDescription) {
