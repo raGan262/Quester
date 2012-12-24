@@ -54,6 +54,7 @@ public class QuestManager {
 	}
 	
 	private void unassignQuest(String playerName) {
+		unassignQuest(playerName, -1);
 	}
 	
 	private void unassignQuest(String playerName, int index) {
@@ -91,27 +92,6 @@ public class QuestManager {
 	
 	public Quest getQuest(int questID) {
 		return getQuest(questIds.get(questID));
-	}
-	
-	public void completeCheck(Player player) throws QuesterException {
-		
-		Quest quest = getPlayerQuest(player.getName());
-		List<Objective> objs = quest.getObjectives();
-		PlayerProfile prof = getProfile(player.getName());
-		boolean all = true;
-		for(int i = 0; i < objs.size(); i++) {
-			if(objs.get(i).isComplete(player, prof.getProgress().get(i))) {
-				continue;
-			}
-			if(isObjectiveActive(player, i)) {
-				if(objs.get(i).tryToComplete(player)) {
-					incProgress(player, i, false);
-				}
-			}
-		}
-		if(!all) {
-			throw new QuesterException(ExceptionType.Q_NOT_COMPLETED);
-		}
 	}
 	
 	public String getQuestNameByID(int id) {
@@ -765,15 +745,13 @@ public class QuestManager {
 		if(areObjectivesCompleted(player)) {
 			completeQuest(player);
 		}
-		if(!completed && i != 0) {
+		else if(!completed && i != 0) {
 			throw new QuesterException(ExceptionType.OBJ_CANT_DO);
 		}
 	}
 	
 	public void completeQuest(Player player) throws QuesterException {
 		Quest quest = getPlayerQuest(player.getName());
-		
-		completeCheck(player);
 		
 		List<Objective> objs = quest.getObjectives();
 		for(Objective o : objs) {
