@@ -21,14 +21,6 @@ public final class MoneyObjective extends Objective {
 	}
 	
 	@Override
-	public boolean finish(Player player) {
-		if(Quester.vault) {
-			Quester.econ.withdrawPlayer(player.getName(), amount);
-		}
-		return true;
-	}
-	
-	@Override
 	public String progress(int progress) {
 		if(!desc.isEmpty()) {
 			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(1 - progress)).replaceAll("%t", String.valueOf(amount));
@@ -73,7 +65,9 @@ public final class MoneyObjective extends Objective {
 		}
 		double money = Quester.econ.getBalance(player.getName());
 		if(money >= amount) {
-			finish(player);
+			if(Quester.vault) {
+				Quester.econ.withdrawPlayer(player.getName(), amount);
+			}
 			return true;
 		}
 		return false;

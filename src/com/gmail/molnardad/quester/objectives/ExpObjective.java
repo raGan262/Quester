@@ -19,13 +19,6 @@ public final class ExpObjective extends Objective {
 	public String getType() {
 		return TYPE;
 	}
-
-	@Override
-	public boolean finish(Player player) {
-		ExpManager expMan = new ExpManager(player);
-		expMan.changeExp(-amount);
-		return true;
-	}
 	
 	@Override
 	public String progress(int progress) {
@@ -64,7 +57,8 @@ public final class ExpObjective extends Objective {
 	public boolean tryToComplete(Player player) {
 		int totalExp = new ExpManager(player).getCurrentExp();
 		if(totalExp >= amount) {
-			finish(player);
+			ExpManager expMan = new ExpManager(player);
+			expMan.changeExp(-amount);
 			return true;
 		}
 		return false;

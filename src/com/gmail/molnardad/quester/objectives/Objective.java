@@ -89,9 +89,6 @@ public abstract class Objective {
 		return false;
 	}
 	
-	public boolean finish(Player player) {
-		return true;
-	}
 	
 	public abstract String progress(int progress);
 	public abstract String toString();

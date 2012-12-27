@@ -757,11 +757,6 @@ public class QuestManager {
 	public void completeQuest(Player player) throws QuesterException {
 		Quest quest = getPlayerQuest(player.getName());
 		
-		List<Objective> objs = quest.getObjectives();
-		for(Objective o : objs) {
-			o.finish(player);
-		}
-		
 		unassignQuest(player.getName());
 		if(QuestData.progMsgDone)
 			player.sendMessage(Quester.LABEL + Quester.strings.MSG_Q_COMPLETED.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
