@@ -649,8 +649,12 @@ public class QuestManager {
 		if(command && qst.hasFlag(QuestFlag.HIDDEN))
 			throw new QuesterException(ExceptionType.Q_NOT_CMD);
 		if (!Util.permCheck(player, QuestData.ADMIN_PERM, false)){
-			if(!areConditionsMet(player, qst.getName()))
-				throw new QuesterException(ExceptionType.CON_NOT_MET);
+			for(Condition con : qst.getConditions()) {
+				if(!con.isMet(player)) {
+					player.sendMessage(ChatColor.RED + con.show());
+					return;
+				}
+			}
 		}
 		assignQuest(playerName, qst);
 		if(QuestData.progMsgStart)

@@ -25,7 +25,6 @@ public enum ExceptionType {
 	HOL_NOT_EXIST(ChatColor.RED + Quester.strings.ERROR_HOL_NOT_EXIST),
 	HOL_NOT_SELECTED(ChatColor.RED + Quester.strings.ERROR_HOL_NOT_SELECTED),
 	
-	CON_NOT_MET(ChatColor.RED + Quester.strings.ERROR_CON_NOT_MET),
 	CON_NOT_EXIST(ChatColor.RED + Quester.strings.ERROR_CON_NOT_EXIST),
 	
 	OBJ_NOT_EXIST(ChatColor.RED + Quester.strings.ERROR_OBJ_NOT_EXIST),
