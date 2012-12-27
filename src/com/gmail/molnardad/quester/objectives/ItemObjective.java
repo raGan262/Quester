@@ -37,11 +37,6 @@ public final class ItemObjective extends Objective {
 	public String getType() {
 		return TYPE;
 	}
-
-	@Override
-	public boolean finish(Player player) {
-		return takeInventory(player.getInventory());
-	}
 	
 	@Override
 	public String progress(int progress) {

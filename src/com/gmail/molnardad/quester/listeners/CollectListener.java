@@ -42,14 +42,22 @@ public class CollectListener implements Listener {
 	    			if(item.getTypeId() == obj.getMaterial().getId()) {
 	    				// if DATA >= 0 compare
 	    				if(obj.getData() < 0 || obj.getData() == item.getDurability()) {
-	    					qm.incProgress(player, i, item.getAmount());
+	    					int rem = event.getRemaining(); // amount not picked up (full inventory)
+	    					int req = obj.getTargetAmount() - qm.getProfile(player.getName()).getProgress().get(i); // amount required by objective
+	    					if(req < 0) { // can't be less than 0
+	    						req = 0;
+	    					}
+	    					int more = item.getAmount() - req; // difference between amount picked up and amount required
+	    					if(more < 0) { // can't be less than 0
+	    						more = 0;
+	    					}
+	    					qm.incProgress(player, i, item.getAmount()); // increase by amount actually picked up
 	    					if(QuestData.colRemPickup) {
-		    					int rem = event.getRemaining();
 		    					Location loc = event.getItem().getLocation();
 		    					event.getItem().remove();
-		    					if(rem > 0) {
+		    					if((more + rem) > 0) {
 		    						ItemStack newit = item.clone();
-		    						newit.setAmount(rem);
+		    						newit.setAmount(rem + more); // spawn left on the ground +
 		    						Item it = event.getItem().getWorld().dropItem(loc, newit);
 		    						it.setVelocity(new Vector(0, 0, 0));
 		    					}

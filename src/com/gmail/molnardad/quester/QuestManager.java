@@ -736,7 +736,7 @@ public class QuestManager {
 		
 		int i = 0;
 		boolean completed = false;
-		while(i<objs.size()) {
+		while(i<objs.size() && !completed) {
 			if(isObjectiveActive(player, i)) {
 				if(objs.get(i).tryToComplete(player)) {
 					incProgress(player, i, false);
