@@ -120,6 +120,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						sender.sendMessage(ChatColor.GOLD + command + " stopsave " + ChatColor.GRAY + strings.HELP_STOPSAVE);
 						sender.sendMessage(ChatColor.GOLD + command + " save " + ChatColor.GRAY + strings.HELP_SAVE);
 						sender.sendMessage(ChatColor.GOLD + command + " reload " + ChatColor.GRAY + strings.HELP_RELOAD);
+						sender.sendMessage(ChatColor.GOLD + command + " ver " + ChatColor.GRAY + strings.HELP_VER);
 					}
 					sender.sendMessage(line(ChatColor.BLUE));
 					return true;
@@ -2370,12 +2371,19 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				
-				sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ARGUMENTS_UNKNOWN.replaceAll("%cmd", QuestData.displayedCmd));
-			} else {
-				sender.sendMessage(Quester.LABEL + ChatColor.GOLD + "version " + Quester.plugin.getDescription().getVersion());
-				sender.sendMessage(Quester.LABEL + "http://dev.bukkit.org/server-mods/quester/");
-				sender.sendMessage(Quester.LABEL + ChatColor.GRAY + "made by " + Quester.plugin.getDescription().getAuthors().get(0));
+				// QUEST VER
+				if(args[0].equalsIgnoreCase("ver")) {
+					if(!permCheck(sender, QuestData.ADMIN_PERM, true)) {
+						return true;
+					}
+					sender.sendMessage(Quester.LABEL + ChatColor.GOLD + "version " + Quester.plugin.getDescription().getVersion());
+					sender.sendMessage(Quester.LABEL + "http://dev.bukkit.org/server-mods/quester/");
+					sender.sendMessage(Quester.LABEL + ChatColor.GRAY + "made by " + Quester.plugin.getDescription().getAuthors().get(0));
+					return true;
+				}
+				
 			}
+			sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ARGUMENTS_UNKNOWN.replaceAll("%cmd", QuestData.displayedCmd));
 			return true;
 		}
 		return false;

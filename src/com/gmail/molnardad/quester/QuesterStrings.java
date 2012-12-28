@@ -45,6 +45,7 @@ public class QuesterStrings extends CustomConfig {
 	public String HELP_SECTION_MODIFY_SELECTED = "Applies only to selected quest";
 	public String HELP_SECTION_MODIFY_HOLDER_SELECTED = "Applies only to selected quest holder";
 	public String HELP_SECTION_ADMIN = "Admin help";
+	public String HELP_VER = "- version info";
 	public String HELP_HELP = "- this";
 	public String HELP_LIST = "- displays quest list";
 	public String HELP_SHOW = "- shows info about quest";
