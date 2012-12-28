@@ -123,6 +123,8 @@ public class QuesterStrings extends CustomConfig {
 	public String HOL_CREATED = "Holder created and selected.";
 	public String HOL_REMOVED = "Holder deleted.";
 	public String HOL_SELECTED = "Holder selected.";
+	public String HOL_ASSIGNED = "Holder assigned.";
+	public String HOL_UNASSIGNED = "Holder unassigned.";
 	public String HOL_Q_ADDED = "Quest added to holder.";
 	public String HOL_Q_REMOVED = "Quest removed from holder.";
 	public String HOL_Q_MOVED = "Quest in holder moved.";
@@ -357,9 +359,10 @@ public class QuesterStrings extends CustomConfig {
 	public String ERROR_Q_BAD_WORLD = "Quest cannot be completed in this world.";
 	public String ERROR_Q_NOT_CMD = "Quest cannot be started or completed by command.";
 	public String ERROR_Q_MAX_AMOUNT = "Maximum quest amount reached.";
+	public String ERROR_Q_NOT_HERE = "You can't complete your quest here.";
 	public String ERROR_HOL_NOT_EXIST = "Holder does not exist.";
 	public String ERROR_HOL_NOT_SELECTED = "No holder selected.";
-	public String ERROR_CON_NOT_MET = "One or more conditions are not met.";
+	public String ERROR_HOL_NOT_ASSIGNED = "No holder assigned.";
 	public String ERROR_CON_NOT_EXIST = "Condition does not exist.";
 	public String ERROR_OBJ_NOT_EXIST = "Objective does not exist.";
 	public String ERROR_OBJ_CANT_DO = "Not enough resources to complete objective.";
@@ -368,6 +371,7 @@ public class QuesterStrings extends CustomConfig {
 	public String ERROR_REW_CANT_DO = "Not enough space to recieve quest rewards.";
 	public String ERROR_EVT_NOT_EXIST = "Event does not exist.";
 	public String ERROR_WHY = "Why would you want to do this ?";
+	public String ERROR_INTERESTING = "Interesting error, you should definitely notify Quester developer.";
 	
 	public QuesterStrings(String fileName) {
 		super(Quester.plugin, fileName);

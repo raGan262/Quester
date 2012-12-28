@@ -41,12 +41,12 @@ public class Citizens2Listener implements Listener {
 			if(isOp) {
 				if(player.getItemInHand().getTypeId() == 369) {
 					event.getNPC().getTrait(QuesterTrait.class).setHolderID(-1);
-					player.sendMessage(ChatColor.GREEN + "Holder unassigned.");
+					player.sendMessage(ChatColor.GREEN + Quester.strings.HOL_UNASSIGNED);
 				    return;
 				}
 			}
 			if(qh == null) {
-				player.sendMessage(ChatColor.RED + "No quest holder assigned.");
+				player.sendMessage(ChatColor.RED + Quester.strings.ERROR_HOL_NOT_ASSIGNED);
 				return;
 			}
 			try {
@@ -83,16 +83,16 @@ public class Citizens2Listener implements Listener {
 				if(player.getItemInHand().getTypeId() == 369) {
 					int sel = qm.getSelectedHolderID(player.getName());
 					if(sel < 0){
-						player.sendMessage(ChatColor.RED + "Holder not selected.");
+						player.sendMessage(ChatColor.RED + Quester.strings.ERROR_HOL_NOT_SELECTED);
 					} else {
 						event.getNPC().getTrait(QuesterTrait.class).setHolderID(sel);
-						player.sendMessage(ChatColor.GREEN + "Holder assigned.");
+						player.sendMessage(ChatColor.GREEN + Quester.strings.HOL_ASSIGNED);
 					}
 				    return;
 				}
 			}
 			if(qh == null) {
-				player.sendMessage(ChatColor.RED + "No quest holder assigned.");
+				player.sendMessage(ChatColor.RED + Quester.strings.ERROR_HOL_NOT_ASSIGNED);
 				return;
 			}
 			int selected = qh.getSelected();
@@ -103,7 +103,7 @@ public class Citizens2Listener implements Listener {
 				int questID = currentQuest == null ? -1 : currentQuest.getID();
 				// player has quest and quest giver does not accept this quest
 				if(questID >= 0 && !qsts.contains(questID)) {
-					player.sendMessage(ChatColor.RED + "You can't complete your quest here.");
+					player.sendMessage(ChatColor.RED + Quester.strings.ERROR_Q_NOT_HERE);
 					return;
 				}
 				// player has quest and quest giver accepts this quest
@@ -114,7 +114,7 @@ public class Citizens2Listener implements Listener {
 						try {
 							qm.showProgress(player);
 						} catch (QuesterException f) {
-							player.sendMessage(ChatColor.DARK_PURPLE + "Interesting error, you should definitely notify Quester developer.");
+							player.sendMessage(ChatColor.DARK_PURPLE + Quester.strings.ERROR_INTERESTING);
 						}
 					}
 					return;
@@ -128,7 +128,7 @@ public class Citizens2Listener implements Listener {
 					player.sendMessage(e.message());
 				}
 			} else {
-				player.sendMessage(ChatColor.RED + "No quest selected.");
+				player.sendMessage(ChatColor.RED + Quester.strings.ERROR_Q_NOT_SELECTED);
 			}
 		}
 	}
