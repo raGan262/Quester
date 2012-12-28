@@ -88,7 +88,7 @@ public class PlayerProfile {
 	}
 	
 	public boolean isCompleted(String questName) {
-		return completed.containsKey(questName);
+		return completed.containsKey(questName.toLowerCase());
 	}
 	
 	public int getCompletionTime(String questName) {
