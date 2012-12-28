@@ -51,7 +51,7 @@ public final class NpcKillObjective extends Objective {
 	public static Objective deser(ConfigurationSection section) {
 		int amt = 1;
 		String nm = null;
-		amt = section.getInt("amount", 0);
+		amt = section.getInt("amount", 1);
 		if(amt < 1)
 			return null;
 		nm = section.getString("name", null);

@@ -2,7 +2,7 @@ package com.gmail.molnardad.quester.listeners;
 
 import java.util.List;
 
-import net.citizensnpcs.api.event.NPCDamageByEntityEvent;
+import net.citizensnpcs.api.event.NPCDeathEvent;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 
@@ -160,10 +160,7 @@ public class Citizens2Listener implements Listener {
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onNpcDeath(NPCDamageByEntityEvent event) {
-		if(event.getNPC().getBukkitEntity().getHealth()-event.getDamage() > 0) {
-			return;
-		}
+	public void onNpcDeath(NPCDeathEvent event) {
 		Player player = event.getNPC().getBukkitEntity().getKiller();
 		if(player == null) {
 			return;

@@ -1332,7 +1332,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									try {
 										int amt = 1;
 										String name = null;
-										if(args[3].equalsIgnoreCase("ANY")) {
+										if(!args[3].equalsIgnoreCase("ANY")) {
 											name = args[3];
 										}
 										if(args.length > 4) {
