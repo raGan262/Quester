@@ -328,7 +328,6 @@ public class QuesterStrings extends CustomConfig {
 	public String ERROR_CMD_WORLD_INVALID = "Invalid world.";
 	public String ERROR_CMD_ITEM_UNKNOWN = "Unknown item.";
 	public String ERROR_CMD_BLOCK_UNKNOWN = "Unknown block.";
-	public String ERROR_CMD_BLOCK_LOOK = "You are not looking at a block.";
 	public String ERROR_CMD_ITEM_NUMBERS = "Amount must be > 0. Data must be >= 0.";
 	public String ERROR_CMD_ENCH_LEVEL = "Enchantment level must be > 0.";
 	public String ERROR_CMD_ENCH_INVALID = "Invalid enchantment.";
@@ -340,6 +339,8 @@ public class QuesterStrings extends CustomConfig {
 	public String ERROR_CMD_AMOUNT_POSITIVE = "Amount must be positive number.";
 	public String ERROR_CMD_LOC_INVALID = "Invalid location.";
 	public String ERROR_CMD_LOC_HERE = "Location '%here' requires player context."; // %here = location label;
+	public String ERROR_CMD_LOC_BLOCK = "Location '%block' requires player context."; // %block = location label;
+	public String ERROR_CMD_LOC_NOBLOCK = "No block targeted.";
 	public String ERROR_CMD_COORDS_INVALID = "Invalid coordinates.";
 	public String ERROR_CMD_ENTITY_UNKNOWN = "Unknown entity.";
 	public String ERROR_CMD_ENTITY_NUMBERS = "Amount must be > 0. Id must be number or valid entity name.";

@@ -15,6 +15,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
@@ -58,10 +59,24 @@ public class Util {
 			throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_LOC_INVALID);
 		
 		if(args[0].equalsIgnoreCase(QuestData.locLabelHere)) {
-			if(sender instanceof Player)
+			if(sender instanceof Player) {
 				return ((Player) sender).getLocation();
-			else
+			}
+			else {
 				throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_LOC_HERE.replaceAll("%here", QuestData.locLabelHere));
+			}
+		}
+		else if(args[0].equalsIgnoreCase(QuestData.locLabelBlock)) {
+			if(sender instanceof Player) {
+				Block block = ((Player) sender).getTargetBlock(null, 5);
+				if(block == null) {
+					throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_LOC_NOBLOCK);
+				}
+				return block.getLocation();
+			}
+			else {
+				throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_LOC_BLOCK.replaceAll("%block", QuestData.locLabelBlock));
+			}
 		}
 		
 		if(args.length > 3){

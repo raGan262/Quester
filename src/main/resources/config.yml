@@ -26,3 +26,4 @@ commands:
   world-label-this: this
   loc-label-here: here
   loc-label-player: player
+  loc-label-block: block

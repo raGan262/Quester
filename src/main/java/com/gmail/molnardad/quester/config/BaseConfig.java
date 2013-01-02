@@ -129,8 +129,19 @@ public class BaseConfig extends CustomConfig {
 		
 		path = "commands.loc-label-player";
 		temp = this.config.getString(path, "");
-		if(temp.isEmpty()) {
+		if(temp.isEmpty()
+				|| temp.equalsIgnoreCase(QuestData.locLabelHere)) {
 			this.config.set(path, "player");
+			wrongConfig(path);
+		}
+		QuestData.locLabelPlayer = this.config.getString(path);
+		
+		path = "commands.loc-label-block";
+		temp = this.config.getString(path, "");
+		if(temp.isEmpty() 
+				|| temp.equalsIgnoreCase(QuestData.locLabelHere)
+				|| temp.equalsIgnoreCase(QuestData.locLabelPlayer)) {
+			this.config.set(path, "block");
 			wrongConfig(path);
 		}
 		QuestData.locLabelPlayer = this.config.getString(path);

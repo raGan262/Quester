@@ -1,7 +1,6 @@
 package com.gmail.molnardad.quester;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -10,7 +9,6 @@ import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -1212,21 +1210,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												} catch (QuesterException ignore) {}
 
 												if(args.length > 6) {
-													if(args[6].equalsIgnoreCase(QuestData.locLabelHere)) {
-														if(player != null) {
-															List<Block> blcks = player.getLastTwoTargetBlocks(null, 6);
-															if(!blcks.isEmpty())
-																loc = blcks.get(blcks.size()-1).getLocation();
-															else {
-																throw new QuesterException(strings.ERROR_CMD_BLOCK_LOOK);
-															}
-														} else {
-															throw new QuesterException(strings.ERROR_CMD_LOC_HERE.replaceAll("%here", QuestData.locLabelHere));
-														}
-													} 
-													else {
-														loc = getLoc(sender, args[6]);
-													}
+													loc = getLoc(sender, args[6]);
 														
 													if(args.length > 7) {
 														rng = Integer.parseInt(args[7]);	
@@ -2014,19 +1998,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												if(itm[0] > 255)
 													throw new QuesterException(strings.ERROR_CMD_BLOCK_UNKNOWN);
 												int dat = itm[1] < 0 ? 0 : itm[1];
-												if(args[5].equalsIgnoreCase(QuestData.locLabelHere)) {
-													if(player != null) {
-														List<Block> blcks = player.getLastTwoTargetBlocks(null, 6);
-														if(!blcks.isEmpty())
-															loc = blcks.get(blcks.size()-1).getLocation();
-														else {
-															throw new QuesterException(strings.ERROR_CMD_BLOCK_LOOK);
-														}
-													} else {
-														throw new QuesterException(strings.ERROR_CMD_LOC_HERE.replaceAll("%here", QuestData.locLabelHere));
-													}
-												} else
-													loc = getLoc(sender, args[5]);
+												loc = getLoc(sender, args[5]);
 												qm.addQevent(sender.getName(), new SetBlockQevent(occ, del, itm[0], dat, loc));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_BLOCK_TYPE));
 											} catch (QuesterException e) {

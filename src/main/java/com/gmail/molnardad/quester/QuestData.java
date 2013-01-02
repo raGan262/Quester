@@ -37,6 +37,7 @@ public class QuestData {
 	public static String worldLabelThis = "this";
 	public static String locLabelHere = "here";
 	public static String locLabelPlayer = "player";
+	public static String locLabelBlock = "block";
 
 	public static final String PERM_USE_NPC = "quester.use.npc";
 	public static final String PERM_USE_SIGN = "quester.use.sign";
