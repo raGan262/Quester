@@ -81,7 +81,7 @@ public final class SpawnQevent extends Qevent {
 	}
 
 	@Override
-	public void run(Player player) {
+	void run(Player player) {
 		Location temp;
 		if(location == null)
 			temp = player.getLocation();

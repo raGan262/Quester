@@ -50,7 +50,7 @@ public final class ToggleQevent extends Qevent {
 	}
 
 	@Override
-	public void run(Player player) {
+	void run(Player player) {
 		try {
 			Quester.qMan.toggleQuest(quest);
 		} catch (QuesterException e) {

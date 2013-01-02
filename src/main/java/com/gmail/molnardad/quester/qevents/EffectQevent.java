@@ -57,7 +57,7 @@ public class EffectQevent extends Qevent {
 	}
 	
 	@Override
-	public void run(Player player) {
+	void run(Player player) {
 		player.addPotionEffect(effect, true);
 	}
 }

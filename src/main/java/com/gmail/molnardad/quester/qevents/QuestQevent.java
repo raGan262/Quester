@@ -50,7 +50,7 @@ public final class QuestQevent extends Qevent {
 	}
 
 	@Override
-	public void run(Player player) {
+	void run(Player player) {
 		try {
 			Quester.qMan.startQuest(player, quest, false);
 		} catch (QuesterException e) {

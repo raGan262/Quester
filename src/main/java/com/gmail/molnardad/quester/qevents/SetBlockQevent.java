@@ -65,7 +65,7 @@ public final class SetBlockQevent extends Qevent {
 	}
 
 	@Override
-	public void run(Player player) {
+	void run(Player player) {
 		location.getBlock().setTypeIdAndData(material, data, true);
 	}
 }

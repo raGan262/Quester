@@ -48,7 +48,7 @@ public final class PointQevent extends Qevent {
 	}
 
 	@Override
-	public void run(Player player) {
+	void run(Player player) {
 		Quester.qMan.getProfile(player.getName()).addPoints(amount);
 		Quester.qMan.checkRank(Quester.qMan.getProfile(player.getName()));
 	}

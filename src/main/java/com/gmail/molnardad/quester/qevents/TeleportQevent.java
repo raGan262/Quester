@@ -56,7 +56,7 @@ public final class TeleportQevent extends Qevent {
 	}
 
 	@Override
-	public void run(Player player) {
+	void run(Player player) {
 		Location loc = player.getLocation().clone();
 		loc.setY(loc.getY()+1);
 		player.getWorld().playEffect(loc, Effect.ENDER_SIGNAL, 0);

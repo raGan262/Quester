@@ -49,7 +49,7 @@ public final class MessageQevent extends Qevent {
 	}
 
 	@Override
-	public void run(Player player) {
+	void run(Player player) {
 		player.sendMessage(message.replace("%p", player.getName()));
 	}
 }

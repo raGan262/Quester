@@ -92,7 +92,7 @@ public final class ItemQevent extends Qevent {
 	}
 
 	@Override
-	public void run(Player player) {
+	void run(Player player) {
 		int maxSize = material.getMaxStackSize();
         int toGive = amount;
         int numSpaces = 0;

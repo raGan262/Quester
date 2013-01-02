@@ -22,11 +22,10 @@
 	  <id>citizensapi-repo</id>
 	  <url>http://ci.citizensnpcs.com/plugin/repository/everything</url>
 	</repository>
-    <!-- DENIZEN FUTURE
     <repository>
       <id>denizens-repo</id>
       <url>http://ci.citizensnpcs.com/view/Characters/job/Denizen/592/maven-repository/repository/</url>
-    </repository> -->
+    </repository>
   </repositories>
   
   <dependencies>
@@ -52,13 +51,12 @@
       <scope>system</scope>
       <systemPath>${project.basedir}/exLibs/EpicBoss.jar</systemPath>
     </dependency>
-    <!-- DENIZEN FUTURE
     <dependency>
       <groupId>net.aufdemrand</groupId>
       <artifactId>denizen</artifactId>
-      <version>0.76-SNAPSHOT</version>
+      <version>0.8-PRERELEASE</version>
       <scope>provided</scope>
-    </dependency> -->    
+    </dependency>  
   </dependencies>
   
   <build>

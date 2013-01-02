@@ -38,10 +38,14 @@ public abstract class Qevent {
 		delay = del;
 	}
 	
+
+	public int getOccasion() {
+		return occasion;
+	}
+	
 	public abstract String getType();
-	public abstract int getOccasion();
 	public abstract String toString();
-	public abstract void run(Player player);
+	abstract void run(Player player);
 
 	String appendSuper() {
 		return "; DEL: " + delay;

@@ -50,7 +50,7 @@ public final class MoneyQevent extends Qevent {
 	}
 
 	@Override
-	public void run(Player player) {
+	void run(Player player) {
 		if(!Quester.vault) {
 			Quester.log.info("Failed process money event on " + player.getName() + ": Economy support disabled");
 			return;

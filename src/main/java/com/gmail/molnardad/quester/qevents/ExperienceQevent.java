@@ -48,7 +48,7 @@ public final class ExperienceQevent extends Qevent {
 	}
 
 	@Override
-	public void run(Player player) {
+	void run(Player player) {
 		ExpManager expMan = new ExpManager(player);
 		expMan.changeExp(amount);
 	}

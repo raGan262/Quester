@@ -74,7 +74,7 @@ public final class ExplosionQevent extends Qevent {
 	}
 
 	@Override
-	public void run(Player player) {
+	void run(Player player) {
 		Location loc;
 		if(location == null)
 			loc = Util.move(player.getLocation(), range);

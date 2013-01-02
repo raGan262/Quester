@@ -40,7 +40,7 @@ public final class CancelQevent extends Qevent {
 	}
 
 	@Override
-	public void run(Player player) {
+	void run(Player player) {
 		try {
 			Quester.qMan.cancelQuest(player, false);
 		} catch (QuesterException e) {

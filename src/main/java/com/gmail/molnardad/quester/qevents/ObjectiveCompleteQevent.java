@@ -53,7 +53,7 @@ public final class ObjectiveCompleteQevent extends Qevent {
 	}
 
 	@Override
-	public void run(Player player) {
+	void run(Player player) {
 		try {
 			List<Integer> prog = Quester.qMan.getProfile(player.getName()).getProgress();
 			if(objective >= 0 && objective < prog.size()) {

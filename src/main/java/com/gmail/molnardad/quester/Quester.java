@@ -34,6 +34,7 @@ public class Quester extends JavaPlugin {
 		public static boolean citizens2 = false;
 		public static boolean epicboss = false;
 		public static boolean vault = false;
+		public static boolean denizen = false;
 
 		public YamlConfiguration config = null;
 		
@@ -62,6 +63,9 @@ public class Quester extends JavaPlugin {
 			}
 			if(this.setupEpicBoss()) {
 				log.info("EpicBoss found and hooked...");
+			}
+			if(this.setupDenizen()) {
+				log.info("Denizen found and hooked...");
 			}
 			
 			this.initializeConfig();
@@ -101,6 +105,7 @@ public class Quester extends JavaPlugin {
 			citizens2 = false;
 			epicboss = false;
 			vault = false;
+			denizen = false;
 		}
 
 		private boolean setupEconomy() {
@@ -135,6 +140,11 @@ public class Quester extends JavaPlugin {
 		private boolean setupEpicBoss() {
 			epicboss = (getServer().getPluginManager().getPlugin("EpicBoss") != null);
 		    return epicboss;
+		}
+		
+		private boolean setupDenizen() {
+			denizen = (getServer().getPluginManager().getPlugin("Denizen") != null);
+			return epicboss;
 		}
 
 		public void initializeConfig() {
