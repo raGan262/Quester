@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
 import com.avaje.ebeaninternal.server.lib.util.InvalidDataException;
+import com.gmail.molnardad.quester.exceptions.ExceptionType;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.objectives.*;
 import com.gmail.molnardad.quester.qevents.*;
@@ -1551,6 +1552,13 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									if(args.length > start) {
 										String questName = implode(args, start);
 										try {
+											questName = qm.getQuestNameByID(Integer.parseInt(flagArgument('i', args[start])));
+										} 
+										catch (NumberFormatException ignore) {}
+										try {
+											if(questName.equals("non-existant")) {
+												throw new QuesterException(ExceptionType.Q_NOT_EXIST);
+											}
 											qm.addQuestCondition(sender.getName(), new QuestCondition(questName, time));
 											sender.sendMessage(ChatColor.GREEN + strings.CON_ADD.replaceAll("%type", strings.CON_QUEST_TYPE));
 										} catch (QuesterException e) {
@@ -1571,13 +1579,21 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									try {
 										time = Integer.parseInt(flagArgument('t', args[3]));
 										start = 4;
-									} catch (Exception ignore) {}
+									} catch (NumberFormatException ignore) {}
 									if(args.length > start) {
 										String questName = implode(args, start);
 										try {
+											questName = qm.getQuestNameByID(Integer.parseInt(flagArgument('i', args[start])));
+										} 
+										catch (NumberFormatException ignore) {}
+										try {
+											if(questName.equals("non-existant")) {
+												throw new QuesterException(ExceptionType.Q_NOT_EXIST);
+											}
 											qm.addQuestCondition(sender.getName(), new QuestNotCondition(questName, time));
 											sender.sendMessage(ChatColor.GREEN + strings.CON_ADD.replaceAll("%type", strings.CON_QUESTNOT_TYPE));
-										} catch (QuesterException e) {
+										} 
+										catch (QuesterException e) {
 											sender.sendMessage(e.message());
 										}
 										return true;

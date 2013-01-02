@@ -6,11 +6,13 @@ public final class NpcKillObjective extends Objective {
 
 	public static final String TYPE = "NPCKILL";
 	private final String name;
+	private final String strName;
 	private final int amount;
 	
 	public NpcKillObjective(String name, int amt) {
 		this.name = name;
 		amount = amt;
+		strName = name == null ? "any NPC" : "NPC named " + name;
 	}
 	
 	@Override
@@ -23,13 +25,12 @@ public final class NpcKillObjective extends Objective {
 		if(!desc.isEmpty()) {
 			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(1 - progress)).replaceAll("%t", String.valueOf(1));
 		}
-		String strName = name == null ? "any NPC" : "NPC named " + name;
 		return "Kill " + strName + " - " + amount + "x";
 	}
 	
 	@Override
 	public String toString() {
-		return TYPE + ": " + name + "; AMT: " + amount + coloredDesc();
+		return TYPE + ": " + (name == null ? "ANY" : name) + "; AMT: " + amount + coloredDesc();
 	}
 	
 	public boolean checkNpc(String npcName) {
