@@ -45,18 +45,18 @@
       <version>1.2.22-SNAPSHOT</version>
     </dependency>
     <dependency>
+      <groupId>net.aufdemrand</groupId>
+      <artifactId>denizen</artifactId>
+      <version>0.8-PRERELEASE</version>
+      <scope>provided</scope>
+    </dependency> 
+    <dependency>
       <groupId>me.ThaH3lper</groupId>
       <artifactId>EpicBoss</artifactId>
       <version>1.0</version>
       <scope>system</scope>
       <systemPath>${project.basedir}/exLibs/EpicBoss.jar</systemPath>
-    </dependency>
-    <dependency>
-      <groupId>net.aufdemrand</groupId>
-      <artifactId>denizen</artifactId>
-      <version>0.8-PRERELEASE</version>
-      <scope>provided</scope>
-    </dependency>  
+    </dependency> 
   </dependencies>
   
   <build>

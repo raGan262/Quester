@@ -71,11 +71,23 @@ public abstract class Qevent {
 		if(delay > 0) {
 			return Bukkit.getScheduler().scheduleSyncDelayedTask(Quester.plugin, new Runnable() {
 				  public void run() {
-					    Qevent.this.run(player);
-					  }
+						try {
+							Qevent.this.run(player);
+						}
+						catch (Exception e) {
+							Quester.log.warning(getType() + " event external exception. [" + occasion + ":" + delay + "]");
+							e.printStackTrace();
+						}
+				  }
 			}, delay*20);
 		} else {
-			Qevent.this.run(player);
+			try {
+				Qevent.this.run(player);
+			}
+			catch (Exception e) {
+				Quester.log.warning(getType() + " event external exception. [" + occasion + ":" + delay + "]");
+				e.printStackTrace();
+			}
 		}
 		return 0;
 	}
