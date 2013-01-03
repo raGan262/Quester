@@ -64,9 +64,9 @@ public class Quester extends JavaPlugin {
 			if(this.setupEpicBoss()) {
 				log.info("EpicBoss found and hooked...");
 			}
-			if(this.setupDenizen()) {
-				log.info("Denizen found and hooked...");
-			}
+//			if(this.setupDenizen()) {
+//				log.info("Denizen found and hooked...");
+//			}
 			
 			this.initializeConfig();
 
@@ -142,10 +142,10 @@ public class Quester extends JavaPlugin {
 		    return epicboss;
 		}
 		
-		private boolean setupDenizen() {
-			denizen = (getServer().getPluginManager().getPlugin("Denizen") != null);
-			return epicboss;
-		}
+//		private boolean setupDenizen() {
+//			denizen = (getServer().getPluginManager().getPlugin("Denizen") != null);
+//			return epicboss;
+//		}
 
 		public void initializeConfig() {
 			config = (new BaseConfig("config.yml")).getConfig();

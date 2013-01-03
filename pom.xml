@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.gmail.molnardad</groupId>
   <artifactId>quester</artifactId>
-  <version>0.6.3-SNAPSHOT</version>
+  <version>0.6.3</version>
   <name>Quester</name>
   
   <properties>

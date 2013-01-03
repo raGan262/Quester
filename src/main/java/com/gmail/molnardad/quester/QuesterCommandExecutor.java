@@ -2365,7 +2365,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						return true;
 					}
 					sender.sendMessage(Quester.LABEL + ChatColor.GOLD + "version " + Quester.plugin.getDescription().getVersion());
-					sender.sendMessage(Quester.LABEL + "http://dev.bukkit.org/server-mods/quester/");
+					sender.sendMessage(Quester.LABEL + Quester.plugin.getDescription().getWebsite());
 					sender.sendMessage(Quester.LABEL + ChatColor.GRAY + "made by " + Quester.plugin.getDescription().getAuthors().get(0));
 					return true;
 				}
