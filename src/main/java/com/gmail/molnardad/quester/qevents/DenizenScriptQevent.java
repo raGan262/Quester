@@ -2,7 +2,6 @@ package com.gmail.molnardad.quester.qevents;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.npc.DenizenNPC;
-import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.citizensnpcs.api.CitizensAPI;
 
 import org.bukkit.Bukkit;
@@ -77,20 +76,17 @@ public final class DenizenScriptQevent extends Qevent {
 
 	@Override
 	void run(Player player) {
-		// TODO finish this thing + command
 		try {
 			if(Quester.denizen) {
 				Denizen den = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 				if(den == null) {
 					throw new QuesterException("Denizen plugin not found.");
 				}
-				if(!aH.matchesScript("script:" + script)) {
-					throw new QuesterException("Script not found.");
-				}
 				if(!playerContext && (npc < 0)) {
 					throw new QuesterException("Not enough information to run script. (should not happen, bug)");
 				}
 				else {
+					boolean success = false;
 					DenizenNPC denNpc = null;
 					try {
 						denNpc = den.getNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(npc));
@@ -102,21 +98,24 @@ public final class DenizenScriptQevent extends Qevent {
 								throw new QuesterException("Couldn't resolve DENIZEN npc.");
 							}
 							if(focusNPC) {
-								den.getScriptEngine().getScriptBuilder().runTaskScript(denNpc, player, script);
+								success = den.getScriptEngine().getScriptBuilder().runTaskScript(denNpc, player, script);
 							}
 							else {
-								den.getScriptEngine().getScriptBuilder().runTaskScript(player, denNpc, script);
+								success = den.getScriptEngine().getScriptBuilder().runTaskScript(player, denNpc, script);
 							}
 						}
 						else {
-							den.getScriptEngine().getScriptBuilder().runTaskScript(player, script);
+							success = den.getScriptEngine().getScriptBuilder().runTaskScript(player, script);
 						}
 					}
 					else {
 						if(denNpc == null) {
 							throw new QuesterException("Couldn't resolve DENIZEN npc.");
 						}
-						den.getScriptEngine().getScriptBuilder().runTaskScript(denNpc, script);
+						success = den.getScriptEngine().getScriptBuilder().runTaskScript(denNpc, script);
+					}
+					if(!success) {
+						throw new QuesterException("Script not found or brokens.");
 					}
 				}
 			}

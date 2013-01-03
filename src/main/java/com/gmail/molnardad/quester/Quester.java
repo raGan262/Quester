@@ -146,6 +146,18 @@ public class Quester extends JavaPlugin {
 			if(citizens2) {
 				denizen = (getServer().getPluginManager().getPlugin("Denizen") != null);
 			}
+			if(denizen) {
+				try {
+					denizen = Class.forName("net.aufdemrand.denizen.scripts.ScriptBuilder")
+							.getDeclaredMethod("runTaskScript", org.bukkit.entity.Player.class, String.class)
+							.getReturnType().equals(boolean.class);
+				} catch (Exception e) {
+					denizen = false;
+				}
+				if(!denizen) {
+					log.info("Incorrect denizen version found. 0.8-656 or higher supported.");
+				} 
+			}
 			return denizen;
 		}
 
