@@ -319,10 +319,13 @@ public class QuesterStrings extends CustomConfig {
 	public String EVT_POINT_TYPE = "Point";
 	public String EVT_POINT_USAGE = "%cmd event add {<occasion>} point <amount>";
 	
+	public String EVT_DSCRIPT_TYPE = "Denizen script";
+	public String EVT_DSCRIPT_USAGE = "%cmd event add {<occasion>} dscript <script> [npc ID] [player context] [focus NPC]";
+	
 	// ERROR STRINGS
 
 	public String ERROR_CUSTOM = "Something is wrong.";
-	public String ERROR_CMD_BAD_ID = "ID must be number.";
+	public String ERROR_CMD_BAD_ID = "ID must be non-negative number.";
 	public String ERROR_CMD_RANGE_INVALID = "Invalid range.";
 	public String ERROR_CMD_WORLD_THIS = "World '%this' requires player context."; // %this = world label;
 	public String ERROR_CMD_WORLD_INVALID = "Invalid world.";

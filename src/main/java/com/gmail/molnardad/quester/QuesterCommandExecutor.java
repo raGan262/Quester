@@ -36,7 +36,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 			"craft, ench, smelt, shear, fish, milk, collect, tame, money, action, npc, dye, boss, npckill";
 	private final String CONDITIONS = "quest, questnot, perm, money, item, point";
 	private final String EVENTS = "msg, explosion, block, tele, lightning, cmd, quest, cancel, " +
-			"toggle, objcom, spawn, item, money, exp, effect, point";
+			"toggle, objcom, spawn, item, money, exp, effect, point, dscript";
 	
 	public QuesterCommandExecutor() {
 		qm = Quester.qMan;
@@ -2123,6 +2123,41 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											return true;
 										}
 										sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_POINT_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
+										return true;
+									}
+									
+									// DSCRIPT EVENT
+									if(args[3].equalsIgnoreCase("dscript")) {
+										if(args.length > 4) {
+											try {
+												String script = args[4];
+												int npc = -1;
+												boolean playerContext = true;
+												boolean focusNPC = false;
+												
+												if(args.length > 5) {
+													npc = Integer.parseInt(args[5]);
+													if(npc < 0) {
+														throw new NumberFormatException();
+													}
+													if(args.length > 6) {
+														playerContext = args[6].equalsIgnoreCase("true");
+														if(args.length > 7) {
+															focusNPC = args[7].equalsIgnoreCase("true");
+														}
+													}
+												}
+												
+												qm.addQevent(sender.getName(), new DenizenScriptQevent(occ, del, script, npc, playerContext, focusNPC));
+												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_DSCRIPT_TYPE));
+											} catch (NumberFormatException e) {
+												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
+											} catch (QuesterException e) {
+												sender.sendMessage(e.message());
+											}
+											return true;
+										}
+										sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_DSCRIPT_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 										return true;
 									}
 								}
