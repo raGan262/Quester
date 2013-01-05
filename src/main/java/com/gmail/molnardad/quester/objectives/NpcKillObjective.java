@@ -21,6 +21,11 @@ public final class NpcKillObjective extends Objective {
 	}
 	
 	@Override
+	public int getTargetAmount() {
+		return amount;
+	}
+	
+	@Override
 	public String progress(int progress) {
 		if(!desc.isEmpty()) {
 			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(1 - progress)).replaceAll("%t", String.valueOf(1));
