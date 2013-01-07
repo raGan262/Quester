@@ -116,7 +116,6 @@ public class Quester extends JavaPlugin {
 	        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
 	        if (rsp == null) {
 				log.info("Economy plugin not found, economy support disabled.");
-	            getServer().getPluginManager().disablePlugin(this);
 	            return false;
 	        }
 	        econ = rsp.getProvider();
