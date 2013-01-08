@@ -56,12 +56,13 @@ public final class EnchantObjective extends Objective {
 		for(Integer i : enchants.keySet()) {
 			enchs = enchs + " " + Util.enchantName(i, enchants.get(i)) + ";";
 		}
-		return "Enchant " + (amount - progress) + pcs + material.name() + "." + enchs;
+		return "Enchant " + (amount - progress) + pcs + (material==null?"any item":material.name()) + "." + enchs;
 	}
 	
 	@Override
 	public String toString() {
-		String itm = material.name()+"["+material.getId()+"]; AMT: "+amount;
+		String mat = material==null?"ANY ITEM":material.name()+"["+material.getId()+"]";
+		String itm = mat + "; AMT: "+amount;
 		String enchs = enchants.isEmpty() ? "" : "\n -- ENCH:";
 		for(Integer e : enchants.keySet()) {
 			enchs = enchs + " " + Enchantment.getById(e).getName() + ":" + enchants.get(e);
