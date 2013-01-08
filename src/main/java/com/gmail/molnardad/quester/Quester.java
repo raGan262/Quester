@@ -1,5 +1,6 @@
 package com.gmail.molnardad.quester;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Random;
 import java.util.logging.Logger;
@@ -14,6 +15,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.Metrics;
 
 import com.gmail.molnardad.quester.listeners.*;
 import com.gmail.molnardad.quester.config.*;
@@ -53,6 +55,13 @@ public class Quester extends JavaPlugin {
 			profileConfig = new ProfileConfig("profiles.yml");
 			questConfig = new QuestConfig("quests.yml");
 			holderConfig = new HolderConfig("holders.yml");
+			
+			try {
+			    Metrics metrics = new Metrics(this);
+			    metrics.start();
+			} catch (IOException e) {
+			    // Failed to submit the stats :-(
+			}
 			
 			if(this.setupEconomy()) {
 				log.info("Vault found and hooked...");

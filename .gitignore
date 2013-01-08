@@ -3,3 +3,4 @@
 .project
 /exLibs/
 /buildNumber.properties
+/dependency-reduced-pom.xml

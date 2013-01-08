@@ -21,12 +21,16 @@
       <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
     </repository>
     <repository>
-	  <id>citizensapi-repo</id>
-	  <url>http://ci.citizensnpcs.com/plugin/repository/everything</url>
-	</repository>
+      <id>citizensapi-repo</id>
+      <url>http://ci.citizensnpcs.com/plugin/repository/everything</url>
+    </repository>
     <repository>
       <id>denizens-repo</id>
       <url>http://ci.citizensnpcs.com/view/Characters/job/Denizen/592/maven-repository/repository/</url>
+    </repository>
+    <repository>
+      <id>Plugin Metrics</id>
+      <url>http://repo.mcstats.org/content/repositories/public</url>
     </repository>
   </repositories>
   
@@ -58,7 +62,13 @@
       <version>1.0</version>
       <scope>system</scope>
       <systemPath>${project.basedir}/exLibs/EpicBoss.jar</systemPath>
-    </dependency> 
+    </dependency>
+    <dependency>
+      <groupId>org.mcstats.bukkit</groupId>
+      <artifactId>metrics</artifactId>
+      <version>R6</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
   
   <build>
@@ -81,6 +91,27 @@
             <source>1.6</source>
             <target>1.6</target>
           </configuration>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <includes>
+                  <include>org.mcstats.bukkit:metrics</include>
+                </includes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
@@ -105,27 +136,27 @@
           <finalName>Quester</finalName>
         </build>
       </profile>
-	  <profile>
-	    <id>altJarDir</id>
-	    <build>
-	      <plugins>
-	        <plugin>
-	          <groupId>org.apache.maven.plugins</groupId>
-	          <artifactId>maven-jar-plugin</artifactId>
-	          <version>2.3.1</version>
-	          <configuration>
-	            <outputDirectory>${alt.dir}</outputDirectory>
-	          </configuration>
-	        </plugin>
-	      </plugins>
-	    </build>
-	  </profile>
-	  <profile>
-	    <id>buildNumber</id>
-	    <properties>
-	      <yml.version>${project.version}-${buildNumber}</yml.version>
-	    </properties>
-	    <build>
+      <profile>
+        <id>altJarDir</id>
+        <build>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jar-plugin</artifactId>
+              <version>2.3.1</version>
+              <configuration>
+                <outputDirectory>${alt.dir}</outputDirectory>
+              </configuration>
+            </plugin>
+          </plugins>
+        </build>
+      </profile>
+      <profile>
+        <id>buildNumber</id>
+        <properties>
+          <yml.version>${project.version}-${buildNumber}</yml.version>
+        </properties>
+        <build>
           <plugins>
               <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -160,7 +191,7 @@
             <finalName>
               ${project.artifactId}-${project.version}-${buildNumber}
             </finalName>
-	    </build>
-	  </profile>
+        </build>
+      </profile>
   </profiles>
 </project>
