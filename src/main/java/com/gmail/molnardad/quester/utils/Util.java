@@ -249,7 +249,7 @@ public class Util {
 	public static String serializeColor(DyeColor col) {
 		if(col == null)
 			return null;
-		return "" + col.getData();
+		return "" + col.getDyeData();
 	}
 	
 	public static DyeColor parseColor(String arg) {
@@ -259,7 +259,7 @@ public class Util {
 		} catch (Exception ignore) {}
 		if(col == null) {
 			try {
-				col = DyeColor.getByData(Byte.parseByte(arg));
+				col = DyeColor.getByDyeData(Byte.parseByte(arg));
 			} catch (NumberFormatException ignore) {}
 		}
 		return col;
