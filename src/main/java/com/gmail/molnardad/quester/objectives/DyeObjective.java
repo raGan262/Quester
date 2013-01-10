@@ -49,11 +49,11 @@ public final class DyeObjective extends Objective {
 	
 	@Override
 	public String toString() {
-		return TYPE + ": " + amount + "; COLOR:" + (colorName.isEmpty() ? " ANY" : colorName + "(" + (15 - color.getData()) + ")") + coloredDesc();
+		return TYPE + ": " + amount + "; COLOR:" + (colorName.isEmpty() ? " ANY" : colorName + "(" + (15 - color.getDyeData()) + ")") + coloredDesc();
 	}
 
 	public boolean checkDye(int data) {
-		return (color == null) || (color.getData() == data);
+		return (color == null) || (color.getDyeData() == data);
 	}
 	
 	@Override

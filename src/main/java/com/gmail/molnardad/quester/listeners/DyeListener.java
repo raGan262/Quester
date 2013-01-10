@@ -42,7 +42,7 @@ public class DyeListener implements Listener {
     					Sheep sheep = (Sheep) entity;
 	    				if(item.getType() == Material.INK_SACK 
 	    						&& obj.checkDye(15 - item.getDurability())
-	    						&& sheep.getColor().getData() != (15 - item.getDurability())) {
+	    						&& sheep.getColor().getDyeData() != (15 - item.getDurability())) {
 	    					qm.incProgress(player, i);
 	    					return;
 	    				}
