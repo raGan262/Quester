@@ -2130,20 +2130,38 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									if(args[3].equalsIgnoreCase("dscript")) {
 										if(args.length > 4) {
 											try {
+												int start = 0;
 												String script = args[4];
+												if (args[4].charAt(0) == '\'' || args[4].charAt(0) == '"') {
+									                char quote = args[4].charAt(0);
+									                String quoted = args[4].substring(1);
+									                for (int inner = 5; inner < args.length; inner++) {
+									                    if (args[inner].isEmpty())
+									                        continue;
+									                    String test = args[inner].trim();
+									                    quoted += " " + test;
+									                    if (test.charAt(test.length() - 1) == quote) {
+									                        quoted = quoted.substring(0, quoted.length() - 1);
+									                        if(args.length > inner + 1)
+									                        	start = inner + 1;
+									                        break;
+									                    }
+									                }
+									                script = quoted;
+									            }
 												int npc = -1;
 												boolean playerContext = true;
 												boolean focusNPC = false;
 												
-												if(args.length > 5) {
-													npc = Integer.parseInt(args[5]);
+												if(args.length > start && start != 0) {
+													npc = Integer.parseInt(args[start]);
 													if(npc < 0) {
 														throw new NumberFormatException();
 													}
-													if(args.length > 6) {
-														playerContext = args[6].equalsIgnoreCase("true");
-														if(args.length > 7) {
-															focusNPC = args[7].equalsIgnoreCase("true");
+													if(args.length > (start + 1)) {
+														playerContext = args[(start + 1)].equalsIgnoreCase("true");
+														if(args.length > (start + 2)) {
+															focusNPC = args[start + 2].equalsIgnoreCase("true");
 														}
 													}
 												}
