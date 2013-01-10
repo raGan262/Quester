@@ -133,7 +133,7 @@ public class Citizens2Listener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onAnyClick(NPCRightClickEvent event) {
 		Player player = event.getClicker();
     	Quest quest = qm.getPlayerQuest(player.getName());
