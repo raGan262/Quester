@@ -44,7 +44,7 @@ public final class CancelQevent extends Qevent {
 		try {
 			Quester.qMan.cancelQuest(player, false);
 		} catch (QuesterException e) {
-			Quester.log.info("Event failed to cancel " + player.getName() + "'s quest. Reason: " + ChatColor.stripColor(e.message()));
+			Quester.log.info("Event failed to cancel " + player.getName() + "'s quest. Reason: " + ChatColor.stripColor(e.getMessage()));
 		}
 	}
 }

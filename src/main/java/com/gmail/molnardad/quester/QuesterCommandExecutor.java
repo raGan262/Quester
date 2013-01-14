@@ -144,7 +144,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						try {
 							qm.showQuest(sender, questName);
 						} catch (QuesterException e) {
-							sender.sendMessage(e.message());
+							sender.sendMessage(e.getMessage());
 						}
 					} 
 					else {
@@ -165,7 +165,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								qm.showQuest(sender, questName);
 							}
 						} catch (QuesterException e) {
-							sender.sendMessage(e.message());
+							sender.sendMessage(e.getMessage());
 						} catch (NumberFormatException e) {
 							sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 						}
@@ -179,7 +179,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_INFO_USER.replaceAll("%cmd", QuestData.displayedCmd));
 							}
 						} catch (QuesterException e) {
-							sender.sendMessage(e.message());
+							sender.sendMessage(e.getMessage());
 							sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_INFO_MOD.replaceAll("%cmd", QuestData.displayedCmd));
 						}
 					}
@@ -210,7 +210,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								Quester.log.info(sender.getName() + " created quest '" + questName + "'.");
 							}
 						} catch (QuesterException e) {
-							sender.sendMessage(e.message());
+							sender.sendMessage(e.getMessage());
 						}
 					} else {
 						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_CREATE.replaceAll("%cmd", QuestData.displayedCmd));
@@ -233,7 +233,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								Quester.log.info(sender.getName() + " removed quest '" + name + "'.");
 							}
 						} catch (QuesterException e) {
-							sender.sendMessage(e.message());
+							sender.sendMessage(e.getMessage());
 						} catch (NumberFormatException e) {
 							sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 						}
@@ -254,7 +254,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							qm.selectQuest(sender.getName(), id);
 							sender.sendMessage(ChatColor.GREEN + strings.Q_SELECTED);
 						} catch (QuesterException e) {
-							sender.sendMessage(e.message());
+							sender.sendMessage(e.getMessage());
 						} catch (NumberFormatException e) {
 							sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 						}
@@ -275,7 +275,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							qm.changeQuestName(sender.getName(), questName);
 							sender.sendMessage(ChatColor.GREEN + strings.Q_RENAMED.replaceAll("%q", questName));
 						} catch (QuesterException e) {
-							sender.sendMessage(e.message());
+							sender.sendMessage(e.getMessage());
 						}
 					} else {
 						sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.USAGE_NAME.replaceAll("%cmd", QuestData.displayedCmd));
@@ -298,7 +298,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								qm.setQuestDescription(sender.getName(), questDesc);
 								sender.sendMessage(ChatColor.GREEN + strings.Q_DESC_SET);
 							} catch (QuesterException e) {
-								sender.sendMessage(e.message());
+								sender.sendMessage(e.getMessage());
 							}
 							return true;
 						}
@@ -309,7 +309,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								qm.addQuestDescription(sender.getName(), questDesc);
 								sender.sendMessage(ChatColor.GREEN + strings.Q_DESC_ADDED);
 							} catch (QuesterException e) {
-								sender.sendMessage(e.message());
+								sender.sendMessage(e.getMessage());
 							}
 							return true;
 						}
@@ -335,7 +335,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									qm.setQuestLocation(sender.getName(), getLoc(sender, args[2]), range);
 									sender.sendMessage(ChatColor.GREEN + strings.Q_LOC_SET);
 								} catch (QuesterException e) {
-									sender.sendMessage(e.message());
+									sender.sendMessage(e.getMessage());
 								} catch (NumberFormatException e) {
 									sender.sendMessage(ChatColor.GREEN + strings.ERROR_CMD_RANGE_INVALID);
 								}	
@@ -351,7 +351,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								qm.removeQuestLocation(sender.getName());
 								sender.sendMessage(ChatColor.GREEN + strings.Q_LOC_REMOVED);
 							} catch (QuesterException e) {
-								sender.sendMessage(e.message());
+								sender.sendMessage(e.getMessage());
 							}
 							return true;
 						}
@@ -387,7 +387,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								qm.addQuestFlag(sender.getName(), flags.toArray(new QuestFlag[0]));
 								sender.sendMessage(ChatColor.GREEN + strings.Q_FLGS_ADDED);
 							} catch (QuesterException e) {
-								sender.sendMessage(e.message());
+								sender.sendMessage(e.getMessage());
 							}
 							return true;
 						}
@@ -397,7 +397,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								qm.removeQuestFlag(sender.getName(), flags.toArray(new QuestFlag[0]));
 								sender.sendMessage(ChatColor.GREEN + strings.Q_FLGS_REMOVED);
 							} catch (QuesterException e) {
-								sender.sendMessage(e.message());
+								sender.sendMessage(e.getMessage());
 							}
 							return true;
 						}
@@ -425,7 +425,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							active = qm.isQuestActive(id);
 						}
 					} catch (QuesterException e) {
-						sender.sendMessage(e.message());
+						sender.sendMessage(e.getMessage());
 						return true;
 					} catch (NumberFormatException e) {
 						sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
@@ -467,7 +467,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								qm.addQuestWorld(sender.getName(), world.getName());
 								sender.sendMessage(ChatColor.GREEN + strings.Q_WORLD_ADDED);
 							} catch (QuesterException e) {
-								sender.sendMessage(e.message());
+								sender.sendMessage(e.getMessage());
 							}
 							return true;
 						}
@@ -492,7 +492,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								qm.removeQuestWorld(sender.getName(), wName);
 								sender.sendMessage(ChatColor.GREEN + strings.Q_WORLD_REMOVED);
 							} catch (QuesterException e) {
-								sender.sendMessage(e.message());
+								sender.sendMessage(e.getMessage());
 							}
 							return true;
 						}
@@ -545,7 +545,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							} catch (NumberFormatException e) {
 								sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 							} catch (QuesterException e) {
-								sender.sendMessage(e.message());
+								sender.sendMessage(e.getMessage());
 							}
 							return true;
 						}
@@ -561,7 +561,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							} catch (NumberFormatException e) {
 								sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 							} catch (QuesterException e) {
-								sender.sendMessage(e.message());
+								sender.sendMessage(e.getMessage());
 							}
 							return true;
 						}
@@ -577,7 +577,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							} catch (NumberFormatException e) {
 								sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 							} catch (QuesterException e) {
-								sender.sendMessage(e.message());
+								sender.sendMessage(e.getMessage());
 							}
 							return true;
 						}
@@ -600,7 +600,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							} catch (NumberFormatException e) {
 								sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 							} catch (QuesterException e) {
-								sender.sendMessage(e.message());
+								sender.sendMessage(e.getMessage());
 							}
 							return true;
 						}
@@ -616,7 +616,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							} catch (NumberFormatException e) {
 								sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 							} catch (QuesterException e) {
-								sender.sendMessage(e.message());
+								sender.sendMessage(e.getMessage());
 							}
 							return true;
 						}
@@ -665,7 +665,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (InvalidDataException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BLOCK_UNKNOWN);
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -696,7 +696,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (InvalidDataException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BLOCK_UNKNOWN);
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -724,7 +724,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_NUMBERS);
 										return true;
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 										return true;
 									}
 									try {
@@ -739,7 +739,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										qm.addQuestObjective(sender.getName(), new ItemObjective(mat, amt, dat, enchs));
 										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_ITEM_TYPE));
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									} catch (IllegalArgumentException e){
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_CANT);
 										return true;
@@ -770,7 +770,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (InvalidDataException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_UNKNOWN);
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -796,7 +796,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										sender.sendMessage(ChatColor.RED + strings.OBJ_ENCH_NUMBERS);
 										return true;
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 										return true;
 									}
 									try {
@@ -811,7 +811,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										qm.addQuestObjective(sender.getName(), new EnchantObjective(mat, amt, enchs));
 										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_ENCH_TYPE));
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									} catch (IllegalArgumentException e){
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_CANT);
 										return true;
@@ -834,7 +834,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_POSITIVE);
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -858,7 +858,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										qm.addQuestObjective(sender.getName(), new LocObjective(loc, rng));
 										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_LOC_TYPE));
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_RANGE_INVALID);
 									}
@@ -895,7 +895,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										qm.addQuestObjective(sender.getName(), new DeathObjective(amt, loc, rng));
 										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_DEATH_TYPE));
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_RANGE_INVALID);
 									}
@@ -927,7 +927,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										qm.addQuestObjective(sender.getName(), new WorldObjective(world.getName()));
 										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_WORLD_TYPE));
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -951,7 +951,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										qm.addQuestObjective(sender.getName(), new MobKillObjective(amt, ent));
 										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_MOBKILL_TYPE));
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENTITY_NUMBERS);
 										return true;
@@ -991,7 +991,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										qm.addQuestObjective(sender.getName(), new PlayerKillObjective(amt, name, perm));
 										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_KILL_TYPE));
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -1019,7 +1019,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (InvalidDataException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_UNKNOWN);
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -1047,7 +1047,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (InvalidDataException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_UNKNOWN);
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -1076,7 +1076,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (InvalidDataException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_COLOR_UNKNOWN);
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -1096,7 +1096,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_POSITIVE);
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -1116,7 +1116,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_POSITIVE);
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -1158,7 +1158,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										qm.addQuestObjective(sender.getName(), new TameObjective(amt, ent));
 										sender.sendMessage(ChatColor.GREEN + strings.OBJ_ADD.replaceAll("%type", strings.OBJ_TAME_TYPE));
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -1178,7 +1178,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_POSITIVE);
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -1223,7 +1223,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_RANGE_INVALID);
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -1247,7 +1247,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -1274,7 +1274,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_POSITIVE);
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									} catch (InvalidDataException e) {
 										sender.sendMessage(strings.ERROR_CMD_COLOR_UNKNOWN);
 									}
@@ -1304,7 +1304,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_POSITIVE);
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -1332,7 +1332,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_POSITIVE);
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -1353,7 +1353,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							} catch (NumberFormatException e) {
 								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_REMOVE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 							} catch (QuesterException e) {
-								sender.sendMessage(e.message());
+								sender.sendMessage(e.getMessage());
 							}
 							return true;
 						}
@@ -1370,7 +1370,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							} catch (NumberFormatException e) {
 								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_SWAP_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 							} catch (QuesterException e) {
-								sender.sendMessage(e.message());
+								sender.sendMessage(e.getMessage());
 							}
 							return true;
 						}
@@ -1387,7 +1387,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							} catch (NumberFormatException e) {
 								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.OBJ_MOVE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 							} catch (QuesterException e) {
-								sender.sendMessage(e.message());
+								sender.sendMessage(e.getMessage());
 							}
 							return true;
 						}
@@ -1411,7 +1411,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											qm.addObjectiveDescription(sender.getName(), obj, desc);
 											sender.sendMessage(ChatColor.GREEN + strings.OBJ_DESC_ADD.replaceAll("%id", String.valueOf(obj)));
 										} catch (QuesterException e) {
-											sender.sendMessage(e.message());
+											sender.sendMessage(e.getMessage());
 										}
 										return true;
 									}
@@ -1425,7 +1425,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										qm.removeObjectiveDescription(sender.getName(), obj);
 										sender.sendMessage(ChatColor.GREEN + strings.OBJ_DESC_REMOVE.replaceAll("%id", String.valueOf(obj)));
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -1456,7 +1456,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											qm.addObjectivePrerequisites(sender.getName(), obj, prereq);
 											sender.sendMessage(ChatColor.GREEN + strings.OBJ_REQ_ADD.replaceAll("%id", String.valueOf(obj)));
 										} catch (QuesterException e) {
-											sender.sendMessage(e.message());
+											sender.sendMessage(e.getMessage());
 										}
 										return true;
 									}
@@ -1472,7 +1472,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											qm.removeObjectivePrerequisites(sender.getName(), obj, prereq);
 											sender.sendMessage(ChatColor.GREEN + strings.OBJ_REQ_REMOVE.replaceAll("%id", String.valueOf(obj)));
 										} catch (QuesterException e) {
-											sender.sendMessage(e.message());
+											sender.sendMessage(e.getMessage());
 										}
 										return true;
 									}
@@ -1546,7 +1546,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											qm.addQuestCondition(sender.getName(), new QuestCondition(questName, time));
 											sender.sendMessage(ChatColor.GREEN + strings.CON_ADD.replaceAll("%type", strings.CON_QUEST_TYPE));
 										} catch (QuesterException e) {
-											sender.sendMessage(e.message());
+											sender.sendMessage(e.getMessage());
 										}
 										return true;
 									}
@@ -1578,7 +1578,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											sender.sendMessage(ChatColor.GREEN + strings.CON_ADD.replaceAll("%type", strings.CON_QUESTNOT_TYPE));
 										} 
 										catch (QuesterException e) {
-											sender.sendMessage(e.message());
+											sender.sendMessage(e.getMessage());
 										}
 										return true;
 									}
@@ -1595,7 +1595,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										qm.addQuestCondition(sender.getName(), new PermissionCondition(perm));
 										sender.sendMessage(ChatColor.GREEN + strings.CON_ADD.replaceAll("%type", strings.CON_PERM_TYPE));
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -1613,7 +1613,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_GENERAL);
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -1639,7 +1639,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (InvalidDataException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_UNKNOWN);
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -1657,7 +1657,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 									} catch (NumberFormatException e) {
 										sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_GENERAL);
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -1678,7 +1678,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							} catch (NumberFormatException e) {
 								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.CON_REMOVE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 							} catch (QuesterException e) {
-								sender.sendMessage(e.message());
+								sender.sendMessage(e.getMessage());
 							}
 							return true;
 						}
@@ -1702,7 +1702,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											qm.addConditionDescription(sender.getName(), con, desc);
 											sender.sendMessage(ChatColor.GREEN + strings.CON_DESC_ADD.replaceAll("%id", String.valueOf(con)));
 										} catch (QuesterException e) {
-											sender.sendMessage(e.message());
+											sender.sendMessage(e.getMessage());
 										}
 										return true;
 									}
@@ -1716,7 +1716,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 										qm.removeConditionDescription(sender.getName(), con);
 										sender.sendMessage(ChatColor.GREEN + strings.CON_DESC_REMOVE.replaceAll("%id", String.valueOf(con)));
 									} catch (QuesterException e) {
-										sender.sendMessage(e.message());
+										sender.sendMessage(e.getMessage());
 									}
 									return true;
 								}
@@ -1784,7 +1784,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												qm.addQevent(sender.getName(), new MessageQevent(occ, del, msg));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_MSG_TYPE));
 											} catch (QuesterException e) {
-												sender.sendMessage(e.message());
+												sender.sendMessage(e.getMessage());
 											}
 											return true;
 										}
@@ -1800,7 +1800,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												qm.addQevent(sender.getName(), new QuestQevent(occ, del, qst));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_QUEST_TYPE));
 											} catch (QuesterException e) {
-												sender.sendMessage(e.message());
+												sender.sendMessage(e.getMessage());
 											} catch (NumberFormatException e) {
 												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 											}
@@ -1818,7 +1818,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												qm.addQevent(sender.getName(), new ToggleQevent(occ, del, qst));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_TOGGLE_TYPE));
 											} catch (QuesterException e) {
-												sender.sendMessage(e.message());
+												sender.sendMessage(e.getMessage());
 											} catch (NumberFormatException e) {
 												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 											}
@@ -1836,7 +1836,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												qm.addQevent(sender.getName(), new ObjectiveCompleteQevent(occ, del, obj));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_OBJCOM_TYPE));
 											} catch (QuesterException e) {
-												sender.sendMessage(e.message());
+												sender.sendMessage(e.getMessage());
 											} catch (NumberFormatException e) {
 												sender.sendMessage(ChatColor.RED + strings.OBJ_BAD_ID);
 											}
@@ -1852,7 +1852,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												qm.addQevent(sender.getName(), new CancelQevent(occ, del));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_CANCEL_TYPE));
 											} catch (QuesterException e) {
-												sender.sendMessage(e.message());
+												sender.sendMessage(e.getMessage());
 											}
 										return true;
 									}
@@ -1865,7 +1865,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												qm.addQevent(sender.getName(), new CommandQevent(occ, del, comm));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_CMD_TYPE));
 											} catch (QuesterException e) {
-												sender.sendMessage(e.message());
+												sender.sendMessage(e.getMessage());
 											}
 											return true;
 										}
@@ -1893,7 +1893,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												qm.addQevent(sender.getName(), new ExplosionQevent(occ, del, loc, rng, damage));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_EXPL_TYPE));
 											} catch (QuesterException e) {
-												sender.sendMessage(e.message());
+												sender.sendMessage(e.getMessage());
 											} catch (NumberFormatException e) {
 												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_RANGE_INVALID);
 											}
@@ -1923,7 +1923,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												qm.addQevent(sender.getName(), new LightningQevent(occ, del, loc, rng, damage));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_LIGHT_TYPE));
 											} catch (QuesterException e) {
-												sender.sendMessage(e.message());
+												sender.sendMessage(e.getMessage());
 											} catch (NumberFormatException e) {
 												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_RANGE_INVALID);
 											}
@@ -1960,7 +1960,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												qm.addQevent(sender.getName(), new SpawnQevent(occ, del, loc, rng, ent, amt));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_SPAWN_TYPE));
 											} catch (QuesterException e) {
-												sender.sendMessage(e.message());
+												sender.sendMessage(e.getMessage());
 											} catch (NumberFormatException e) {
 												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_RANGE_INVALID);
 											}
@@ -1981,7 +1981,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												qm.addQevent(sender.getName(), new TeleportQevent(occ, del, loc));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_TELE_TYPE));
 											} catch (QuesterException e) {
-												sender.sendMessage(e.message());
+												sender.sendMessage(e.getMessage());
 											}
 											return true;
 										}
@@ -2002,7 +2002,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												qm.addQevent(sender.getName(), new SetBlockQevent(occ, del, itm[0], dat, loc));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_BLOCK_TYPE));
 											} catch (QuesterException e) {
-												sender.sendMessage(e.message());
+												sender.sendMessage(e.getMessage());
 											}
 											return true;
 										}
@@ -2018,7 +2018,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												qm.addQevent(sender.getName(), new EffectQevent(occ, del, eff));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_EFF_TYPE));
 											} catch (QuesterException e) {
-												sender.sendMessage(e.message());
+												sender.sendMessage(e.getMessage());
 											}
 											return true;
 										}
@@ -2046,7 +2046,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ITEM_NUMBERS);
 												return true;
 											} catch (QuesterException e) {
-												sender.sendMessage(e.message());
+												sender.sendMessage(e.getMessage());
 												return true;
 											}
 											try {
@@ -2061,7 +2061,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 												qm.addQevent(sender.getName(), new ItemQevent(occ, del, mat, dat, amt, enchs));
 												sender.sendMessage(ChatColor.GREEN + strings.EVT_ADD.replaceAll("%type", strings.EVT_ITEM_TYPE));
 											} catch (QuesterException e) {
-												sender.sendMessage(e.message());
+												sender.sendMessage(e.getMessage());
 											} catch (IllegalArgumentException e){
 												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_ENCH_CANT);
 												return true;
@@ -2082,7 +2082,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											} catch (NumberFormatException e) {
 												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_GENERAL);
 											} catch (QuesterException e) {
-												sender.sendMessage(e.message());
+												sender.sendMessage(e.getMessage());
 											}
 											return true;
 										}
@@ -2100,7 +2100,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											} catch (NumberFormatException e) {
 												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_GENERAL);
 											} catch (QuesterException e) {
-												sender.sendMessage(e.message());
+												sender.sendMessage(e.getMessage());
 											}
 											return true;
 										}
@@ -2118,7 +2118,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											} catch (NumberFormatException e) {
 												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_AMOUNT_GENERAL);
 											} catch (QuesterException e) {
-												sender.sendMessage(e.message());
+												sender.sendMessage(e.getMessage());
 											}
 											return true;
 										}
@@ -2171,7 +2171,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 											} catch (NumberFormatException e) {
 												sender.sendMessage(ChatColor.RED + strings.ERROR_CMD_BAD_ID);
 											} catch (QuesterException e) {
-												sender.sendMessage(e.message());
+												sender.sendMessage(e.getMessage());
 											}
 											return true;
 										}
@@ -2197,7 +2197,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							} catch (NumberFormatException e) {
 								sender.sendMessage(ChatColor.RED + strings.USAGE_LABEL + strings.EVT_REMOVE_USAGE.replaceAll("%cmd", QuestData.displayedCmd));
 							} catch (QuesterException e) {
-								sender.sendMessage(e.message());
+								sender.sendMessage(e.getMessage());
 							}
 							return true;
 						}
@@ -2240,7 +2240,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							qm.startRandomQuest(player);
 						}
 					} catch (QuesterException e) {
-						sender.sendMessage(e.message());
+						sender.sendMessage(e.getMessage());
 					}
 					return true;
 				}
@@ -2268,7 +2268,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 								Quester.log.info(player.getName() + " cancelled his/her quest.");
 							}
 						} catch (QuesterException e) {
-							sender.sendMessage(e.message());
+							sender.sendMessage(e.getMessage());
 						}
 					}
 					return true;
@@ -2286,7 +2286,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 						try {
 							qm.complete(player, true);
 						} catch (QuesterException e) {
-							sender.sendMessage(e.message());
+							sender.sendMessage(e.getMessage());
 						}
 					}
 					return true;
@@ -2334,7 +2334,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 							try {
 							qm.showProgress(player);
 						} catch (QuesterException e) {
-							sender.sendMessage(e.message());
+							sender.sendMessage(e.getMessage());
 						}
 						}
 					}

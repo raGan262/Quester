@@ -52,7 +52,7 @@ public class Citizens2Listener implements Listener {
 			try {
 				qh.selectNext();
 			} catch (QuesterException e) {
-				player.sendMessage(e.message());
+				player.sendMessage(e.getMessage());
 				if(!isOp) {
 					return;
 				}
@@ -125,7 +125,7 @@ public class Citizens2Listener implements Listener {
 				try {
 					qm.startQuest(player, qm.getQuestNameByID(selected), false);
 				} catch (QuesterException e) {
-					player.sendMessage(e.message());
+					player.sendMessage(e.getMessage());
 				}
 			} else {
 				player.sendMessage(ChatColor.RED + Quester.strings.ERROR_Q_NOT_SELECTED);

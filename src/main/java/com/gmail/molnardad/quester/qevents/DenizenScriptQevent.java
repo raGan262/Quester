@@ -121,7 +121,7 @@ public final class DenizenScriptQevent extends Qevent {
 			}
 		} 
 		catch (QuesterException e) {
-			Quester.log.warning("Failed to run DSCRIPT event. Info: " + e.message());
+			Quester.log.warning("Failed to run DSCRIPT event. Info: " + e.getMessage());
 		}
 	}
 }

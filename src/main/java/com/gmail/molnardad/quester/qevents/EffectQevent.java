@@ -48,7 +48,7 @@ public class EffectQevent extends Qevent {
 			try {
 				eff = Util.parseEffect(section.getString("effect"));
 			} catch (QuesterException e) {
-				Quester.log.severe("Error deserializing effect event: " + ChatColor.stripColor(e.message()));
+				Quester.log.severe("Error deserializing effect event: " + ChatColor.stripColor(e.getMessage()));
 				return null;
 			}
 		else

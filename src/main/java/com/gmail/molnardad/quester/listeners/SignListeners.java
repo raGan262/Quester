@@ -81,7 +81,7 @@ public class SignListeners implements Listener {
 				} catch (QuesterException e) {
 					if(isOp && e.type() == ExceptionType.Q_NONE_ACTIVE) {
 					} else {
-						player.sendMessage(e.message());
+						player.sendMessage(e.getMessage());
 						return;
 					}
 					
@@ -142,7 +142,7 @@ public class SignListeners implements Listener {
 					try {
 						qm.startQuest(player, qm.getQuestNameByID(selected), false);
 					} catch (QuesterException e) {
-						player.sendMessage(e.message());
+						player.sendMessage(e.getMessage());
 					}
 				} else {
 					player.sendMessage(ChatColor.RED + "No quest selected.");

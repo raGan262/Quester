@@ -12,12 +12,18 @@ import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
 import com.gmail.molnardad.quester.listeners.*;
+import com.gmail.molnardad.quester.commandbase.QCommandManager;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
+import com.gmail.molnardad.quester.commandbase.exceptions.QUsageException;
+import com.gmail.molnardad.quester.commands.UserCommands;
 import com.gmail.molnardad.quester.config.*;
 
 public class Quester extends JavaPlugin {
@@ -31,6 +37,7 @@ public class Quester extends JavaPlugin {
 		public static QuestConfig questConfig;
 		public static HolderConfig holderConfig;
 		public static QuesterStrings strings;
+		private QCommandManager commands = null;
 		private boolean loaded = false;
 		private int saveID = 0;
 		public static boolean citizens2 = false;
@@ -52,6 +59,7 @@ public class Quester extends JavaPlugin {
 			
 			log = this.getLogger();
 			qMan = new QuestManager();
+			commands = new QCommandManager();
 			profileConfig = new ProfileConfig("profiles.yml");
 			questConfig = new QuestConfig("quests.yml");
 			holderConfig = new HolderConfig("holders.yml");
@@ -88,8 +96,9 @@ public class Quester extends JavaPlugin {
 			
 			this.setupListeners();
 			
-			QuesterCommandExecutor cmdExecutor = new QuesterCommandExecutor();
-			getCommand("q").setExecutor(cmdExecutor);
+//			QuesterCommandExecutor cmdExecutor = new QuesterCommandExecutor();
+//			getCommand("q").setExecutor(cmdExecutor);
+			commands.register(UserCommands.class);
 			
 			startSaving();
 			loaded = true;
@@ -115,6 +124,24 @@ public class Quester extends JavaPlugin {
 			epicboss = false;
 			vault = false;
 			denizen = false;
+		}
+		
+		@Override
+		public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+			if(label.equalsIgnoreCase("q") || label.equalsIgnoreCase("quest") || label.equalsIgnoreCase("quester")) {
+				try {
+					commands.execute(args, sender);
+				}
+				catch (QUsageException e) {
+					sender.sendMessage("Usage: " + e.getUsage());
+				}
+				catch (QCommandException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return true;
+			}
+			return false;
 		}
 
 		private boolean setupEconomy() {
