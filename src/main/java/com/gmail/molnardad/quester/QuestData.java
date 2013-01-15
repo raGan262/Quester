@@ -43,7 +43,7 @@ public class QuestData {
 	public static final String PERM_USE_SIGN = "quester.use.sign";
 	public static final String PERM_USE_HELP = "quester.use.help";
 	public static final String PERM_USE_LIST = "quester.use.list";
-	public static final String PERM_USE_INFO = "quester.use.info";
+	public static final String PERM_USE_SHOW = "quester.use.show";
 	public static final String PERM_USE_PROFILE = "quester.use.profile";
 	public static final String PERM_USE_START_PICK = "quester.use.start.pick";
 	public static final String PERM_USE_START_RANDOM = "quester.use.start.random";

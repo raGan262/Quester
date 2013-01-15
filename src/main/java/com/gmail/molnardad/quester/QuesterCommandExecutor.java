@@ -66,7 +66,7 @@ public class QuesterCommandExecutor implements CommandExecutor {
 					sender.sendMessage(ChatColor.GOLD + command + " help/? " + ChatColor.GRAY + strings.HELP_HELP);
 					if(permCheck(sender, QuestData.PERM_USE_LIST, false))
 						sender.sendMessage(ChatColor.GOLD + command + " list " + ChatColor.GRAY + strings.HELP_LIST);
-					if(permCheck(sender, QuestData.PERM_USE_INFO, false)) {
+					if(permCheck(sender, QuestData.PERM_USE_SHOW, false)) {
 						sender.sendMessage(ChatColor.GOLD + command + " show [name] " + ChatColor.GRAY + strings.HELP_SHOW);
 					}
 					if(permCheck(sender, QuestData.PERM_USE_START_PICK, false))

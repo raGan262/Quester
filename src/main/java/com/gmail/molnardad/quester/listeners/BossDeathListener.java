@@ -22,7 +22,7 @@ public class BossDeathListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onFish(BossDeathEvent event) {
-		Player player = Bukkit.getPlayer(event.getPlayer());
+		Player player = Bukkit.getPlayer(event.getPlayer()); // TODO change to event.getPlayer()
 		if(player == null) {
 			return;
 		}

@@ -13,7 +13,10 @@ import org.bukkit.command.CommandSender;
 import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
+import com.gmail.molnardad.quester.commandbase.exceptions.QPermissionException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QUsageException;
+import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.utils.Util;
 
 public class QCommandManager {
 
@@ -68,11 +71,11 @@ public class QCommandManager {
 		}
 	}
 	
-	public void execute(String[] args, CommandSender sender) throws QCommandException {
+	public void execute(String[] args, CommandSender sender) throws QCommandException, QuesterException {
 		executeMethod(args, sender, null, 0);
 	}
 	
-	private void executeMethod(String[] args, CommandSender sender, Method parent, int level) throws QCommandException{
+	private void executeMethod(String[] args, CommandSender sender, Method parent, int level) throws QCommandException, QuesterException{
 		
 		if(args.length <= level) {
 			throw new QUsageException("Not enough argmunents.", getUsage(args, level, parent));
@@ -83,10 +86,11 @@ public class QCommandManager {
 		if(method == null) {
 			throw new QUsageException("Unknown argument: " + label, getUsage(args, level, parent));
 		}
+
 		
-		int numArgs = args.length - level - 1;
 		
 		if(labels.get(method) != null) { // going deeper
+			int numArgs = args.length - level - 1;
 			if(numArgs < 1) {
 				throw new QUsageException("Not enough argmunents.", getUsage(args, level, method));
 			}
@@ -94,20 +98,24 @@ public class QCommandManager {
 			executeMethod(args, sender, method, level+1);
 		}
 		else {
-			
 			QCommand cmd = annotations.get(method);
+			
+			if(!cmd.permission().isEmpty() && (sender == null || !Util.permCheck(sender, cmd.permission(), false))) {
+				throw new QPermissionException();
+			}
+			
 			String[] parentArgs = new String[level+1];
 			String[] realArgs = new String[args.length - level - 1];
 			System.arraycopy(args, 0, parentArgs, 0, level+1);
 			System.arraycopy(args, level+1, realArgs, 0, args.length - level - 1);
 			
-			QCommandContext context = new QCommandContext(realArgs, parentArgs, sender);
+			QCommandContext context = new QCommandContext(realArgs, parentArgs, sender, this);
 			
-			if(realArgs.length < cmd.min()) {
+			if(context.length() < cmd.min()) {
 				throw new QUsageException("Not enough argmunents.", getUsage(args, level, method));
 			}
 			
-			if(realArgs.length > cmd.max()) {
+			if(context.length() > cmd.max()) {
 				throw new QUsageException("Too many argmunents.", getUsage(args, level, method));
 			}
 			
@@ -115,7 +123,7 @@ public class QCommandManager {
 		}
 	}
 	
-	private void invoke(Method method, Object... methodArgs) {
+	private void invoke(Method method, Object... methodArgs) throws QCommandException, QuesterException {
 		Exception ex = null;
 		try {
 			method.invoke(instances.get(method), methodArgs);
@@ -124,7 +132,15 @@ public class QCommandManager {
 		} catch (IllegalArgumentException e) {
 			ex = e;
 		} catch (InvocationTargetException e) {
-			ex = e;
+			if(e.getCause() instanceof QCommandException) {
+				throw (QCommandException) e.getCause();
+			}
+			else if(e.getCause() instanceof QuesterException) {
+				throw (QuesterException) e.getCause();
+			}
+			else {
+				ex = e;
+			}
 		}
 		if(ex != null) {
 			logger.warning("Failed to execute command.");
@@ -150,6 +166,28 @@ public class QCommandManager {
 			usage.append(" help");
 		}
 		
+		return usage.toString();
+	}
+	
+	public String getUsage(String[] args) {
+		StringBuilder usage = new StringBuilder();
+		usage.append(QuestData.displayedCmd);
+		
+		Method method = null;
+		String temp = " help";
+		
+		for(String arg : args) {
+			method  = labels.get(method).get(arg.toLowerCase());
+			if(method != null) {
+				usage.append(' ').append(arg);
+				temp = annotations.get(method).usage();
+			}
+			else {
+				break;
+			}
+		}
+		
+		usage.append(' ').append(temp);
 		return usage.toString();
 	}
 	

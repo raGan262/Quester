@@ -39,6 +39,7 @@ public abstract class CustomConfig {
 					try {
 						customConfig.save(conFile);
 						plugin.getLogger().info("Created default file " + conFile.getName() + " !");
+						defaultConfigStream.close();
 					} catch (IOException ex) {
 						plugin.getLogger().severe("Can't save file " + conFile.getName() + " !");
 					}
@@ -58,23 +59,33 @@ public abstract class CustomConfig {
 			return config;
 		}
 		
+		protected void clearConfig() {
+			config = new YamlConfiguration();
+		}
+		
 		public void saveConfig() {
 			
 			try {
 				config.save(conFile);
 			} catch (IOException ex) {
-				plugin.getLogger().severe("Can't Write To File '" + conFile.getName() + "'!");
+				plugin.getLogger().severe("Can't write to file '" + conFile.getName() + "'!");
 		    }
 		}
 		
 		public boolean resetConfig() {
-			InputStream defaultConfigStream = plugin.getResource(conFile.getName());
-			if (defaultConfigStream != null) {
-				config = YamlConfiguration.loadConfiguration(defaultConfigStream);
-				saveConfig();
-				return true;
-			} else {
-				plugin.getLogger().severe("Resetting cofiguration failed.");
+			try {
+				InputStream defaultConfigStream = plugin.getResource(conFile.getName());
+				if (defaultConfigStream != null) {
+					config = YamlConfiguration.loadConfiguration(defaultConfigStream);
+					defaultConfigStream.close();
+					saveConfig();
+					return true;
+				} else {
+					throw new IOException();
+				}
+			}
+			catch (IOException e) {
+				plugin.getLogger().severe("Configuration resetting failed.");
 				return false;
 			}
 		}

@@ -13,15 +13,17 @@ import com.google.common.collect.Lists;
 
 public class QCommandContext {
 
+	private final QCommandManager comMan;
 	private final String[] args;
 	private final String[] parentArgs;
 	private final CommandSender sender;
 	private final Set<Character> flags = new HashSet<Character>();
 	// valueFlags will be added once it is needed :)
 	
-	public QCommandContext(String[] args, String[] parentArgs, CommandSender sender) {
+	public QCommandContext(String[] args, String[] parentArgs, CommandSender sender, QCommandManager cMan) {
 		this.sender = sender;
 		this.parentArgs = parentArgs;
+		this.comMan = cMan;
 		
 		int i = 1;
 		for(;i < args.length; i++) {
@@ -84,6 +86,13 @@ public class QCommandContext {
 		return null;
 	}
 	
+	public Player getPlayer() {
+		if(sender instanceof Player) {
+			return (Player) sender;
+		}
+		return null;
+	}
+	
 	public String getString(int i) {
 		return args[i];
 	}
@@ -135,5 +144,9 @@ public class QCommandContext {
 		System.arraycopy(parentArgs, 0, result, 0, parentArgs.length);
 		System.arraycopy(args, 0, result, parentArgs.length, args.length);
 		return result;
+	}
+	
+	public String getUsage() {
+		return comMan.getUsage(parentArgs);
 	}
 }

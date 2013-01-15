@@ -32,9 +32,6 @@ public enum ExceptionType {
 	
 	OCC_NOT_EXIST(ChatColor.RED + Quester.strings.ERROR_OCC_NOT_EXIST),
 	
-	REW_NOT_EXIST(ChatColor.RED + Quester.strings.ERROR_REW_NOT_EXIST),
-	REW_CANT_DO(ChatColor.RED + Quester.strings.ERROR_REW_CANT_DO),
-	
 	EVT_NOT_EXIST(ChatColor.RED + Quester.strings.ERROR_EVT_NOT_EXIST),
 	
 	WHY(ChatColor.RED + Quester.strings.ERROR_WHY);

@@ -22,9 +22,11 @@ import org.mcstats.Metrics;
 import com.gmail.molnardad.quester.listeners.*;
 import com.gmail.molnardad.quester.commandbase.QCommandManager;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
+import com.gmail.molnardad.quester.commandbase.exceptions.QPermissionException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QUsageException;
 import com.gmail.molnardad.quester.commands.UserCommands;
 import com.gmail.molnardad.quester.config.*;
+import com.gmail.molnardad.quester.exceptions.QuesterException;
 
 public class Quester extends JavaPlugin {
 	
@@ -132,12 +134,20 @@ public class Quester extends JavaPlugin {
 				try {
 					commands.execute(args, sender);
 				}
-				catch (QUsageException e) {
-					sender.sendMessage("Usage: " + e.getUsage());
+				catch (QuesterException e) {
+					sender.sendMessage(e.getMessage());
 				}
 				catch (QCommandException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					if(e instanceof QUsageException) {
+						sender.sendMessage(ChatColor.RED + e.getMessage());
+						sender.sendMessage(ChatColor.RED + "Usage: " + ((QUsageException) e).getUsage());
+					}
+					else if(e instanceof QPermissionException) {
+						sender.sendMessage(ChatColor.RED + e.getMessage());
+					}
+					else {
+						e.printStackTrace();
+					}
 				}
 				return true;
 			}
