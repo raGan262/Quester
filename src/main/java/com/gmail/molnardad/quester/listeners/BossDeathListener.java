@@ -2,9 +2,9 @@ package com.gmail.molnardad.quester.listeners;
 
 import java.util.List;
 
-import me.ThaH3lper.EpicBoss.BossDeathEvent;
 
-import org.bukkit.Bukkit;
+import me.ThaH3lper.com.Api.BossDeathEvent;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -22,7 +22,7 @@ public class BossDeathListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onFish(BossDeathEvent event) {
-		Player player = Bukkit.getPlayer(event.getPlayer());
+		Player player = event.getPlayer();
 		if(player == null) {
 			return;
 		}
@@ -37,7 +37,7 @@ public class BossDeathListener implements Listener {
 	    			if(!qm.isObjectiveActive(player, i)){
 	    				continue;
 	    			}
-	    			if(obj.nameCheck(event.getBoss())) {
+	    			if(obj.nameCheck(event.getBossName())) {
 		    			qm.incProgress(player, i);
 		    			return;
 	    			}
