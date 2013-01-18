@@ -52,7 +52,7 @@ public final class ToggleQevent extends Qevent {
 	@Override
 	void run(Player player) {
 		try {
-			Quester.qMan.toggleQuest(quest);
+			Quester.plugin.getQuestManager().toggleQuest(quest);
 		} catch (QuesterException e) {
 			Quester.log.info("Event failed to toggle quest. Reason: " + ChatColor.stripColor(e.getMessage()));
 		}

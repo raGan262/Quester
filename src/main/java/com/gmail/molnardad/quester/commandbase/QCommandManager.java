@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import org.bukkit.command.CommandSender;
 
-import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QPermissionException;
@@ -144,7 +143,7 @@ public class QCommandManager {
 		}
 		if(ex != null) {
 			logger.warning("Failed to execute command.");
-			if(QuestData.debug) {
+			if(Quester.data.debug) {
 				ex.printStackTrace();
 			}
 		}
@@ -154,7 +153,7 @@ public class QCommandManager {
 		
 		StringBuilder usage = new StringBuilder();
 		
-		usage.append(QuestData.displayedCmd);
+		usage.append(Quester.data.displayedCmd);
 		
 		if(method != null) {
 			for(int i = 0; i <= level; i++) {
@@ -171,7 +170,7 @@ public class QCommandManager {
 	
 	public String getUsage(String[] args) {
 		StringBuilder usage = new StringBuilder();
-		usage.append(QuestData.displayedCmd);
+		usage.append(Quester.data.displayedCmd);
 		
 		Method method = null;
 		String temp = " help";
@@ -211,7 +210,7 @@ public class QCommandManager {
 			ex = e;
 		}
 		if(ex != null) {
-			if(QuestData.debug) {
+			if(Quester.data.debug) {
 				logger.info("Instantiating class '" + clss.getCanonicalName() + " failed.");
 				ex.printStackTrace();
 			}

@@ -24,7 +24,11 @@ import com.gmail.molnardad.quester.objectives.SmeltObjective;
 
 public class CraftSmeltListener implements Listener {
 
-	private QuestManager qm = Quester.qMan;
+	private QuestManager qm;
+	
+	public CraftSmeltListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onCraft(CraftItemEvent event) {

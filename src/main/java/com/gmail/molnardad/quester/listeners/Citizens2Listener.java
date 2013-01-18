@@ -22,11 +22,18 @@ import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.objectives.NpcKillObjective;
 import com.gmail.molnardad.quester.objectives.NpcObjective;
 import com.gmail.molnardad.quester.objectives.Objective;
+import com.gmail.molnardad.quester.strings.QuesterStrings;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class Citizens2Listener implements Listener {
 	
-	QuestManager qm = Quester.qMan;
+	private QuestManager qm;
+	private QuesterStrings lang;
+	
+	public Citizens2Listener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+		this.lang = plugin.getLanguageManager().getDefaultLang();
+	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onLeftClick(NPCLeftClickEvent event) {
@@ -37,16 +44,16 @@ public class Citizens2Listener implements Listener {
 				return;
 			}
 			// If player has perms and holds blaze rod
-			boolean isOp = Util.permCheck(player, QuestData.MODIFY_PERM, false);
+			boolean isOp = Util.permCheck(player, QuestData.PERM_MODIFY, false);
 			if(isOp) {
 				if(player.getItemInHand().getTypeId() == 369) {
 					event.getNPC().getTrait(QuesterTrait.class).setHolderID(-1);
-					player.sendMessage(ChatColor.GREEN + Quester.strings.HOL_UNASSIGNED);
+					player.sendMessage(ChatColor.GREEN + lang.HOL_UNASSIGNED);
 				    return;
 				}
 			}
 			if(qh == null) {
-				player.sendMessage(ChatColor.RED + Quester.strings.ERROR_HOL_NOT_ASSIGNED);
+				player.sendMessage(ChatColor.RED + lang.ERROR_HOL_NOT_ASSIGNED);
 				return;
 			}
 			try {
@@ -71,28 +78,27 @@ public class Citizens2Listener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onRightClick(NPCRightClickEvent event) {
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
-			QuestManager qm = Quester.qMan;
 			QuestHolder qh = qm.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
 			Player player = event.getClicker();
 			if(!Util.permCheck(player, QuestData.PERM_USE_NPC, true)) {
 				return;
 			}
-			boolean isOP = Util.permCheck(player, QuestData.MODIFY_PERM, false);
+			boolean isOP = Util.permCheck(player, QuestData.PERM_MODIFY, false);
 			// If player has perms and holds blaze rod
 			if(isOP) {
 				if(player.getItemInHand().getTypeId() == 369) {
 					int sel = qm.getSelectedHolderID(player.getName());
 					if(sel < 0){
-						player.sendMessage(ChatColor.RED + Quester.strings.ERROR_HOL_NOT_SELECTED);
+						player.sendMessage(ChatColor.RED + lang.ERROR_HOL_NOT_SELECTED);
 					} else {
 						event.getNPC().getTrait(QuesterTrait.class).setHolderID(sel);
-						player.sendMessage(ChatColor.GREEN + Quester.strings.HOL_ASSIGNED);
+						player.sendMessage(ChatColor.GREEN + lang.HOL_ASSIGNED);
 					}
 				    return;
 				}
 			}
 			if(qh == null) {
-				player.sendMessage(ChatColor.RED + Quester.strings.ERROR_HOL_NOT_ASSIGNED);
+				player.sendMessage(ChatColor.RED + lang.ERROR_HOL_NOT_ASSIGNED);
 				return;
 			}
 			int selected = qh.getSelected();
@@ -103,7 +109,7 @@ public class Citizens2Listener implements Listener {
 				int questID = currentQuest == null ? -1 : currentQuest.getID();
 				// player has quest and quest giver does not accept this quest
 				if(questID >= 0 && !qsts.contains(questID)) {
-					player.sendMessage(ChatColor.RED + Quester.strings.ERROR_Q_NOT_HERE);
+					player.sendMessage(ChatColor.RED + lang.ERROR_Q_NOT_HERE);
 					return;
 				}
 				// player has quest and quest giver accepts this quest
@@ -114,7 +120,7 @@ public class Citizens2Listener implements Listener {
 						try {
 							qm.showProgress(player);
 						} catch (QuesterException f) {
-							player.sendMessage(ChatColor.DARK_PURPLE + Quester.strings.ERROR_INTERESTING);
+							player.sendMessage(ChatColor.DARK_PURPLE + lang.ERROR_INTERESTING);
 						}
 					}
 					return;
@@ -128,7 +134,7 @@ public class Citizens2Listener implements Listener {
 					player.sendMessage(e.getMessage());
 				}
 			} else {
-				player.sendMessage(ChatColor.RED + Quester.strings.ERROR_Q_NOT_SELECTED);
+				player.sendMessage(ChatColor.RED + lang.ERROR_Q_NOT_SELECTED);
 			}
 		}
 	}

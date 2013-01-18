@@ -26,26 +26,32 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public class SignListeners implements Listener {
 
-	QuestManager qm = Quester.qMan;
+	private QuestManager qm;
+	private QuestData qData;
+	
+	public SignListeners(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+		this.qData = Quester.data;
+	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		if(event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			Block block = event.getClickedBlock();
-			QuesterSign qs = QuestData.signs.get(block.getLocation().getWorld().getName() + block.getLocation().getBlockX() + block.getLocation().getBlockY() + block.getLocation().getBlockZ());
+			QuesterSign qs = qData.signs.get(block.getLocation().getWorld().getName() + block.getLocation().getBlockX() + block.getLocation().getBlockY() + block.getLocation().getBlockZ());
 			if(qs == null) {
 				return;
 			}
 			if(block.getType().getId() != 63 && block.getType().getId() != 68) {
-				QuestData.signs.remove(block.getLocation().getWorld().getName() + block.getLocation().getBlockX() + block.getLocation().getBlockY() + block.getLocation().getBlockZ());
+				qData.signs.remove(block.getLocation().getWorld().getName() + block.getLocation().getBlockX() + block.getLocation().getBlockY() + block.getLocation().getBlockZ());
 				player.sendMessage(Quester.LABEL + "Sign unregistered.");
 				return;
 			} else { 
 				Sign sign = (Sign) block.getState();
 				if(!sign.getLine(0).equals(ChatColor.BLUE + "[Quester]")) {
 					block.breakNaturally();
-					QuestData.signs.remove(block.getLocation().getWorld().getName() + block.getLocation().getBlockX() + block.getLocation().getBlockY() + block.getLocation().getBlockZ());
+					qData.signs.remove(block.getLocation().getWorld().getName() + block.getLocation().getBlockX() + block.getLocation().getBlockY() + block.getLocation().getBlockZ());
 					player.sendMessage(Quester.LABEL + "Sign unregistered.");
 					return;
 				}
@@ -57,7 +63,7 @@ public class SignListeners implements Listener {
 			if(player.isSneaking()) {
 				return;
 			}
-			boolean isOp = Util.permCheck(player, QuestData.MODIFY_PERM, false);
+			boolean isOp = Util.permCheck(player, QuestData.PERM_MODIFY, false);
 
 			event.setCancelled(true);
 			QuestHolder qh = qm.getHolder(qs.getHolderID());
@@ -157,12 +163,12 @@ public class SignListeners implements Listener {
 		Block block = event.getBlock();
 		if(block.getType().getId() == 63 || block.getType().getId() == 68) {
 			Sign sign = (Sign) block.getState();
-			if(QuestData.signs.get(sign.getLocation().getWorld().getName() + sign.getLocation().getBlockX() + sign.getLocation().getBlockY() + sign.getLocation().getBlockZ()) != null) {
-				if(!event.getPlayer().isSneaking() || !Util.permCheck(event.getPlayer(), QuestData.MODIFY_PERM, false)) {
+			if(qData.signs.get(sign.getLocation().getWorld().getName() + sign.getLocation().getBlockX() + sign.getLocation().getBlockY() + sign.getLocation().getBlockZ()) != null) {
+				if(!event.getPlayer().isSneaking() || !Util.permCheck(event.getPlayer(), QuestData.PERM_MODIFY, false)) {
 					event.setCancelled(true);
 					return;
 				}
-				QuestData.signs.remove(sign.getLocation().getWorld().getName() + sign.getLocation().getBlockX() + sign.getLocation().getBlockY() + sign.getLocation().getBlockZ());
+				qData.signs.remove(sign.getLocation().getWorld().getName() + sign.getLocation().getBlockX() + sign.getLocation().getBlockY() + sign.getLocation().getBlockZ());
 				event.getPlayer().sendMessage(Quester.LABEL + "Sign unregistered.");;
 			}
 		}
@@ -172,12 +178,12 @@ public class SignListeners implements Listener {
 	public void onSignChange(SignChangeEvent event) {
 		Block block = event.getBlock();
 		if(event.getLine(0).equals("[Quester]")) {
-			if(!Util.permCheck(event.getPlayer(), QuestData.MODIFY_PERM, true)) {
+			if(!Util.permCheck(event.getPlayer(), QuestData.PERM_MODIFY, true)) {
 				block.breakNaturally();
 			}
 			event.setLine(0, ChatColor.BLUE + "[Quester]");
 			QuesterSign sign = new QuesterSign(block.getLocation());
-			QuestData.signs.put(sign.getLocation().getWorld().getName() + sign.getLocation().getBlockX() + sign.getLocation().getBlockY() + sign.getLocation().getBlockZ(), sign);
+			qData.signs.put(sign.getLocation().getWorld().getName() + sign.getLocation().getBlockX() + sign.getLocation().getBlockY() + sign.getLocation().getBlockZ(), sign);
 			event.getPlayer().sendMessage(Quester.LABEL + "Sign registered.");;
 		}
 	}

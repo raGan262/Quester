@@ -15,7 +15,7 @@ public class UserCommands {
 	private QuestManager qMan = null;
 	
 	public UserCommands(Quester plugin) {
-		this.qMan = Quester.qMan;
+		this.qMan = plugin.getQuestManager();
 	}
 	
 	@QCommand(
@@ -34,7 +34,7 @@ public class UserCommands {
 			desc = "shows detailed info about the quest",
 			max = 1,
 			usage = "[ID]",
-			permission = QuestData.MODIFY_PERM)
+			permission = QuestData.PERM_MODIFY)
 	public void info(QCommandContext context, CommandSender sender) throws QuesterException {
 	}
 	

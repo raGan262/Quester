@@ -15,7 +15,11 @@ import com.gmail.molnardad.quester.objectives.Objective;
 
 public class MilkListener implements Listener {
 
-	private QuestManager qm = Quester.qMan;
+	private QuestManager qm;
+	
+	public MilkListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onMilk(PlayerBucketFillEvent event) {

@@ -52,7 +52,7 @@ public final class QuestQevent extends Qevent {
 	@Override
 	void run(Player player) {
 		try {
-			Quester.qMan.startQuest(player, quest, false);
+			Quester.plugin.getQuestManager().startQuest(player, quest, false);
 		} catch (QuesterException e) {
 			Quester.log.info("Event failed to give quest to " + player.getName() + ". Reason: " + ChatColor.stripColor(e.getMessage()));
 		}

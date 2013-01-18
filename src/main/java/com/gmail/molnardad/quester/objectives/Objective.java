@@ -8,7 +8,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.utils.Util;
 
@@ -147,14 +146,14 @@ public abstract class Objective {
 						break;
 					} catch (Exception e) {
 						Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Method deser() missing or broken. " + e.getClass().getName());
-						if(QuestData.debug)
+						if(Quester.data.debug)
 							e.printStackTrace();
 						return null;
 					}
 				}
 			} catch (Exception e) {
 				Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Field 'TYPE' missing or access denied. " + e.getClass().getName());
-				if(QuestData.debug)
+				if(Quester.data.debug)
 					e.printStackTrace();
 				return null;
 			}

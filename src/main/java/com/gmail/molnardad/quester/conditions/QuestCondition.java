@@ -25,7 +25,7 @@ public final class QuestCondition extends Condition {
 
 	@Override
 	public boolean isMet(Player player) {
-		PlayerProfile profile = Quester.qMan.getProfile(player.getName());
+		PlayerProfile profile = Quester.plugin.getQuestManager().getProfile(player.getName());
 		if (!profile.isCompleted(quest)) {
 			return false;
 		}

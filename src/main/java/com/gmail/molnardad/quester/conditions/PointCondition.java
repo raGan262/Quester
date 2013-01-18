@@ -22,7 +22,7 @@ public final class PointCondition extends Condition {
 
 	@Override
 	public boolean isMet(Player player) {
-		return Quester.qMan.getProfile(player.getName()).getPoints() >= amount;
+		return Quester.plugin.getQuestManager().getProfile(player.getName()).getPoints() >= amount;
 	}
 	
 	@Override

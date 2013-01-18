@@ -16,7 +16,11 @@ import com.gmail.molnardad.quester.objectives.Objective;
 
 public class FishListener implements Listener {
 
-	private QuestManager qm = Quester.qMan;
+	private QuestManager qm;
+	
+	public FishListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onFish(PlayerFishEvent event) {

@@ -1,6 +1,5 @@
 package com.gmail.molnardad.quester.config;
 
-import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.Quester;
 
 public final class QuestConfig extends CustomConfig {
@@ -13,8 +12,8 @@ public final class QuestConfig extends CustomConfig {
 	public void saveConfig() {
 		for(String key : config.getKeys(false))
 			config.set(key, null);
-		for(String key : QuestData.allQuests.keySet()) {
-			QuestData.allQuests.get(key).serialize(config.createSection(key));
+		for(String key : Quester.data.allQuests.keySet()) {
+			Quester.data.allQuests.get(key).serialize(config.createSection(key));
 		}
 		super.saveConfig();
 	}

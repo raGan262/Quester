@@ -20,10 +20,17 @@ import com.gmail.molnardad.quester.objectives.CollectObjective;
 import com.gmail.molnardad.quester.objectives.Objective;
 
 public class CollectListener implements Listener {
-
+	
+	private QuestManager qm;
+	private QuestData qData;
+	
+	public CollectListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+		this.qData = Quester.data;
+	}
+	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPickup(PlayerPickupItemEvent event) {
-	    QuestManager qm = Quester.qMan;
 	    Player player = event.getPlayer();
     	Quest quest = qm.getPlayerQuest(player.getName());
 	    if(quest != null) {
@@ -52,7 +59,7 @@ public class CollectListener implements Listener {
 	    						more = 0;
 	    					}
 	    					qm.incProgress(player, i, item.getAmount()); // increase by amount actually picked up
-	    					if(QuestData.colRemPickup) {
+	    					if(qData.colRemPickup) {
 		    					Location loc = event.getItem().getLocation();
 		    					event.getItem().remove();
 		    					if((more + rem) > 0) {

@@ -17,8 +17,12 @@ import com.gmail.molnardad.quester.objectives.TameObjective;
 
 public class TameListener implements Listener {
 
-	private QuestManager qm = Quester.qMan;
+	private QuestManager qm;
 	
+	public TameListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+	}
+		
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onTame(EntityTameEvent event) {
 		if(event.getOwner() instanceof Player) {

@@ -18,8 +18,12 @@ import com.gmail.molnardad.quester.objectives.ShearObjective;
 
 public class ShearListener implements Listener {
 
-	private QuestManager qm = Quester.qMan;
+	private QuestManager qm;
 	
+	public ShearListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+	}
+		
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onShear(PlayerShearEntityEvent event) {
 		if(event.getEntity().getType() == EntityType.SHEEP) {

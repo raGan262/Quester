@@ -284,7 +284,7 @@ public class PlayerProfile {
 			prof = new PlayerProfile(section.getString("name"));
 		}
 		else {
-			if(QuestData.debug) {
+			if(Quester.data.debug) {
 				Quester.log.info("Profile name not found.");
 			}
 			return null;
@@ -318,13 +318,13 @@ public class PlayerProfile {
 					prof.addQuest(prg);
 					prof.setQuest(0);
 				} catch (Exception e) {
-					if(QuestData.verbose) {
+					if(Quester.data.verbose) {
 						Quester.log.info("Invalid progress in profile.");
 					}
 				}
 			}
 			else {
-				if(QuestData.verbose) {
+				if(Quester.data.verbose) {
 					Quester.log.info("Invalid or missing progress for quest '" + section.getString("quest", "non-existant") + "' in profile.");
 				}
 			}
@@ -344,13 +344,13 @@ public class PlayerProfile {
 						}		
 						prof.addQuest(prg);
 					} catch (Exception e) {
-						if(QuestData.verbose) {
+						if(Quester.data.verbose) {
 							Quester.log.info("Invalid progress in profile.");
 						}
 					}
 				}
 				else {
-					if(QuestData.verbose) {
+					if(Quester.data.verbose) {
 						Quester.log.info("Invalid or missing progress for quest '" + key + "' in profile.");
 					}
 				}

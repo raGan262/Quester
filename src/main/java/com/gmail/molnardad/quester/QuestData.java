@@ -13,31 +13,33 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class QuestData {
 	
+	private QuestManager qMan;
+	
 	// GENERAL
-	public static boolean verbose = false;
-	public static int saveInterval = 15;
-	public static boolean debug = true;
+	public boolean verbose = false;
+	public int saveInterval = 15;
+	public boolean debug = true;
 	// OBJECTIVE SECTION
-	public static boolean ordOnlyCurrent = true;
+	public boolean ordOnlyCurrent = true;
 		// BREAK
-	public static boolean brkNoDrops = false;
-	public static boolean brkSubOnPlace = true;
+	public boolean brkNoDrops = false;
+	public boolean brkSubOnPlace = true;
 		// COLLECT
-	public static boolean colRemPickup = true;
-	public static boolean colSubOnDrop = false;
+	public boolean colRemPickup = true;
+	public boolean colSubOnDrop = false;
 	// QUEST SECTION
-	public static int maxQuests = 1;
+	public int maxQuests = 1;
 		// MESSAGES
-	public static boolean progMsgStart = true;
-	public static boolean progMsgCancel = true;
-	public static boolean progMsgDone = true;
-	public static boolean progMsgObj = true;
+	public boolean progMsgStart = true;
+	public boolean progMsgCancel = true;
+	public boolean progMsgDone = true;
+	public boolean progMsgObj = true;
 	// COMMANDS
-	public static String displayedCmd = "/q";
-	public static String worldLabelThis = "this";
-	public static String locLabelHere = "here";
-	public static String locLabelPlayer = "player";
-	public static String locLabelBlock = "block";
+	public String displayedCmd = "/q";
+	public String worldLabelThis = "this";
+	public String locLabelHere = "here";
+	public String locLabelPlayer = "player";
+	public String locLabelBlock = "block";
 
 	public static final String PERM_USE_NPC = "quester.use.npc";
 	public static final String PERM_USE_SIGN = "quester.use.sign";
@@ -52,39 +54,39 @@ public class QuestData {
 	public static final String PERM_USE_PROGRESS = "quester.use.progress";
 	public static final String PERM_USE_QUESTS = "quester.use.quests";
 	public static final String PERM_USE_SWITCH = "quester.use.switch";
-	public static final String MODIFY_PERM = "quester.modify";
-	public static final String ADMIN_PERM = "quester.admin";
+	public static final String PERM_MODIFY = "quester.modify";
+	public static final String PERM_ADMIN = "quester.admin";
 
 
-	public static Map<String, Quest> allQuests = new HashMap<String, Quest>();
-	public static Map<Integer, String> questIds = new HashMap<Integer, String>();
-	public static Map<Integer, Location> questLocations = new HashMap<Integer, Location>();
-	public static Map<Integer, QuestHolder> holderIds = new HashMap<Integer, QuestHolder>();
-	public static Map<String, QuesterSign> signs = new HashMap<String, QuesterSign>();
-	public static Map<String, PlayerProfile> profiles = new HashMap<String, PlayerProfile>();
-	public static Map<Integer, String> ranks = new HashMap<Integer, String>();
+	public Map<String, Quest> allQuests = new HashMap<String, Quest>();
+	public Map<Integer, String> questIds = new HashMap<Integer, String>();
+	public Map<Integer, Location> questLocations = new HashMap<Integer, Location>();
+	public Map<Integer, QuestHolder> holderIds = new HashMap<Integer, QuestHolder>();
+	public Map<String, QuesterSign> signs = new HashMap<String, QuesterSign>();
+	public Map<String, PlayerProfile> profiles = new HashMap<String, PlayerProfile>();
+	public Map<Integer, String> ranks = new HashMap<Integer, String>();
 	
-	public static List<Integer> sortedRanks = new ArrayList<Integer>();
+	public List<Integer> sortedRanks = new ArrayList<Integer>();
 
-	private static int questID = -1;
-	private static int holderID = -1;
+	private int questID = -1;
+	private int holderID = -1;
 	
 	// QUEST ID MANIPULATION
 	
-	public static int getLastQuestID(){
+	public int getLastQuestID(){
 		return questID;
 	}
 	
-	public static void assignQuestID(Quest qst) {
+	public void assignQuestID(Quest qst) {
 		questID++;
 		qst.setID(questID);
 	}
 	
-	public static void setQuestID(int newID) {
+	public void setQuestID(int newID) {
 		questID = newID;
 	}
 	
-	public static void adjustQuestID() {
+	public void adjustQuestID() {
 		int newID = -1;
 		for(int i : questIds.keySet()) {
 			if(i > newID)
@@ -95,28 +97,28 @@ public class QuestData {
 	
 	// HOLDER ID MANIPULATION
 	
-	public static Map<Integer, QuestHolder> getHolders() {
+	public Map<Integer, QuestHolder> getHolders() {
 		return holderIds;
 	}
 	
-	public static QuestHolder getHolder(int ID) {
+	public QuestHolder getHolder(int ID) {
 		return holderIds.get(ID);
 	}
 	
-	public static int getLastHolderID(){
+	public int getLastHolderID(){
 		return holderID;
 	}
 	
-	public static int getNewHolderID() {
+	public int getNewHolderID() {
 		holderID++;
 		return holderID;
 	}
 	
-	public static void setHolderID(int newID) {
+	public void setHolderID(int newID) {
 		holderID = newID;
 	}
 	
-	public static void adjustHolderID() {
+	public void adjustHolderID() {
 		int newID = -1;
 		for(int i : holderIds.keySet()) {
 			if(i > newID)
@@ -127,7 +129,11 @@ public class QuestData {
 	
 	// GENERAL
 	
-	static void wipeData(){
+	public QuestData(Quester plugin) {
+		qMan = plugin.getQuestManager();
+	}
+	
+	public void wipeData(){
 		allQuests = null;
 		questIds = null;
 		questLocations = null;
@@ -142,11 +148,11 @@ public class QuestData {
 	
 	// PROFILES MANIPULATION
 	
-	static void saveProfiles(){
+	void saveProfiles(){
 		Quester.profileConfig.saveConfig();
 	}
 
-	static void loadProfiles() {
+	void loadProfiles() {
 		try {
 			YamlConfiguration config = Quester.profileConfig.getConfig();
 			PlayerProfile prof;
@@ -160,13 +166,13 @@ public class QuestData {
 				} 
 				if(prof != null) {
 					if(!prof.getQuest().isEmpty()) {
-						if(!Quester.qMan.isQuestActive(prof.getQuest()) || 
-								(Quester.qMan.getObjectiveAmount(prof.getQuest()) != prof.getProgress().size())) {
+						if(!qMan.isQuestActive(prof.getQuest()) || 
+								(qMan.getObjectiveAmount(prof.getQuest()) != prof.getProgress().size())) {
 							prof.unsetQuest();
 							Quester.log.info("Incorrect quest info in profile: " + key);
 						}
 					}
-					Quester.qMan.checkRank(prof);
+					qMan.checkRank(prof);
 					profiles.put(prof.getName().toLowerCase(), prof);
 				} else {
 					Quester.log.info("Invalid key in profiles.yml: " + key);
@@ -184,12 +190,12 @@ public class QuestData {
 	
 	// QUESTS MANIPULATION
 	
-	static void saveQuests(){
+	void saveQuests(){
 		
 		Quester.questConfig.saveConfig();
 	}
 	
-	static void loadQuests(){
+	void loadQuests(){
 		YamlConfiguration config = Quester.questConfig.getConfig();
 		for(String key : config.getKeys(false)) {
 			if(config.isConfigurationSection(key)) {
@@ -221,7 +227,7 @@ public class QuestData {
 		adjustQuestID();
 		for(Quest q : allQuests.values()) {
 			if(!q.hasID()) {
-				QuestData.assignQuestID(q);
+				assignQuestID(q);
 				questIds.put(q.getID(), q.getName().toLowerCase());
 			}
 			if(q.hasLocation()) {
@@ -235,12 +241,12 @@ public class QuestData {
 	
 	// SIGN MANIPULATION
 	
-	static void saveHolders(){
+	void saveHolders(){
 		Quester.holderConfig.saveConfig();
 	}
 
 	@SuppressWarnings("unchecked")
-	static void loadHolders() {
+	void loadHolders() {
 		try {
 
 			YamlConfiguration config = Quester.holderConfig.getConfig();

@@ -21,9 +21,14 @@ import com.gmail.molnardad.quester.objectives.Objective;
 
 public class DyeListener implements Listener {
 
+	private QuestManager qm;
+	
+	public DyeListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+	}
+	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onEntityRightClick(PlayerInteractEntityEvent event) {
-	    QuestManager qm = Quester.qMan;
 	    Player player = event.getPlayer();
     	Quest quest = qm.getPlayerQuest(player.getName());
 	    if(quest != null) {

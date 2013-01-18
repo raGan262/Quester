@@ -55,9 +55,9 @@ public final class ObjectiveCompleteQevent extends Qevent {
 	@Override
 	void run(Player player) {
 		try {
-			List<Integer> prog = Quester.qMan.getProfile(player.getName()).getProgress();
+			List<Integer> prog = Quester.plugin.getQuestManager().getProfile(player.getName()).getProgress();
 			if(objective >= 0 && objective < prog.size()) {
-				int req = Quester.qMan.getPlayerQuest(player.getName()).getObjective(objective).getTargetAmount();
+				int req = Quester.plugin.getQuestManager().getPlayerQuest(player.getName()).getObjective(objective).getTargetAmount();
 				prog.set(objective, req);
 			} else {
 				throw new QuesterException(ExceptionType.OBJ_NOT_EXIST);

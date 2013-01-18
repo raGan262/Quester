@@ -7,9 +7,9 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quest;
-import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.QuestFlag;
 import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.objectives.LocObjective;
 import com.gmail.molnardad.quester.objectives.Objective;
@@ -56,9 +56,9 @@ public class PositionListener implements Runnable {
 		    	
 		    } else {
 		    	Location loc = player.getLocation();
-		    	for(int ID : QuestData.questLocations.keySet()) {
+		    	for(int ID : Quester.data.questLocations.keySet()) {
 		    		Quest qst = qm.getQuest(ID);
-		    		Location loc2 = QuestData.questLocations.get(ID);
+		    		Location loc2 = Quester.data.questLocations.get(ID);
 		    		if(loc2.getWorld().getName().equals(loc.getWorld().getName())) {
 			    		if(loc2.distanceSquared(loc) <= qst.getRange()*qst.getRange() && qst.hasFlag(QuestFlag.ACTIVE)) {
 			    			try {

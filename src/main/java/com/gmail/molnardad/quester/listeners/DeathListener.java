@@ -19,8 +19,12 @@ import com.gmail.molnardad.quester.objectives.PlayerKillObjective;
 
 public class DeathListener implements Listener {
 
-	private QuestManager qm = Quester.qMan;
+	private QuestManager qm;
 	
+	public DeathListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+	}
+		
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onDeath(PlayerDeathEvent event) {
 	    Player player = event.getEntity();

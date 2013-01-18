@@ -1,7 +1,6 @@
 package com.gmail.molnardad.quester;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -14,12 +13,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
 import com.gmail.molnardad.quester.listeners.*;
+import com.gmail.molnardad.quester.strings.LanguageManager;
 import com.gmail.molnardad.quester.commandbase.QCommandManager;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QPermissionException;
@@ -29,19 +30,24 @@ import com.gmail.molnardad.quester.config.*;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 
 public class Quester extends JavaPlugin {
-	
-		public static Quester plugin = null;
+
 		public static Logger log = null;
+		public static Quester plugin = null;
+		public static QuestData data = null;
 		public static Random randGen = new Random();
 		public static Economy econ = null;
-		public static QuestManager qMan = null;
+		
 		public static ProfileConfig profileConfig;
 		public static QuestConfig questConfig;
 		public static HolderConfig holderConfig;
-		public static QuesterStrings strings;
+		
+		private QuestManager qMan = null;
+		private LanguageManager langMan;
 		private QCommandManager commands = null;
+		
 		private boolean loaded = false;
 		private int saveID = 0;
+		
 		public static boolean citizens2 = false;
 		public static boolean epicboss = false;
 		public static boolean vault = false;
@@ -60,8 +66,11 @@ public class Quester extends JavaPlugin {
 		public void onEnable() {
 			
 			log = this.getLogger();
-			qMan = new QuestManager();
+			
+			qMan = new QuestManager(this);
+			langMan = new LanguageManager();
 			commands = new QCommandManager();
+			
 			profileConfig = new ProfileConfig("profiles.yml");
 			questConfig = new QuestConfig("quests.yml");
 			holderConfig = new HolderConfig("holders.yml");
@@ -89,11 +98,12 @@ public class Quester extends JavaPlugin {
 			
 			this.initializeConfig();
 
-			loadLocal();
+			this.loadLocal();
 			
-			QuestData.loadQuests();
-			QuestData.loadProfiles();
-			QuestData.loadHolders();
+			data = new QuestData(plugin);
+			data.loadQuests();
+			data.loadProfiles();
+			data.loadHolders();
 			
 			
 			this.setupListeners();
@@ -110,14 +120,13 @@ public class Quester extends JavaPlugin {
 		public void onDisable() {
 			if(loaded) {
 				stopSaving();
-				QuestData.saveQuests();
-				QuestData.saveProfiles();
-				QuestData.saveHolders();
-				if(QuestData.verbose) {
+				data.saveQuests();
+				data.saveProfiles();
+				data.saveHolders();
+				if(data.verbose) {
 					log.info("Quester data saved.");
 				}
 			}
-			QuestData.wipeData();
 			plugin = null;
 			log = null;
 			econ = null;
@@ -154,6 +163,18 @@ public class Quester extends JavaPlugin {
 			return false;
 		}
 
+		public LanguageManager getLanguageManager() {
+			return langMan;
+		}
+		
+		public QuestManager getQuestManager() {
+			return qMan;
+		}
+		
+		public QCommandManager getCommandManager() {
+			return commands;
+		}
+		
 		private boolean setupEconomy() {
 			if (getServer().getPluginManager().getPlugin("Vault") == null) {
 				log.info("Vault not found, economy support disabled.");
@@ -183,7 +204,7 @@ public class Quester extends JavaPlugin {
 		}
 		
 		private boolean setupEpicBoss() {
-			epicboss = (getServer().getPluginManager().getPlugin("EpicBoss") != null);
+			epicboss = (getServer().getPluginManager().getPlugin("EpicBoss") != null); //TODO EpicBossRecoded
 		    return epicboss;
 		}
 		
@@ -208,43 +229,25 @@ public class Quester extends JavaPlugin {
 
 		public void initializeConfig() {
 			config = (new BaseConfig("config.yml")).getConfig();
-			if(QuestData.verbose) {
+			if(data.verbose) {
 				log.info("Config loaded.");
-				log.info(QuestData.ranks.size() + " ranks loaded.");
+				log.info(data.ranks.size() + " ranks loaded.");
 			}
 		}
 		
 		public void loadLocal() {
-			strings = new QuesterStrings("local.yml");
-			Class<? extends CustomConfig> qsclass = strings.getClass();
-			YamlConfiguration conf = strings.getConfig();
-			for(Field f : qsclass.getFields()) {
-				String val = conf.getString(f.getName(), "");
-				if(val.isEmpty()) {
-					try {
-						conf.set(f.getName(),((String)f.get(strings)).replaceAll("\\n", "%n"));
-						if(QuestData.debug) {
-							Quester.log.info(f.getName() + " reset to default.");
-						}
-					} catch (Exception e) {
-						Quester.log.info("Error occured while setting values in local file.");
-						if(QuestData.debug) {
-							e.printStackTrace();
-						}
-					}
-				} else {
-					try {
-						f.set(strings, (String) val.replaceAll("%n", "\n"));
-					} catch (Exception e) {
-						Quester.log.info("Error occured while setting values in local object.");
-						if(QuestData.debug) {
-							e.printStackTrace();
-						}
+			langMan.loadLang("english", "langEN");
+			int i = 1;
+			if(config.isConfigurationSection("languges")) {
+				ConfigurationSection langSection = config.getConfigurationSection("languages");
+				for(String key : langSection.getKeys(false)) {
+					if(langSection.isString(key)) {
+						langMan.loadLang(key, langSection.getString(key));
+						i++;
 					}
 				}
 			}
-			strings.saveConfig();
-			log.info("Local file loaded.");
+			log.info("Languages loaded. (" + i + ")");
 		}
 		
 		private void setupListeners() {
@@ -255,23 +258,23 @@ public class Quester extends JavaPlugin {
 			PositionListener posCheck = new PositionListener(qMan);
 			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, posCheck, 20, 20);
 			
-			getServer().getPluginManager().registerEvents(new BreakListener(), this);
-			getServer().getPluginManager().registerEvents(new DeathListener(), this);
-			getServer().getPluginManager().registerEvents(new MobKillListener(), this);
-			getServer().getPluginManager().registerEvents(new PlaceListener(), this);
-			getServer().getPluginManager().registerEvents(new CraftSmeltListener(), this);
-			getServer().getPluginManager().registerEvents(new EnchantListener(), this);
-			getServer().getPluginManager().registerEvents(new ShearListener(), this);
-			getServer().getPluginManager().registerEvents(new FishListener(), this);
-			getServer().getPluginManager().registerEvents(new MilkListener(), this);
-			getServer().getPluginManager().registerEvents(new CollectListener(), this);
-			getServer().getPluginManager().registerEvents(new DropListener(), this);
-			getServer().getPluginManager().registerEvents(new TameListener(), this);
-			getServer().getPluginManager().registerEvents(new SignListeners(), this);
-			getServer().getPluginManager().registerEvents(new ActionListener(), this);
-			getServer().getPluginManager().registerEvents(new DyeListener(), this);
+			getServer().getPluginManager().registerEvents(new BreakListener(this), this);
+			getServer().getPluginManager().registerEvents(new DeathListener(this), this);
+			getServer().getPluginManager().registerEvents(new MobKillListener(this), this);
+			getServer().getPluginManager().registerEvents(new PlaceListener(this), this);
+			getServer().getPluginManager().registerEvents(new CraftSmeltListener(this), this);
+			getServer().getPluginManager().registerEvents(new EnchantListener(this), this);
+			getServer().getPluginManager().registerEvents(new ShearListener(this), this);
+			getServer().getPluginManager().registerEvents(new FishListener(this), this);
+			getServer().getPluginManager().registerEvents(new MilkListener(this), this);
+			getServer().getPluginManager().registerEvents(new CollectListener(this), this);
+			getServer().getPluginManager().registerEvents(new DropListener(this), this);
+			getServer().getPluginManager().registerEvents(new TameListener(this), this);
+			getServer().getPluginManager().registerEvents(new SignListeners(this), this);
+			getServer().getPluginManager().registerEvents(new ActionListener(this), this);
+			getServer().getPluginManager().registerEvents(new DyeListener(this), this);
 			if(citizens2) {
-				getServer().getPluginManager().registerEvents(new Citizens2Listener(), this);
+				getServer().getPluginManager().registerEvents(new Citizens2Listener(this), this);
 			}
 			if(epicboss) {
 				getServer().getPluginManager().registerEvents(new BossDeathListener(), this);
@@ -280,14 +283,14 @@ public class Quester extends JavaPlugin {
 		
 		public boolean startSaving() {
 			if(saveID == 0) {
-				if(QuestData.saveInterval > 0) {
+				if(data.saveInterval > 0) {
 					saveID = getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 						
 						@Override
 						public void run() {
-							QuestData.saveProfiles();
+							data.saveProfiles();
 						}
-					}, QuestData.saveInterval * 20L * 60L, QuestData.saveInterval * 20L * 60L);
+					}, data.saveInterval * 20L * 60L, data.saveInterval * 20L * 60L);
 				}
 				return true;
 			}

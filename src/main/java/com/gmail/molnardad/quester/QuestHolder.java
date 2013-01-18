@@ -14,16 +14,17 @@ import com.gmail.molnardad.quester.exceptions.ExceptionType;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.utils.Util;
 
-import static com.gmail.molnardad.quester.Quester.qMan;
-
 public class QuestHolder {
-
+	
+	QuestManager qMan;
+	
 	private List<Integer> heldQuests = new ArrayList<Integer>();
 	private int selected = -1;
 	private String name;
 	
 	public QuestHolder(String name) {
 		this.name = name;
+		qMan = Quester.plugin.getQuestManager();
 	}
 	
 	public void setname(String newName) {
@@ -104,7 +105,7 @@ public class QuestHolder {
 			heldQuests.get(to);
 			Util.moveListUnit(heldQuests, from, to);
 		} catch (IndexOutOfBoundsException e) {
-			throw new QuesterException(Quester.strings.ERROR_CMD_ID_OUT_OF_BOUNDS);
+			throw new QuesterException(Quester.plugin.getLanguageManager().getDefaultLang().ERROR_CMD_ID_OUT_OF_BOUNDS);
 		}
 	}
 	

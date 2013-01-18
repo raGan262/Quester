@@ -1,7 +1,5 @@
 package com.gmail.molnardad.quester.utils;
 
-import static com.gmail.molnardad.quester.Quester.strings;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,9 +25,15 @@ import org.bukkit.util.Vector;
 import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.strings.QuesterStrings;
 
 public class Util {
 	
+	private static QuesterStrings lang = null;
+	
+	public static void setLang(QuesterStrings lang) {
+		Util.lang = lang;
+	}
 	
 	// LINE
 	public static String line(ChatColor lineColor) {
@@ -56,26 +60,26 @@ public class Util {
 		String args[] = arg.split(";");
 		Location loc;
 		if(args.length < 1)
-			throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_LOC_INVALID);
+			throw new QuesterException(ChatColor.RED + lang.ERROR_CMD_LOC_INVALID);
 		
-		if(args[0].equalsIgnoreCase(QuestData.locLabelHere)) {
+		if(args[0].equalsIgnoreCase(Quester.data.locLabelHere)) {
 			if(sender instanceof Player) {
 				return ((Player) sender).getLocation();
 			}
 			else {
-				throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_LOC_HERE.replaceAll("%here", QuestData.locLabelHere));
+				throw new QuesterException(ChatColor.RED + lang.ERROR_CMD_LOC_HERE.replaceAll("%here", Quester.data.locLabelHere));
 			}
 		}
-		else if(args[0].equalsIgnoreCase(QuestData.locLabelBlock)) {
+		else if(args[0].equalsIgnoreCase(Quester.data.locLabelBlock)) {
 			if(sender instanceof Player) {
 				Block block = ((Player) sender).getTargetBlock(null, 5);
 				if(block == null) {
-					throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_LOC_NOBLOCK);
+					throw new QuesterException(ChatColor.RED + lang.ERROR_CMD_LOC_NOBLOCK);
 				}
 				return block.getLocation();
 			}
 			else {
-				throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_LOC_BLOCK.replaceAll("%block", QuestData.locLabelBlock));
+				throw new QuesterException(ChatColor.RED + lang.ERROR_CMD_LOC_BLOCK.replaceAll("%block", Quester.data.locLabelBlock));
 			}
 		}
 		
@@ -86,24 +90,24 @@ public class Util {
 				y = Double.parseDouble(args[1]);
 				z = Double.parseDouble(args[2]);
 			} catch (NumberFormatException e) {
-				throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_COORDS_INVALID);
+				throw new QuesterException(ChatColor.RED + lang.ERROR_CMD_COORDS_INVALID);
 			}
 			if(y < 0) {
-				throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_COORDS_INVALID);
+				throw new QuesterException(ChatColor.RED + lang.ERROR_CMD_COORDS_INVALID);
 			}
-			if(sender instanceof Player && args[3].equalsIgnoreCase(QuestData.worldLabelThis)) {
+			if(sender instanceof Player && args[3].equalsIgnoreCase(Quester.data.worldLabelThis)) {
 				loc = new Location(((Player)sender).getWorld(), x, y, z);
 			} else {
 				World world = Quester.plugin.getServer().getWorld(args[3]);
 				if(world == null) {
-					throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_WORLD_INVALID);
+					throw new QuesterException(ChatColor.RED + lang.ERROR_CMD_WORLD_INVALID);
 				}
 				loc = new Location(world, x, y, z);
 			}
 			return loc;
 		}
 		
-		throw new QuesterException(ChatColor.RED + Quester.strings.ERROR_CMD_LOC_INVALID);
+		throw new QuesterException(ChatColor.RED + lang.ERROR_CMD_LOC_INVALID);
 	}
 	
 	public static String implode(String[] strs) {
@@ -152,11 +156,11 @@ public class Util {
 	}
 	
 	public static boolean permCheck(CommandSender sender, String perm, boolean message) {
-		if(sender.isOp() || sender.hasPermission(perm) || sender.hasPermission(QuestData.ADMIN_PERM)) {
+		if(sender.isOp() || sender.hasPermission(perm) || sender.hasPermission(QuestData.PERM_ADMIN)) {
 			return true;
 		}
 		if(message)
-			sender.sendMessage(ChatColor.RED + Quester.strings.MSG_PERMS);
+			sender.sendMessage(ChatColor.RED + lang.MSG_PERMS);
 		return false;
 	}
 	
@@ -183,17 +187,17 @@ public class Util {
 			int lvl = 0;
 			String[] s = args[i].split(":");
 			if(s.length != 2) {
-				throw new QuesterException(strings.ERROR_CMD_ENCH_INVALID);
+				throw new QuesterException(lang.ERROR_CMD_ENCH_INVALID);
 			}
 			en = Enchantment.getByName(s[0].toUpperCase());
 			if(en == null) {
 				en = Enchantment.getById(Integer.parseInt(s[0]));
 			}
 			if(en == null)
-				throw new QuesterException(strings.ERROR_CMD_ENCH_INVALID);
+				throw new QuesterException(lang.ERROR_CMD_ENCH_INVALID);
 			lvl = Integer.parseInt(s[1]);
 			if(lvl < 1) {
-				throw new QuesterException(strings.ERROR_CMD_ENCH_LEVEL);
+				throw new QuesterException(lang.ERROR_CMD_ENCH_LEVEL);
 			}
 			
 			enchs.put(en.getId(), lvl);
@@ -220,17 +224,17 @@ public class Util {
 		int[] itm = new int[2];
 		String[] s = arg.split(":");
 		if(s.length > 2) {
-			throw new QuesterException(strings.ERROR_CMD_ITEM_UNKNOWN);
+			throw new QuesterException(lang.ERROR_CMD_ITEM_UNKNOWN);
 		}
 		Material mat = Material.getMaterial(s[0].toUpperCase());
 		if(mat == null) {
 			try {
 				itm[0] = Integer.parseInt(s[0]);
 			} catch (NumberFormatException e) {
-				throw new QuesterException(strings.ERROR_CMD_ITEM_UNKNOWN);
+				throw new QuesterException(lang.ERROR_CMD_ITEM_UNKNOWN);
 			}
 			if(Material.getMaterial(itm[0]) == null)
-				throw new QuesterException(strings.ERROR_CMD_ITEM_UNKNOWN);
+				throw new QuesterException(lang.ERROR_CMD_ITEM_UNKNOWN);
 		} else {
 			itm[0] = mat.getId();
 		}
@@ -240,7 +244,7 @@ public class Util {
 			try {
 				itm[1] = Integer.parseInt(s[1]);
 			} catch (NumberFormatException e) {
-				throw new QuesterException(strings.ERROR_CMD_ITEM_UNKNOWN);
+				throw new QuesterException(lang.ERROR_CMD_ITEM_UNKNOWN);
 			}
 		}
 		return itm;
@@ -276,17 +280,17 @@ public class Util {
 		int dur = 0, amp = 0;
 		String[] s = arg.split(":");
 		if(s.length > 3 || s.length < 2) {
-			throw new QuesterException(strings.ERROR_CMD_EFFECT_UNKNOWN);
+			throw new QuesterException(lang.ERROR_CMD_EFFECT_UNKNOWN);
 		}
 		type = PotionEffectType.getByName(s[0]);
 		if(type == null) {
 			try {
 				type = PotionEffectType.getById(Integer.parseInt(s[0]));
 			} catch (NumberFormatException e) {
-				throw new QuesterException(strings.ERROR_CMD_EFFECT_UNKNOWN);
+				throw new QuesterException(lang.ERROR_CMD_EFFECT_UNKNOWN);
 			}
 			if(type == null)
-				throw new QuesterException(strings.ERROR_CMD_EFFECT_UNKNOWN);
+				throw new QuesterException(lang.ERROR_CMD_EFFECT_UNKNOWN);
 		}
 		try {
 			dur = Integer.parseInt(s[1]);
@@ -294,7 +298,7 @@ public class Util {
 				throw new NumberFormatException();
 			dur *= 20;
 		} catch (NumberFormatException e) {
-			throw new QuesterException(strings.ERROR_CMD_EFFECT_DURATION);
+			throw new QuesterException(lang.ERROR_CMD_EFFECT_DURATION);
 		}
 		try {
 			if(s.length > 2) {
@@ -303,7 +307,7 @@ public class Util {
 					throw new NumberFormatException();
 			}
 		} catch (NumberFormatException e) {
-			throw new QuesterException(strings.ERROR_CMD_EFFECT_AMPLIFIER);
+			throw new QuesterException(lang.ERROR_CMD_EFFECT_AMPLIFIER);
 		}
 		return new PotionEffect(type, dur, amp);
 	}
@@ -380,7 +384,7 @@ public class Util {
 		if(ent == null) {
 			ent = EntityType.fromId(Integer.parseInt(arg));
 			if(ent == null || ent.getTypeId() < 50) {
-				throw new QuesterException(strings.ERROR_CMD_ENTITY_UNKNOWN);
+				throw new QuesterException(lang.ERROR_CMD_ENTITY_UNKNOWN);
 			}
 		}
 		return ent;
@@ -521,7 +525,7 @@ public class Util {
 				pitch = Float.parseFloat(split[5]);
 			loc = new Location(world, x, y, z, yaw, pitch);
 		} catch (Exception e) {
-			if(QuestData.debug)
+			if(Quester.data.debug)
 				Quester.log.severe("Error when deserializing location.");
 		}
 		
