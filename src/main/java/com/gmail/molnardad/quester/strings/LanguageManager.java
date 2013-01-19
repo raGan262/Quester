@@ -29,8 +29,9 @@ public class LanguageManager {
 		if(hasLang(name)) {
 			return false;
 		}
-		
-		languages.put(fileName.toLowerCase(), new LanguageConfig(fileName));
+		LanguageConfig cnf = new LanguageConfig(fileName);
+		languages.put(name.toLowerCase(), cnf);
+		cnf.saveConfig();
 		return true;
 	}
 	

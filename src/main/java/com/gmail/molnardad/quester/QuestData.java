@@ -14,6 +14,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class QuestData {
 	
 	private QuestManager qMan;
+	private Quester plugin;
 	
 	// GENERAL
 	public boolean verbose = false;
@@ -130,6 +131,10 @@ public class QuestData {
 	// GENERAL
 	
 	public QuestData(Quester plugin) {
+		this.plugin = plugin;
+	}
+	
+	public void readyUp() {
 		qMan = plugin.getQuestManager();
 	}
 	
@@ -148,11 +153,11 @@ public class QuestData {
 	
 	// PROFILES MANIPULATION
 	
-	void saveProfiles(){
+	public void saveProfiles(){
 		Quester.profileConfig.saveConfig();
 	}
 
-	void loadProfiles() {
+	public void loadProfiles() {
 		try {
 			YamlConfiguration config = Quester.profileConfig.getConfig();
 			PlayerProfile prof;
@@ -190,12 +195,12 @@ public class QuestData {
 	
 	// QUESTS MANIPULATION
 	
-	void saveQuests(){
+	public void saveQuests(){
 		
 		Quester.questConfig.saveConfig();
 	}
 	
-	void loadQuests(){
+	public void loadQuests(){
 		YamlConfiguration config = Quester.questConfig.getConfig();
 		for(String key : config.getKeys(false)) {
 			if(config.isConfigurationSection(key)) {
@@ -241,12 +246,12 @@ public class QuestData {
 	
 	// SIGN MANIPULATION
 	
-	void saveHolders(){
+	public void saveHolders(){
 		Quester.holderConfig.saveConfig();
 	}
 
 	@SuppressWarnings("unchecked")
-	void loadHolders() {
+	public void loadHolders() {
 		try {
 
 			YamlConfiguration config = Quester.holderConfig.getConfig();

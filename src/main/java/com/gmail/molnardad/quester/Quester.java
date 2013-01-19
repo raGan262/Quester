@@ -25,6 +25,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandManager;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QPermissionException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QUsageException;
+import com.gmail.molnardad.quester.commands.AdminCommands;
 import com.gmail.molnardad.quester.commands.UserCommands;
 import com.gmail.molnardad.quester.config.*;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
@@ -66,14 +67,23 @@ public class Quester extends JavaPlugin {
 		public void onEnable() {
 			
 			log = this.getLogger();
-			
-			qMan = new QuestManager(this);
+			//Data first
+			data = new QuestData(plugin);
+			this.initializeConfig();
+			//Load languages
 			langMan = new LanguageManager();
+			this.loadLocal();
+			//Load managers
+			qMan = new QuestManager(this);
 			commands = new QCommandManager();
-			
+			data.readyUp(); // data require quest manager
+			//Load configs
 			profileConfig = new ProfileConfig("profiles.yml");
 			questConfig = new QuestConfig("quests.yml");
 			holderConfig = new HolderConfig("holders.yml");
+			data.loadQuests();
+			data.loadProfiles();
+			data.loadHolders();	
 			
 			try {
 			    Metrics metrics = new Metrics(this);
@@ -96,21 +106,12 @@ public class Quester extends JavaPlugin {
 				log.info("EpicBoss found and hooked...");
 			}
 			
-			this.initializeConfig();
-
-			this.loadLocal();
-			
-			data = new QuestData(plugin);
-			data.loadQuests();
-			data.loadProfiles();
-			data.loadHolders();
-			
-			
 			this.setupListeners();
 			
 //			QuesterCommandExecutor cmdExecutor = new QuesterCommandExecutor();
 //			getCommand("q").setExecutor(cmdExecutor);
 			commands.register(UserCommands.class);
+			commands.register(AdminCommands.class);
 			
 			startSaving();
 			loaded = true;
@@ -155,8 +156,11 @@ public class Quester extends JavaPlugin {
 						sender.sendMessage(ChatColor.RED + e.getMessage());
 					}
 					else {
-						e.printStackTrace();
+						sender.sendMessage(ChatColor.RED + e.getMessage());
 					}
+				}
+				catch (NumberFormatException e) {
+					sender.sendMessage(ChatColor.RED + "Number expected, " + e.getMessage() + "found.");
 				}
 				return true;
 			}
@@ -235,7 +239,7 @@ public class Quester extends JavaPlugin {
 			}
 		}
 		
-		public void loadLocal() {
+		private void loadLocal() {
 			langMan.loadLang("english", "langEN");
 			int i = 1;
 			if(config.isConfigurationSection("languges")) {
@@ -248,6 +252,15 @@ public class Quester extends JavaPlugin {
 				}
 			}
 			log.info("Languages loaded. (" + i + ")");
+		}
+		
+		public void reloadLocal() {
+			int i = 0;
+			for(String lang : langMan.getLangSet()) {
+				langMan.reloadLang(lang);
+				i++;
+			}
+			log.info("Languages reloaded. (" + i + ")");
 		}
 		
 		private void setupListeners() {

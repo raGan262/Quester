@@ -50,13 +50,11 @@ public class QuesterStrings {
 	public String HELP_START_PICK = "starts a quest";
 	public String HELP_START_RANDOM = "starts random quest";
 	public String HELP_CANCEL = "cancels current quest";
-	public String HELP_DONE = "completes current quest";
+	public String HELP_DONE = "completes current objective";
 	public String HELP_SWITCH = "switches current quest";
 	public String HELP_PROGRESS = "shows quest progress";
-	public String HELP_QUESTS_USE = "shows held quests";
-	public String HELP_QUESTS_MOD = "shows quests of other player";
-	public String HELP_PROFILE_USE = "displays your quester profile";
-	public String HELP_PROFILE_MOD = "shows player's profile";
+	public String HELP_QUESTS = "shows accepted quests";
+	public String HELP_PROFILE = "shows player's profile";
 	public String HELP_CREATE = "creates a quest";
 	public String HELP_REMOVE = "removes the quest";
 	public String HELP_SELECT = "selects the quest";
@@ -84,12 +82,17 @@ public class QuesterStrings {
 	public String HELP_HOL_SELECT = "selects holder";
 	
 	public String USAGE_LABEL = "Usage: ";
-	public String USAGE_SHOW = "<quest_name>";
+	public String USAGE_SHOW = "\"<quest name>\"";
 	public String USAGE_INFO = "[quest_ID]";
-	public String USAGE_CREATE = "<quest_name>";
+	public String USAGE_START = "\"[quest name]\"";
+	public String USAGE_CANCEL = "[quest_ID]";
+	public String USAGE_SWITCH = "<index>";
+	public String USAGE_QUESTS = "[player]";
+	public String USAGE_PROFILE = "[player]";
+	public String USAGE_CREATE = "\"<quest name>\"";
 	public String USAGE_REMOVE = "<quest_ID>";
 	public String USAGE_SELECT = "<quest_ID>";
-	public String USAGE_NAME = "<new_name>";
+	public String USAGE_NAME = "\"<new name>\"";
 	public String USAGE_DESC = "<set|add>";
 	public String USAGE_DESC_SET = "[description]";
 	public String USAGE_DESC_ADD = "<description>";
@@ -101,7 +104,6 @@ public class QuesterStrings {
 	public String USAGE_WORLD = "<list|add|remove>";
 	public String USAGE_WORLD_ADD = "{<world>}";
 	public String USAGE_WORLD_REMOVE = "{<world>}";
-	public String USAGE_SWITCH = "<index>";
 	
 	// QUEST STRINGs
 	
