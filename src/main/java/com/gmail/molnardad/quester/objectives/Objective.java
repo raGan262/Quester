@@ -8,10 +8,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.QElement;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.utils.Util;
 
-public abstract class Objective {
+public abstract class Objective extends QElement {
 
 	@SuppressWarnings("unchecked")
 	private static Class<? extends Objective>[] classes = new Class[]{

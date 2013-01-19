@@ -6,9 +6,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.QElement;
 import com.gmail.molnardad.quester.Quester;
 
-public abstract class Condition {
+public abstract class Condition extends QElement {
 
 	@SuppressWarnings("unchecked")
 	private static Class<? extends Condition>[] classes = new Class[]{

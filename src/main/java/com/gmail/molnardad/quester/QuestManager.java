@@ -578,7 +578,7 @@ public class QuestManager {
 	}
 	
 	public int createHolder(String name) {
-		QuestHolder qh = new QuestHolder(name);
+		QuestHolder qh = new QuestHolder(name, this);
 		int id = qData.getNewHolderID();
 		qData.holderIds.put(id, qh);
 		qData.saveHolders();
@@ -613,7 +613,12 @@ public class QuestManager {
 		if(qh == null) {
 			throw new QuesterException(ExceptionType.HOL_NOT_SELECTED);
 		}
-		qh.moveQuest(which, where);
+		try {
+			qh.moveQuest(which, where);
+		}
+		catch (IndexOutOfBoundsException e) {
+			throw new QuesterException(lang.ERROR_CMD_ID_OUT_OF_BOUNDS);
+		}
 		qData.saveHolders();
 	}
 	

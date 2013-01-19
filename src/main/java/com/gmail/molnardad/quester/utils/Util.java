@@ -98,7 +98,7 @@ public class Util {
 			if(sender instanceof Player && args[3].equalsIgnoreCase(Quester.data.worldLabelThis)) {
 				loc = new Location(((Player)sender).getWorld(), x, y, z);
 			} else {
-				World world = Quester.plugin.getServer().getWorld(args[3]);
+				World world = Bukkit.getServer().getWorld(args[3]);
 				if(world == null) {
 					throw new QuesterException(ChatColor.RED + lang.ERROR_CMD_WORLD_INVALID);
 				}

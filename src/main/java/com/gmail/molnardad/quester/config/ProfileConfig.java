@@ -5,8 +5,8 @@ import com.gmail.molnardad.quester.Quester;
 public final class ProfileConfig extends CustomConfig {
 
 	
-	public ProfileConfig(String fileName) {
-		super(Quester.plugin, fileName);
+	public ProfileConfig(Quester plugin, String fileName) {
+		super(plugin, fileName);
 	}
 	
 	@Override

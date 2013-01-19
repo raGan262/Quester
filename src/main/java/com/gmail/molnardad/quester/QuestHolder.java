@@ -22,9 +22,9 @@ public class QuestHolder {
 	private int selected = -1;
 	private String name;
 	
-	public QuestHolder(String name) {
+	public QuestHolder(String name, QuestManager qMan) {
 		this.name = name;
-		qMan = Quester.plugin.getQuestManager();
+		this.qMan = qMan;
 	}
 	
 	public void setname(String newName) {
@@ -99,14 +99,10 @@ public class QuestHolder {
 		checkQuests();
 	}
 	
-	public void moveQuest(int from, int to) throws QuesterException {
-		try{
-			heldQuests.get(from);
-			heldQuests.get(to);
-			Util.moveListUnit(heldQuests, from, to);
-		} catch (IndexOutOfBoundsException e) {
-			throw new QuesterException(Quester.plugin.getLanguageManager().getDefaultLang().ERROR_CMD_ID_OUT_OF_BOUNDS);
-		}
+	public void moveQuest(int from, int to) throws QuesterException, IndexOutOfBoundsException {
+		heldQuests.get(from);
+		heldQuests.get(to);
+		Util.moveListUnit(heldQuests, from, to);
 	}
 	
 	public void showQuestsUse(Player player) {
@@ -143,7 +139,7 @@ public class QuestHolder {
 		return map;
 	}
 	
-	public static QuestHolder deserialize(ConfigurationSection section) {
+	public static QuestHolder deserialize(ConfigurationSection section, QuestManager qMan) {
 		QuestHolder qHolder = null;
 		try{
 			if(section == null)
@@ -151,7 +147,7 @@ public class QuestHolder {
 			String name = section.getString("name", "QuestHolder");
 			String str = section.getString("quests", "");
 			
-			qHolder = new QuestHolder(name);
+			qHolder = new QuestHolder(name, qMan);
 			String[] split = str.split(",");
 			
 			int i;

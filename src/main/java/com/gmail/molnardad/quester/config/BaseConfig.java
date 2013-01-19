@@ -12,8 +12,8 @@ import com.gmail.molnardad.quester.Quester;
 
 public class BaseConfig extends CustomConfig {
 
-	public BaseConfig(String fileName) {
-		super(Quester.plugin, fileName);
+	public BaseConfig(Quester plugin, String fileName) {
+		super(plugin, fileName);
 	}
 	
 	private void wrongConfig(String path) {

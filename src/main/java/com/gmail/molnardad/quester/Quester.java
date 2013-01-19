@@ -21,6 +21,7 @@ import org.mcstats.Metrics;
 
 import com.gmail.molnardad.quester.listeners.*;
 import com.gmail.molnardad.quester.strings.LanguageManager;
+import com.gmail.molnardad.quester.utils.Util;
 import com.gmail.molnardad.quester.commandbase.QCommandManager;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QPermissionException;
@@ -33,7 +34,6 @@ import com.gmail.molnardad.quester.exceptions.QuesterException;
 public class Quester extends JavaPlugin {
 
 		public static Logger log = null;
-		public static Quester plugin = null;
 		public static QuestData data = null;
 		public static Random randGen = new Random();
 		public static Economy econ = null;
@@ -43,7 +43,7 @@ public class Quester extends JavaPlugin {
 		public static HolderConfig holderConfig;
 		
 		private QuestManager qMan = null;
-		private LanguageManager langMan;
+		private LanguageManager langMan = null;
 		private QCommandManager commands = null;
 		
 		private boolean loaded = false;
@@ -58,9 +58,10 @@ public class Quester extends JavaPlugin {
 		
 		public static final String LABEL = ChatColor.BLUE + "[" + ChatColor.GOLD + "Quester" + ChatColor.BLUE + "] ";
 		
-		public Quester() {
-			super();
-			plugin = this;
+		@Override
+		public void onLoad() {
+			super.onLoad();
+			QElement.plugin = this;
 		}
 		
 		@Override
@@ -68,19 +69,19 @@ public class Quester extends JavaPlugin {
 			
 			log = this.getLogger();
 			//Data first
-			data = new QuestData(plugin);
+			data = new QuestData(this);
 			this.initializeConfig();
 			//Load languages
-			langMan = new LanguageManager();
+			langMan = new LanguageManager(this);
 			this.loadLocal();
 			//Load managers
 			qMan = new QuestManager(this);
-			commands = new QCommandManager();
+			commands = new QCommandManager(this);
 			data.readyUp(); // data require quest manager
 			//Load configs
-			profileConfig = new ProfileConfig("profiles.yml");
-			questConfig = new QuestConfig("quests.yml");
-			holderConfig = new HolderConfig("holders.yml");
+			profileConfig = new ProfileConfig(this, "profiles.yml");
+			questConfig = new QuestConfig(this, "quests.yml");
+			holderConfig = new HolderConfig(this, "holders.yml");
 			data.loadQuests();
 			data.loadProfiles();
 			data.loadHolders();	
@@ -108,6 +109,9 @@ public class Quester extends JavaPlugin {
 			
 			this.setupListeners();
 			
+			//TODO setLang() only temporary
+			Util.setLang(langMan.getDefaultLang());
+			
 //			QuesterCommandExecutor cmdExecutor = new QuesterCommandExecutor();
 //			getCommand("q").setExecutor(cmdExecutor);
 			commands.register(UserCommands.class);
@@ -128,14 +132,16 @@ public class Quester extends JavaPlugin {
 					log.info("Quester data saved.");
 				}
 			}
-			plugin = null;
 			log = null;
+			data = null;
 			econ = null;
-			qMan = null;
 			citizens2 = false;
 			epicboss = false;
 			vault = false;
 			denizen = false;
+			QElement.plugin = null;
+			//TODO setLang() only temporary
+			Util.setLang(null);
 		}
 		
 		@Override
@@ -153,7 +159,7 @@ public class Quester extends JavaPlugin {
 						sender.sendMessage(ChatColor.RED + "Usage: " + ((QUsageException) e).getUsage());
 					}
 					else if(e instanceof QPermissionException) {
-						sender.sendMessage(ChatColor.RED + e.getMessage());
+						sender.sendMessage(ChatColor.RED + langMan.getDefaultLang().MSG_PERMS);
 					}
 					else {
 						sender.sendMessage(ChatColor.RED + e.getMessage());
@@ -232,7 +238,7 @@ public class Quester extends JavaPlugin {
 		}
 
 		public void initializeConfig() {
-			config = (new BaseConfig("config.yml")).getConfig();
+			config = (new BaseConfig(this, "config.yml")).getConfig();
 			if(data.verbose) {
 				log.info("Config loaded.");
 				log.info(data.ranks.size() + " ranks loaded.");
@@ -290,7 +296,7 @@ public class Quester extends JavaPlugin {
 				getServer().getPluginManager().registerEvents(new Citizens2Listener(this), this);
 			}
 			if(epicboss) {
-				getServer().getPluginManager().registerEvents(new BossDeathListener(), this);
+				getServer().getPluginManager().registerEvents(new BossDeathListener(this), this);
 			}
 		}
 		

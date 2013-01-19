@@ -263,7 +263,7 @@ public class QuestData {
 				for(String key : holders.getKeys(false)) {
 					try {
 						int id = Integer.parseInt(key);
-						qh = QuestHolder.deserialize(holders.getConfigurationSection(key));
+						qh = QuestHolder.deserialize(holders.getConfigurationSection(key), qMan);
 						if(qh == null){
 							throw new InvalidKeyException();
 						}

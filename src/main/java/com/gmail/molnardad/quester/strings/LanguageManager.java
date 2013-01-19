@@ -4,12 +4,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.config.LanguageConfig;
 
 public class LanguageManager {
 	
+	private Quester plugin;
 	private Map<String, LanguageConfig> languages = new HashMap<String, LanguageConfig>();
 
+	public LanguageManager(Quester plugin) {
+		this.plugin = plugin;
+	}
+	
 	public boolean hasLang(String name) {
 		return languages.get(name.toLowerCase()) != null;
 	}
@@ -29,7 +35,7 @@ public class LanguageManager {
 		if(hasLang(name)) {
 			return false;
 		}
-		LanguageConfig cnf = new LanguageConfig(fileName);
+		LanguageConfig cnf = new LanguageConfig(plugin, fileName);
 		languages.put(name.toLowerCase(), cnf);
 		cnf.saveConfig();
 		return true;

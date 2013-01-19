@@ -4,7 +4,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.PlayerProfile;
-import com.gmail.molnardad.quester.Quester;
 
 public final class PointQevent extends Qevent {
 
@@ -50,8 +49,8 @@ public final class PointQevent extends Qevent {
 
 	@Override
 	void run(Player player) {
-		PlayerProfile prof = Quester.plugin.getQuestManager().getProfile(player.getName());
+		PlayerProfile prof = plugin.getQuestManager().getProfile(player.getName());
 		prof.addPoints(amount);
-		Quester.plugin.getQuestManager().checkRank(prof);
+		plugin.getQuestManager().checkRank(prof);
 	}
 }

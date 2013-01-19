@@ -6,9 +6,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.QElement;
 import com.gmail.molnardad.quester.Quester;
 
-public abstract class Qevent {
+public abstract class Qevent extends QElement {
 
 	@SuppressWarnings("unchecked")
 	private static Class<? extends Qevent>[] classes = new Class[]{
@@ -68,7 +69,7 @@ public abstract class Qevent {
 	
 	public int execute(final Player player) {
 		if(delay > 0) {
-			return Bukkit.getScheduler().scheduleSyncDelayedTask(Quester.plugin, new Runnable() {
+			return Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				  public void run() {
 						try {
 							Qevent.this.run(player);

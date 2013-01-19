@@ -4,8 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.Quester;
-
 public final class PointCondition extends Condition {
 
 	public static final String TYPE = "POINT";
@@ -22,7 +20,7 @@ public final class PointCondition extends Condition {
 
 	@Override
 	public boolean isMet(Player player) {
-		return Quester.plugin.getQuestManager().getProfile(player.getName()).getPoints() >= amount;
+		return plugin.getQuestManager().getProfile(player.getName()).getPoints() >= amount;
 	}
 	
 	@Override

@@ -20,13 +20,15 @@ import com.gmail.molnardad.quester.utils.Util;
 public class QCommandManager {
 
 	Logger logger = null;
+	Quester plugin = null;
 	
 	private Map<Method, Map<String, Method>> labels = new HashMap<Method, Map<String, Method>>();
 	private Map<Method, Object> instances = new HashMap<Method, Object>();
 	private Map<Method, QCommand> annotations = new HashMap<Method, QCommand>();
 	
-	public QCommandManager() {
-		logger = Quester.log;
+	public QCommandManager(Quester plugin) {
+		this.logger = Quester.log;
+		this.plugin = plugin;
 	}
 	
 	public void register(Class<?> clss) {
@@ -195,7 +197,7 @@ public class QCommandManager {
 		try {
 			Constructor<?> constr = clss.getConstructor(Quester.class);
 			constr.setAccessible(true);
-			return constr.newInstance(Quester.plugin);
+			return constr.newInstance(plugin);
 		} catch (NoSuchMethodException e) {
 			ex = e;
 		} catch (SecurityException e) {

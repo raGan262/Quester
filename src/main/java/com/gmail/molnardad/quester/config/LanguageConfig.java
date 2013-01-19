@@ -9,8 +9,8 @@ public class LanguageConfig extends CustomConfig {
 	
 	private QuesterStrings strings;
 	
-	public LanguageConfig(String fileName) {
-		super(Quester.plugin, fileName + ".yml");
+	public LanguageConfig(Quester plugin, String fileName) {
+		super(plugin, fileName + ".yml");
 		
 		strings = new QuesterStrings();
 		

@@ -4,8 +4,8 @@ import com.gmail.molnardad.quester.Quester;
 
 public final class QuestConfig extends CustomConfig {
 
-	public QuestConfig(String fileName) {
-		super(Quester.plugin, fileName);
+	public QuestConfig(Quester plugin, String fileName) {
+		super(plugin, fileName);
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import com.gmail.molnardad.quester.Quest;
+import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.objectives.BossObjective;
@@ -18,8 +19,12 @@ import com.gmail.molnardad.quester.objectives.Objective;
 
 public class BossDeathListener implements Listener {
 
-	private QuestManager qm = Quester.qMan;
+	private QuestManager qm;
 	
+	public BossDeathListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+	}
+		
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onFish(BossDeathEvent event) {
 		Player player = Bukkit.getPlayer(event.getPlayer()); // TODO change to event.getPlayer()

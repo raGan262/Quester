@@ -10,8 +10,8 @@ import com.gmail.molnardad.quester.QuesterSign;
 
 public class HolderConfig extends CustomConfig {
 
-	public HolderConfig(String fileName) {
-		super(Quester.plugin, fileName);
+	public HolderConfig(Quester plugin, String fileName) {
+		super(plugin, fileName);
 	}
 
 	@Override
