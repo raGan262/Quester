@@ -154,12 +154,12 @@ public class QuestData {
 	// PROFILES MANIPULATION
 	
 	public void saveProfiles(){
-		Quester.profileConfig.saveConfig();
+		plugin.profileConfig.saveConfig();
 	}
 
 	public void loadProfiles() {
 		try {
-			YamlConfiguration config = Quester.profileConfig.getConfig();
+			YamlConfiguration config = plugin.profileConfig.getConfig();
 			PlayerProfile prof;
 			for(String key : config.getKeys(false)) {
 				prof = null;
@@ -197,11 +197,11 @@ public class QuestData {
 	
 	public void saveQuests(){
 		
-		Quester.questConfig.saveConfig();
+		plugin.questConfig.saveConfig();
 	}
 	
 	public void loadQuests(){
-		YamlConfiguration config = Quester.questConfig.getConfig();
+		YamlConfiguration config = plugin.questConfig.getConfig();
 		for(String key : config.getKeys(false)) {
 			if(config.isConfigurationSection(key)) {
 				if(debug)
@@ -247,14 +247,14 @@ public class QuestData {
 	// SIGN MANIPULATION
 	
 	public void saveHolders(){
-		Quester.holderConfig.saveConfig();
+		plugin.holderConfig.saveConfig();
 	}
 
 	@SuppressWarnings("unchecked")
 	public void loadHolders() {
 		try {
 
-			YamlConfiguration config = Quester.holderConfig.getConfig();
+			YamlConfiguration config = plugin.holderConfig.getConfig();
 			
 			// HOLDERS
 			ConfigurationSection holders = config.getConfigurationSection("holders");

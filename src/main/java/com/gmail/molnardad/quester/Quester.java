@@ -38,9 +38,9 @@ public class Quester extends JavaPlugin {
 		public static Random randGen = new Random();
 		public static Economy econ = null;
 		
-		public static ProfileConfig profileConfig;
-		public static QuestConfig questConfig;
-		public static HolderConfig holderConfig;
+		public ProfileConfig profileConfig;
+		public QuestConfig questConfig;
+		public HolderConfig holderConfig;
 		
 		private QuestManager qMan = null;
 		private LanguageManager langMan = null;

@@ -24,12 +24,14 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestManager {
 	
-	QuesterStrings lang;
-	QuestData qData;
+	private QuesterStrings lang;
+	private QuestData qData;
+	private Quester plugin;
 	
 	public QuestManager(Quester plugin) {
 		this.lang = plugin.getLanguageManager().getLang("english");
 		this.qData = Quester.data;
+		this.plugin = plugin;
 	}
 
 	private Quest getSelected(String name) {
@@ -284,7 +286,7 @@ public class QuestManager {
 		qData.questIds.remove(q.getID());
 		qData.questLocations.remove(q.getID());
 		qData.allQuests.remove(q.getName().toLowerCase());
-		Quester.questConfig.getConfig().set(q.getName().toLowerCase(), null);
+		plugin.questConfig.getConfig().set(q.getName().toLowerCase(), null);
 		qData.adjustQuestID();
 		qData.saveQuests();
 	}
@@ -338,7 +340,7 @@ public class QuestManager {
 		modifyCheck(quest);
 		
 		qData.allQuests.remove(quest.getName().toLowerCase());
-		Quester.questConfig.getConfig().set(quest.getName().toLowerCase(), null);
+		plugin.questConfig.getConfig().set(quest.getName().toLowerCase(), null);
 		quest.setName(newName);
 		qData.allQuests.put(newName.toLowerCase(), quest);
 		qData.questIds.remove(questId);
