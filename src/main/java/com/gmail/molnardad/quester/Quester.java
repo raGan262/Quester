@@ -76,7 +76,6 @@ public class Quester extends JavaPlugin {
 			this.loadLocal();
 			//Load managers
 			qMan = new QuestManager(this);
-			commands = new QCommandManager(this);
 			data.readyUp(); // data require quest manager
 			//Load configs
 			profileConfig = new ProfileConfig(this, "profiles.yml");
@@ -111,9 +110,9 @@ public class Quester extends JavaPlugin {
 			
 			//TODO setLang() only temporary
 			Util.setLang(langMan.getDefaultLang());
+
+			commands = new QCommandManager(this);
 			
-//			QuesterCommandExecutor cmdExecutor = new QuesterCommandExecutor();
-//			getCommand("q").setExecutor(cmdExecutor);
 			commands.register(UserCommands.class);
 			commands.register(AdminCommands.class);
 			
