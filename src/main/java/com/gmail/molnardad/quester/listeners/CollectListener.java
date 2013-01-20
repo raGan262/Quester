@@ -13,20 +13,19 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import com.gmail.molnardad.quester.Quest;
-import com.gmail.molnardad.quester.QuestData;
+import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.QuestManager;
-import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.objectives.CollectObjective;
 import com.gmail.molnardad.quester.objectives.Objective;
 
 public class CollectListener implements Listener {
 	
 	private QuestManager qm;
-	private QuestData qData;
+	private DataManager qData;
 	
-	public CollectListener(Quester plugin) {
-		this.qm = plugin.getQuestManager();
-		this.qData = Quester.data;
+	public CollectListener() {
+		this.qm = QuestManager.getInstance();
+		this.qData = DataManager.getInstance();
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

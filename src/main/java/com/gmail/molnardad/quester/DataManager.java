@@ -11,9 +11,10 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-public class QuestData {
+public class DataManager {
 	
-	private QuestManager qMan;
+	private static DataManager instance = null;
+	
 	private Quester plugin;
 	
 	// GENERAL
@@ -71,6 +72,14 @@ public class QuestData {
 
 	private int questID = -1;
 	private int holderID = -1;
+	
+	public static DataManager getInstance() {
+		return instance;
+	}
+	
+	protected static void setInstance(DataManager dataManager) {
+		instance = dataManager;
+	}
 	
 	// QUEST ID MANIPULATION
 	
@@ -130,12 +139,8 @@ public class QuestData {
 	
 	// GENERAL
 	
-	public QuestData(Quester plugin) {
+	public DataManager(Quester plugin) {
 		this.plugin = plugin;
-	}
-	
-	public void readyUp() {
-		qMan = plugin.getQuestManager();
 	}
 	
 	public void wipeData(){
@@ -158,6 +163,11 @@ public class QuestData {
 	}
 
 	public void loadProfiles() {
+		QuestManager qMan = QuestManager.getInstance();
+		if(qMan == null) {
+			Quester.log.info("Failed to reload profiles: QuestManager null");
+			return;
+		}
 		try {
 			YamlConfiguration config = plugin.profileConfig.getConfig();
 			PlayerProfile prof;
@@ -196,7 +206,6 @@ public class QuestData {
 	// QUESTS MANIPULATION
 	
 	public void saveQuests(){
-		
 		plugin.questConfig.saveConfig();
 	}
 	
@@ -263,7 +272,7 @@ public class QuestData {
 				for(String key : holders.getKeys(false)) {
 					try {
 						int id = Integer.parseInt(key);
-						qh = QuestHolder.deserialize(holders.getConfigurationSection(key), qMan);
+						qh = QuestHolder.deserialize(holders.getConfigurationSection(key));
 						if(qh == null){
 							throw new InvalidKeyException();
 						}

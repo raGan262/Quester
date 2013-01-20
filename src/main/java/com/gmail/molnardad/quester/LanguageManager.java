@@ -1,19 +1,29 @@
-package com.gmail.molnardad.quester.strings;
+package com.gmail.molnardad.quester;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.config.LanguageConfig;
+import com.gmail.molnardad.quester.strings.QuesterStrings;
 
 public class LanguageManager {
+	
+	private static LanguageManager instance = null;
 	
 	private Quester plugin;
 	private Map<String, LanguageConfig> languages = new HashMap<String, LanguageConfig>();
 
 	public LanguageManager(Quester plugin) {
 		this.plugin = plugin;
+	}
+	
+	protected static void setInstance(LanguageManager languageManager) {
+		instance = languageManager;
+	}
+	
+	public static LanguageManager getInstance() {
+		return instance;
 	}
 	
 	public boolean hasLang(String name) {

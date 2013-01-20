@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.exceptions.ObjectiveException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
@@ -55,9 +56,10 @@ public final class ObjectiveCompleteQevent extends Qevent {
 	@Override
 	void run(Player player) {
 		try {
-			List<Integer> prog = plugin.getQuestManager().getProfile(player.getName()).getProgress();
+			QuestManager qMan = QuestManager.getInstance();
+			List<Integer> prog = qMan.getProfile(player.getName()).getProgress();
 			if(objective >= 0 && objective < prog.size()) {
-				int req = plugin.getQuestManager().getPlayerQuest(player.getName()).getObjective(objective).getTargetAmount();
+				int req = qMan.getPlayerQuest(player.getName()).getObjective(objective).getTargetAmount();
 				prog.set(objective, req);
 			} else {
 				throw new ObjectiveException("Objective index out of bounds."); // objective does not exist

@@ -11,20 +11,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import com.gmail.molnardad.quester.Quest;
-import com.gmail.molnardad.quester.QuestData;
+import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.QuestManager;
-import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.objectives.BreakObjective;
 import com.gmail.molnardad.quester.objectives.Objective;
 
 public class BreakListener implements Listener {
 
 	private QuestManager qm;
-	private QuestData qData;
+	private DataManager qData;
 	
-	public BreakListener(Quester plugin) {
-		this.qm = plugin.getQuestManager();
-		this.qData = Quester.data;
+	public BreakListener() {
+		this.qm = QuestManager.getInstance();
+		this.qData = DataManager.getInstance();
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

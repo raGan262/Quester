@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestManager;
-import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.objectives.EnchantObjective;
 import com.gmail.molnardad.quester.objectives.Objective;
 
@@ -22,8 +21,8 @@ public class EnchantListener implements Listener {
 
 	private QuestManager qm;
 	
-	public EnchantListener(Quester plugin) {
-		this.qm = plugin.getQuestManager();
+	public EnchantListener() {
+		this.qm = QuestManager.getInstance();
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

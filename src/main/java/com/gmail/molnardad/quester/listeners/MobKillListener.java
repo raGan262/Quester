@@ -11,7 +11,6 @@ import org.bukkit.event.entity.EntityDeathEvent;
 
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestManager;
-import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.objectives.MobKillObjective;
 import com.gmail.molnardad.quester.objectives.Objective;
 
@@ -19,8 +18,8 @@ public class MobKillListener implements Listener {
 
 	private QuestManager qm;
 	
-	public MobKillListener(Quester plugin) {
-		this.qm = plugin.getQuestManager();
+	public MobKillListener() {
+		this.qm = QuestManager.getInstance();
 	}
 		
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

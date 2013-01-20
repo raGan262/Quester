@@ -1,4 +1,4 @@
-package com.gmail.molnardad.quester.commandbase;
+package com.gmail.molnardad.quester;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -10,7 +10,9 @@ import java.util.logging.Logger;
 
 import org.bukkit.command.CommandSender;
 
-import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.QNestedCommand;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QPermissionException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QUsageException;
@@ -145,7 +147,7 @@ public class QCommandManager {
 		}
 		if(ex != null) {
 			logger.warning("Failed to execute command.");
-			if(Quester.data.debug) {
+			if(DataManager.getInstance().debug) {
 				ex.printStackTrace();
 			}
 		}
@@ -155,7 +157,7 @@ public class QCommandManager {
 		
 		StringBuilder usage = new StringBuilder();
 		
-		usage.append(Quester.data.displayedCmd);
+		usage.append(DataManager.getInstance().displayedCmd);
 		
 		if(method != null) {
 			for(int i = 0; i <= level; i++) {
@@ -172,7 +174,7 @@ public class QCommandManager {
 	
 	public String getUsage(String[] args) {
 		StringBuilder usage = new StringBuilder();
-		usage.append(Quester.data.displayedCmd);
+		usage.append(DataManager.getInstance().displayedCmd);
 		
 		Method method = null;
 		String temp = " help";
@@ -212,7 +214,7 @@ public class QCommandManager {
 			ex = e;
 		}
 		if(ex != null) {
-			if(Quester.data.debug) {
+			if(DataManager.getInstance().debug) {
 				logger.info("Instantiating class '" + clss.getCanonicalName() + " failed.");
 				ex.printStackTrace();
 			}

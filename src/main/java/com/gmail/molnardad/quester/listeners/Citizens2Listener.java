@@ -12,11 +12,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+import com.gmail.molnardad.quester.LanguageManager;
 import com.gmail.molnardad.quester.Quest;
-import com.gmail.molnardad.quester.QuestData;
+import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.QuestHolder;
 import com.gmail.molnardad.quester.QuestManager;
-import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.QuesterTrait;
 import com.gmail.molnardad.quester.exceptions.HolderException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
@@ -31,9 +31,9 @@ public class Citizens2Listener implements Listener {
 	private QuestManager qm;
 	private QuesterStrings lang;
 	
-	public Citizens2Listener(Quester plugin) {
-		this.qm = plugin.getQuestManager();
-		this.lang = plugin.getLanguageManager().getDefaultLang();
+	public Citizens2Listener() {
+		this.qm = QuestManager.getInstance();
+		this.lang = LanguageManager.getInstance().getDefaultLang();
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -41,11 +41,11 @@ public class Citizens2Listener implements Listener {
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
 			QuestHolder qh = qm.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
 			Player player = event.getClicker();
-			if(!Util.permCheck(player, QuestData.PERM_USE_NPC, true)) {
+			if(!Util.permCheck(player, DataManager.PERM_USE_NPC, true)) {
 				return;
 			}
 			// If player has perms and holds blaze rod
-			boolean isOp = Util.permCheck(player, QuestData.PERM_MODIFY, false);
+			boolean isOp = Util.permCheck(player, DataManager.PERM_MODIFY, false);
 			if(isOp) {
 				if(player.getItemInHand().getTypeId() == 369) {
 					event.getNPC().getTrait(QuesterTrait.class).setHolderID(-1);
@@ -81,10 +81,10 @@ public class Citizens2Listener implements Listener {
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
 			QuestHolder qh = qm.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
 			Player player = event.getClicker();
-			if(!Util.permCheck(player, QuestData.PERM_USE_NPC, true)) {
+			if(!Util.permCheck(player, DataManager.PERM_USE_NPC, true)) {
 				return;
 			}
-			boolean isOP = Util.permCheck(player, QuestData.PERM_MODIFY, false);
+			boolean isOP = Util.permCheck(player, DataManager.PERM_MODIFY, false);
 			// If player has perms and holds blaze rod
 			if(isOP) {
 				if(player.getItemInHand().getTypeId() == 369) {

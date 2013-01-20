@@ -142,6 +142,12 @@ public class QuesterStrings {
 	public String HOL_INFO_USAGE = "[golder ID]";
 	public String HOL_SELECT_USAGE = "<holder ID>";
 
+	// SIGN STRINGS
+	
+	public String SIGN_HEADER = "Sign quests";
+	public String SIGN_REGISTERED = "Sign registered.";
+	public String SIGN_UNREGISTERED = "Sign unregistered.";
+	
 	// OBJECTIVE STRINGS
 
 	public String OBJ_USAGE = "<list|add|remove|swap|move|desc|prereq>.";

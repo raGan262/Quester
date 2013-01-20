@@ -22,17 +22,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import com.gmail.molnardad.quester.QuestData;
+import com.gmail.molnardad.quester.DataManager;
+import com.gmail.molnardad.quester.LanguageManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.strings.QuesterStrings;
 
 public class Util {
-	
-	private static QuesterStrings lang = null;
-	
-	public static void setLang(QuesterStrings lang) {
-		Util.lang = lang;
-	}
 	
 	// LINE
 	public static String line(ChatColor lineColor) {
@@ -56,20 +51,24 @@ public class Util {
 	}
 	
 	public static Location getLoc(CommandSender sender, String arg) throws IllegalArgumentException {
+		DataManager data = DataManager.getInstance();
+		QuesterStrings lang = LanguageManager.getInstance().getDefaultLang();
+		
 		String args[] = arg.split(";");
 		Location loc;
 		if(args.length < 1)
 			throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_INVALID);
 		
-		if(args[0].equalsIgnoreCase(Quester.data.locLabelHere)) {
+		if(args[0].equalsIgnoreCase(data.locLabelHere)) {
 			if(sender instanceof Player) {
 				return ((Player) sender).getLocation();
 			}
 			else {
-				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_HERE.replaceAll("%here", Quester.data.locLabelHere));
+				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_HERE
+						.replaceAll("%here", data.locLabelHere));
 			}
 		}
-		else if(args[0].equalsIgnoreCase(Quester.data.locLabelBlock)) {
+		else if(args[0].equalsIgnoreCase(data.locLabelBlock)) {
 			if(sender instanceof Player) {
 				Block block = ((Player) sender).getTargetBlock(null, 5);
 				if(block == null) {
@@ -78,7 +77,8 @@ public class Util {
 				return block.getLocation();
 			}
 			else {
-				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_BLOCK.replaceAll("%block", Quester.data.locLabelBlock));
+				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_BLOCK
+						.replaceAll("%block", data.locLabelBlock));
 			}
 		}
 		
@@ -94,7 +94,7 @@ public class Util {
 			if(y < 0) {
 				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_COORDS_INVALID);
 			}
-			if(sender instanceof Player && args[3].equalsIgnoreCase(Quester.data.worldLabelThis)) {
+			if(sender instanceof Player && args[3].equalsIgnoreCase(data.worldLabelThis)) {
 				loc = new Location(((Player)sender).getWorld(), x, y, z);
 			} else {
 				World world = Bukkit.getServer().getWorld(args[3]);
@@ -155,11 +155,11 @@ public class Util {
 	}
 	
 	public static boolean permCheck(CommandSender sender, String perm, boolean message) {
-		if(sender.isOp() || sender.hasPermission(perm) || sender.hasPermission(QuestData.PERM_ADMIN)) {
+		if(sender.isOp() || sender.hasPermission(perm) || sender.hasPermission(DataManager.PERM_ADMIN)) {
 			return true;
 		}
 		if(message)
-			sender.sendMessage(ChatColor.RED + lang.MSG_PERMS);
+			sender.sendMessage(ChatColor.RED + LanguageManager.getInstance().getDefaultLang().MSG_PERMS);
 		return false;
 	}
 	
@@ -179,6 +179,8 @@ public class Util {
 	}
 	
 	public static Map<Integer, Integer> parseEnchants(String arg) throws IllegalArgumentException {
+		QuesterStrings lang = LanguageManager.getInstance().getDefaultLang();
+		
 		Map<Integer, Integer> enchs = new HashMap<Integer, Integer>();
 		String[] args = arg.split(",");
 		for(int i = 0; i < args.length; i++) {
@@ -220,6 +222,8 @@ public class Util {
 	}
 	
 	public static int[] parseItem(String arg) throws IllegalArgumentException {
+		QuesterStrings lang = LanguageManager.getInstance().getDefaultLang();
+		
 		int[] itm = new int[2];
 		String[] s = arg.split(":");
 		if(s.length > 2) {
@@ -275,6 +279,8 @@ public class Util {
 	}
 	
 	public static PotionEffect parseEffect(String arg) throws IllegalArgumentException {
+		QuesterStrings lang = LanguageManager.getInstance().getDefaultLang();
+		
 		PotionEffectType type = null;
 		int dur = 0, amp = 0;
 		String[] s = arg.split(":");
@@ -383,7 +389,7 @@ public class Util {
 		if(ent == null) {
 			ent = EntityType.fromId(Integer.parseInt(arg));
 			if(ent == null || ent.getTypeId() < 50) {
-				throw new IllegalArgumentException(lang.ERROR_CMD_ENTITY_UNKNOWN);
+				throw new IllegalArgumentException(LanguageManager.getInstance().getDefaultLang().ERROR_CMD_ENTITY_UNKNOWN);
 			}
 		}
 		return ent;
@@ -524,7 +530,7 @@ public class Util {
 				pitch = Float.parseFloat(split[5]);
 			loc = new Location(world, x, y, z, yaw, pitch);
 		} catch (Exception e) {
-			if(Quester.data.debug)
+			if(DataManager.getInstance().debug)
 				Quester.log.severe("Error when deserializing location.");
 		}
 		

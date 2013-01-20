@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.bukkit.configuration.ConfigurationSection;
 
+import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.Quester;
 
 public class BaseConfig extends CustomConfig {
@@ -30,12 +31,14 @@ public class BaseConfig extends CustomConfig {
 	@Override
 	public void initialize() {
 		
+		DataManager data = DataManager.getInstance();
+		
 		String path;
 		String temp;
 		// VERBOSE-LOGGING
 		path = "general.verbose-logging";
 		checkBoolean(path);
-		Quester.data.verbose = this.config.getBoolean(path);
+		data.verbose = this.config.getBoolean(path);
 
 		// SAVE INTERVAL
 		path = "general.save-interval";
@@ -43,37 +46,37 @@ public class BaseConfig extends CustomConfig {
 			this.config.set(path, 15);
 			wrongConfig(path);
 		}
-		Quester.data.saveInterval = this.config.getInt(path);
+		data.saveInterval = this.config.getInt(path);
 		
 		// DEBUG INFO
 		path = "general.debug-info";
 		checkBoolean(path);
-		Quester.data.debug = this.config.getBoolean(path);
+		data.debug = this.config.getBoolean(path);
 		
 		// SHOW ONLY CURRENT
 		path = "objectives.show-only-current";
 		checkBoolean(path);
-		Quester.data.ordOnlyCurrent = this.config.getBoolean(path);
+		data.ordOnlyCurrent = this.config.getBoolean(path);
 		
 		// BREAK NO DROPS
 		path = "objectives.break.no-drops";
 		checkBoolean(path);
-		Quester.data.brkNoDrops = this.config.getBoolean(path);
+		data.brkNoDrops = this.config.getBoolean(path);
 		
 		// BREAK SUBTRACT ON PLACE
 		path = "objectives.break.subtract-on-place";
 		checkBoolean(path);
-		Quester.data.brkSubOnPlace = this.config.getBoolean(path);
+		data.brkSubOnPlace = this.config.getBoolean(path);
 		
 		// COLLECT REMOVE ON PICKUP
 		path = "objectives.collect.remove-on-pickup";
 		checkBoolean(path);
-		Quester.data.colRemPickup = this.config.getBoolean(path);
+		data.colRemPickup = this.config.getBoolean(path);
 				
 		// COLLECT SUBTRACT ON DROP
 		path = "objectives.collect.subtract-on-drop";
 		checkBoolean(path);
-		Quester.data.colSubOnDrop = this.config.getBoolean(path);
+		data.colSubOnDrop = this.config.getBoolean(path);
 		
 		// MAX QUESTS
 		path = "quests.max-amount";
@@ -81,24 +84,24 @@ public class BaseConfig extends CustomConfig {
 			this.config.set(path, 1);
 			wrongConfig(path);
 		}
-		Quester.data.maxQuests = this.config.getInt(path);
+		data.maxQuests = this.config.getInt(path);
 		
 		// PROGRES MESSAGES
 		path = "quests.messages.start-show";
 		checkBoolean(path);
-		Quester.data.progMsgStart = this.config.getBoolean(path);
+		data.progMsgStart = this.config.getBoolean(path);
 		
 		path = "quests.messages.cancel-show";
 		checkBoolean(path);
-		Quester.data.progMsgCancel = this.config.getBoolean(path);
+		data.progMsgCancel = this.config.getBoolean(path);
 		
 		path = "quests.messages.done-show";
 		checkBoolean(path);
-		Quester.data.progMsgDone = this.config.getBoolean(path);
+		data.progMsgDone = this.config.getBoolean(path);
 		
 		path = "quests.messages.objective-show";
 		checkBoolean(path);
-		Quester.data.progMsgObj = this.config.getBoolean(path);
+		data.progMsgObj = this.config.getBoolean(path);
 	
 		// COMMANDS
 		
@@ -108,7 +111,7 @@ public class BaseConfig extends CustomConfig {
 			this.config.set(path, "/q");
 			wrongConfig(path);
 		}
-		Quester.data.displayedCmd = this.config.getString(path);
+		data.displayedCmd = this.config.getString(path);
 		
 		path = "commands.world-label-this";
 		temp = this.config.getString(path, "");
@@ -116,7 +119,7 @@ public class BaseConfig extends CustomConfig {
 			this.config.set(path, "this");
 			wrongConfig(path);
 		}
-		Quester.data.worldLabelThis = this.config.getString(path);
+		data.worldLabelThis = this.config.getString(path);
 		
 		path = "commands.loc-label-here";
 		temp = this.config.getString(path, "");
@@ -124,26 +127,26 @@ public class BaseConfig extends CustomConfig {
 			this.config.set(path, "here");
 			wrongConfig(path);
 		}
-		Quester.data.locLabelHere = this.config.getString(path);
+		data.locLabelHere = this.config.getString(path);
 		
 		path = "commands.loc-label-player";
 		temp = this.config.getString(path, "");
 		if(temp.isEmpty()
-				|| temp.equalsIgnoreCase(Quester.data.locLabelHere)) {
+				|| temp.equalsIgnoreCase(data.locLabelHere)) {
 			this.config.set(path, "player");
 			wrongConfig(path);
 		}
-		Quester.data.locLabelPlayer = this.config.getString(path);
+		data.locLabelPlayer = this.config.getString(path);
 		
 		path = "commands.loc-label-block";
 		temp = this.config.getString(path, "");
 		if(temp.isEmpty() 
-				|| temp.equalsIgnoreCase(Quester.data.locLabelHere)
-				|| temp.equalsIgnoreCase(Quester.data.locLabelPlayer)) {
+				|| temp.equalsIgnoreCase(data.locLabelHere)
+				|| temp.equalsIgnoreCase(data.locLabelPlayer)) {
 			this.config.set(path, "block");
 			wrongConfig(path);
 		}
-		Quester.data.locLabelPlayer = this.config.getString(path);
+		data.locLabelPlayer = this.config.getString(path);
 		
 		// QUESTER RANKS
 		
@@ -170,8 +173,8 @@ public class BaseConfig extends CustomConfig {
 			sortedRanks.add(50);
 		}
 		Collections.sort(sortedRanks);
-		Quester.data.ranks = rankMap;
-		Quester.data.sortedRanks = sortedRanks;
+		data.ranks = rankMap;
+		data.sortedRanks = sortedRanks;
 		
 		
 		saveConfig();

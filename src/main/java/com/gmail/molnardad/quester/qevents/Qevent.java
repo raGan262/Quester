@@ -2,10 +2,11 @@ package com.gmail.molnardad.quester.qevents;
 
 import java.lang.reflect.Method;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.QElement;
 import com.gmail.molnardad.quester.Quester;
 
@@ -67,19 +68,21 @@ public abstract class Qevent extends QElement {
 		return "Unknown";
 	}
 	
-	public int execute(final Player player) {
+	public void execute(final Player player, Quester plugin) {
+		
 		if(delay > 0) {
-			return Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-				  public void run() {
-						try {
-							Qevent.this.run(player);
-						}
-						catch (Exception e) {
-							Quester.log.warning(getType() + " event external exception. [" + occasion + ":" + delay + "]");
-							e.printStackTrace();
-						}
-				  }
-			}, delay*20);
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					try {
+						Qevent.this.run(player);
+					}
+					catch (Exception e) {
+						Quester.log.warning(getType() + " event external exception. [" + occasion + ":" + delay + "]");
+						e.printStackTrace();
+					}
+				}
+			}.runTaskLater(plugin, delay*20);
 		} else {
 			try {
 				Qevent.this.run(player);
@@ -89,7 +92,6 @@ public abstract class Qevent extends QElement {
 				e.printStackTrace();
 			}
 		}
-		return 0;
 	}
 	
 	public abstract void serialize(ConfigurationSection section);
@@ -135,14 +137,14 @@ public abstract class Qevent extends QElement {
 						break;
 					} catch (Exception e) {
 						Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Method deser() missing or broken. " + e.getClass().getName());
-						if(Quester.data.debug)
+						if(DataManager.getInstance().debug)
 							e.printStackTrace();
 						return null;
 					}
 				}
 			} catch (Exception e) {
 				Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Field 'TYPE' missing or access denied. " + e.getClass().getName());
-				if(Quester.data.debug)
+				if(DataManager.getInstance().debug)
 					e.printStackTrace();
 				return null;
 			}

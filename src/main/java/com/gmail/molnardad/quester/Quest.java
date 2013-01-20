@@ -274,6 +274,7 @@ public class Quest {
 	@SuppressWarnings("unchecked")
 	public static Quest deserialize(ConfigurationSection section) {
 		Quest quest;
+		DataManager data = DataManager.getInstance();
 		try {
 			String name;
 			if(section.isString("name")) {
@@ -315,7 +316,7 @@ public class Quest {
 				}
 			}
 
-			if(Quester.data.debug)
+			if(data.debug)
 				Quester.log.info("Deserializing objectives.");
 			Objective obj = null;
 			if(section.isConfigurationSection("objectives")) {
@@ -325,14 +326,14 @@ public class Quest {
 					obj = Objective.deserialize(subsection.getConfigurationSection(String.valueOf(i)));
 					if(obj != null) {
 						quest.addObjective(obj);
-						if(Quester.data.debug)
+						if(data.debug)
 							Quester.log.info("Objective " + i + " OK.");
 					} else
 						Quester.log.severe("Error occured when deserializing objective ID " + i + " in quest '" + quest.getName() + "'.");
 				}
 			}
 
-			if(Quester.data.debug)
+			if(data.debug)
 				Quester.log.info("Deserializing conditions.");
 			Condition con = null;
 			if(section.isConfigurationSection("conditions")) {
@@ -342,14 +343,14 @@ public class Quest {
 					con = Condition.deserialize(subsection.getConfigurationSection(String.valueOf(i)));
 					if(con != null) {
 						quest.addCondition(con);
-						if(Quester.data.debug)
+						if(data.debug)
 							Quester.log.info("Condition " + i + " OK.");
 					} else
 						Quester.log.severe("Error occured when deserializing condition ID " + i + " in quest '" + quest.getName() + "'.");
 				}
 			}
 
-			if(Quester.data.debug)
+			if(data.debug)
 				Quester.log.info("Deserializing events.");
 			Qevent qvt = null;
 			if(section.isConfigurationSection("events")) {
@@ -359,7 +360,7 @@ public class Quest {
 					qvt = Qevent.deserialize(subsection.getConfigurationSection(String.valueOf(i)));
 					if(qvt != null) {
 						quest.addQevent(qvt);
-						if(Quester.data.debug)
+						if(data.debug)
 							Quester.log.info("Event " + i + " OK.");
 					} else
 						Quester.log.severe("Error occured when deserializing event ID:" + i + " in quest '" + quest.getName() + "'.");

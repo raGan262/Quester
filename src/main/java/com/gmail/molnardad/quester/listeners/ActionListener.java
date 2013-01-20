@@ -12,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestManager;
-import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.objectives.ActionObjective;
 import com.gmail.molnardad.quester.objectives.Objective;
 
@@ -20,8 +19,8 @@ public class ActionListener implements Listener {
 
 	private QuestManager qm;
 	
-	public ActionListener(Quester plugin) {
-		this.qm = plugin.getQuestManager();
+	public ActionListener() {
+		this.qm = QuestManager.getInstance();
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

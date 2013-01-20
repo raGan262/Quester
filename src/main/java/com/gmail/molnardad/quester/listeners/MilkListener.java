@@ -10,15 +10,14 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestManager;
-import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.objectives.Objective;
 
 public class MilkListener implements Listener {
 
 	private QuestManager qm;
 	
-	public MilkListener(Quester plugin) {
-		this.qm = plugin.getQuestManager();
+	public MilkListener() {
+		this.qm = QuestManager.getInstance();
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

@@ -24,14 +24,24 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestManager {
 	
+	private static QuestManager instance = null;
+	
 	private QuesterStrings lang;
-	private QuestData qData;
+	private DataManager qData;
 	private Quester plugin;
 	
 	public QuestManager(Quester plugin) {
-		this.lang = plugin.getLanguageManager().getLang("english");
-		this.qData = Quester.data;
+		this.lang = LanguageManager.getInstance().getDefaultLang();
+		this.qData = DataManager.getInstance();
 		this.plugin = plugin;
+	}
+	
+	protected static void setInstance(QuestManager questManager) {
+		instance = questManager;
+	}
+	
+	public static QuestManager getInstance() {
+		return instance;
 	}
 
 	private Quest getSelected(String name) {
@@ -580,7 +590,7 @@ public class QuestManager {
 	}
 	
 	public int createHolder(String name) {
-		QuestHolder qh = new QuestHolder(name, this);
+		QuestHolder qh = new QuestHolder(name);
 		int id = qData.getNewHolderID();
 		qData.holderIds.put(id, qh);
 		qData.saveHolders();
@@ -651,7 +661,7 @@ public class QuestManager {
 		}
 		if(command && qst.hasFlag(QuestFlag.HIDDEN))
 			throw new QuestException(lang.ERROR_Q_NOT_CMD);
-		if (!Util.permCheck(player, QuestData.PERM_ADMIN, false)){
+		if (!Util.permCheck(player, DataManager.PERM_ADMIN, false)){
 			for(Condition con : qst.getConditions()) {
 				if(!con.isMet(player)) {
 					player.sendMessage(ChatColor.RED + con.show());
@@ -669,7 +679,7 @@ public class QuestManager {
 			Quester.log.info(playerName + " started quest '" + qst.getName() + "'.");
 		for(Qevent qv : qst.getQevents()) {
 			if(qv.getOccasion() == -1)
-				qv.execute(player);
+				qv.execute(player, plugin);
 		}
 		qData.saveProfiles();
 	}
@@ -716,7 +726,7 @@ public class QuestManager {
 			Quester.log.info(player.getName() + " cancelled quest '" + quest.getName() + "'.");
 		for(Qevent qv : quest.getQevents()) {
 			if(qv.getOccasion() == -2)
-				qv.execute(player);
+				qv.execute(player, plugin);
 		}
 		qData.saveProfiles();
 	}
@@ -767,7 +777,7 @@ public class QuestManager {
 			Quester.log.info(player.getName() + " completed quest '" + quest.getName() + "'.");
 		for(Qevent qv : quest.getQevents()) {
 			if(qv.getOccasion() == -3)
-				qv.execute(player);
+				qv.execute(player, plugin);
 		}
 		getProfile(player.getName()).addCompleted(quest.getName(), (int) (System.currentTimeMillis() / 1000));
 		qData.saveProfiles();
@@ -803,7 +813,7 @@ public class QuestManager {
 				player.sendMessage(Quester.LABEL + lang.MSG_OBJ_COMPLETED);
 			for(Qevent qv : q.getQevents()) {
 				if(qv.getOccasion() == id) {
-					qv.execute(player);
+					qv.execute(player, plugin);
 				}
 			}
 			if(checkAll) {
@@ -837,7 +847,7 @@ public class QuestManager {
 		if(qst == null)
 			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
 		if(!qst.hasFlag(QuestFlag.ACTIVE) || qst.hasFlag(QuestFlag.HIDDEN)) {
-			if(!Util.permCheck(sender, QuestData.PERM_MODIFY, false)) {
+			if(!Util.permCheck(sender, DataManager.PERM_MODIFY, false)) {
 				throw new QuestException(lang.ERROR_Q_NOT_EXIST);
 			}
 		}

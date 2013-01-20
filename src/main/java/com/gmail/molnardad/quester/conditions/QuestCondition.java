@@ -5,6 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.PlayerProfile;
+import com.gmail.molnardad.quester.QuestManager;
 
 public final class QuestCondition extends Condition {
 	
@@ -24,7 +25,7 @@ public final class QuestCondition extends Condition {
 
 	@Override
 	public boolean isMet(Player player) {
-		PlayerProfile profile = plugin.getQuestManager().getProfile(player.getName());
+		PlayerProfile profile = QuestManager.getInstance().getProfile(player.getName());
 		if (!profile.isCompleted(quest)) {
 			return false;
 		}

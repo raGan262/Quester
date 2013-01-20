@@ -4,7 +4,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.QuestData;
+import com.gmail.molnardad.quester.DataManager;
+import com.gmail.molnardad.quester.LanguageManager;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
@@ -21,8 +22,8 @@ public class UserCommands {
 	private QuesterStrings lang = null;
 	
 	public UserCommands(Quester plugin) {
-		this.qMan = plugin.getQuestManager();
-		this.lang = plugin.getLanguageManager().getDefaultLang();
+		this.qMan = QuestManager.getInstance();
+		this.lang = LanguageManager.getInstance().getDefaultLang();
 	}
 	
 	@QCommand(
@@ -31,7 +32,7 @@ public class UserCommands {
 			max = 1,
 			min = 1,
 			usage = "\"<quest name>\"",
-			permission = QuestData.PERM_USE_SHOW)
+			permission = DataManager.PERM_USE_SHOW)
 	public void show(QCommandContext context, CommandSender sender) throws QuesterException {
 		qMan.showQuest(sender, context.getString(0));
 	}
@@ -42,7 +43,7 @@ public class UserCommands {
 			max = 1,
 			min = 1,
 			usage = "[quest_ID]",
-			permission = QuestData.PERM_MODIFY)
+			permission = DataManager.PERM_MODIFY)
 	public void info(QCommandContext context, CommandSender sender) throws QuesterException {
 		if(context.length() > 0) {
 			qMan.showQuestInfo(sender, context.getInt(0));
@@ -56,9 +57,9 @@ public class UserCommands {
 			labels = {"list"},
 			desc = "displays quest list",
 			max = 0,
-			permission = QuestData.PERM_USE_LIST)
+			permission = DataManager.PERM_USE_LIST)
 	public void list(QCommandContext context, CommandSender sender) {
-		if(Util.permCheck(sender, QuestData.PERM_MODIFY, false)) {
+		if(Util.permCheck(sender, DataManager.PERM_MODIFY, false)) {
 			qMan.showFullQuestList(sender);
 		}
 		else {
@@ -71,9 +72,9 @@ public class UserCommands {
 			desc = "shows player's profile",
 			max = 1,
 			usage = "[player]",
-			permission = QuestData.PERM_USE_PROFILE)
+			permission = DataManager.PERM_USE_PROFILE)
 	public void profile(QCommandContext context, CommandSender sender) throws QuesterException {
-		if(Util.permCheck(sender, QuestData.PERM_ADMIN, false) && context.length() > 0) {
+		if(Util.permCheck(sender, DataManager.PERM_ADMIN, false) && context.length() > 0) {
 			qMan.showProfile(sender, context.getString(0));
 		}
 		else {
@@ -92,14 +93,14 @@ public class UserCommands {
 			return;
 		}
 		if(context.length() == 0) {
-			if(Util.permCheck(sender, QuestData.PERM_USE_START_RANDOM, false)) {
+			if(Util.permCheck(sender, DataManager.PERM_USE_START_RANDOM, false)) {
 				qMan.startRandomQuest(context.getPlayer());
 			}
 			else {
 				throw new QPermissionException();
 			}
 		}
-		else if(Util.permCheck(sender, QuestData.PERM_USE_START_PICK, false)) {
+		else if(Util.permCheck(sender, DataManager.PERM_USE_START_PICK, false)) {
 			qMan.startQuest((Player) sender, context.getString(0), true);
 		}
 		else {
@@ -111,7 +112,7 @@ public class UserCommands {
 			labels = {"done"},
 			desc = "completes current objective",
 			max = 0,
-			permission = QuestData.PERM_USE_DONE)
+			permission = DataManager.PERM_USE_DONE)
 	public void done(QCommandContext context, CommandSender sender) throws QuesterException {
 		if(context.getPlayer() == null) {
 			sender.sendMessage(lang.MSG_ONLY_PLAYER);
@@ -125,7 +126,7 @@ public class UserCommands {
 			desc = "completes current objective",
 			max = 1,
 			usage = "[quest ID]",
-			permission = QuestData.PERM_USE_CANCEL)
+			permission = DataManager.PERM_USE_CANCEL)
 	public void cancel(QCommandContext context, CommandSender sender) throws QuesterException, QCommandException {
 		if(context.getPlayer() == null) {
 			sender.sendMessage(lang.MSG_ONLY_PLAYER);
@@ -144,7 +145,7 @@ public class UserCommands {
 			max = 1,
 			min = 1,
 			usage = "<index>",
-			permission = QuestData.PERM_USE_SWITCH)
+			permission = DataManager.PERM_USE_SWITCH)
 	public void switch0(QCommandContext context, CommandSender sender) throws QuesterException, QCommandException {
 		if(context.getPlayer() == null) {
 			sender.sendMessage(lang.MSG_ONLY_PLAYER);
@@ -160,7 +161,7 @@ public class UserCommands {
 			desc = "shows quest progress",
 			max = 1,
 			usage = "[index]",
-			permission = QuestData.PERM_USE_PROGRESS)
+			permission = DataManager.PERM_USE_PROGRESS)
 	public void progress(QCommandContext context, CommandSender sender) throws QuesterException, QCommandException {
 		if(context.getPlayer() == null) {
 			sender.sendMessage(lang.MSG_ONLY_PLAYER);
@@ -178,9 +179,9 @@ public class UserCommands {
 			desc = "shows player's profile",
 			max = 1,
 			usage = "[player]",
-			permission = QuestData.PERM_USE_QUESTS)
+			permission = DataManager.PERM_USE_QUESTS)
 	public void quests(QCommandContext context, CommandSender sender) throws QuesterException {
-		if(Util.permCheck(sender, QuestData.PERM_ADMIN, false) && context.length() > 0) {
+		if(Util.permCheck(sender, DataManager.PERM_ADMIN, false) && context.length() > 0) {
 			qMan.showTakenQuests(sender, context.getString(0));
 		}
 		else {

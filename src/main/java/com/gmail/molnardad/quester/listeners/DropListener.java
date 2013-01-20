@@ -9,23 +9,25 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestManager;
-import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.objectives.CollectObjective;
 import com.gmail.molnardad.quester.objectives.Objective;
 
 public class DropListener implements Listener {
 
 	private QuestManager qm;
+	private DataManager qData;
 	
-	public DropListener(Quester plugin) {
-		this.qm = plugin.getQuestManager();
+	public DropListener() {
+		this.qm = QuestManager.getInstance();
+		this.qData = DataManager.getInstance();
 	}
 		
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onDrop(PlayerDropItemEvent event) {
-		if(Quester.data.colSubOnDrop) {
+		if(qData.colSubOnDrop) {
 		    Player player = event.getPlayer();
 	    	Quest quest = qm.getPlayerQuest(player.getName());
 		    if(quest != null) {

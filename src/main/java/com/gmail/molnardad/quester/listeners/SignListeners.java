@@ -14,24 +14,28 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import com.gmail.molnardad.quester.LanguageManager;
 import com.gmail.molnardad.quester.Quest;
-import com.gmail.molnardad.quester.QuestData;
+import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.QuestHolder;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.QuesterSign;
 import com.gmail.molnardad.quester.exceptions.HolderException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.strings.QuesterStrings;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class SignListeners implements Listener {
 
 	private QuestManager qm;
-	private QuestData qData;
+	private DataManager qData;
+	private QuesterStrings lang;
 	
-	public SignListeners(Quester plugin) {
-		this.qm = plugin.getQuestManager();
-		this.qData = Quester.data;
+	public SignListeners() {
+		this.qm = QuestManager.getInstance();
+		this.qData = DataManager.getInstance();
+		this.lang = LanguageManager.getInstance().getDefaultLang();
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -45,25 +49,25 @@ public class SignListeners implements Listener {
 			}
 			if(block.getType().getId() != 63 && block.getType().getId() != 68) {
 				qData.signs.remove(block.getLocation().getWorld().getName() + block.getLocation().getBlockX() + block.getLocation().getBlockY() + block.getLocation().getBlockZ());
-				player.sendMessage(Quester.LABEL + "Sign unregistered.");
+				player.sendMessage(Quester.LABEL + lang.SIGN_UNREGISTERED);
 				return;
 			} else { 
 				Sign sign = (Sign) block.getState();
 				if(!sign.getLine(0).equals(ChatColor.BLUE + "[Quester]")) {
 					block.breakNaturally();
 					qData.signs.remove(block.getLocation().getWorld().getName() + block.getLocation().getBlockX() + block.getLocation().getBlockY() + block.getLocation().getBlockZ());
-					player.sendMessage(Quester.LABEL + "Sign unregistered.");
+					player.sendMessage(Quester.LABEL + lang.SIGN_UNREGISTERED);
 					return;
 				}
 			}
 			
-			if(!Util.permCheck(player, QuestData.PERM_USE_SIGN, true)) {
+			if(!Util.permCheck(player, DataManager.PERM_USE_SIGN, true)) {
 				return;
 			}
 			if(player.isSneaking()) {
 				return;
 			}
-			boolean isOp = Util.permCheck(player, QuestData.PERM_MODIFY, false);
+			boolean isOp = Util.permCheck(player, DataManager.PERM_MODIFY, false);
 
 			event.setCancelled(true);
 			QuestHolder qh = qm.getHolder(qs.getHolderID());
@@ -72,13 +76,13 @@ public class SignListeners implements Listener {
 				if(isOp) {
 					if(player.getItemInHand().getTypeId() == 369) {
 						qs.setHolderID(-1);
-						player.sendMessage(ChatColor.GREEN + "Holder unassigned.");
+						player.sendMessage(ChatColor.GREEN + lang.HOL_UNASSIGNED);
 					    return;
 					}
 				}
 				
 				if(qh == null) {
-					player.sendMessage(ChatColor.RED + "No quest holder assigned.");
+					player.sendMessage(ChatColor.RED + lang.ERROR_HOL_NOT_ASSIGNED);
 					return;
 				}
 				
@@ -92,7 +96,7 @@ public class SignListeners implements Listener {
 					
 				}
 				
-				player.sendMessage(Util.line(ChatColor.BLUE, "Sign quests", ChatColor.GOLD));
+				player.sendMessage(Util.line(ChatColor.BLUE, lang.SIGN_HEADER, ChatColor.GOLD));
 				if(isOp) {
 					qh.showQuestsModify(player);
 				} else {
@@ -105,16 +109,16 @@ public class SignListeners implements Listener {
 					if(player.getItemInHand().getTypeId() == 369) {
 						int sel = qm.getSelectedHolderID(player.getName());
 						if(sel < 0){
-							player.sendMessage(ChatColor.RED + "Holder not selected.");
+							player.sendMessage(ChatColor.RED + lang.ERROR_HOL_NOT_ASSIGNED);
 						} else {
 							qs.setHolderID(sel);
-							player.sendMessage(ChatColor.GREEN + "Holder assigned.");
+							player.sendMessage(ChatColor.GREEN + lang.HOL_ASSIGNED);
 						}
 					    return;
 					}
 				}
 				if(qh == null) {
-					player.sendMessage(ChatColor.RED + "No quest holder assigned.");
+					player.sendMessage(ChatColor.RED + lang.ERROR_HOL_NOT_ASSIGNED);
 					return;
 				}
 				int selected = qh.getSelected();
@@ -125,7 +129,7 @@ public class SignListeners implements Listener {
 					int questID = currentQuest == null ? -1 : currentQuest.getID();
 					// player has quest and quest giver does not accept this quest
 					if(questID >= 0 && !qsts.contains(questID)) {
-						player.sendMessage(ChatColor.RED + "You can't complete your quest here.");
+						player.sendMessage(ChatColor.RED + lang.ERROR_Q_NOT_HERE);
 						return;
 					}
 					// player has quest and quest giver accepts this quest
@@ -136,7 +140,7 @@ public class SignListeners implements Listener {
 							try {
 								qm.showProgress(player);
 							} catch (QuesterException f) {
-								player.sendMessage(ChatColor.DARK_PURPLE + "Interesting error, you don't have and have quest at once !");
+								player.sendMessage(ChatColor.DARK_PURPLE + lang.ERROR_INTERESTING);
 							}
 						}
 						return;
@@ -150,7 +154,7 @@ public class SignListeners implements Listener {
 						player.sendMessage(e.getMessage());
 					}
 				} else {
-					player.sendMessage(ChatColor.RED + "No quest selected.");
+					player.sendMessage(ChatColor.RED + lang.ERROR_Q_NOT_SELECTED);
 				}
 				
 			}
@@ -163,12 +167,12 @@ public class SignListeners implements Listener {
 		if(block.getType().getId() == 63 || block.getType().getId() == 68) {
 			Sign sign = (Sign) block.getState();
 			if(qData.signs.get(sign.getLocation().getWorld().getName() + sign.getLocation().getBlockX() + sign.getLocation().getBlockY() + sign.getLocation().getBlockZ()) != null) {
-				if(!event.getPlayer().isSneaking() || !Util.permCheck(event.getPlayer(), QuestData.PERM_MODIFY, false)) {
+				if(!event.getPlayer().isSneaking() || !Util.permCheck(event.getPlayer(), DataManager.PERM_MODIFY, false)) {
 					event.setCancelled(true);
 					return;
 				}
 				qData.signs.remove(sign.getLocation().getWorld().getName() + sign.getLocation().getBlockX() + sign.getLocation().getBlockY() + sign.getLocation().getBlockZ());
-				event.getPlayer().sendMessage(Quester.LABEL + "Sign unregistered.");;
+				event.getPlayer().sendMessage(Quester.LABEL + lang.SIGN_UNREGISTERED);;
 			}
 		}
 	}
@@ -177,13 +181,13 @@ public class SignListeners implements Listener {
 	public void onSignChange(SignChangeEvent event) {
 		Block block = event.getBlock();
 		if(event.getLine(0).equals("[Quester]")) {
-			if(!Util.permCheck(event.getPlayer(), QuestData.PERM_MODIFY, true)) {
+			if(!Util.permCheck(event.getPlayer(), DataManager.PERM_MODIFY, true)) {
 				block.breakNaturally();
 			}
 			event.setLine(0, ChatColor.BLUE + "[Quester]");
 			QuesterSign sign = new QuesterSign(block.getLocation());
 			qData.signs.put(sign.getLocation().getWorld().getName() + sign.getLocation().getBlockX() + sign.getLocation().getBlockY() + sign.getLocation().getBlockZ(), sign);
-			event.getPlayer().sendMessage(Quester.LABEL + "Sign registered.");;
+			event.getPlayer().sendMessage(Quester.LABEL + lang.SIGN_REGISTERED);;
 		}
 	}
 }

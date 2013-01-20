@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 
@@ -52,7 +53,7 @@ public final class QuestQevent extends Qevent {
 	@Override
 	void run(Player player) {
 		try {
-			plugin.getQuestManager().startQuest(player, quest, false);
+			QuestManager.getInstance().startQuest(player, quest, false);
 		} catch (QuesterException e) {
 			Quester.log.info("Event failed to give quest to " + player.getName() + ". Reason: " + ChatColor.stripColor(e.getMessage()));
 		}

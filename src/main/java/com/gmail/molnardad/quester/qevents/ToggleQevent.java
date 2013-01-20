@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 
@@ -52,7 +53,7 @@ public final class ToggleQevent extends Qevent {
 	@Override
 	void run(Player player) {
 		try {
-			plugin.getQuestManager().toggleQuest(quest);
+			QuestManager.getInstance().toggleQuest(quest);
 		} catch (QuesterException e) {
 			Quester.log.info("Event failed to toggle quest. Reason: " + ChatColor.stripColor(e.getMessage()));
 		}
