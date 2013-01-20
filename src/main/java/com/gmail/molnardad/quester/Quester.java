@@ -38,9 +38,10 @@ public class Quester extends JavaPlugin {
 		public static Random randGen = new Random();
 		public static Economy econ = null;
 		
-		public ProfileConfig profileConfig;
-		public QuestConfig questConfig;
-		public HolderConfig holderConfig;
+		public ProfileConfig profileConfig = null;
+		public QuestConfig questConfig = null;
+		public HolderConfig holderConfig = null;
+		public YamlConfiguration config = null;
 		
 		private QuestManager qMan = null;
 		private LanguageManager langMan = null;
@@ -54,7 +55,6 @@ public class Quester extends JavaPlugin {
 		public static boolean vault = false;
 		public static boolean denizen = false;
 
-		public YamlConfiguration config = null;
 		
 		public static final String LABEL = ChatColor.BLUE + "[" + ChatColor.GOLD + "Quester" + ChatColor.BLUE + "] ";
 		
