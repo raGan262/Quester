@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.utils.Util;
 
 public final class ItemQevent extends Qevent {
@@ -81,7 +80,7 @@ public final class ItemQevent extends Qevent {
 			if(section.isString("enchants"))
 				try {
 					enchs = Util.parseEnchants(section.getString("enchants"));
-				} catch (QuesterException e) {
+				} catch (IllegalArgumentException e) {
 					enchs = null;
 				}
 		} catch (Exception e) {

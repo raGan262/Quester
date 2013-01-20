@@ -18,6 +18,7 @@ import com.gmail.molnardad.quester.QuestHolder;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.QuesterTrait;
+import com.gmail.molnardad.quester.exceptions.HolderException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.objectives.NpcKillObjective;
 import com.gmail.molnardad.quester.objectives.NpcObjective;
@@ -58,7 +59,7 @@ public class Citizens2Listener implements Listener {
 			}
 			try {
 				qh.selectNext();
-			} catch (QuesterException e) {
+			} catch (HolderException e) {
 				player.sendMessage(e.getMessage());
 				if(!isOp) {
 					return;

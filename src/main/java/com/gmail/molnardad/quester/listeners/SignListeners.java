@@ -20,7 +20,7 @@ import com.gmail.molnardad.quester.QuestHolder;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.QuesterSign;
-import com.gmail.molnardad.quester.exceptions.ExceptionType;
+import com.gmail.molnardad.quester.exceptions.HolderException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.utils.Util;
 
@@ -84,10 +84,9 @@ public class SignListeners implements Listener {
 				
 				try {
 					qh.selectNext();
-				} catch (QuesterException e) {
-					if(isOp && e.type() == ExceptionType.Q_NONE_ACTIVE) {
-					} else {
-						player.sendMessage(e.getMessage());
+				} catch (HolderException e) {
+					player.sendMessage(e.getMessage());
+					if(!isOp) {
 						return;
 					}
 					

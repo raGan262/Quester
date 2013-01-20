@@ -79,10 +79,10 @@ public class QuestManager {
 	
 	private void modifyCheck(Quest quest) throws QuesterException {
 		if(quest == null) {
-			throw new QuesterException(ExceptionType.Q_NOT_SELECTED);
+			throw new QuestException(lang.ERROR_Q_NOT_SELECTED);
 		}
 		if(quest.hasFlag(QuestFlag.ACTIVE)) {
-			throw new QuesterException(ExceptionType.Q_CANT_MODIFY);
+			throw new QuestException(lang.ERROR_Q_CANT_MODIFY);
 		}
 	}
 	
@@ -154,7 +154,7 @@ public class QuestManager {
 	
 	public boolean areConditionsMet(Player player, Quest quest) throws QuesterException {
 		if(quest == null)
-			throw new QuesterException(ExceptionType.Q_NOT_EXIST);
+			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
 		for(Condition c : quest.getConditions()) {
 			if(!c.isMet(player))
 				return false;
@@ -263,14 +263,14 @@ public class QuestManager {
 	public void selectQuest(String changer, int id) throws QuesterException {
 		Quest q = getQuest(id);
 		if(q == null) {
-			throw new QuesterException(ExceptionType.Q_NOT_EXIST);
+			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
 		}
 		getProfile(changer).setSelected(q.getID());
 	}
 	
 	public void createQuest(String changer, String questName) throws QuesterException {
 		if(isQuest(questName)){
-			throw new QuesterException(ExceptionType.Q_EXIST);
+			throw new QuestException(lang.ERROR_Q_EXIST);
 		}
 		Quest q = new Quest(questName);
 		qData.assignQuestID(q);
@@ -322,7 +322,7 @@ public class QuestManager {
 	
 	public void toggleQuest(Quest q) throws QuesterException {
 		if(q == null){	
-			throw new QuesterException(ExceptionType.Q_NOT_EXIST);
+			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
 		}
 		if(q.hasFlag(QuestFlag.ACTIVE)){
 			deactivateQuest(q);
@@ -335,7 +335,7 @@ public class QuestManager {
 		int questId = getSelectedID(changer);
 		Quest quest = getQuest(questId);
 		if(isQuest(newName)) {
-			throw new QuesterException(ExceptionType.Q_EXIST);
+			throw new QuestException(lang.ERROR_Q_EXIST);
 		}
 		modifyCheck(quest);
 		
@@ -421,7 +421,7 @@ public class QuestManager {
 		Quest quest = getSelected(changer);
 		modifyCheck(quest);
 		if(!quest.removeObjective(id)){
-			throw new QuesterException(ExceptionType.OBJ_NOT_EXIST);
+			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
 		} else {
 			qData.saveQuests();
 		}
@@ -432,7 +432,7 @@ public class QuestManager {
 		modifyCheck(quest);
 		List<Objective> objs = quest.getObjectives();
 		if(id >= objs.size() || id < 0) {
-			throw new QuesterException(ExceptionType.OBJ_NOT_EXIST);
+			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
 		}
 		objs.get(id).addDescription(desc);
 		qData.saveQuests();
@@ -443,7 +443,7 @@ public class QuestManager {
 		modifyCheck(quest);
 		List<Objective> objs = quest.getObjectives();
 		if(id >= objs.size() || id < 0) {
-			throw new QuesterException(ExceptionType.OBJ_NOT_EXIST);
+			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
 		}
 		objs.get(id).removeDescription();
 		qData.saveQuests();
@@ -452,12 +452,12 @@ public class QuestManager {
 	public void swapQuestObjectives(String changer, int first, int second) throws QuesterException {
 		Quest quest = getSelected(changer);
 		if(first == second) {
-			throw new QuesterException(ExceptionType.WHY);
+			throw new CustomException(lang.ERROR_WHY);
 		}
 		modifyCheck(quest);
 		
 		if(quest.getObjective(first) == null || quest.getObjective(second) == null) {
-			throw new QuesterException(ExceptionType.OBJ_NOT_EXIST);
+			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
 		}
 		List<Objective> objs = quest.getObjectives();
 		Objective obj = objs.get(first);
@@ -469,12 +469,12 @@ public class QuestManager {
 	public void moveQuestObjective(String changer, int which, int where) throws QuesterException {
 		Quest quest = getSelected(changer);
 		if(which == where) {
-			throw new QuesterException(ExceptionType.WHY);
+			throw new CustomException(lang.ERROR_WHY);
 		}
 		modifyCheck(quest);
 		
 		if(quest.getObjective(which) == null || quest.getObjective(where) == null) {
-			throw new QuesterException(lang.ERROR_CMD_ID_OUT_OF_BOUNDS);
+			throw new CustomException(lang.ERROR_CMD_ID_OUT_OF_BOUNDS);
 		}
 		Util.moveListUnit(quest.getObjectives(), which, where);
 		qData.saveQuests();
@@ -485,7 +485,7 @@ public class QuestManager {
 		modifyCheck(quest);
 		List<Objective> objs = quest.getObjectives();
 		if(id >= objs.size() || id < 0) {
-			throw new QuesterException(ExceptionType.OBJ_NOT_EXIST);
+			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
 		}
 		for(int i : prereq) {
 			if(i >= objs.size() || i < 0 || i != id) {
@@ -500,7 +500,7 @@ public class QuestManager {
 		modifyCheck(quest);
 		List<Objective> objs = quest.getObjectives();
 		if(id >= objs.size() || id < 0) {
-			throw new QuesterException(ExceptionType.OBJ_NOT_EXIST);
+			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
 		}
 		for(int i : prereq) {
 			objs.get(id).removePrerequisity(i);
@@ -519,7 +519,7 @@ public class QuestManager {
 		Quest quest = getSelected(changer);
 		modifyCheck(quest);
 		if(!quest.removeCondition(id)){
-			throw new QuesterException(ExceptionType.CON_NOT_EXIST);
+			throw new ConditionException(lang.ERROR_CON_NOT_EXIST);
 		} else {
 			qData.saveQuests();
 		}
@@ -530,7 +530,7 @@ public class QuestManager {
 		modifyCheck(quest);
 		List<Condition> cons = quest.getConditions();
 		if(id >= cons.size() || id < 0) {
-			throw new QuesterException(ExceptionType.CON_NOT_EXIST);
+			throw new ConditionException(lang.ERROR_CON_NOT_EXIST);
 		}
 		cons.get(id).addDescription(desc);
 		qData.saveQuests();
@@ -541,7 +541,7 @@ public class QuestManager {
 		modifyCheck(quest);
 		List<Condition> cons = quest.getConditions();
 		if(id >= cons.size() || id < 0) {
-			throw new QuesterException(ExceptionType.CON_NOT_EXIST);
+			throw new ConditionException(lang.ERROR_CON_NOT_EXIST);
 		}
 		cons.get(id).removeDescription();
 		qData.saveQuests();
@@ -552,7 +552,7 @@ public class QuestManager {
 		modifyCheck(quest);
 		int occasion = newQevent.getOccasion();
 		if(occasion < -3 || occasion >= quest.getObjectives().size() ) {
-			throw new QuesterException(ExceptionType.OCC_NOT_EXIST);
+			throw new ConditionException(lang.ERROR_OCC_NOT_EXIST);
 		}
 		quest.addQevent(newQevent);
 		qData.saveQuests();
@@ -562,7 +562,7 @@ public class QuestManager {
 		Quest quest = getSelected(changer);
 		modifyCheck(quest);
 		if(!quest.removeQevent(id)){
-			throw new QuesterException(ExceptionType.EVT_NOT_EXIST);
+			throw new EventException(lang.ERROR_EVT_NOT_EXIST);
 		}
 		qData.saveQuests();
 	}
@@ -570,7 +570,7 @@ public class QuestManager {
 	public void selectHolder(String changer, int id) throws QuesterException {
 		QuestHolder qh = getHolder(id);
 		if(qh == null) {
-			throw new QuesterException(ExceptionType.HOL_NOT_EXIST);
+			throw new HolderException(lang.ERROR_HOL_NOT_EXIST);
 		}
 		getProfile(changer).setHolderID(id);
 	}
@@ -595,7 +595,7 @@ public class QuestManager {
 	public void addHolderQuest(String changer, int questID) throws QuesterException {
 		QuestHolder qh = getHolder(getProfile(changer).getHolderID());
 		if(qh == null) {
-			throw new QuesterException(ExceptionType.HOL_NOT_EXIST);
+			throw new HolderException(lang.ERROR_HOL_NOT_EXIST);
 		}
 		qh.addQuest(questID);
 		qData.saveHolders();
@@ -604,7 +604,7 @@ public class QuestManager {
 	public void removeHolderQuest(String changer, int questID) throws QuesterException {
 		QuestHolder qh = getHolder(getProfile(changer).getHolderID());
 		if(qh == null) {
-			throw new QuesterException(ExceptionType.HOL_NOT_EXIST);
+			throw new HolderException(lang.ERROR_HOL_NOT_EXIST);
 		}
 		qh.removeQuest(questID);
 		qData.saveHolders();
@@ -613,13 +613,13 @@ public class QuestManager {
 	public void moveHolderQuest(String changer, int which, int where) throws QuesterException {
 		QuestHolder qh = getHolder(getProfile(changer).getHolderID());
 		if(qh == null) {
-			throw new QuesterException(ExceptionType.HOL_NOT_SELECTED);
+			throw new HolderException(lang.ERROR_HOL_NOT_SELECTED);
 		}
 		try {
 			qh.moveQuest(which, where);
 		}
 		catch (IndexOutOfBoundsException e) {
-			throw new QuesterException(lang.ERROR_CMD_ID_OUT_OF_BOUNDS);
+			throw new CustomException(lang.ERROR_CMD_ID_OUT_OF_BOUNDS);
 		}
 		qData.saveHolders();
 	}
@@ -637,20 +637,20 @@ public class QuestManager {
 	public void startQuest(Player player, Quest qst, boolean command) throws QuesterException {
 		String playerName = player.getName();
 		if(qst == null){
-			throw new QuesterException(ExceptionType.Q_NOT_EXIST);
+			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
 		}
 		PlayerProfile prof = getProfile(playerName);
 		if(prof.hasQuest(qst.getName())) {
-			throw new QuesterException(ExceptionType.Q_ASSIGNED);
+			throw new QuestException(lang.ERROR_Q_ASSIGNED);
 		}
 		if(prof.getQuestAmount() >= qData.maxQuests) {
-			throw new QuesterException(ExceptionType.Q_MAX_AMOUNT);
+			throw new QuestException(lang.ERROR_Q_MAX_AMOUNT);
 		}
 		if(!qst.hasFlag(QuestFlag.ACTIVE)) {
-			throw new QuesterException(ExceptionType.Q_NOT_EXIST);
+			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
 		}
 		if(command && qst.hasFlag(QuestFlag.HIDDEN))
-			throw new QuesterException(ExceptionType.Q_NOT_CMD);
+			throw new QuestException(lang.ERROR_Q_NOT_CMD);
 		if (!Util.permCheck(player, QuestData.PERM_ADMIN, false)){
 			for(Condition con : qst.getConditions()) {
 				if(!con.isMet(player)) {
@@ -687,7 +687,7 @@ public class QuestManager {
 		}
 		qsts = null;
 		if(aqsts.isEmpty()) {
-			throw new QuesterException(ExceptionType.Q_NONE_ACTIVE);
+			throw new QuestException(lang.ERROR_Q_NONE_ACTIVE);
 		}
 		int id = Quester.randGen.nextInt(aqsts.size());
 		startQuest(player, aqsts.get(id).getName(), false);
@@ -704,10 +704,10 @@ public class QuestManager {
 			quest = getPlayerQuest(player.getName(), index);
 		}
 		if(quest == null) {
-			throw new QuesterException(ExceptionType.Q_NOT_ASSIGNED);
+			throw new QuestException(lang.ERROR_Q_NOT_ASSIGNED);
 		}
 		if(command && quest.hasFlag(QuestFlag.UNCANCELLABLE)) {
-			throw new QuesterException(ExceptionType.Q_CANT_CANCEL);
+			throw new QuestException(lang.ERROR_Q_CANT_CANCEL);
 		}
 		unassignQuest(player.getName(), index);
 		if(qData.progMsgCancel)
@@ -724,11 +724,11 @@ public class QuestManager {
 	public void complete(Player player, boolean command) throws QuesterException {
 		Quest quest = getPlayerQuest(player.getName());
 		if(quest == null)
-			throw new QuesterException(ExceptionType.Q_NOT_ASSIGNED);
+			throw new QuestException(lang.ERROR_Q_NOT_ASSIGNED);
 		if(command && quest.hasFlag(QuestFlag.HIDDEN))
-			throw new QuesterException(ExceptionType.Q_NOT_CMD);
+			throw new QuestException(lang.ERROR_Q_NOT_CMD);
     	if(!quest.allowedWorld(player.getWorld().getName()))
-    		throw new QuesterException(ExceptionType.Q_BAD_WORLD);
+    		throw new QuestException(lang.ERROR_Q_BAD_WORLD);
     	
 		completeObjective(player);
 	}
@@ -753,7 +753,7 @@ public class QuestManager {
 			completeQuest(player);
 		}
 		else if(!completed && i != 0) {
-			throw new QuesterException(ExceptionType.OBJ_CANT_DO);
+			throw new ObjectiveException(lang.ERROR_OBJ_CANT_DO);
 		}
 	}
 	
@@ -835,10 +835,10 @@ public class QuestManager {
 	public void showQuest(CommandSender sender, String questName) throws QuesterException {
 		Quest qst = getQuest(questName);
 		if(qst == null)
-			throw new QuesterException(ExceptionType.Q_NOT_EXIST);
+			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
 		if(!qst.hasFlag(QuestFlag.ACTIVE) || qst.hasFlag(QuestFlag.HIDDEN)) {
 			if(!Util.permCheck(sender, QuestData.PERM_MODIFY, false)) {
-				throw new QuesterException(ExceptionType.Q_NOT_EXIST);
+				throw new QuestException(lang.ERROR_Q_NOT_EXIST);
 			}
 		}
 		Player player = null;
@@ -883,7 +883,7 @@ public class QuestManager {
 	
 	public void showQuestInfo(CommandSender sender, Quest qst) throws QuesterException {
 		if(qst == null) {
-			throw new QuesterException(ExceptionType.Q_NOT_EXIST);
+			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
 		}
 		
 		sender.sendMessage(Util.line(ChatColor.BLUE, lang.INFO_QUEST_INFO, ChatColor.GOLD));
@@ -967,7 +967,7 @@ public class QuestManager {
 			progress = getProgress(player.getName(), index);
 		}
 		if(quest == null) {
-			throw new QuesterException(ExceptionType.Q_NOT_ASSIGNED);
+			throw new QuestException(lang.ERROR_Q_NOT_ASSIGNED);
 		}
 		if(!quest.hasFlag(QuestFlag.HIDDENOBJS)) {
 			player.sendMessage(lang.INFO_PROGRESS.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
@@ -1006,9 +1006,9 @@ public class QuestManager {
 		qh = getHolder(id);
 		if(qh == null) {
 			if(holderID < 0)
-				throw new QuesterException(ExceptionType.HOL_NOT_SELECTED);
+				throw new HolderException(lang.ERROR_HOL_NOT_SELECTED);
 			else
-				throw new QuesterException(ExceptionType.HOL_NOT_EXIST);
+				throw new HolderException(lang.ERROR_HOL_NOT_EXIST);
 		}
 		sender.sendMessage(ChatColor.GOLD + "Holder ID: " + ChatColor.RESET + id);
 		qh.showQuestsModify(sender);

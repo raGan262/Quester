@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.utils.Util;
 
 public final class PlaceObjective extends Objective {
@@ -75,7 +74,7 @@ public final class PlaceObjective extends Objective {
 			int[] itm = Util.parseItem(section.getString("block", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
-			} catch (QuesterException e) {
+			} catch (IllegalArgumentException e) {
 				return null;
 		}
 		if(section.isInt("amount")) {

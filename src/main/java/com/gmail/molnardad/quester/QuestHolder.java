@@ -10,8 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.exceptions.ExceptionType;
-import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.exceptions.HolderException;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestHolder {
@@ -50,9 +49,9 @@ public class QuestHolder {
 		return selected;
 	}
 	
-	public void selectNext() throws QuesterException {
-		if(heldQuests.isEmpty())
-			throw new QuesterException(ExceptionType.Q_NONE);
+	public void selectNext() throws HolderException {
+		if(heldQuests.isEmpty()) // TODO exception message
+			throw new HolderException("HOLDER EMPTY");
 		if(getSelected() == -1) {
 			selected = 0;
 			if(qMan.isQuestActive(heldQuests.get(0)))
@@ -68,8 +67,8 @@ public class QuestHolder {
 			if(qMan.isQuestActive(heldQuests.get(i))) {
 				selected = i;
 				notChosen = false;
-			} else if(i == selected) {
-				throw new QuesterException(ExceptionType.Q_NONE_ACTIVE);
+			} else if(i == selected) { // TODO exception message
+				throw new HolderException("NO ACTIVE QUEST");
 			}
 		}
 	}
@@ -99,7 +98,7 @@ public class QuestHolder {
 		checkQuests();
 	}
 	
-	public void moveQuest(int from, int to) throws QuesterException, IndexOutOfBoundsException {
+	public void moveQuest(int from, int to) throws HolderException, IndexOutOfBoundsException {
 		heldQuests.get(from);
 		heldQuests.get(to);
 		Util.moveListUnit(heldQuests, from, to);

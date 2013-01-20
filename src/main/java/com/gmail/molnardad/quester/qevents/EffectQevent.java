@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
 import com.gmail.molnardad.quester.Quester;
-import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class EffectQevent extends Qevent {
@@ -47,7 +46,7 @@ public class EffectQevent extends Qevent {
 		if(section.isString("effect"))
 			try {
 				eff = Util.parseEffect(section.getString("effect"));
-			} catch (QuesterException e) {
+			} catch (IllegalArgumentException e) {
 				Quester.log.severe("Error deserializing effect event: " + ChatColor.stripColor(e.getMessage()));
 				return null;
 			}

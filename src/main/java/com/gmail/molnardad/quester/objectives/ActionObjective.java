@@ -8,7 +8,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 
-import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.utils.Util;
 
 public final class ActionObjective extends Objective {
@@ -155,12 +154,12 @@ public final class ActionObjective extends Objective {
 			itm = Util.parseItem(section.getString("block", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
-		} catch (QuesterException ignore) {}
+		} catch (IllegalArgumentException ignore) {}
 		try {
 			itm = Util.parseItem(section.getString("hand", ""));
 			hnd = Material.getMaterial(itm[0]);
 			hdat = itm[1];
-		} catch (QuesterException ignore) {}
+		} catch (IllegalArgumentException ignore) {}
 		clck = section.getInt("click", 0);
 		loc = Util.deserializeLocString(section.getString("location", ""));
 		rng = section.getInt("range", 0);

@@ -12,7 +12,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.molnardad.quester.QuestManager;
-import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.utils.Util;
 
 public final class ItemObjective extends Objective {
@@ -127,7 +126,7 @@ public final class ItemObjective extends Objective {
 			if(section.isString("enchants"))
 				try {
 					enchs = Util.parseEnchants(section.getString("enchants"));
-				} catch (QuesterException e) {
+				} catch (IllegalArgumentException e) {
 					enchs = null;
 				}
 		} catch (Exception e) {

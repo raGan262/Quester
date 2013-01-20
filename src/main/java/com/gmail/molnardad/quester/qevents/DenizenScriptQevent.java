@@ -9,6 +9,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.exceptions.CustomException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 
 public final class DenizenScriptQevent extends Qevent {
@@ -80,10 +81,10 @@ public final class DenizenScriptQevent extends Qevent {
 			if(Quester.denizen) {
 				Denizen den = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 				if(den == null) {
-					throw new QuesterException("Denizen plugin not found.");
+					throw new CustomException("Denizen plugin not found.");
 				}
 				if(!playerContext && (npc < 0)) {
-					throw new QuesterException("Not enough information to run script. (should not happen, bug)");
+					throw new CustomException("Not enough information to run script. (should not happen, bug)");
 				}
 				else {
 					boolean success = false;
@@ -95,7 +96,7 @@ public final class DenizenScriptQevent extends Qevent {
 					if(playerContext) {
 						if(npc >= 0) {
 							if(denNpc == null) {
-								throw new QuesterException("Couldn't resolve DENIZEN npc.");
+								throw new CustomException("Couldn't resolve DENIZEN npc.");
 							}
 							if(focusNPC) {
 								success = den.getScriptEngine().getScriptBuilder().runTaskScript(denNpc, player, script);
@@ -110,12 +111,12 @@ public final class DenizenScriptQevent extends Qevent {
 					}
 					else {
 						if(denNpc == null) {
-							throw new QuesterException("Couldn't resolve DENIZEN npc.");
+							throw new CustomException("Couldn't resolve DENIZEN npc.");
 						}
 						success = den.getScriptEngine().getScriptBuilder().runTaskScript(denNpc, script);
 					}
 					if(!success) {
-						throw new QuesterException("Script not found or brokens.");
+						throw new CustomException("Script not found or brokens.");
 					}
 				}
 			}

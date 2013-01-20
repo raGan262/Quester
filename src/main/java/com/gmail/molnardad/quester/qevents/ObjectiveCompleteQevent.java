@@ -7,7 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
-import com.gmail.molnardad.quester.exceptions.ExceptionType;
+import com.gmail.molnardad.quester.exceptions.ObjectiveException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 
 public final class ObjectiveCompleteQevent extends Qevent {
@@ -60,7 +60,7 @@ public final class ObjectiveCompleteQevent extends Qevent {
 				int req = plugin.getQuestManager().getPlayerQuest(player.getName()).getObjective(objective).getTargetAmount();
 				prog.set(objective, req);
 			} else {
-				throw new QuesterException(ExceptionType.OBJ_NOT_EXIST);
+				throw new ObjectiveException("Objective index out of bounds."); // objective does not exist
 			}
 		} catch (QuesterException e) {
 			Quester.log.info("Event failed to complete objective. Reason: " + ChatColor.stripColor(e.getMessage()));
