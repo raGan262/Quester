@@ -4,40 +4,37 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.elements.Qevent;
+
+@QElement("MSG")
 public final class MessageQevent extends Qevent {
 
-	public static final String TYPE = "MSG";
 	private final String message;
 	private final String rawmessage;
 	
-	public MessageQevent(int occ, int del, String msg) {
-		super(occ, del);
+	public MessageQevent(String msg) {
 		this.rawmessage = msg;
 		this.message = ChatColor.translateAlternateColorCodes('&', rawmessage).replaceAll("\\\\n", "\n");
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
-	}
-	
-	@Override
-	public int getOccasion() {
-		return occasion;
-	}
-	
-	@Override
-	public String toString() {
-		return TYPE + ": " + message + ChatColor.RESET + appendSuper();
+	public String info() {
+		return message;
 	}
 
 	@Override
+	protected void run(Player player) {
+		player.sendMessage(message.replace("%p", player.getName()));
+	}
+
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
 		section.set("message", rawmessage);
 	}
 	
-	public static MessageQevent deser(int occ, int del, ConfigurationSection section) {
+	public static MessageQevent deser(ConfigurationSection section) {
 		String msg;
 		
 		if(section.isString("message"))
@@ -45,11 +42,6 @@ public final class MessageQevent extends Qevent {
 		else
 			return null;
 		
-		return new MessageQevent(occ, del, msg);
-	}
-
-	@Override
-	void run(Player player) {
-		player.sendMessage(message.replace("%p", player.getName()));
+		return new MessageQevent(msg);
 	}
 }

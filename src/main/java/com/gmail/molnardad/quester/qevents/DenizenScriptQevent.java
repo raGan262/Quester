@@ -9,19 +9,20 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.CustomException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 
+@QElement("DSCRIPT")
 public final class DenizenScriptQevent extends Qevent {
 
-	public static final String TYPE = "DSCRIPT";
 	private final String script;
 	private final int npc;
 	private final boolean playerContext;
 	private final boolean focusNPC;
 	
-	public DenizenScriptQevent(int occ, int del, String script, int npc, boolean playerContext, boolean focusNPC) {
-		super(occ, del);
+	public DenizenScriptQevent(String script, int npc, boolean playerContext, boolean focusNPC) {
 		this.script = script;
 		this.npc = npc;
 		this.playerContext = playerContext;
@@ -29,54 +30,14 @@ public final class DenizenScriptQevent extends Qevent {
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
-	}
-	
-	@Override
-	public int getOccasion() {
-		return occasion;
-	}
-	
-	@Override
-	public String toString() {
+	public String info() {
 		String npcStr = (npc >= 0) ? npc+"" : "none";
 		String focStr = focusNPC ? "NPC" : "PLAYER";
-		return TYPE + ": " + script + "; NPC: " + npcStr + "; PLAYER: " + playerContext + "; FOCUS: " + focStr + appendSuper();
+		return script + "; NPC: " + npcStr + "; PLAYER: " + playerContext + "; FOCUS: " + focStr;
 	}
 
 	@Override
-	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		section.set("script", script);
-		if(npc >= 0) {
-			section.set("npc", npc);
-		}
-		if(!playerContext) {
-			section.set("playercontext", playerContext);
-		}
-		if(!focusNPC) {
-			section.set("focusnpc", focusNPC);
-		}
-	}
-	
-	public static DenizenScriptQevent deser(int occ, int del, ConfigurationSection section) {
-		String scrpt;
-		int npc;
-		boolean pcont, focNpc;
-		pcont = section.getBoolean("playercontext", true);
-		focNpc = section.getBoolean("focusnpc", false);
-		npc = section.getInt("npc", -1);
-		scrpt = section.getString("script", "");
-		if(scrpt.isEmpty() || (!pcont && (npc < 0))) {
-			return null;
-		}
-		
-		return new DenizenScriptQevent(occ, del, scrpt, npc, pcont, focNpc);
-	}
-
-	@Override
-	void run(Player player) {
+	protected void run(Player player) {
 		try {
 			if(Quester.denizen) {
 				Denizen den = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
@@ -124,5 +85,35 @@ public final class DenizenScriptQevent extends Qevent {
 		catch (QuesterException e) {
 			Quester.log.warning("Failed to run DSCRIPT event. Info: " + e.getMessage());
 		}
+	}
+
+	// TODO serialization
+	
+	public void serialize(ConfigurationSection section) {
+		section.set("script", script);
+		if(npc >= 0) {
+			section.set("npc", npc);
+		}
+		if(!playerContext) {
+			section.set("playercontext", playerContext);
+		}
+		if(!focusNPC) {
+			section.set("focusnpc", focusNPC);
+		}
+	}
+	
+	public static DenizenScriptQevent deser(ConfigurationSection section) {
+		String scrpt;
+		int npc;
+		boolean pcont, focNpc;
+		pcont = section.getBoolean("playercontext", true);
+		focNpc = section.getBoolean("focusnpc", false);
+		npc = section.getInt("npc", -1);
+		scrpt = section.getString("script", "");
+		if(scrpt.isEmpty() || (!pcont && (npc < 0))) {
+			return null;
+		}
+		
+		return new DenizenScriptQevent(scrpt, npc, pcont, focNpc);
 	}
 }

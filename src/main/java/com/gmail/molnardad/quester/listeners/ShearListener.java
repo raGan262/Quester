@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerShearEntityEvent;
 
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestManager;
-import com.gmail.molnardad.quester.objectives.Objective;
+import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.objectives.ShearObjective;
 
 public class ShearListener implements Listener {

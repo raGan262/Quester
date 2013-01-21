@@ -1,15 +1,15 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
 
+@QElement("PLACE")
 public final class PlaceObjective extends Objective {
 
-	public static final String TYPE = "PLACE";
 	private final Material material;
 	private final byte data;
 	private final int amount;
@@ -19,19 +19,6 @@ public final class PlaceObjective extends Objective {
 		material = mat;
 		data = (byte)dat;
 	}
-	
-	@Override
-	public String getType() {
-		return TYPE;
-	}
-	
-	public Material getMaterial() {
-		return material;
-	}
-	
-	public byte getData() {
-		return data;
-	}
 
 	@Override
 	public int getTargetAmount() {
@@ -39,29 +26,21 @@ public final class PlaceObjective extends Objective {
 	}
 
 	@Override
-	public boolean isComplete(Player player, int progress) {
-		return progress >= amount;
-	}
-	
-	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
-		}
+	protected String show(int progress) {
 		String datStr = data < 0 ? " " : " (data " + data + ") ";
 		return "Place " + material.name().toLowerCase().replace('_', ' ') + datStr + "- " + (amount - progress) + "x.";
 	}
 	
 	@Override
-	public String toString() {
+	protected String info() {
 		String dataStr = (data < 0 ? "" : ":" + data);
-		return TYPE + ": " + material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount + coloredDesc();
+		//return String.format("%s[%d%s]; AMT: %d ", material.name(), material.getId(), dataStr, amount);
+		return material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount;
 	}
 
-	@Override
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		
 		section.set("block", Util.serializeItem(material, data));
 		if(amount > 1)
 			section.set("amount", amount);
@@ -83,5 +62,15 @@ public final class PlaceObjective extends Objective {
 				amt = 1;
 		}
 		return new PlaceObjective(amt, mat, dat);
+	}
+	
+	//Custom methods
+	
+	public Material getMaterial() {
+		return material;
+	}
+	
+	public byte getData() {
+		return data;
 	}
 }

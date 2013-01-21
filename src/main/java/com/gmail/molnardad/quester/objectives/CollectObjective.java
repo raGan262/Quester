@@ -1,15 +1,15 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
 
+@QElement("COLLECT")
 public final class CollectObjective extends Objective {
 
-	public static final String TYPE = "COLLECT";
 	private final Material material;
 	private final short data;
 	private final int amount;
@@ -19,49 +19,27 @@ public final class CollectObjective extends Objective {
 		material = mat;
 		data = (short) dat;
 	}
-	
-	@Override
-	public String getType() {
-		return TYPE;
-	}
-	
-	public Material getMaterial() {
-		return material;
-	}
-	
-	public short getData() {
-		return data;
-	}
 
 	@Override
 	public int getTargetAmount() {
 		return amount;
 	}
-
-	@Override
-	public boolean isComplete(Player player, int progress) {
-		return progress >= amount;
-	}
 	
 	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
-		}
+	protected String show(int progress) {
 		String datStr = data < 0 ? " " : " of given type(" + data + ") ";
 		return "Collect " + material.name().toLowerCase().replace('_', ' ') + datStr + "- " + (amount - progress) + "x.";
 	}
 	
 	@Override
-	public String toString() {
+	protected String info() {
 		String dataStr = (data < 0 ? "" : ":" + data);
-		return TYPE + ": " + material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount + coloredDesc();
+		return material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount;
 	}
 
-	@Override
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		
 		section.set("item", Util.serializeItem(material, data));
 		section.set("amount", amount);
 	}
@@ -83,5 +61,15 @@ public final class CollectObjective extends Objective {
 		} else 
 			return null;
 		return new CollectObjective(amt, mat, dat);
+	}
+	
+	// Custom methods
+	
+	public Material getMaterial() {
+		return material;
+	}
+	
+	public short getData() {
+		return data;
 	}
 }

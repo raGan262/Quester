@@ -1,14 +1,15 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
 
+@QElement("LOCATION")
 public final class LocObjective extends Objective {
 
-	public static final String TYPE = "LOCATION";
 	private final Location location;
 	private final int range;
 	
@@ -18,36 +19,24 @@ public final class LocObjective extends Objective {
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
+	public int getTargetAmount() {
+		return 1;
 	}
 	
 	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(1 - progress)).replaceAll("%t", String.valueOf(1));
-		}
+	protected String show(int progress) {
 		String locStr = String.format("%d blocks close to %.1f %.1f %.1f("+location.getWorld().getName()+")", range, location.getX(), location.getY(), location.getZ());
 		return "Come at least " + locStr + ".";
 	}
 	
 	@Override
-	public String toString() {
-		return TYPE+": "+Util.serializeLocString(location)+"; RNG: "+ range + coloredDesc();
+	protected String info() {
+		return Util.serializeLocString(location) + "; RNG: " + range;
 	}
 
-	public boolean checkLocation(Location loc) {
-		if(loc.getWorld().getName().equalsIgnoreCase(location.getWorld().getName())) {
-			return loc.distanceSquared(location) < range*range;
-		} else {
-			return false;
-		}
-	}
-
-	@Override
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		
 		section.set("location", Util.serializeLocString(location));
 		if(range != 5)
 			section.set("range", range);
@@ -64,5 +53,15 @@ public final class LocObjective extends Objective {
 		if(rng < 1)
 			rng = 3;
 		return new LocObjective(loc, rng);
+	}
+	
+	//Custom methods
+
+	public boolean checkLocation(Location loc) {
+		if(loc.getWorld().getName().equalsIgnoreCase(location.getWorld().getName())) {
+			return loc.distanceSquared(location) < range*range;
+		} else {
+			return false;
+		}
 	}
 }

@@ -6,42 +6,43 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
+import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.utils.Util;
 
+@QElement("TELE")
 public final class TeleportQevent extends Qevent {
 
-	public static final String TYPE = "TELE";
 	private final Location location;
 	
-	public TeleportQevent(int occ, int del, Location loc) {
-		super(occ, del);
+	public TeleportQevent(Location loc) {
 		this.location = loc;
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
-	}
-	
-	@Override
-	public int getOccasion() {
-		return occasion;
-	}
-	
-	@Override
-	public String toString() {
-		String locStr = String.format("%.1f:%.1f:%.1f("+location.getWorld().getName()+")", location.getX(), location.getY(), location.getZ());
-		return TYPE + ": " + locStr + appendSuper();
+	public String info() {
+		return Util.displayLocation(location);
 	}
 
 	@Override
+	protected void run(Player player) {
+		Location loc = player.getLocation().clone();
+		loc.setY(loc.getY()+1);
+		player.getWorld().playEffect(loc, Effect.ENDER_SIGNAL, 0);
+		player.teleport(location, TeleportCause.PLUGIN);
+		loc = location.clone();
+		loc.setY(loc.getY()+1);
+		player.getWorld().playEffect(loc, Effect.ENDER_SIGNAL, 1);
+	}
+
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
 		section.set("location", Util.serializeLocString(location));
 		
 	}
 	
-	public static TeleportQevent deser(int occ, int del, ConfigurationSection section) {
+	public static TeleportQevent deser(ConfigurationSection section) {
 		Location loc = null;
 		try {
 			if(section.isString("location"))
@@ -52,17 +53,6 @@ public final class TeleportQevent extends Qevent {
 			return null;
 		}
 		
-		return new TeleportQevent(occ, del, loc);
-	}
-
-	@Override
-	void run(Player player) {
-		Location loc = player.getLocation().clone();
-		loc.setY(loc.getY()+1);
-		player.getWorld().playEffect(loc, Effect.ENDER_SIGNAL, 0);
-		player.teleport(location, TeleportCause.PLUGIN);
-		loc = location.clone();
-		loc.setY(loc.getY()+1);
-		player.getWorld().playEffect(loc, Effect.ENDER_SIGNAL, 1);
+		return new TeleportQevent(loc);
 	}
 }

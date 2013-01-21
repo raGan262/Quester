@@ -6,41 +6,36 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.utils.Util;
 
+@QElement("EFFECT")
 public class EffectQevent extends Qevent {
 
-	public static final String TYPE = "EFFECT";
 	private final PotionEffect effect;
 	
-	public EffectQevent(int occ, int del, PotionEffect eff) {
-		super(occ, del);
+	public EffectQevent(PotionEffect eff) {
 		effect = eff;
 	}
 
 	@Override
-	public String getType() {
-		return TYPE;
+	public String info() {
+		return effect.getType().getName() + "; DUR: " + ((int)(effect.getDuration()/20)) + "s; AMP: " + effect.getAmplifier();
+	}
+	
+	@Override
+	protected void run(Player player) {
+		player.addPotionEffect(effect, true);
 	}
 
-	@Override
-	public int getOccasion() {
-		return occasion;
-	}
-
-	@Override
-	public String toString() {
-		return TYPE + ": " + effect.getType().getName() + "; DUR: " + ((int)(effect.getDuration()/20)) + "s; AMP: " + effect.getAmplifier() + appendSuper();
-	}
-
-	@Override
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		
 		section.set("effect", Util.serializeEffect(effect));
 	}
 	
-	public static EffectQevent deser(int occ, int del, ConfigurationSection section) {
+	public static EffectQevent deser(ConfigurationSection section) {
 		PotionEffect eff;
 		
 		if(section.isString("effect"))
@@ -52,11 +47,6 @@ public class EffectQevent extends Qevent {
 			}
 		else
 			return null;
-		return new EffectQevent(occ, del, eff);
-	}
-	
-	@Override
-	void run(Player player) {
-		player.addPotionEffect(effect, true);
+		return new EffectQevent(eff);
 	}
 }

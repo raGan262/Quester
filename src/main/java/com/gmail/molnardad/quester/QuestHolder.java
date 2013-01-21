@@ -47,7 +47,7 @@ public class QuestHolder {
 	}
 	
 	public void selectNext() throws HolderException {
-		if(heldQuests.isEmpty()) // TODO exception message
+		if(heldQuests.isEmpty())
 			throw new HolderException(LanguageManager.getInstance().getDefaultLang().ERROR_Q_NONE);
 		if(getSelected() == -1) {
 			selected = 0;
@@ -64,7 +64,7 @@ public class QuestHolder {
 			if(QuestManager.getInstance().isQuestActive(heldQuests.get(i))) {
 				selected = i;
 				notChosen = false;
-			} else if(i == selected) { // TODO exception message
+			} else if(i == selected) {
 				throw new HolderException(LanguageManager.getInstance().getDefaultLang().ERROR_Q_NONE_ACTIVE);
 			}
 		}

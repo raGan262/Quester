@@ -1,10 +1,13 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
+
+@QElement("NPCKILL")
 public final class NpcKillObjective extends Objective {
 
-	public static final String TYPE = "NPCKILL";
 	private final String name;
 	private final String strName;
 	private final int amount;
@@ -16,38 +19,23 @@ public final class NpcKillObjective extends Objective {
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
-	}
-	
-	@Override
 	public int getTargetAmount() {
 		return amount;
 	}
 	
 	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(1 - progress)).replaceAll("%t", String.valueOf(1));
-		}
+	protected String show(int progress) {
 		return "Kill " + strName + " - " + amount + "x";
 	}
 	
 	@Override
-	public String toString() {
-		return TYPE + ": " + (name == null ? "ANY" : name) + "; AMT: " + amount + coloredDesc();
-	}
-	
-	public boolean checkNpc(String npcName) {
-		if(name == null) {
-			return true;
-		}
-		return name.equalsIgnoreCase(npcName);
+	protected String info() {
+		return (name == null ? "ANY" : name) + "; AMT: " + amount;
 	}
 
-	@Override
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
 		section.set("name", name);
 		if(amount > 1) {
 			section.set("amount", amount);
@@ -62,5 +50,14 @@ public final class NpcKillObjective extends Objective {
 			return null;
 		nm = section.getString("name", null);
 		return new NpcKillObjective(nm, amt);
+	}
+	
+	//Custom methods
+	
+	public boolean checkNpc(String npcName) {
+		if(name == null) {
+			return true;
+		}
+		return name.equalsIgnoreCase(npcName);
 	}
 }

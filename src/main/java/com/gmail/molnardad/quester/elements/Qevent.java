@@ -1,16 +1,32 @@
-package com.gmail.molnardad.quester.qevents;
+package com.gmail.molnardad.quester.elements;
 
 import java.lang.reflect.Method;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.gmail.molnardad.quester.DataManager;
-import com.gmail.molnardad.quester.QElement;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.qevents.CancelQevent;
+import com.gmail.molnardad.quester.qevents.CommandQevent;
+import com.gmail.molnardad.quester.qevents.EffectQevent;
+import com.gmail.molnardad.quester.qevents.ExperienceQevent;
+import com.gmail.molnardad.quester.qevents.ExplosionQevent;
+import com.gmail.molnardad.quester.qevents.ItemQevent;
+import com.gmail.molnardad.quester.qevents.LightningQevent;
+import com.gmail.molnardad.quester.qevents.MessageQevent;
+import com.gmail.molnardad.quester.qevents.MoneyQevent;
+import com.gmail.molnardad.quester.qevents.ObjectiveCompleteQevent;
+import com.gmail.molnardad.quester.qevents.PointQevent;
+import com.gmail.molnardad.quester.qevents.QuestQevent;
+import com.gmail.molnardad.quester.qevents.SetBlockQevent;
+import com.gmail.molnardad.quester.qevents.SpawnQevent;
+import com.gmail.molnardad.quester.qevents.TeleportQevent;
+import com.gmail.molnardad.quester.qevents.ToggleQevent;
 
-public abstract class Qevent extends QElement {
+public abstract class Qevent extends Element {
 
 	@SuppressWarnings("unchecked")
 	private static Class<? extends Qevent>[] classes = new Class[]{
@@ -31,44 +47,57 @@ public abstract class Qevent extends QElement {
 															PointQevent.class,
 															ItemQevent.class
 														};
-	long delay = 0;
-	int occasion = -10;
-	
-	public Qevent(int occ, int del) {
-		occasion = occ;
-		delay = del;
+	private long delay = 0;
+	private int occasion = -10;
+
+	public final void setOccasion(int occasion, int delay) {
+		this.occasion = occasion;
+		this.delay = delay;
 	}
 	
-
-	public int getOccasion() {
+	public final int getOccasion() {
 		return occasion;
 	}
 	
-	public abstract String getType();
-	public abstract String toString();
-	abstract void run(Player player);
+	protected abstract String info();
+	protected abstract void run(Player player);
 
-	String appendSuper() {
-		return "; DEL: " + delay;
+	private String delayString() {
+		if(delay > 0) {
+			return ChatColor.RESET + "\n - DELAY: " + delay;
+		}
+		else {
+			return "";
+		}
 	}
 	
-	public static String parseOccasion(int occ) {
+	public String inInfo() {
+		return info() + delayString();
+	}
+	
+	public final String toString() {
+		return "Condition (type=" + getType() + ")";
+	}
+	
+	public final static String parseOccasion(int occ) {
 		if(occ == -1) {
 			return "On start";
 		}
-		if(occ == -2) {
+		else if(occ == -2) {
 			return "On cancel";
 		}
-		if(occ == -3) {
+		else if(occ == -3) {
 			return "On complete";
 		}
-		if(occ >= 0) {
+		else if(occ >= 0) {
 			return "On objective";
 		}
-		return "Unknown";
+		else {
+			return "Unknown occasion";
+		}
 	}
 	
-	public void execute(final Player player, Quester plugin) {
+	public final void execute(final Player player, Quester plugin) {
 		
 		if(delay > 0) {
 			new BukkitRunnable() {
@@ -94,9 +123,9 @@ public abstract class Qevent extends QElement {
 		}
 	}
 	
-	public abstract void serialize(ConfigurationSection section);
+	// TODO serialization
 	
-	void serialize(ConfigurationSection section, String type) {
+	protected void serialize(ConfigurationSection section, String type) {
 		section.set("type", type);
 		section.set("occasion", occasion);
 		if(delay != 0)

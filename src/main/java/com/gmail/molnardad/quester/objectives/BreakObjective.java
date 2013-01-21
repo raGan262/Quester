@@ -1,15 +1,15 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
 
+@QElement("BREAK")
 public final class BreakObjective extends Objective {
 
-	public static final String TYPE = "BREAK";
 	private final Material material;
 	private final byte data;
 	private final int amount;
@@ -21,54 +21,28 @@ public final class BreakObjective extends Objective {
 		data = (byte) dat;
 		inHand = hnd;
 	}
-	
-	@Override
-	public String getType() {
-		return TYPE;
-	}
-	
-	public Material getMaterial() {
-		return material;
-	}
-	
-	public byte getData() {
-		return data;
-	}
-	
-	public boolean checkHand(int itm) {
-		return (inHand < 0 || inHand == itm);
-	}
 
 	@Override
 	public int getTargetAmount() {
 		return amount;
 	}
-
-	@Override
-	public boolean isComplete(Player player, int progress) {
-		return progress >= amount;
-	}
 	
 	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
-		}
+	protected String show(int progress) {
 		String datStr = data < 0 ? " " : " of given type(" + data + ") ";
 		String hand = (inHand < 0) ? " " : (inHand == 0) ? "with empty hand " : "with " + Material.getMaterial(inHand).name().toLowerCase().replace('_', ' ') + " ";
 		return "Break " + material.name().toLowerCase().replace('_', ' ') + datStr + hand + "- " + (amount - progress) + "x.";
 	}
 	
 	@Override
-	public String toString() {
+	protected String info() {
 		String dataStr = (data < 0 ? "" : ":" + data);
-		return TYPE + ": " + material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount + "; HND: " + inHand + coloredDesc();
+		return material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount + "; HND: " + inHand;
 	}
 
-	@Override
-	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		
+	// TODO serialization
+	
+	public void serialize(ConfigurationSection section) {		
 		section.set("block", Util.serializeItem(material, data));
 		if(amount > 1)
 			section.set("amount", amount);
@@ -98,5 +72,19 @@ public final class BreakObjective extends Objective {
 			} catch (IllegalArgumentException e) {
 		}
 		return new BreakObjective(amt, mat, dat, hnd);
+	}
+	
+	// Custom methods
+	
+	public Material getMaterial() {
+		return material;
+	}
+	
+	public byte getData() {
+		return data;
+	}
+	
+	public boolean checkHand(int itm) {
+		return (inHand < 0 || inHand == itm);
 	}
 }

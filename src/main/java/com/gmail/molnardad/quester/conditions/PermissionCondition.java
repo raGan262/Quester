@@ -1,23 +1,19 @@
 package com.gmail.molnardad.quester.conditions;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.elements.Condition;
+import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
 
+@QElement("PERM")
 public final class PermissionCondition extends Condition {
 	
-	public static final String TYPE = "PERM";
 	private final String perm;
 	
 	public PermissionCondition(String perm) {
 		this.perm = perm;
-	}
-	
-	@Override
-	public String getType() {
-		return TYPE;
 	}
 
 	@Override
@@ -26,21 +22,23 @@ public final class PermissionCondition extends Condition {
 	}
 	
 	@Override
+	protected String parseDescription(String description) {
+		return description.replaceAll("%perm", perm);
+	}
+	
+	@Override
 	public String show() {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%perm", perm);
-		}
 		return "Must have permission '" + perm + "'";
 	}
 	
 	@Override
-	public String toString() {
-		return TYPE + ": " + perm + coloredDesc().replaceAll("%perm", perm);
+	public String info() {
+		return perm;
 	}
 	
-	@Override
+	// TODO serialization
+
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
 		section.set("permission", perm);
 	}
 

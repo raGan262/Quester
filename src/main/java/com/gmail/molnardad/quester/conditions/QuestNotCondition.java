@@ -1,15 +1,16 @@
 package com.gmail.molnardad.quester.conditions;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.PlayerProfile;
 import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.elements.Condition;
+import com.gmail.molnardad.quester.elements.QElement;
 
+@QElement("QUESTNOT")
 public final class QuestNotCondition extends Condition {
 
-	public static final String TYPE = "QUESTNOT";
 	private final String quest;
 	private final int time;
 	
@@ -19,8 +20,8 @@ public final class QuestNotCondition extends Condition {
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
+	protected String parseDescription(String description) {
+		return description.replaceAll("%qst", quest);
 	}
 
 	@Override
@@ -41,20 +42,17 @@ public final class QuestNotCondition extends Condition {
 	
 	@Override
 	public String show() {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%qst", quest);
-		}
 		return "Must not have done quest '" + quest + "'";
 	}
 	
 	@Override
-	public String toString() {
-		return TYPE + ": " + quest + "; TIME: " + time + coloredDesc().replaceAll("%qst", quest);
+	public String info() {
+		return quest + "; TIME: " + time;
 	}
 	
-	@Override
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
 		section.set("quest", quest);
 		if(time != 0) {
 			section.set("time", time);

@@ -8,53 +8,27 @@ import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.ObjectiveException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 
+@QElement("OBJCOM")
 public final class ObjectiveCompleteQevent extends Qevent {
 
-	public static final String TYPE = "OBJCOM";
 	private final int objective;
 	
-	public ObjectiveCompleteQevent(int occ, int del, int obj) {
-		super(occ, del);
+	public ObjectiveCompleteQevent(int obj) {
 		this.objective = obj;
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
-	}
-	
-	@Override
-	public int getOccasion() {
-		return occasion;
-	}
-	
-	@Override
-	public String toString() {
-		return TYPE + ": " + objective + appendSuper();
+	public String info() {
+		return String.valueOf(objective);
 	}
 
 	@Override
-	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		section.set("objective", objective);
-	}
-	
-	public static ObjectiveCompleteQevent deser(int occ, int del, ConfigurationSection section) {
-		int obj;
-		
-		if(section.isInt("objective"))
-			obj = section.getInt("objective");
-		else
-			return null;
-		
-		return new ObjectiveCompleteQevent(occ, del, obj);
-	}
-
-	@Override
-	void run(Player player) {
+	protected void run(Player player) {
 		try {
 			QuestManager qMan = QuestManager.getInstance();
 			List<Integer> prog = qMan.getProfile(player.getName()).getProgress();
@@ -67,5 +41,22 @@ public final class ObjectiveCompleteQevent extends Qevent {
 		} catch (QuesterException e) {
 			Quester.log.info("Event failed to complete objective. Reason: " + ChatColor.stripColor(e.getMessage()));
 		}
+	}
+
+	// TODO serialization
+	
+	public void serialize(ConfigurationSection section) {
+		section.set("objective", objective);
+	}
+	
+	public static ObjectiveCompleteQevent deser(ConfigurationSection section) {
+		int obj;
+		
+		if(section.isInt("objective"))
+			obj = section.getInt("objective");
+		else
+			return null;
+		
+		return new ObjectiveCompleteQevent(obj);
 	}
 }

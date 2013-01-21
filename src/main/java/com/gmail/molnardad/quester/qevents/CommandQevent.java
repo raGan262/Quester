@@ -4,38 +4,34 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.elements.Qevent;
+
+@QElement("CMD")
 public final class CommandQevent extends Qevent {
 
-	public static final String TYPE = "CMD";
 	private final String command;
 	
-	public CommandQevent(int occ, int del, String cmd) {
-		super(occ, del);
+	public CommandQevent(String cmd) {
 		this.command = cmd;
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
-	}
-	
-	@Override
-	public int getOccasion() {
-		return occasion;
-	}
-	
-	@Override
-	public String toString() {
-		return TYPE + ": /" + command + appendSuper();
+	public String info() {
+		return "/" + command;
 	}
 
 	@Override
+	protected void run(Player player) {
+		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replace("%p", player.getName()));
+	}
+
+	// TODO serialization
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
 		section.set("command", command);
 	}
 	
-	public static CommandQevent deser(int occ, int del, ConfigurationSection section) {
+	public static CommandQevent deser(ConfigurationSection section) {
 		String cmd;
 		
 		if(section.isString("command"))
@@ -43,11 +39,6 @@ public final class CommandQevent extends Qevent {
 		else
 			return null;
 		
-		return new CommandQevent(occ, del, cmd);
-	}
-
-	@Override
-	void run(Player player) {
-		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replace("%p", player.getName()));
+		return new CommandQevent(cmd);
 	}
 }

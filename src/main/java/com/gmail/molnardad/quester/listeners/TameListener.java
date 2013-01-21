@@ -11,7 +11,7 @@ import org.bukkit.event.entity.EntityTameEvent;
 
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestManager;
-import com.gmail.molnardad.quester.objectives.Objective;
+import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.objectives.TameObjective;
 
 public class TameListener implements Listener {

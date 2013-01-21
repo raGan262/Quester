@@ -15,8 +15,8 @@ import org.bukkit.inventory.ItemStack;
 
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.objectives.DyeObjective;
-import com.gmail.molnardad.quester.objectives.Objective;
 
 public class DyeListener implements Listener {
 

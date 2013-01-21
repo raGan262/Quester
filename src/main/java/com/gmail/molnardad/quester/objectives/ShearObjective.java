@@ -1,26 +1,21 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
 
+@QElement("SHEAR")
 public final class ShearObjective extends Objective {
 
-	public static final String TYPE = "SHEAR";
 	private final DyeColor color;
 	private final int amount;
 
 	public ShearObjective(int amt, DyeColor col) {
 		amount = amt;
 		color = col;
-	}
-	
-	@Override
-	public String getType() {
-		return TYPE;
 	}
 
 	@Override
@@ -29,36 +24,19 @@ public final class ShearObjective extends Objective {
 	}
 
 	@Override
-	public boolean isComplete(Player player, int progress) {
-		return amount <= progress;
-	}
-
-	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
-		}
+	protected String show(int progress) {
 		String strCol = (color == null) ? "any" : color.name().replace('_', ' ').toLowerCase() ;
 		return "Shear " + strCol + " sheep - " + (amount - progress) + "x";
 	}
 	
 	@Override
-	public String toString() {
+	protected String info() {
 		String strCol = (color == null) ? "ANY" : color.name() ;
-		return TYPE + ": " + strCol + "; AMT: " + amount + coloredDesc();
-	}
-	
-	public boolean check(DyeColor col) {
-		if(col == color || color == null) {
-			return true;	
-		}
-		return false;
+		return strCol + "; AMT: " + amount;
 	}
 
-	@Override
+	// TODO serialization
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		
 		if(color != null)
 			section.set("color", Util.serializeColor(color));
 		if(amount > 1)
@@ -74,5 +52,14 @@ public final class ShearObjective extends Objective {
 		if(amt < 1)
 			amt = 1;
 		return new ShearObjective(amt, col);
+	}
+	
+	//Custom methods
+	
+	public boolean check(DyeColor col) {
+		if(col == color || color == null) {
+			return true;	
+		}
+		return false;
 	}
 }

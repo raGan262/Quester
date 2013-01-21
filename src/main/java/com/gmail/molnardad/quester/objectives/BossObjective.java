@@ -1,12 +1,13 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
+
+@QElement("BOSS")
 public final class BossObjective extends Objective {
 
-	public static final String TYPE = "BOSS";
 	private final int amount;
 	private final String name;
 	
@@ -21,39 +22,25 @@ public final class BossObjective extends Objective {
 		}
 		return name.equalsIgnoreCase(boss);
 	}
-	
-	@Override
-	public String getType() {
-		return TYPE;
-	}
 
 	@Override
 	public int getTargetAmount() {
 		return amount;
 	}
-
-	@Override
-	public boolean isComplete(Player player, int progress) {
-		return progress >= amount;
-	}
 	
 	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
-		}
+	protected String show(int progress) {
 		return "Kill boss named " + name + " - " + (amount - progress) + "x";
 	}
 	
 	@Override
-	public String toString() {
-		return TYPE + ": " + name + "; AMT: " + amount + coloredDesc();
+	protected String info() {
+		return name + "; AMT: " + amount;
 	}
 
-	@Override
-	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
+	// TODO serialization
 
+	public void serialize(ConfigurationSection section) {
 		section.set("amount", amount);
 		section.set("boss", name);
 	}

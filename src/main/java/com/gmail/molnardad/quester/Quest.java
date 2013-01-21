@@ -11,9 +11,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
-import com.gmail.molnardad.quester.conditions.Condition;
-import com.gmail.molnardad.quester.objectives.Objective;
-import com.gmail.molnardad.quester.qevents.Qevent;
+import com.gmail.molnardad.quester.elements.Condition;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.utils.Util;
 import com.gmail.molnardad.quester.QuestFlag;
 

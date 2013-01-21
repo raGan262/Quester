@@ -3,40 +3,37 @@ package com.gmail.molnardad.quester.qevents;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.utils.ExpManager;
 
+@QElement("EXP")
 public final class ExperienceQevent extends Qevent {
 
-	public static final String TYPE = "EXP";
 	private final int amount;
 	
-	public ExperienceQevent(int occ, int del, int amt) {
-		super(occ, del);
+	public ExperienceQevent(int amt) {
 		this.amount = amt;
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
-	}
-	
-	@Override
-	public int getOccasion() {
-		return occasion;
-	}
-	
-	@Override
-	public String toString() {
-		return TYPE + ": " + amount + appendSuper();
+	public String info() {
+		return String.valueOf(amount);
 	}
 
 	@Override
+	protected void run(Player player) {
+		ExpManager expMan = new ExpManager(player);
+		expMan.changeExp(amount);
+	}
+
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
 		section.set("amount", amount);
 	}
 	
-	public static ExperienceQevent deser(int occ, int del, ConfigurationSection section) {
+	public static ExperienceQevent deser(ConfigurationSection section) {
 		int amt;
 		
 		if(section.isInt("amount"))
@@ -44,12 +41,6 @@ public final class ExperienceQevent extends Qevent {
 		else
 			return null;
 		
-		return new ExperienceQevent(occ, del, amt);
-	}
-
-	@Override
-	void run(Player player) {
-		ExpManager expMan = new ExpManager(player);
-		expMan.changeExp(amount);
+		return new ExperienceQevent(amt);
 	}
 }

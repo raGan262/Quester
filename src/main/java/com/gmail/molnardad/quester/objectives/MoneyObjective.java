@@ -1,14 +1,15 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
 
+@QElement("MONEY")
 public final class MoneyObjective extends Objective {
 
-	public static final String TYPE = "MONEY";
 	private final double amount;
 	
 	public MoneyObjective(double amt) {
@@ -16,15 +17,12 @@ public final class MoneyObjective extends Objective {
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
+	public int getTargetAmount() {
+		return 1;
 	}
 	
 	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(1 - progress)).replaceAll("%t", String.valueOf(amount));
-		}
+	protected String show(int progress) {
 		if(Quester.vault) {
 			return "Get " + amount + " " + Quester.econ.currencyNamePlural();
 		}
@@ -34,18 +32,13 @@ public final class MoneyObjective extends Objective {
 	}
 	
 	@Override
-	public String toString() {
-		return TYPE + ": " + amount + coloredDesc();
-	}
-	
-	public double takeMoney(double amt) {
-		return amt - amount;
+	protected String info() {
+		return String.valueOf(amount);
 	}
 
-	@Override
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		
 		section.set("amount", amount);
 	}
 	
@@ -71,5 +64,11 @@ public final class MoneyObjective extends Objective {
 			return true;
 		}
 		return false;
+	}
+	
+	//Custom methods
+	
+	public double takeMoney(double amt) {
+		return amt - amount;
 	}
 }

@@ -15,8 +15,8 @@ import org.bukkit.util.Vector;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.objectives.CollectObjective;
-import com.gmail.molnardad.quester.objectives.Objective;
 
 public class CollectListener implements Listener {
 	

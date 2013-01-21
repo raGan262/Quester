@@ -1,25 +1,26 @@
 package com.gmail.molnardad.quester.conditions;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.elements.Condition;
+import com.gmail.molnardad.quester.elements.QElement;
 
+@QElement("POINT")
 public final class PointCondition extends Condition {
 
-	public static final String TYPE = "POINT";
 	private final int amount;
 	
 	public PointCondition(int amount) {
 		this.amount = amount;
 	}
-	
-	@Override
-	public String getType() {
-		return TYPE;
-	}
 
+	@Override
+	protected String parseDescription(String description) {
+		return description.replaceAll("%amt", amount+"");
+	}
+	
 	@Override
 	public boolean isMet(Player player) {
 		return QuestManager.getInstance().getProfile(player.getName()).getPoints() >= amount;
@@ -27,20 +28,17 @@ public final class PointCondition extends Condition {
 	
 	@Override
 	public String show() {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%amt", amount+"");
-		}
 		return "Must have " + amount + " quest points.";
 	}
 	
 	@Override
-	public String toString() {
-		return TYPE + ": " + amount + coloredDesc().replaceAll("%amt", amount+"");
+	public String info() {
+		return String.valueOf(amount);
 	}
 	
-	@Override
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
 		section.set("amount", amount);
 	}
 

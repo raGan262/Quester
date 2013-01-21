@@ -1,16 +1,16 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
 
+@QElement("CRAFT")
 public final class CraftObjective extends Objective {
 
-	public static final String TYPE = "CRAFT";
 	private final Material material;
 	private final short data;
 	private final int amount;
@@ -20,50 +20,29 @@ public final class CraftObjective extends Objective {
 		amount = amt;
 		data = (short)dat;
 	}
-	
-	@Override
-	public String getType() {
-		return TYPE;
-	}
 
 	@Override
 	public int getTargetAmount() {
 		return amount;
 	}
-
-	@Override
-	public boolean isComplete(Player player, int progress) {
-		return progress >= amount;
-	}
 	
 	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
-		}
+	protected String show(int progress) {
 		String datStr = data < 0 ? " " : " (data " + data + ") ";
 		String pcs = (amount - progress) == 1 ? " piece of " : " pieces of ";
 		String mat = material.getId() == 351 ? "dye" : material.name().toLowerCase();
 		return "Craft " + (amount - progress) + pcs + mat + datStr + ".";
 	}
 	
-	public boolean check(ItemStack item) {
-		if(item.getTypeId() != material.getId())
-			return false;
-		if(item.getDurability() != data && data >= 0)
-			return false;
-		return true;
-	}
-	
 	@Override
-	public String toString() {
+	protected String info() {
 		String dataStr = (data < 0 ? "" : ":" + data);
-		return TYPE + ": " + material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount + coloredDesc();
+		return material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount;
 	}
 
-	@Override
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
 		
 		section.set("item", Util.serializeItem(material, data));
 		if(amount > 1)
@@ -86,5 +65,15 @@ public final class CraftObjective extends Objective {
 				amt = 1;
 		}
 		return new CraftObjective(amt, mat, dat);
+	}
+	
+	// Custom methods
+	
+	public boolean check(ItemStack item) {
+		if(item.getTypeId() != material.getId())
+			return false;
+		if(item.getDurability() != data && data >= 0)
+			return false;
+		return true;
 	}
 }

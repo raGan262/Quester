@@ -1,26 +1,21 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
 
+@QElement("TAME")
 public final class TameObjective extends Objective {
 
-	public static final String TYPE = "TAME";
 	private final EntityType entity;
 	private final int amount;
 
 	public TameObjective(int amt, EntityType ent) {
 		entity = ent;
 		amount = amt;
-	}
-	
-	@Override
-	public String getType() {
-		return TYPE;
 	}
 
 	@Override
@@ -29,36 +24,20 @@ public final class TameObjective extends Objective {
 	}
 
 	@Override
-	public boolean isComplete(Player player, int progress) {
-		return amount <= progress;
-	}
-	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
-		}
+	protected String show(int progress) {
 		String mob = entity == null ? "any mob" : entity.getName();
 		return "Tame " + mob + " - " + (amount - progress) + "x";
 	}
 	
 	@Override
-	public String toString() {
+	protected String info() {
 		String entStr = entity == null ? "ANY" : entity.getName();
-		return TYPE + ": " + entStr + "; AMT: " + amount + coloredDesc();
-	}
-	
-	public boolean check(EntityType ent) {
-		if(entity == null) {
-			return true;
-		} else {
-			return (entity.getTypeId() == ent.getTypeId());
-		}
+		return entStr + "; AMT: " + amount;
 	}
 
-	@Override
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		
 		if(amount > 1)
 			section.set("amount", amount);
 		if(entity != null)
@@ -76,5 +55,15 @@ public final class TameObjective extends Objective {
 		if(amt < 1)
 			amt = 1;
 		return new TameObjective(amt, ent);
+	}
+	
+	//Custom methods
+	
+	public boolean check(EntityType ent) {
+		if(entity == null) {
+			return true;
+		} else {
+			return (entity.getTypeId() == ent.getTypeId());
+		}
 	}
 }

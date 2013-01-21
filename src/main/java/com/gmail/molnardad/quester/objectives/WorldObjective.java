@@ -1,43 +1,37 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
+
+@QElement("WORLD")
 public final class WorldObjective extends Objective {
 
-	public static final String TYPE = "WORLD";
 	private final String worldName;
 	
-	public WorldObjective(String wName) {
-		worldName = wName;
+	public WorldObjective(String worldName) {
+		this.worldName = worldName;
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
+	public int getTargetAmount() {
+		return 1;
 	}
 	
 	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(1 - progress)).replaceAll("%t", String.valueOf(1));
-		}
+	protected String show(int progress) {
 		return "Visit world '" + worldName + "'.";
 	}
 	
 	@Override
-	public String toString() {
-		return TYPE+": "+worldName + coloredDesc();
-	}
-	
-	public boolean checkWorld(String wName) {
-		return wName.equalsIgnoreCase(worldName);
+	protected String info() {
+		return worldName;
 	}
 
-	@Override
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		
 		section.set("world", worldName);
 	}
 	
@@ -48,5 +42,11 @@ public final class WorldObjective extends Objective {
 		if(world == null)
 			return null;
 		return new WorldObjective(world);
+	}
+	
+	//Custom methods
+	
+	public boolean checkWorld(String wName) {
+		return wName.equalsIgnoreCase(worldName);
 	}
 }

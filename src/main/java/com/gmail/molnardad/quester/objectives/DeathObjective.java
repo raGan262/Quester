@@ -1,15 +1,15 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
 
+@QElement("DEATH")
 public final class DeathObjective extends Objective {
 
-	public static final String TYPE = "DEATH";
 	private final Location location;
 	private final int amount;
 	private final int range;
@@ -19,51 +19,27 @@ public final class DeathObjective extends Objective {
 		range = rng;
 		location = loc;
 	}
-	
-	@Override
-	public String getType() {
-		return TYPE;
-	}
 
 	@Override
 	public int getTargetAmount() {
 		return amount;
 	}
-
-	@Override
-	public boolean isComplete(Player player, int progress) {
-		return progress >= amount;
-	}
 	
 	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
-		}
+	protected String show(int progress) {
 		String locStr = location == null ? "anywhere " : String.format("max %d blocks from %.1f %.1f %.1f("+location.getWorld().getName()+") ", range, location.getX(), location.getY(), location.getZ());
 		return "Die " + locStr + String.valueOf(amount - progress)+"x.";
 	}
 	
 	@Override
-	public String toString() {
+	protected String info() {
 		String locStr = location == null ? "ANY" : String.format("%.1f %.1f %.1f("+location.getWorld().getName()+")", location.getX(), location.getY(), location.getZ());
-		return TYPE + ": LOC: " + locStr + "; AMT: "+ amount +"; RNG: "+ range + coloredDesc();
-	}
-	
-	public boolean checkDeath(Location loc) {
-		if(location == null) {
-			return true;
-		}
-		if(loc.getWorld().getName().equals(location.getWorld().getName())) {
-			return loc.distance(location) < range;
-		} 
-		return false;
+		return "LOC: " + locStr + "; AMT: "+ amount +"; RNG: "+ range;
 	}
 
-	@Override
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		
 		if(location != null)
 			section.set("location", Util.serializeLocString(location));
 		if(amount != 1)
@@ -86,5 +62,17 @@ public final class DeathObjective extends Objective {
 		if(rng < 1)
 			rng = 5;
 		return new DeathObjective(amt, loc, rng);
+	}
+	
+	// Custom methods
+	
+	public boolean checkDeath(Location loc) {
+		if(location == null) {
+			return true;
+		}
+		if(loc.getWorld().getName().equals(location.getWorld().getName())) {
+			return loc.distance(location) < range;
+		} 
+		return false;
 	}
 }

@@ -5,39 +5,38 @@ import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.PlayerProfile;
 import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.elements.Qevent;
 
+@QElement("POINT")
 public final class PointQevent extends Qevent {
 
-	public static final String TYPE = "POINT";
 	private final int amount;
 	
-	public PointQevent(int occ, int del, int amt) {
-		super(occ, del);
+	public PointQevent(int amt) {
 		this.amount = amt;
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
-	}
-	
-	@Override
-	public int getOccasion() {
-		return occasion;
-	}
-	
-	@Override
-	public String toString() {
-		return TYPE + ": " + amount + appendSuper();
+	public String info() {
+		return String.valueOf(amount);
 	}
 
 	@Override
+	protected void run(Player player) {
+		QuestManager qMan = QuestManager.getInstance();
+		PlayerProfile prof = qMan.getProfile(player.getName());
+		prof.addPoints(amount);
+		qMan.checkRank(prof);
+	}
+
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
 		section.set("amount", amount);
 	}
 	
-	public static PointQevent deser(int occ, int del, ConfigurationSection section) {
+	public static PointQevent deser(ConfigurationSection section) {
 		int amt;
 		
 		if(section.isInt("amount"))
@@ -45,14 +44,6 @@ public final class PointQevent extends Qevent {
 		else
 			return null;
 		
-		return new PointQevent(occ, del, amt);
-	}
-
-	@Override
-	void run(Player player) {
-		QuestManager qMan = QuestManager.getInstance();
-		PlayerProfile prof = qMan.getProfile(player.getName());
-		prof.addPoints(amount);
-		qMan.checkRank(prof);
+		return new PointQevent(amt);
 	}
 }

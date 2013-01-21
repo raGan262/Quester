@@ -1,16 +1,17 @@
 package com.gmail.molnardad.quester.conditions;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.molnardad.quester.elements.Condition;
+import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
 
+@QElement("ITEM")
 public final class ItemCondition extends Condition {
 
-	public static final String TYPE = "ITEM";
 	private final Material material;
 	private final short data;
 	private final int amount;
@@ -19,11 +20,6 @@ public final class ItemCondition extends Condition {
 		this.material = mat;
 		this.amount = amt;
 		this.data = (short) dat;
-	}
-	
-	@Override
-	public String getType() {
-		return TYPE;
 	}
 
 	@Override
@@ -46,32 +42,32 @@ public final class ItemCondition extends Condition {
         return (amt >= amount);
 	}
 	
+
+
 	@Override
-	public String show() {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%amt", amount+"").replaceAll("%data", data+"").replaceAll("%id", material.getId()+"");
-		}
+	protected String parseDescription(String description) {
+		return description.replaceAll("%amt", amount+"").replaceAll("%data", data+"").replaceAll("%id", material.getId()+"");
+	}
+	
+	@Override
+	protected String show() {
 		String datStr = data < 0 ? " (any) " : " (data " + data + ") ";
 		String pcs = amount == 1 ? " piece of " : " pieces of ";
 		String mat = material.getId() == 351 ? "dye" : material.name().toLowerCase();
 		return "Must have " + amount + pcs + mat + datStr + ".";
 	}
-	
+
 	@Override
-	public String toString() {
+	protected String info() {
 		String dataStr = (data < 0 ? "ANY" : String.valueOf(data));
-		return TYPE+": "+ material.name()+"["+material.getId()+"]; DMG: "+dataStr+"; AMT: "+amount
-				+ coloredDesc().replaceAll("%amt", amount+"").replaceAll("%data", data+"").replaceAll("%id", material.getId()+"");
+		return material.name() + "[" + material.getId() + "]; DMG: " + dataStr + "; AMT: " + amount;
 	}
 	
-	@Override
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		
-		super.serialize(section, TYPE);
-
 		section.set("item", Util.serializeItem(material.getId(), data));
 		section.set("amount", amount);
-		
 	}
 
 	public static ItemCondition deser(ConfigurationSection section) {

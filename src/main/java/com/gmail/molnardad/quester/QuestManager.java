@@ -15,10 +15,10 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.gmail.molnardad.quester.conditions.Condition;
+import com.gmail.molnardad.quester.elements.Condition;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.*;
-import com.gmail.molnardad.quester.objectives.Objective;
-import com.gmail.molnardad.quester.qevents.Qevent;
 import com.gmail.molnardad.quester.strings.QuesterStrings;
 import com.gmail.molnardad.quester.utils.Util;
 
@@ -118,7 +118,7 @@ public class QuestManager {
 		PlayerProfile prof = getProfile(player.getName());
 	
 		for(int i=0; i<objs.size(); i++) {
-			if(!objs.get(i).isComplete(player, prof.getProgress().get(i)))
+			if(!objs.get(i).isComplete( prof.getProgress().get(i)))
 				return i;
 		}
 		
@@ -129,12 +129,12 @@ public class QuestManager {
 		List<Objective> objs = getPlayerQuest(player.getName()).getObjectives();
 		List<Integer> progress = getProgress(player.getName());
 		Set<Integer> prereq = objs.get(id).getPrerequisites();
-		if(objs.get(id).isComplete(player, progress.get(id))) {
+		if(objs.get(id).isComplete(progress.get(id))) {
 			return false;
 		}
 		for(int i : prereq) {
 			try {
-				if(!objs.get(i).isComplete(player, progress.get(i))) {
+				if(!objs.get(i).isComplete(progress.get(i))) {
 					return false;
 				}
 			} catch (IndexOutOfBoundsException ignore) {
@@ -150,7 +150,7 @@ public class QuestManager {
 		boolean all = true;
 		
 		for(int i = 0; i < objs.size(); i++) {
-			if(objs.get(i).isComplete(player, prof.getProgress().get(i)))
+			if(objs.get(i).isComplete(prof.getProgress().get(i)))
 				continue;
 			all = false;
 		}
@@ -664,7 +664,7 @@ public class QuestManager {
 		if (!Util.permCheck(player, DataManager.PERM_ADMIN, false)){
 			for(Condition con : qst.getConditions()) {
 				if(!con.isMet(player)) {
-					player.sendMessage(ChatColor.RED + con.show());
+					player.sendMessage(ChatColor.RED + con.inShow());
 					return;
 				}
 			}
@@ -866,14 +866,14 @@ public class QuestManager {
 			if(player != null) {
 				color = cons.get(i).isMet(player) ? ChatColor.GREEN : ChatColor.RED;
 			}
-			sender.sendMessage(color + " - " + cons.get(i).show());
+			sender.sendMessage(color + " - " + cons.get(i).inShow());
 		}
 		if(!qst.hasFlag(QuestFlag.HIDDENOBJS)) {
 			List<Objective> objs = qst.getObjectives();
 			sender.sendMessage(ChatColor.BLUE + lang.INFO_OBJECTIVES + ":");
 			for(int i = 0; i < objs.size(); i++) {
 				if(objs.get(i).getPrerequisites().isEmpty() || !qData.ordOnlyCurrent) {
-					sender.sendMessage(ChatColor.WHITE + " - " + objs.get(i).progress(0));
+					sender.sendMessage(ChatColor.WHITE + " - " + objs.get(i).inShow(0));
 				}
 			}
 		}
@@ -911,24 +911,24 @@ public class QuestManager {
 			if(qmap.get(i) != null) {
 				sender.sendMessage(ChatColor.GOLD + " " + Qevent.parseOccasion(i) + ":");
 				for(int j : qmap.get(i).keySet()) {
-					sender.sendMessage("  <" + j + "> " + qmap.get(i).get(j).toString());
+					sender.sendMessage("  <" + j + "> " + qmap.get(i).get(j).inInfo());
 				}
 			}
 		}
 		sender.sendMessage(ChatColor.BLUE + lang.INFO_CONDITIONS + ":");
 		i = 0;
 		for(Condition c: qst.getConditions()){
-			sender.sendMessage(" [" + i + "] " + c.toString());
+			sender.sendMessage(" [" + i + "] " + c.inInfo());
 			i++;
 			
 		}
 		sender.sendMessage(ChatColor.BLUE + lang.INFO_OBJECTIVES + ":");
 		i = 0;
 		for(Objective o: qst.getObjectives()){
-			sender.sendMessage(" [" + i + "] " + o.toString());
+			sender.sendMessage(" [" + i + "] " + o.inInfo());
 			if(qmap.get(i) != null) {
 				for(int j : qmap.get(i).keySet()) {
-					sender.sendMessage("  <" + j + "> " + qmap.get(i).get(j).toString());
+					sender.sendMessage("  <" + j + "> " + qmap.get(i).get(j).inInfo());
 				}
 			}
 			i++;
@@ -983,13 +983,13 @@ public class QuestManager {
 			player.sendMessage(lang.INFO_PROGRESS.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 			List<Objective> objs = quest.getObjectives();
 			for(int i = 0; i < objs.size(); i++) {
-				if(objs.get(i).isComplete(player, progress.get(i))) {
+				if(objs.get(i).isComplete(progress.get(i))) {
 					player.sendMessage(ChatColor.GREEN + " - " + lang.INFO_PROGRESS_COMPLETED);
 				} else {
 					boolean active = isObjectiveActive(player, i);
 					if(active || !qData.ordOnlyCurrent) {
 						ChatColor col = active ? ChatColor.YELLOW : ChatColor.RED;
-						player.sendMessage(col + " - " + objs.get(i).progress(progress.get(i)));
+						player.sendMessage(col + " - " + objs.get(i).inShow(progress.get(i)));
 					}
 				}
 			}

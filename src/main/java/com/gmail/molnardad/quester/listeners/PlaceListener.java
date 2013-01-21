@@ -12,8 +12,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.objectives.BreakObjective;
-import com.gmail.molnardad.quester.objectives.Objective;
 import com.gmail.molnardad.quester.objectives.PlaceObjective;
 
 public class PlaceListener implements Listener {

@@ -1,54 +1,37 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
+
+@QElement("MILK")
 public final class MilkObjective extends Objective {
 
-	public static final String TYPE = "MILK";
 	private final int amount;
 	
 	public MilkObjective(int amt) {
 		amount = amt;
-	}
-	
-	@Override
-	public String getType() {
-		return TYPE;
 	}
 
 	@Override
 	public int getTargetAmount() {
 		return amount;
 	}
-
-	@Override
-	public boolean isComplete(Player player, int progress) {
-		return progress >= amount;
-	}
 	
 	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
-		}
+	protected String show(int progress) {
 		return "Milk cow - " + (amount - progress) + "x";
 	}
 	
 	@Override
-	public String toString() {
-		return TYPE + ": " + amount + coloredDesc();
-	}
-	
-	public int takeExp(int amt) {
-		return amt - amount;
+	protected String info() {
+		return String.valueOf(amount);
 	}
 
-	@Override
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		
 		section.set("amount", amount);
 	}
 	

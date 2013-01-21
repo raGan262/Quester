@@ -6,51 +6,25 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.elements.Qevent;
 
+@QElement("MONEY")
 public final class MoneyQevent extends Qevent {
 
-	public static final String TYPE = "MONEY";
 	private final double amount;
 	
-	public MoneyQevent(int occ, int del, double amt) {
-		super(occ, del);
+	public MoneyQevent(double amt) {
 		this.amount = amt;
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
-	}
-	
-	@Override
-	public int getOccasion() {
-		return occasion;
-	}
-	
-	@Override
-	public String toString() {
-		return TYPE + ": " + amount + appendSuper();
+	public String info() {
+		return String.valueOf(amount);
 	}
 
 	@Override
-	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		section.set("amount", amount);
-	}
-	
-	public static MoneyQevent deser(int occ, int del, ConfigurationSection section) {
-		double amt;
-		
-		if(section.isInt("amount") || section.isDouble("amount"))
-			amt = section.getDouble("amount");
-		else
-			return null;
-		
-		return new MoneyQevent(occ, del, amt);
-	}
-
-	@Override
-	void run(Player player) {
+	protected void run(Player player) {
 		if(!Quester.vault) {
 			Quester.log.info("Failed process money event on " + player.getName() + ": Economy support disabled");
 			return;
@@ -65,5 +39,22 @@ public final class MoneyQevent extends Qevent {
 		if(!resp.transactionSuccess()) {
 			Quester.log.info("Failed process money event on " + player.getName() + ": " + resp.errorMessage);
 		}
+	}
+
+	// TODO serialization
+	
+	public void serialize(ConfigurationSection section) {
+		section.set("amount", amount);
+	}
+	
+	public static MoneyQevent deser(ConfigurationSection section) {
+		double amt;
+		
+		if(section.isInt("amount") || section.isDouble("amount"))
+			amt = section.getDouble("amount");
+		else
+			return null;
+		
+		return new MoneyQevent(amt);
 	}
 }
