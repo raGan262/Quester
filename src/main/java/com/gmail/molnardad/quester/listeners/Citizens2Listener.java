@@ -57,6 +57,9 @@ public class Citizens2Listener implements Listener {
 				player.sendMessage(ChatColor.RED + lang.ERROR_HOL_NOT_ASSIGNED);
 				return;
 			}
+			if(!qh.canInteract()) {
+				player.sendMessage(ChatColor.RED + lang.ERROR_HOL_INTERACT);
+			}
 			try {
 				qh.selectNext();
 			} catch (HolderException e) {

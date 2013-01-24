@@ -18,9 +18,18 @@ public class QuestHolder {
 	private List<Integer> heldQuests = new ArrayList<Integer>();
 	private int selected = -1;
 	private String name;
+	private long lastAction = 0;
 	
 	public QuestHolder(String name) {
 		this.name = name;
+	}
+	
+	public boolean canInteract() {
+		if(System.currentTimeMillis() - lastAction < 500) {
+			lastAction = System.currentTimeMillis();
+			return true;
+		}
+		return false;
 	}
 	
 	public void setname(String newName) {
@@ -46,13 +55,14 @@ public class QuestHolder {
 		return selected;
 	}
 	
-	public void selectNext() throws HolderException {
+	public boolean selectNext() throws HolderException {
+		lastAction = System.currentTimeMillis();
 		if(heldQuests.isEmpty())
 			throw new HolderException(LanguageManager.getInstance().getDefaultLang().ERROR_Q_NONE);
 		if(getSelected() == -1) {
 			selected = 0;
 			if(QuestManager.getInstance().isQuestActive(heldQuests.get(0)))
-				return;
+				return true;
 		}
 		int i = selected;
 		boolean notChosen = true;
@@ -68,6 +78,7 @@ public class QuestHolder {
 				throw new HolderException(LanguageManager.getInstance().getDefaultLang().ERROR_Q_NONE_ACTIVE);
 			}
 		}
+		return true;
 	}
 	
 	private void checkQuests() {

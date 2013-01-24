@@ -93,15 +93,11 @@ public class QuesterStrings {
 	public String USAGE_REMOVE = "<quest_ID>";
 	public String USAGE_SELECT = "<quest_ID>";
 	public String USAGE_NAME = "\"<new name>\"";
-	public String USAGE_DESC = "<set|add>";
 	public String USAGE_DESC_SET = "[description]";
 	public String USAGE_DESC_ADD = "<description>";
-	public String USAGE_LOC = "<set|remove>";
 	public String USAGE_LOC_SET = "{<location>} [range]";
-	public String USAGE_MOD = "<list|add|remove>";
 	public String USAGE_MOD_ADD = "<modifier1> ...";
 	public String USAGE_MOD_REMOVE = "<modifier1> ...";
-	public String USAGE_WORLD = "<list|add|remove>";
 	public String USAGE_WORLD_ADD = "{<world>}";
 	public String USAGE_WORLD_REMOVE = "{<world>}";
 	
@@ -133,7 +129,6 @@ public class QuesterStrings {
 	public String HOL_Q_ADDED = "Quest added to holder.";
 	public String HOL_Q_REMOVED = "Quest removed from holder.";
 	public String HOL_Q_MOVED = "Quest in holder moved.";
-	public String HOL_USAGE = "<create|delete|add|remove|move|list|info|select>";
 	public String HOL_CREATE_USAGE = "<holder name>";
 	public String HOL_DELETE_USAGE = "<holder ID>";
 	public String HOL_ADD_USAGE = "<quest ID>";
@@ -149,8 +144,6 @@ public class QuesterStrings {
 	public String SIGN_UNREGISTERED = "Sign unregistered.";
 	
 	// OBJECTIVE STRINGS
-
-	public String OBJ_USAGE = "<list|add|remove|swap|move|desc|prereq>.";
 	
 	public String OBJ_ADD = "%type objective added."; // %type = objective type;
 	public String OBJ_ADD_USAGE = "<objective type*>";
@@ -169,82 +162,57 @@ public class QuesterStrings {
 	public String OBJ_DESC_ADD_USAGE = "<obj_ID> <description*>";
 	public String OBJ_DESC_ADD_HELP = "* - %r = remaining amount, %t = total required amount";
 	public String OBJ_DESC_REMOVE = "Description of objective %id removed."; // %id = objective ID;
-	public String OBJ_DESC_USAGE = "<add|remove>.";
 	
 	public String OBJ_REQ_ADD = "Prerequisites to objective %id added."; // %id = objective ID;
 	public String OBJ_REQ_ADD_USAGE = "<obj_ID> <prerequisites>";
 	public String OBJ_REQ_REMOVE = "Prerequisites of objective %id removed."; // %id = objective ID;
 	public String OBJ_REQ_REMOVE_USAGE = "<obj_ID> <prerequisites>";
-	public String OBJ_REQ_USAGE = "<add|remove>.";
 	
-	public String OBJ_BREAK_TYPE = "Break";
 	public String OBJ_BREAK_USAGE = "%cmd objective add break {<item>} <amount> [hand]";
 	
-	public String OBJ_PLACE_TYPE = "Place";
 	public String OBJ_PLACE_USAGE = "%cmd objective add place {<item>} <amount>";
 	
-	public String OBJ_ITEM_TYPE = "Item";
 	public String OBJ_ITEM_USAGE = "%cmd objective add item {<item>} [amount] {[ench1]}...";
 	
-	public String OBJ_COLLECT_TYPE = "Collect";
 	public String OBJ_COLLECT_USAGE = "{<item>} <amount>";
 	
-	public String OBJ_ENCH_TYPE = "Enchant";
 	public String OBJ_ENCH_USAGE = "{<item>} [amount] {[enchants]}.";
 	
-	public String OBJ_EXP_TYPE = "Experience";
 	public String OBJ_EXP_USAGE = "<amount>";
 	
-	public String OBJ_LOC_TYPE = "Location";
 	public String OBJ_LOC_USAGE = "{<location>} [range]";
 	
-	public String OBJ_DEATH_TYPE = "Death";
 	public String OBJ_DEATH_USAGE = "<amount> {[location]} [range]";
 	
-	public String OBJ_WORLD_TYPE = "World";
 	public String OBJ_WORLD_USAGE = "{<world>}";
 	
-	public String OBJ_MOBKILL_TYPE = "Mob kill";
 	public String OBJ_MOBKILL_USAGE = "<amount> {[entity]}";
 	
-	public String OBJ_KILL_TYPE = "Player kill";
 	public String OBJ_KILL_USAGE = "<amount> [player]";
 	
-	public String OBJ_CRAFT_TYPE = "Craft";
 	public String OBJ_CRAFT_USAGE = "{<item>} <amount>";
 	
-	public String OBJ_SMELT_TYPE = "Smelt";
 	public String OBJ_SMELT_USAGE = "{<item>} <amount>";
 	
-	public String OBJ_SHEAR_TYPE = "Shear";
 	public String OBJ_SHEAR_USAGE = "<amount> {[color]}";
 	
-	public String OBJ_FISH_TYPE = "Fish";
 	public String OBJ_FISH_USAGE = "<amount>";
 	
-	public String OBJ_MILK_TYPE = "Milk";
 	public String OBJ_MILK_USAGE = "<amount>";
 	
-	public String OBJ_TAME_TYPE = "Tame";
 	public String OBJ_TAME_USAGE = "<amount> {[entity]}";
 	
-	public String OBJ_MONEY_TYPE = "Money";
 	public String OBJ_MONEY_USAGE = "<amount>";
 
-	public String OBJ_ACTION_TYPE = "Action";
 	public String OBJ_ACTION_USAGE = "{<click>} {[block]} {[item]} {[location]} [range]";
 
-	public String OBJ_NPC_TYPE = "Npc";
 	public String OBJ_NPC_USAGE = "<id> [-c]";
 	public String OBJ_NPC_HELP = "-c - cancel interact event";
 	
-	public String OBJ_DYE_TYPE = "Dye";
 	public String OBJ_DYE_USAGE = "<amount> {[color]}";
 	
-	public String OBJ_BOSS_TYPE = "Boss";
 	public String OBJ_BOSS_USAGE = "<name> [amount]";
 	
-	public String OBJ_NPCKILL_TYPE = "Npckill";
 	public String OBJ_NPCKILL_USAGE = "<name*> [amount]";
 	public String OBJ_NPCKILL_HELP = "* - 'ANY' for any npc";
 	
@@ -254,33 +222,23 @@ public class QuesterStrings {
 	public String CON_LIST = "Available condition types";
 	public String CON_REMOVE = "Condition %id removed."; // %id = condition ID;
 	public String CON_REMOVE_USAGE = "<con_ID>";
-	public String CON_USAGE = "<list|add|remove|desc>";
 	
 	public String CON_DESC_ADD = "Description to condition %id added."; // %id = condition ID;
 	public String CON_DESC_ADD_USAGE = "<con_ID> <description*>";
 	public String CON_DESC_ADD_HELP = "* - %amt = amount, %id = item id, %data = data, %perm = permission, %qst = quest";
 	public String CON_DESC_REMOVE = "Description of condition %id removed."; // %id = condition ID;
 	public String CON_DESC_REMOVE_USAGE = "Description of condition %id removed.";
-	public String CON_DESC_USAGE = "<add|remove>.";
 	
-	public String CON_QUEST_TYPE = "Quest";
-	public String CON_QUEST_USAGE = "<quest_name> (--t)";
-	public String CON_QUEST_HELP = "--t <time in seconds>";
+	public String CON_QUEST_USAGE = "<quest_name> [time in seconds]";
 	
-	public String CON_QUESTNOT_TYPE = "QuestNot";
-	public String CON_QUESTNOT_USAGE = "<quest_name> (--t)";
-	public String CON_QUESTNOT_HELP = "--t <time in seconds>";
+	public String CON_QUESTNOT_USAGE = "<quest_name> [time in seconds]";
 	
-	public String CON_PERM_TYPE = "Permission";
 	public String CON_PERM_USAGE = "<quest_name>";
 	
-	public String CON_MONEY_TYPE = "Money";
 	public String CON_MONEY_USAGE = "<amount>";
 	
-	public String CON_ITEM_TYPE = "Item";
 	public String CON_ITEM_USAGE = "{<item>} <amount>";
 	
-	public String CON_POINT_TYPE = "Point";
 	public String CON_POINT_USAGE = "<amount>";
 	
 	// EVENT STRINGS
@@ -291,61 +249,43 @@ public class QuesterStrings {
 	public String EVT_REMOVE = "Event %id removed.";// %id = event ID;
 	public String EVT_REMOVE_USAGE = "<id_number>";
 	public String EVT_SPECIFY = "Specify occasion and delay.";
-	public String EVT_USAGE = "<add|remove> [args]";
 	
-	public String EVT_MSG_TYPE = "Message";
 	public String EVT_MSG_USAGE = "{<occasion>} <message*>";
 	public String EVT_MSG_HELP = "* - supports '&' colors and '\\n' newline";
 	
-	public String EVT_QUEST_TYPE = "Quest";
 	public String EVT_QUEST_USAGE = "{<occasion>} <quest_name>";
 	
-	public String EVT_TOGGLE_TYPE = "Toggle";
 	public String EVT_TOGGLE_USAGE = "{<occasion>} <quest_ID>";
 	
-	public String EVT_OBJCOM_TYPE = "Objective complete";
 	public String EVT_OBJCOM_USAGE = "{<occasion>} <objective_ID>";
 	
-	public String EVT_CANCEL_TYPE = "Cancel";
 	public String EVT_CANCEL_USAGE = "{<occasion>}";
 	
-	public String EVT_CMD_TYPE = "Command";
 	public String EVT_CMD_USAGE = "{<occasion>} <command*>";
 	public String EVT_CMD_HELP = "* - without '/'";
 	
-	public String EVT_EXPL_TYPE = "Explosion";
 	public String EVT_EXPL_USAGE = "{<occasion>} {<location>} [range] (-d)";
 	public String EVT_EXPL_HELP = "-d - do damage";
 	
-	public String EVT_LIGHT_TYPE = "Lightning";
 	public String EVT_LIGHT_USAGE = "{<occasion>} {<location>} [range] (-d)";
 	public String EVT_LIGHT_HELP = "-d - do damage";
 	
-	public String EVT_TELE_TYPE = "Teleport";
 	public String EVT_TELE_USAGE = "{<occasion>} {<location>}";
 	
-	public String EVT_BLOCK_TYPE = "Block";
 	public String EVT_BLOCK_USAGE = "{<occasion>} {<block>} {<location>}";
 	
-	public String EVT_SPAWN_TYPE = "Spawn";
 	public String EVT_SPAWN_USAGE = "{<occasion>} {<entity>} <amount> {<location>} [range]";
 
-	public String EVT_EFF_TYPE = "Effect";
 	public String EVT_EFF_USAGE = "{<occasion>} {<potion effect>}";
 	
-	public String EVT_ITEM_TYPE = "Item";
 	public String EVT_ITEM_USAGE = "{<occasion>} {<item>} [amount] {[enchants]}";
 	
-	public String EVT_MONEY_TYPE = "Money";
 	public String EVT_MONEY_USAGE = "{<occasion>} <amount>";
 	
-	public String EVT_EXP_TYPE = "Experience";
 	public String EVT_EXP_USAGE = "{<occasion>} <amount>";
 	
-	public String EVT_POINT_TYPE = "Point";
 	public String EVT_POINT_USAGE = "{<occasion>} <amount>";
 	
-	public String EVT_DSCRIPT_TYPE = "Denizen script";
 	public String EVT_DSCRIPT_USAGE = "{<occasion>} <script> [npc ID] (-cn)";
 	public String EVT_DSCRIPT_HELP = "-c - do not use player context; -n - focus npc";
 	
@@ -395,6 +335,7 @@ public class QuesterStrings {
 	public String ERROR_HOL_NOT_EXIST = "Holder does not exist.";
 	public String ERROR_HOL_NOT_SELECTED = "No holder selected.";
 	public String ERROR_HOL_NOT_ASSIGNED = "No holder assigned.";
+	public String ERROR_HOL_INTERACT = "You can't interact that fast.";
 	public String ERROR_CON_NOT_EXIST = "Condition does not exist.";
 	public String ERROR_OBJ_NOT_EXIST = "Objective does not exist.";
 	public String ERROR_OBJ_CANT_DO = "Not enough resources to complete objective.";
