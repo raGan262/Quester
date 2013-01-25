@@ -7,6 +7,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -433,19 +435,19 @@ public class Util {
 		return serializePrerequisites(prereq, ";");
 	}
 	
-	public static int[] deserializeOccasion(String arg) {
+	public static int[] deserializeOccasion(String arg) throws InvalidArgumentsException{
 		int[] arr = new int[2];
 		arr[1] = 0;
 		String[] s = arg.split(":");
 		if(s.length > 2 || s.length < 1) {
-			throw new NumberFormatException();
+			throw new InvalidArgumentsException("Incorrect occasion format.");
 		}
 		arr[0] = Integer.parseInt(s[0]);
 		if(s.length > 1) {
 			arr[1] = Integer.parseInt(s[1]);
 		}
 		if(arr[0] < -3 || arr[1] < 0)
-			throw new NumberFormatException();
+			throw new InvalidArgumentsException("Incorrect occasion.");
 		return arr;
 	} 
 	

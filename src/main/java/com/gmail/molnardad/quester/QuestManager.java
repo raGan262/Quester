@@ -323,22 +323,24 @@ public class QuestManager {
 		qData.saveProfiles();
 	}
 	
-	public void toggleQuest(CommandSender changer) throws QuesterException {
-		toggleQuest(getSelected(changer.getName()));
+	public boolean toggleQuest(CommandSender changer) throws QuesterException {
+		return toggleQuest(getSelected(changer.getName()));
 	}
 	
-	public void toggleQuest(int questID) throws QuesterException {
-		toggleQuest(getQuest(questID));
+	public boolean toggleQuest(int questID) throws QuesterException {
+		return toggleQuest(getQuest(questID));
 	}
 	
-	public void toggleQuest(Quest q) throws QuesterException {
+	public boolean toggleQuest(Quest q) throws QuesterException {
 		if(q == null){	
 			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
 		}
 		if(q.hasFlag(QuestFlag.ACTIVE)){
 			deactivateQuest(q);
+			return false;
 		} else {
 			activateQuest(q);
+			return true;
 		}
 	}
 	

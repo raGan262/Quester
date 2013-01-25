@@ -15,5 +15,4 @@ public class QUsageException extends QCommandException {
 	public String getUsage() {
 		return this.usage;
 	}
-	
 }

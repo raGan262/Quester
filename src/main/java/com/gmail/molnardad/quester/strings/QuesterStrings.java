@@ -63,9 +63,9 @@ public class QuesterStrings {
 	public String HELP_NAME = "changes the name";
 	public String HELP_DESC = "quest description manipulation";
 	public String HELP_WORLD = "world restriction manipulation";
-	public String HELP_FLAG = "quest flag manipulation";
+	public String HELP_MODIFIER = "quest modifier manipulation";
 	public String HELP_CONDITION = "condition manipulation";
-	public String HELP_OBJECTIVE = "bjective manipulation";
+	public String HELP_OBJECTIVE = "objective manipulation";
 	public String HELP_EVENT = "event manipulation";
 	public String HELP_STARTSAVE = "starts scheduled profile saving";
 	public String HELP_STOPSAVE = "stops scheduled profile saving";
@@ -135,7 +135,7 @@ public class QuesterStrings {
 	public String HOL_ADD_USAGE = "<quest ID>";
 	public String HOL_REMOVE_USAGE = "<quest ID>";
 	public String HOL_MOVE_USAGE = "<from> <to>";
-	public String HOL_INFO_USAGE = "[golder ID]";
+	public String HOL_INFO_USAGE = "[holder ID]";
 	public String HOL_SELECT_USAGE = "<holder ID>";
 
 	// SIGN STRINGS

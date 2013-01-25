@@ -59,32 +59,10 @@ public class ModificationCommands {
 			usage = "<quest ID>",
 			permission = DataManager.PERM_MODIFY)
 	public void remove(QCommandContext context, CommandSender sender) throws QuesterException {
-		try {
-			String name = qMan.removeQuest(sender.getName(), context.getInt(0)).getName();
-			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_REMOVED);
-			if(DataManager.getInstance().verbose) {
-				Quester.log.info(sender.getName() + " removed quest '" + name + "'.");
-			}
-		}
-		catch (NumberFormatException e) {
-			sender.sendMessage(ChatColor.RED + context.getSenderLang().ERROR_CMD_BAD_ID);
-		}
-	}
-
-	@QCommandLabels({"select", "sel"})
-	@QCommand(
-			desc = "selects the quest",
-			min = 1,
-			max = 1,
-			usage = "<quest ID>",
-			permission = DataManager.PERM_MODIFY)
-	public void select(QCommandContext context, CommandSender sender) throws QuesterException {
-		try {
-			qMan.selectQuest(sender.getName(), context.getInt(0));
-			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_SELECTED);
-		}
-		catch (NumberFormatException e) {
-			sender.sendMessage(ChatColor.RED + context.getSenderLang().ERROR_CMD_BAD_ID);
+		String name = qMan.removeQuest(sender.getName(), context.getInt(0)).getName();
+		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_REMOVED);
+		if(DataManager.getInstance().verbose) {
+			Quester.log.info(sender.getName() + " removed quest '" + name + "'.");
 		}
 	}
 
@@ -98,8 +76,43 @@ public class ModificationCommands {
 	public void name(QCommandContext context, CommandSender sender) throws QuesterException {
 		qMan.changeQuestName(sender.getName(), context.getString(0));
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_RENAMED.replaceAll("%q", context.getString(0)));
-	}	
+	}
 
+	@QCommandLabels({"toggle"})
+	@QCommand(
+			desc = "toggles the state of the quest",
+			max = 1,
+			usage = "[quest ID]",
+			permission = DataManager.PERM_MODIFY)
+	public void i(QCommandContext context, CommandSender sender) throws QCommandException, QuesterException {
+		boolean active;
+		if(context.length() > 0) {
+			active = qMan.toggleQuest(context.getInt(0));
+		}
+		else {
+			active = qMan.toggleQuest(sender);
+		}
+		if(active){
+			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_ACTIVATED);
+		} else {
+			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_DEACTIVATED);
+		}
+	}
+
+	@QCommandLabels({"select", "sel"})
+	@QCommand(
+			desc = "selects the quest",
+			min = 1,
+			max = 1,
+			usage = "<quest ID>",
+			permission = DataManager.PERM_MODIFY)
+	public void select(QCommandContext context, CommandSender sender) throws QuesterException {
+		qMan.selectQuest(sender.getName(), context.getInt(0));
+		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_SELECTED);
+	}
+
+	// nested commands
+	
 	@QCommandLabels({"desc"})
 	@QCommand(
 			desc = "quest description manipulation",
@@ -129,40 +142,21 @@ public class ModificationCommands {
 			desc = "world restriction manipulation",
 			permission = DataManager.PERM_MODIFY)
 	@QNestedCommand(WorldCommands.class)
-	public void h(QCommandContext context, CommandSender sender) throws QCommandException {
+	public void world(QCommandContext context, CommandSender sender) throws QCommandException {
 	}
 
-	@QCommandLabels({""})
+	@QCommandLabels({"holder", "hol"})
 	@QCommand(
-			desc = "",
-			min = 0,
-			max = 1,
-			usage = "",
+			desc = "quest holder manipulation",
 			permission = DataManager.PERM_MODIFY)
-	public void i(QCommandContext context, CommandSender sender) throws QCommandException {
-		
+	public void holder(QCommandContext context, CommandSender sender) throws QCommandException {
 	}
 
-	@QCommandLabels({""})
+	@QCommandLabels({"obejctive", "obj"})
 	@QCommand(
-			desc = "",
-			min = 0,
-			max = 1,
-			usage = "",
+			desc = "objective manipulation",
 			permission = DataManager.PERM_MODIFY)
-	public void j(QCommandContext context, CommandSender sender) throws QCommandException {
-		
-	}
-
-	@QCommandLabels({""})
-	@QCommand(
-			desc = "",
-			min = 0,
-			max = 1,
-			usage = "",
-			permission = DataManager.PERM_MODIFY)
-	public void k(QCommandContext context, CommandSender sender) throws QCommandException {
-		
+	public void objective(QCommandContext context, CommandSender sender) throws QCommandException {
 	}
 
 	@QCommandLabels({""})
