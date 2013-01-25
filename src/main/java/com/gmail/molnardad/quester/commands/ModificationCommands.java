@@ -124,6 +124,14 @@ public class ModificationCommands {
 	public void modifier(QCommandContext context, CommandSender sender) throws QCommandException {
 	}
 
+	@QCommandLabels({"world"})
+	@QCommand(
+			desc = "world restriction manipulation",
+			permission = DataManager.PERM_MODIFY)
+	@QNestedCommand(WorldCommands.class)
+	public void h(QCommandContext context, CommandSender sender) throws QCommandException {
+	}
+
 	@QCommandLabels({""})
 	@QCommand(
 			desc = "",
@@ -131,7 +139,51 @@ public class ModificationCommands {
 			max = 1,
 			usage = "",
 			permission = DataManager.PERM_MODIFY)
-	public void h(QCommandContext context, CommandSender sender) throws QCommandException {
+	public void i(QCommandContext context, CommandSender sender) throws QCommandException {
+		
+	}
+
+	@QCommandLabels({""})
+	@QCommand(
+			desc = "",
+			min = 0,
+			max = 1,
+			usage = "",
+			permission = DataManager.PERM_MODIFY)
+	public void j(QCommandContext context, CommandSender sender) throws QCommandException {
+		
+	}
+
+	@QCommandLabels({""})
+	@QCommand(
+			desc = "",
+			min = 0,
+			max = 1,
+			usage = "",
+			permission = DataManager.PERM_MODIFY)
+	public void k(QCommandContext context, CommandSender sender) throws QCommandException {
+		
+	}
+
+	@QCommandLabels({""})
+	@QCommand(
+			desc = "",
+			min = 0,
+			max = 1,
+			usage = "",
+			permission = DataManager.PERM_MODIFY)
+	public void l(QCommandContext context, CommandSender sender) throws QCommandException {
+		
+	}
+
+	@QCommandLabels({""})
+	@QCommand(
+			desc = "",
+			min = 0,
+			max = 1,
+			usage = "",
+			permission = DataManager.PERM_MODIFY)
+	public void m(QCommandContext context, CommandSender sender) throws QCommandException {
 		
 	}
 }

@@ -398,11 +398,12 @@ public class QuestManager {
 		qData.saveQuests();
 	}
 	
-	public void removeQuestWorld(String changer, String worldName) throws QuesterException {
+	public boolean removeQuestWorld(String changer, String worldName) throws QuesterException {
 		Quest quest = getSelected(changer);
 		modifyCheck(quest);
-		quest.removeWorld(worldName.toLowerCase());
+		boolean result = quest.removeWorld(worldName);
 		qData.saveQuests();
+		return result;
 	}
 	
 	public void addQuestFlag(String changer, QuestFlag[] flags) throws QuesterException {

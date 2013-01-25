@@ -334,6 +334,7 @@ public class QuesterStrings {
 	public String ERROR_Q_MAX_AMOUNT = "Maximum quest amount reached.";
 	public String ERROR_Q_NOT_HERE = "You can't complete your quest here.";
 	public String ERROR_MOD_UNKNOWN = "Unknown modifiers.";
+	public String ERROR_WORLD_NOT_ASSIGNED = "That world is not assigned.";
 	public String ERROR_HOL_NOT_EXIST = "Holder does not exist.";
 	public String ERROR_HOL_NOT_SELECTED = "No holder selected.";
 	public String ERROR_HOL_NOT_ASSIGNED = "No holder assigned.";

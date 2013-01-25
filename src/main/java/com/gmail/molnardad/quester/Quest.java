@@ -223,9 +223,9 @@ public class Quest {
 	}
 	
 	public boolean removeWorld(String worldName) {
-		if(!worlds.contains(worldName))
+		if(!worlds.contains(worldName.toLowerCase()))
 			return false;
-		worlds.remove(worldName);
+		worlds.remove(worldName.toLowerCase());
 		return true;
 	}
 	
