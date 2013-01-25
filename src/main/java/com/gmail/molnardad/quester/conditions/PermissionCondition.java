@@ -1,8 +1,12 @@
 package com.gmail.molnardad.quester.conditions;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
@@ -34,6 +38,16 @@ public final class PermissionCondition extends Condition {
 	@Override
 	public String info() {
 		return perm;
+	}
+	
+	@QCommand(
+			min = 1,
+			max = 1,
+			desc = "requires player to have certain permission",
+			usage = "<permission>")
+	public static Condition fromCommand(QCommandContext context, CommandSender sender) throws QCommandException {
+		String perm = context.getString(0);
+		return new PermissionCondition(perm);
 	}
 	
 	// TODO serialization

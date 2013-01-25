@@ -6,9 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface QCommand {
 	
-	String[] labels();
-	
-	String desc();
+	String desc() default "";
 	
 	int min() default 0;
 	

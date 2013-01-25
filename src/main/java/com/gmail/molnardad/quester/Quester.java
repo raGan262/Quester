@@ -24,6 +24,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QPermissionException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QUsageException;
 import com.gmail.molnardad.quester.commands.AdminCommands;
+import com.gmail.molnardad.quester.commands.ModificationCommands;
 import com.gmail.molnardad.quester.commands.UserCommands;
 import com.gmail.molnardad.quester.config.*;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
@@ -52,7 +53,8 @@ public class Quester extends JavaPlugin {
 		public static boolean denizen = false;
 
 		
-		public static final String LABEL = ChatColor.BLUE + "[" + ChatColor.GOLD + "Quester" + ChatColor.BLUE + "] ";
+		public static final String LABEL = ChatColor.BLUE
+				+ "[" + ChatColor.GOLD + "Quester" + ChatColor.BLUE + "] ";
 		
 		@Override
 		public void onEnable() {
@@ -103,6 +105,7 @@ public class Quester extends JavaPlugin {
 			
 			commands.register(UserCommands.class);
 			commands.register(AdminCommands.class);
+			commands.register(ModificationCommands.class);
 			
 			startSaving();
 			loaded = true;
@@ -133,7 +136,9 @@ public class Quester extends JavaPlugin {
 		
 		@Override
 		public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-			if(label.equalsIgnoreCase("q") || label.equalsIgnoreCase("quest") || label.equalsIgnoreCase("quester")) {
+			if(label.equalsIgnoreCase("q")
+					|| label.equalsIgnoreCase("quest")
+					|| label.equalsIgnoreCase("quester")) {
 				try {
 					commands.execute(args, sender);
 				}
@@ -143,7 +148,8 @@ public class Quester extends JavaPlugin {
 				catch (QCommandException e) {
 					if(e instanceof QUsageException) {
 						sender.sendMessage(ChatColor.RED + e.getMessage());
-						sender.sendMessage(ChatColor.RED + "Usage: " + ((QUsageException) e).getUsage());
+						sender.sendMessage(ChatColor.RED + langMan.getPlayerLang(sender.getName()).USAGE_LABEL
+								+ ((QUsageException) e).getUsage());
 					}
 					else if(e instanceof QPermissionException) {
 						sender.sendMessage(ChatColor.RED + langMan.getDefaultLang().MSG_PERMS);

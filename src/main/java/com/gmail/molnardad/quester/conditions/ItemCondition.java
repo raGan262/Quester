@@ -1,10 +1,14 @@
 package com.gmail.molnardad.quester.conditions;
 
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
@@ -16,7 +20,7 @@ public final class ItemCondition extends Condition {
 	private final short data;
 	private final int amount;
 	
-	public ItemCondition(Material mat, int amt, int dat) {
+	private ItemCondition(Material mat, int amt, int dat) {
 		this.material = mat;
 		this.amount = amt;
 		this.data = (short) dat;
@@ -61,6 +65,31 @@ public final class ItemCondition extends Condition {
 	protected String info() {
 		String dataStr = (data < 0 ? "ANY" : String.valueOf(data));
 		return material.name() + "[" + material.getId() + "]; DMG: " + dataStr + "; AMT: " + amount;
+	}
+	
+	@QCommand(
+			min = 1,
+			max = 2,
+			desc = "requires player to have certain item",
+			usage = "{<item>} <amount>")
+	public static Condition fromCommand(QCommandContext context, CommandSender sender) throws QCommandException {
+		int[] itm = Util.parseItem(context.getString(0));
+		Material mat = Material.getMaterial(itm[0]);
+		int dat = itm[1];
+		int amt;
+		try {
+			amt = context.getInt(1);
+			if(amt < 1 || dat < -1) {
+				throw new NumberFormatException();
+			}
+		}
+		catch (NumberFormatException e) {
+			throw new QCommandException(context.getSenderLang().ERROR_CMD_ITEM_NUMBERS);
+		}
+		catch (IllegalArgumentException e) {
+			throw new QCommandException(e.getMessage());
+		}
+		return new ItemCondition(mat, amt, dat);
 	}
 	
 	// TODO serialization

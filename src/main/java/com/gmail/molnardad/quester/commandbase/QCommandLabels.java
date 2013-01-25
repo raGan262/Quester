@@ -1,10 +1,10 @@
-package com.gmail.molnardad.quester.elements;
+package com.gmail.molnardad.quester.commandbase;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface QElement {
+public @interface QCommandLabels {
 	
-	String value();
+	String[] value();
 }

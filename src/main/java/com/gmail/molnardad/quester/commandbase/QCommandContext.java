@@ -9,7 +9,9 @@ import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.LanguageManager;
 import com.gmail.molnardad.quester.QCommandManager;
+import com.gmail.molnardad.quester.strings.QuesterStrings;
 import com.google.common.collect.Lists;
 
 public class QCommandContext {
@@ -18,22 +20,38 @@ public class QCommandContext {
 	private final String[] args;
 	private final String[] parentArgs;
 	private final CommandSender sender;
-	private final Set<Character> flags = new HashSet<Character>();
+	private final Set<Character> flags;
+	private final QuesterStrings lang;
 	// valueFlags will be added once it is needed :)
+	
+	private QCommandContext(String[] args, String[] parentArgs, CommandSender sender, QCommandManager cMan, Set<Character> flags, QuesterStrings lang) {
+		this.args = args;
+		this.parentArgs = args;
+		this.comMan = cMan;
+		this.sender = sender;
+		this.flags = flags;
+		this.lang = lang;
+	}
 	
 	public QCommandContext(String[] args, String[] parentArgs, CommandSender sender, QCommandManager cMan) {
 		this.sender = sender;
 		this.parentArgs = parentArgs;
 		this.comMan = cMan;
+		this.lang = LanguageManager.getInstance().getPlayerLang(sender.getName());
+		this.flags = new HashSet<Character>();
 		
 		int i = 1;
 		for(;i < args.length; i++) {
-			// snippets of citizens 2 code, handy
 			args[i] = args[i].trim();
 			if (args[i].length() == 0) {
 				continue;
-			} else if (args[i].charAt(0) == '\'' || args[i].charAt(0) == '"') {
+			} 
+			else if (args[i].charAt(0) == '\'' || args[i].charAt(0) == '"') {
 				char quote = args[i].charAt(0);
+				if(args[i].charAt(args[i].length() - 1) == quote) {
+					args[i] = args[i].substring(1, args[i].length() - 1);
+					continue;
+				}
 				String quoted = args[i].substring(1);
 				for (int inner = i + 1; inner < args.length; inner++) {
 					if (args[inner].isEmpty()) {
@@ -43,7 +61,7 @@ public class QCommandContext {
 					quoted += " " + test;
 					if (test.charAt(test.length() - 1) == quote) {
 						args[i] = quoted.substring(0, quoted.length() - 1);
-						for (int j = i + 1; j != inner; ++j) {
+						for (int j = i + 1; j <= inner; ++j) {
 							args[j] = "";
 						}
 						break;
@@ -73,6 +91,21 @@ public class QCommandContext {
 		this.args = copied.toArray(new String[copied.size()]);
 	}
 	
+	public QCommandContext getSubContext() {
+		if(args.length > 0) {
+			int parLength = this.parentArgs.length;
+			int argLength = this.args.length - 1;
+			String[] parentArgs = new String[parLength + 1];
+			String[] args = new String[argLength];
+			System.arraycopy(this.parentArgs, 0, parentArgs, 0, parLength);
+			parentArgs[parLength] = this.args[0];
+			System.arraycopy(this.args, 1, args, 0, argLength);
+			
+			return new QCommandContext(args, parentArgs, sender, comMan, flags, lang);
+		}
+		return null;
+	}
+	
 	public int length() {
 		return args.length;
 	}
@@ -85,6 +118,10 @@ public class QCommandContext {
 			((Player) sender).getLocation();
 		}
 		return null;
+	}
+	
+	public QuesterStrings getSenderLang() {
+		return lang;
 	}
 	
 	public Player getPlayer() {

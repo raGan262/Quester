@@ -96,6 +96,7 @@ public class QuesterStrings {
 	public String USAGE_DESC_SET = "[description]";
 	public String USAGE_DESC_ADD = "<description>";
 	public String USAGE_LOC_SET = "{<location>} [range]";
+	public String USAGE_MOD_AVAIL = "Available modifiers: ";
 	public String USAGE_MOD_ADD = "<modifier1> ...";
 	public String USAGE_MOD_REMOVE = "<modifier1> ...";
 	public String USAGE_WORLD_ADD = "{<world>}";
@@ -111,8 +112,8 @@ public class QuesterStrings {
 	public String Q_DESC_ADDED = "Quest description added.";
 	public String Q_LOC_SET = "Quest location set.";
 	public String Q_LOC_REMOVED = "Quest location removed.";
-	public String Q_FLGS_ADDED = "Flags added.";
-	public String Q_FLGS_REMOVED = "Flags removed.";
+	public String Q_MOD_ADDED = "Modifiers added.";
+	public String Q_MOD_REMOVED = "Modifiers removed.";
 	public String Q_ACTIVATED = "Quest activated.";
 	public String Q_DEACTIVATED = "Quest deactivated.";
 	public String Q_WORLD_ADDED = "Quest world added.";
@@ -332,6 +333,7 @@ public class QuesterStrings {
 	public String ERROR_Q_NOT_CMD = "Quest cannot be started or completed by command.";
 	public String ERROR_Q_MAX_AMOUNT = "Maximum quest amount reached.";
 	public String ERROR_Q_NOT_HERE = "You can't complete your quest here.";
+	public String ERROR_MOD_UNKNOWN = "Unknown modifiers.";
 	public String ERROR_HOL_NOT_EXIST = "Holder does not exist.";
 	public String ERROR_HOL_NOT_SELECTED = "No holder selected.";
 	public String ERROR_HOL_NOT_ASSIGNED = "No holder assigned.";

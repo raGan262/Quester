@@ -290,7 +290,7 @@ public class QuestManager {
 		qData.saveQuests();
 	}
 	
-	public void removeQuest(String changer, int questID) throws QuesterException {
+	public Quest removeQuest(String changer, int questID) throws QuesterException {
 		Quest q = getQuest(questID);
 		modifyCheck(q);
 		qData.questIds.remove(q.getID());
@@ -299,6 +299,7 @@ public class QuestManager {
 		plugin.questConfig.getConfig().set(q.getName().toLowerCase(), null);
 		qData.adjustQuestID();
 		qData.saveQuests();
+		return q;
 	}
 	
 	public void activateQuest(Quest q) {

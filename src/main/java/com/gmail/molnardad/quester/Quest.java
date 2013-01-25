@@ -251,19 +251,19 @@ public class Quest {
 		if(!objectives.isEmpty()) {
 			ConfigurationSection subsection = section.createSection("objectives");
 			for(int i=0; i<objectives.size(); i++) {
-				objectives.get(i).serialize(subsection.createSection(String.valueOf(i)));
+				//objectives.get(i).serialize(subsection.createSection(String.valueOf(i)));
 			}
 		}
 		if(!conditions.isEmpty()) {
 			ConfigurationSection subsection = section.createSection("conditions");
 			for(int i=0; i<conditions.size(); i++) {
-				conditions.get(i).serialize(subsection.createSection(String.valueOf(i)));
+				//conditions.get(i).serialize(subsection.createSection(String.valueOf(i)));
 			}
 		}
 		if(!qevents.isEmpty()) {
 			ConfigurationSection subsection = section.createSection("events");
 			for(int i=0; i<qevents.size(); i++) {
-				qevents.get(i).serialize(subsection.createSection(String.valueOf(i)));
+				//qevents.get(i).serialize(subsection.createSection(String.valueOf(i)));
 			}
 		}
 		
@@ -340,7 +340,7 @@ public class Quest {
 				ConfigurationSection subsection = section.getConfigurationSection("conditions");
 				Set<String> keys = subsection.getKeys(false);
 				for(int i=0; i<keys.size(); i++) {
-					con = Condition.deserialize(subsection.getConfigurationSection(String.valueOf(i)));
+					//con = Condition.deserialize(subsection.getConfigurationSection(String.valueOf(i)));
 					if(con != null) {
 						quest.addCondition(con);
 						if(data.debug)

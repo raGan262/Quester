@@ -5,29 +5,26 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.DataManager;
-import com.gmail.molnardad.quester.LanguageManager;
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QPermissionException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
-import com.gmail.molnardad.quester.strings.QuesterStrings;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class UserCommands {
 
 	private QuestManager qMan = null;
-	private QuesterStrings lang = null;
 	
 	public UserCommands(Quester plugin) {
 		this.qMan = QuestManager.getInstance();
-		this.lang = LanguageManager.getInstance().getDefaultLang();
 	}
 	
+	@QCommandLabels({"show"})
 	@QCommand(
-			labels = {"show"},
 			desc = "shows info about the quest",
 			max = 1,
 			min = 1,
@@ -37,24 +34,8 @@ public class UserCommands {
 		qMan.showQuest(sender, context.getString(0));
 	}
 	
+	@QCommandLabels({"list"})
 	@QCommand(
-			labels = {"info"},
-			desc = "shows detailed info about the quest",
-			max = 1,
-			min = 1,
-			usage = "[quest_ID]",
-			permission = DataManager.PERM_MODIFY)
-	public void info(QCommandContext context, CommandSender sender) throws QuesterException {
-		if(context.length() > 0) {
-			qMan.showQuestInfo(sender, context.getInt(0));
-		}
-		else {
-			qMan.showQuestInfo(sender);
-		}
-	}
-	
-	@QCommand(
-			labels = {"list"},
 			desc = "displays quest list",
 			max = 0,
 			permission = DataManager.PERM_USE_LIST)
@@ -67,8 +48,8 @@ public class UserCommands {
 		}
 	}
 	
+	@QCommandLabels({"profile"})
 	@QCommand(
-			labels = {"profile"},
 			desc = "shows player's profile",
 			max = 1,
 			usage = "[player]",
@@ -82,14 +63,14 @@ public class UserCommands {
 		}
 	}
 	
+	@QCommandLabels({"start"})
 	@QCommand(
-			labels = {"start"},
 			desc = "starts the quest",
 			max = 1,
 			usage = "\"[quest name]\"")
 	public void start(QCommandContext context, CommandSender sender) throws QuesterException, QCommandException {
 		if(context.getPlayer() == null) {
-			sender.sendMessage(lang.MSG_ONLY_PLAYER);
+			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);
 			return;
 		}
 		if(context.length() == 0) {
@@ -108,28 +89,28 @@ public class UserCommands {
 		}
 	}
 	
+	@QCommandLabels({"done"})
 	@QCommand(
-			labels = {"done"},
 			desc = "completes current objective",
 			max = 0,
 			permission = DataManager.PERM_USE_DONE)
 	public void done(QCommandContext context, CommandSender sender) throws QuesterException {
 		if(context.getPlayer() == null) {
-			sender.sendMessage(lang.MSG_ONLY_PLAYER);
+			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);
 			return;
 		}
 		qMan.complete((Player) sender, true);
 	}
 
+	@QCommandLabels({"cancel"})
 	@QCommand(
-			labels = {"cancel"},
 			desc = "completes current objective",
 			max = 1,
 			usage = "[quest ID]",
 			permission = DataManager.PERM_USE_CANCEL)
 	public void cancel(QCommandContext context, CommandSender sender) throws QuesterException, QCommandException {
 		if(context.getPlayer() == null) {
-			sender.sendMessage(lang.MSG_ONLY_PLAYER);
+			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);
 			return;
 		}
 		int index = -1;
@@ -139,8 +120,8 @@ public class UserCommands {
 		qMan.cancelQuest((Player) sender, index, true);
 	}
 	
+	@QCommandLabels({"switch"})
 	@QCommand(
-			labels = {"switch"},
 			desc = "switches current quest",
 			max = 1,
 			min = 1,
@@ -148,23 +129,23 @@ public class UserCommands {
 			permission = DataManager.PERM_USE_SWITCH)
 	public void switch0(QCommandContext context, CommandSender sender) throws QuesterException, QCommandException {
 		if(context.getPlayer() == null) {
-			sender.sendMessage(lang.MSG_ONLY_PLAYER);
+			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);
 			return;
 		}
 		if (qMan.switchQuest((Player) sender, context.getInt(0))) {
-			sender.sendMessage(ChatColor.GREEN + lang.Q_SWITCHED);
+			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_SWITCHED);
 		}
 	}
 
+	@QCommandLabels({"progress", "prog"})
 	@QCommand(
-			labels = {"progress", "prog"},
 			desc = "shows quest progress",
 			max = 1,
 			usage = "[index]",
 			permission = DataManager.PERM_USE_PROGRESS)
 	public void progress(QCommandContext context, CommandSender sender) throws QuesterException, QCommandException {
 		if(context.getPlayer() == null) {
-			sender.sendMessage(lang.MSG_ONLY_PLAYER);
+			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);
 			return;
 		}
 		int index = -1;
@@ -174,8 +155,8 @@ public class UserCommands {
 		qMan.showProgress((Player) sender, index);
 	}
 	
+	@QCommandLabels({"quests"})
 	@QCommand(
-			labels = {"quests"},
 			desc = "shows player's profile",
 			max = 1,
 			usage = "[player]",

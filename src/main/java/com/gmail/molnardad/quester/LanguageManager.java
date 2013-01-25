@@ -30,6 +30,10 @@ public class LanguageManager {
 		return languages.get(name.toLowerCase()) != null;
 	}
 	
+	public QuesterStrings getPlayerLang(String playerName) {
+		return getDefaultLang();
+	}
+	
 	public QuesterStrings getDefaultLang() {
 		return languages.get("english").getStrings();
 	}

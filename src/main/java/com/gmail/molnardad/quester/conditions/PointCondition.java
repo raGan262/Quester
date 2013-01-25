@@ -1,9 +1,13 @@
 package com.gmail.molnardad.quester.conditions;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.QElement;
 
@@ -34,6 +38,21 @@ public final class PointCondition extends Condition {
 	@Override
 	public String info() {
 		return String.valueOf(amount);
+	}
+	
+	@QCommand(
+			min = 1,
+			max = 1,
+			desc = "requires player to have certain amount of points",
+			usage = "<amount>")
+	public static Condition fromCommand(QCommandContext context, CommandSender sender) throws QCommandException {
+		try {
+			int amt = context.getInt(0);
+			return new PointCondition(amt);
+			}
+		catch (NumberFormatException e) {
+			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_GENERAL);
+		}
 	}
 	
 	// TODO serialization

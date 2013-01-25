@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.commandbase.QNestedCommand;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QPermissionException;
@@ -25,6 +26,7 @@ public class QCommandManager {
 	Quester plugin = null;
 	
 	private Map<Method, Map<String, Method>> labels = new HashMap<Method, Map<String, Method>>();
+	private Map<Method, Map<String, Method>> aliases = new HashMap<Method, Map<String, Method>>();
 	private Map<Method, Object> instances = new HashMap<Method, Object>();
 	private Map<Method, QCommand> annotations = new HashMap<Method, QCommand>();
 	
@@ -41,7 +43,7 @@ public class QCommandManager {
 		Object instance = construct(clss);
 		for(Method method : clss.getMethods()) {
 			
-			if(!method.isAnnotationPresent(QCommand.class)) {
+			if(!method.isAnnotationPresent(QCommand.class) || !method.isAnnotationPresent(QCommandLabels.class)) {
 				continue;
 			}
 			
@@ -59,10 +61,18 @@ public class QCommandManager {
 			if(labels.get(parent) == null) {
 				labels.put(parent, new HashMap<String, Method>());
 			}
+			if(aliases.get(parent) == null) {
+				aliases.put(parent, new HashMap<String, Method>());
+			}
 			
-			Map<String, Method> lblmap = labels.get(parent);
-			for(String label : qCmd.labels()) {
-				lblmap.put(label.toLowerCase(), method);
+			Map<String, Method> lblMap = labels.get(parent);
+			Map<String, Method> aliMap = aliases.get(parent);
+			
+			QCommandLabels qCmdLbls = method.getAnnotation(QCommandLabels.class);
+			String[] aliases = qCmdLbls.value();
+			lblMap.put(aliases[0].toLowerCase(), method);
+			for(int i = 1; i < aliases.length; i++) {
+				aliMap.put(aliases[i].toLowerCase(), method);
 			}
 			
 			if(method.isAnnotationPresent(QNestedCommand.class)) {
@@ -87,10 +97,17 @@ public class QCommandManager {
 		
 		Method method = labels.get(parent).get(label);
 		if(method == null) {
-			throw new QUsageException("Unknown argument: " + label, getUsage(args, level, parent));
+			method = aliases.get(parent).get(label);
+		}
+		if(method == null) {
+			throw new QUsageException("Unknown argument: " + label, getUsage(args, level-1, parent));
 		}
 
-		
+		// check every permission for nested command
+		QCommand cmd = annotations.get(method);
+		if(!cmd.permission().isEmpty() && (sender == null || !Util.permCheck(sender, cmd.permission(), false))) {
+			throw new QPermissionException();
+		}
 		
 		if(labels.get(method) != null) { // going deeper
 			int numArgs = args.length - level - 1;
@@ -101,11 +118,7 @@ public class QCommandManager {
 			executeMethod(args, sender, method, level+1);
 		}
 		else {
-			QCommand cmd = annotations.get(method);
 			
-			if(!cmd.permission().isEmpty() && (sender == null || !Util.permCheck(sender, cmd.permission(), false))) {
-				throw new QPermissionException();
-			}
 			
 			String[] parentArgs = new String[level+1];
 			String[] realArgs = new String[args.length - level - 1];
@@ -118,7 +131,7 @@ public class QCommandManager {
 				throw new QUsageException("Not enough argmunents.", getUsage(args, level, method));
 			}
 			
-			if(context.length() > cmd.max()) {
+			if(!(cmd.max() < 0) && context.length() > cmd.max()) {
 				throw new QUsageException("Too many argmunents.", getUsage(args, level, method));
 			}
 			
@@ -163,7 +176,24 @@ public class QCommandManager {
 			for(int i = 0; i <= level; i++) {
 				usage.append(' ').append(args[i]);
 			}
-			usage.append(' ').append(annotations.get(method).usage());
+			Map<String, Method> lbls = labels.get(method);
+			if(lbls == null) {
+				usage.append(' ').append(annotations.get(method).usage());
+			}
+			else {
+				boolean first = true;
+				usage.append(" <");
+				for(String key : lbls.keySet()) {
+					if(first) {
+						first = false;
+					}
+					else {
+						usage.append('|');
+					}
+					usage.append(key);
+				}
+				usage.append(">");
+			}
 		}
 		else {
 			usage.append(" help");
@@ -177,20 +207,40 @@ public class QCommandManager {
 		usage.append(DataManager.getInstance().displayedCmd);
 		
 		Method method = null;
-		String temp = " help";
+		Method oldMethod = null;
 		
 		for(String arg : args) {
-			method  = labels.get(method).get(arg.toLowerCase());
+			String lcArg = arg.toLowerCase();
+			method = labels.get(oldMethod).get(lcArg);
+			if(method == null) {
+				method = aliases.get(oldMethod).get(lcArg);
+			}
 			if(method != null) {
-				usage.append(' ').append(arg);
-				temp = annotations.get(method).usage();
+				usage.append(' ').append(lcArg);
+				oldMethod = method;
 			}
 			else {
 				break;
 			}
 		}
-		
-		usage.append(' ').append(temp);
+		if(labels.get(oldMethod) == null) {
+			usage.append(' ').append(annotations.get(oldMethod).usage());
+		}
+		else {
+			Map<String, Method> lbls = labels.get(oldMethod);
+			boolean first = true;
+			usage.append(" <");
+			for(String key : lbls.keySet()) {
+				if(first) {
+					first = false;
+				}
+				else {
+					usage.append('|');
+				}
+				usage.append(key);
+			}
+			usage.append(">");
+		}
 		return usage.toString();
 	}
 	
