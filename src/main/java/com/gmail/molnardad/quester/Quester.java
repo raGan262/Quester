@@ -138,7 +138,7 @@ public class Quester extends JavaPlugin {
 		}
 		
 		private boolean setupEpicBoss() {
-			epicboss = (getServer().getPluginManager().getPlugin("EpicBoss") != null);
+			epicboss = (getServer().getPluginManager().getPlugin("EpicBossRecoded") != null);
 		    return epicboss;
 		}
 		
