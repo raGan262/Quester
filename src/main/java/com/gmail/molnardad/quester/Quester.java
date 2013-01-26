@@ -42,6 +42,7 @@ public class Quester extends JavaPlugin {
 		
 		private DataManager data = null;
 		private LanguageManager langMan = null;
+		private ElementManager elements = null;
 		private QCommandManager commands = null;
 		
 		private boolean loaded = false;
@@ -70,6 +71,10 @@ public class Quester extends JavaPlugin {
 			this.loadLocal();
 			
 			QuestManager.setInstance(new QuestManager(this));
+			
+			elements = new ElementManager();
+			ElementManager.setInstance(elements);
+			
 			//Load configs
 			profileConfig = new ProfileConfig(this, "profiles.yml");
 			questConfig = new QuestConfig(this, "quests.yml");
@@ -159,7 +164,7 @@ public class Quester extends JavaPlugin {
 					}
 				}
 				catch (NumberFormatException e) {
-					sender.sendMessage(ChatColor.RED + "Number expected, " + e.getMessage() + "found.");
+					sender.sendMessage(ChatColor.RED + "Number expected, but " + e.getMessage().replaceFirst(".+ \"", "\"") + " found. ");
 				}
 				return true;
 			}

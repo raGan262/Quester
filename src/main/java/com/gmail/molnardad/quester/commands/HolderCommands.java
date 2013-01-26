@@ -68,7 +68,7 @@ public class HolderCommands {
 			desc = "moves quest in holder",
 			min = 2,
 			max = 2,
-			usage = "Quest in holder moved.")
+			usage = "<from> <to>")
 	public void move(QCommandContext context, CommandSender sender) throws QuesterException {
 		qMan.moveHolderQuest(sender.getName(), context.getInt(0), context.getInt(1));
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().HOL_Q_MOVED);

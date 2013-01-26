@@ -113,6 +113,10 @@ public abstract class Objective extends Element {
 		return false;
 	}
 	
+	public String inShow() {
+		return inShow(0);
+	}
+	
 	public String inShow(int progress) {
 		if(!desc.isEmpty()) {
 			String partiallyParsed = desc

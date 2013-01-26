@@ -124,32 +124,34 @@ public class Util {
 	}
 	
 	public static String implode(String[] strs, char glue, int start) {
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		String gl = " ";
 		if(glue != ' ')
 			gl = glue + gl;
 		boolean first = true;
 		for(int i = start; i < strs.length; i++) {
 			if(first) {
-				result += strs[i];
 				first = false;
-			} else 
-				result += gl + strs[i];
+			} else {
+				result.append(gl);
+			}
+			result.append(strs[i]);
 		}
-		return result;
+		return result.toString();
 	}
 	
 	public static String implodeInt(Integer[] ints, String glue) {
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		boolean first = true;
 		for(int i = 0; i < ints.length; i++) {
 			if(first) {
-				result += ints[i];
 				first = false;
-			} else 
-				result += glue + ints[i];
+			} else {
+				result.append(glue);
+			}
+			result.append(ints[i]);
 		}
-		return result;
+		return result.toString();
 	}
 	
 	public static boolean permCheck(Player player, String perm, boolean message) {

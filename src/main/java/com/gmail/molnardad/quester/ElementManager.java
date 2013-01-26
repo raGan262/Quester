@@ -1,13 +1,17 @@
 package com.gmail.molnardad.quester;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.*;
 import com.gmail.molnardad.quester.exceptions.ElementException;
+import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.utils.Util;
 
 public class ElementManager {
 
@@ -27,6 +31,7 @@ public class ElementManager {
 		private Class<? extends E> clss;
 		private String usage;
 		private String help;
+		private Method method;
 	}
 	
 	// instance
@@ -119,6 +124,67 @@ public class ElementManager {
 		return ei.help;
 	}
 	
+	public String getConditionList() {
+		return Util.implode(conditions.keySet().toArray(new String[0]), ',');
+	}
+	
+	public String getObjectiveList() {
+		return Util.implode(objectives.keySet().toArray(new String[0]), ',');
+	}
+	
+	public String getEventList() {
+		return Util.implode(events.keySet().toArray(new String[0]), ',');
+	}
+	
+	private Element getFromCommand(ElementInfo<? extends Element> ei, QCommandContext context) throws QCommandException, QuesterException {
+		Object obj = null; 
+		try {
+			obj = ei.method.invoke(null, context);
+		}
+		catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+		catch (InvocationTargetException e) {
+			if(e.getCause() instanceof QCommandException) {
+				throw (QCommandException) e.getCause();
+			}
+			else if(e.getCause() instanceof QuesterException) {
+				throw (QuesterException) e.getCause();
+			}
+			else {
+				e.printStackTrace();
+			}
+		}
+		return (Element) obj;
+	}
+	
+	public Condition getConditionFromCommand(String type, QCommandContext context) throws QCommandException, QuesterException {
+		ElementInfo<Condition> ei = conditions.get(type.toUpperCase());
+		if(ei != null && context != null) {
+			return (Condition) getFromCommand(ei, context);
+		}
+		return null;
+	}
+	
+	public Objective getObjectiveFromCommand(String type, QCommandContext context) throws QCommandException, QuesterException {
+		ElementInfo<Objective> ei = objectives.get(type.toUpperCase());
+		if(ei != null && context != null) {
+			return (Objective) getFromCommand(ei, context);
+		}
+		return null;
+	}
+	
+	public Qevent getEventFromCommand(String type, QCommandContext context) throws QCommandException, QuesterException {
+		ElementInfo<Qevent> ei = events.get(type.toUpperCase());
+		if(ei != null && context != null) {
+			return (Qevent) getFromCommand(ei, context);
+		}
+		return null;
+	}
+	
 	public void register(Class<? extends Element> clss) throws ElementException {
 		register(clss, "", "");
 	}
@@ -167,6 +233,7 @@ public class ElementManager {
 			ei.clss = clss;
 			ei.usage = usage;
 			ei.help = help;
+			ei.method = fromCommand;
 			conditions.put(clss.getAnnotation(QElement.class).value(), ei);
 		}
 		else {

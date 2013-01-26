@@ -147,8 +147,7 @@ public class QuesterStrings {
 	// OBJECTIVE STRINGS
 	
 	public String OBJ_ADD = "%type objective added."; // %type = objective type;
-	public String OBJ_ADD_USAGE = "<objective type*>";
-	public String OBJ_ADD_HELP = "* - use objective list to display them";
+	public String OBJ_ADD_USAGE = "<objective type>";
 	
 	public String OBJ_REMOVE = "Objective %id removed."; // %id = objective ID;
 	public String OBJ_REMOVE_USAGE = "<id_number>.";
@@ -160,8 +159,7 @@ public class QuesterStrings {
 	public String OBJ_MOVE_USAGE = "<ID_from> <ID_to>.";
 	
 	public String OBJ_DESC_ADD = "Description to objective %id added."; // %id = objective ID;
-	public String OBJ_DESC_ADD_USAGE = "<obj_ID> <description*>";
-	public String OBJ_DESC_ADD_HELP = "* - %r = remaining amount, %t = total required amount";
+	public String OBJ_DESC_ADD_USAGE = "<obj_ID> <description>";
 	public String OBJ_DESC_REMOVE = "Description of objective %id removed."; // %id = objective ID;
 	
 	public String OBJ_REQ_ADD = "Prerequisites to objective %id added."; // %id = objective ID;
@@ -207,28 +205,26 @@ public class QuesterStrings {
 
 	public String OBJ_ACTION_USAGE = "{<click>} {[block]} {[item]} {[location]} [range]";
 
-	public String OBJ_NPC_USAGE = "<id> [-c]";
-	public String OBJ_NPC_HELP = "-c - cancel interact event";
+	public String OBJ_NPC_USAGE = "<id> (-c)";
 	
 	public String OBJ_DYE_USAGE = "<amount> {[color]}";
 	
 	public String OBJ_BOSS_USAGE = "<name> [amount]";
 	
-	public String OBJ_NPCKILL_USAGE = "<name*> [amount]";
-	public String OBJ_NPCKILL_HELP = "* - 'ANY' for any npc";
+	public String OBJ_NPCKILL_USAGE = "<name> [amount]";
 	
 	// CONDITION STRINGS
 
 	public String CON_ADD = "%type condition added."; // %type = condition type;
+	public String CON_ADD_USAGE = "<condition type> [args]";
 	public String CON_LIST = "Available condition types";
 	public String CON_REMOVE = "Condition %id removed."; // %id = condition ID;
-	public String CON_REMOVE_USAGE = "<con_ID>";
+	public String CON_REMOVE_USAGE = "<condition ID>";
 	
 	public String CON_DESC_ADD = "Description to condition %id added."; // %id = condition ID;
-	public String CON_DESC_ADD_USAGE = "<con_ID> <description*>";
-	public String CON_DESC_ADD_HELP = "* - %amt = amount, %id = item id, %data = data, %perm = permission, %qst = quest";
+	public String CON_DESC_ADD_USAGE = "<condition ID> <description>";
 	public String CON_DESC_REMOVE = "Description of condition %id removed."; // %id = condition ID;
-	public String CON_DESC_REMOVE_USAGE = "Description of condition %id removed.";
+	public String CON_DESC_REMOVE_USAGE = "<condition ID>";
 	
 	public String CON_QUEST_USAGE = "<quest_name> [time in seconds]";
 	
@@ -251,8 +247,7 @@ public class QuesterStrings {
 	public String EVT_REMOVE_USAGE = "<id_number>";
 	public String EVT_SPECIFY = "Specify occasion and delay.";
 	
-	public String EVT_MSG_USAGE = "{<occasion>} <message*>";
-	public String EVT_MSG_HELP = "* - supports '&' colors and '\\n' newline";
+	public String EVT_MSG_USAGE = "{<occasion>} <message>";
 	
 	public String EVT_QUEST_USAGE = "{<occasion>} <quest_name>";
 	
@@ -262,14 +257,11 @@ public class QuesterStrings {
 	
 	public String EVT_CANCEL_USAGE = "{<occasion>}";
 	
-	public String EVT_CMD_USAGE = "{<occasion>} <command*>";
-	public String EVT_CMD_HELP = "* - without '/'";
+	public String EVT_CMD_USAGE = "{<occasion>} <command>";
 	
 	public String EVT_EXPL_USAGE = "{<occasion>} {<location>} [range] (-d)";
-	public String EVT_EXPL_HELP = "-d - do damage";
 	
 	public String EVT_LIGHT_USAGE = "{<occasion>} {<location>} [range] (-d)";
-	public String EVT_LIGHT_HELP = "-d - do damage";
 	
 	public String EVT_TELE_USAGE = "{<occasion>} {<location>}";
 	
@@ -288,7 +280,6 @@ public class QuesterStrings {
 	public String EVT_POINT_USAGE = "{<occasion>} <amount>";
 	
 	public String EVT_DSCRIPT_USAGE = "{<occasion>} <script> [npc ID] (-cn)";
-	public String EVT_DSCRIPT_HELP = "-c - do not use player context; -n - focus npc";
 	
 	// ERROR STRINGS
 
@@ -333,6 +324,7 @@ public class QuesterStrings {
 	public String ERROR_Q_NOT_CMD = "Quest cannot be started or completed by command.";
 	public String ERROR_Q_MAX_AMOUNT = "Maximum quest amount reached.";
 	public String ERROR_Q_NOT_HERE = "You can't complete your quest here.";
+	public String ERROR_ELEMENT_FAIL = "Failed to create element, check console for more info.";
 	public String ERROR_MOD_UNKNOWN = "Unknown modifiers.";
 	public String ERROR_WORLD_NOT_ASSIGNED = "That world is not assigned.";
 	public String ERROR_HOL_NOT_EXIST = "Holder does not exist.";

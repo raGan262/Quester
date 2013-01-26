@@ -149,14 +149,16 @@ public class ModificationCommands {
 	@QCommand(
 			desc = "quest holder manipulation",
 			permission = DataManager.PERM_MODIFY)
+	@QNestedCommand(HolderCommands.class)
 	public void holder(QCommandContext context, CommandSender sender) throws QCommandException {
 	}
 
-	@QCommandLabels({"obejctive", "obj"})
+	@QCommandLabels({"condition", "con"})
 	@QCommand(
-			desc = "objective manipulation",
+			desc = "condition manipulation",
 			permission = DataManager.PERM_MODIFY)
-	public void objective(QCommandContext context, CommandSender sender) throws QCommandException {
+	@QNestedCommand(ConditionCommands.class)
+	public void condition(QCommandContext context, CommandSender sender) throws QCommandException {
 	}
 
 	@QCommandLabels({""})

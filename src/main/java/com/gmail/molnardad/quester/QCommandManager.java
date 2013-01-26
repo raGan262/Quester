@@ -139,7 +139,7 @@ public class QCommandManager {
 		}
 	}
 	
-	private void invoke(Method method, Object... methodArgs) throws QCommandException, QuesterException {
+	private void invoke(Method method, Object... methodArgs) throws QCommandException, QuesterException, NumberFormatException {
 		Exception ex = null;
 		try {
 			method.invoke(instances.get(method), methodArgs);
@@ -153,6 +153,9 @@ public class QCommandManager {
 			}
 			else if(e.getCause() instanceof QuesterException) {
 				throw (QuesterException) e.getCause();
+			}
+			else if(e.getCause() instanceof NumberFormatException) {
+				throw (NumberFormatException) e.getCause();
 			}
 			else {
 				ex = e;

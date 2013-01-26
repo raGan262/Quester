@@ -1,6 +1,6 @@
 package com.gmail.molnardad.quester.exceptions;
 
-public class ElementException extends Exception {
+public class ElementException extends QuesterException {
 
 	private static final long serialVersionUID = -7898630917380214091L;
 	
@@ -9,6 +9,6 @@ public class ElementException extends Exception {
 	}
 	
 	public ElementException(String msg) {
-		super();
+		super(msg);
 	}
 }
