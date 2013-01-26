@@ -24,6 +24,9 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestManager {
 	
+	// TODO rewrite this whole class to not be so terrible
+	// spit to ProfileManager, QuestManager (and maybe Messenger)
+	
 	private static QuestManager instance = null;
 	
 	private QuesterStrings lang;

@@ -148,24 +148,24 @@ public class QuesterStrings {
 	
 	public String OBJ_ADD = "%type objective added."; // %type = objective type;
 	public String OBJ_ADD_USAGE = "<objective type>";
-	
+	public String OBJ_LIST = "Available objective types";
 	public String OBJ_REMOVE = "Objective %id removed."; // %id = objective ID;
-	public String OBJ_REMOVE_USAGE = "<id_number>.";
+	public String OBJ_REMOVE_USAGE = "<objective ID>.";
 	
 	public String OBJ_SWAP = "Objectives %id1 and %id2 swapped.";// %id1 = objective ID 1; %id2 = objective ID 2;
-	public String OBJ_SWAP_USAGE = "<ID_1> <ID_2>.";
+	public String OBJ_SWAP_USAGE = "<obj ID 1> <obj ID 2>";
 	
 	public String OBJ_MOVE = "Objective moved from %id1 to %id2.";// %id1 = objective ID 1; %id2 = objective ID 2;
-	public String OBJ_MOVE_USAGE = "<ID_from> <ID_to>.";
+	public String OBJ_MOVE_USAGE = "<ID from> <ID to>";
 	
 	public String OBJ_DESC_ADD = "Description to objective %id added."; // %id = objective ID;
-	public String OBJ_DESC_ADD_USAGE = "<obj_ID> <description>";
+	public String OBJ_DESC_ADD_USAGE = "<objective ID> <description>";
 	public String OBJ_DESC_REMOVE = "Description of objective %id removed."; // %id = objective ID;
 	
-	public String OBJ_REQ_ADD = "Prerequisites to objective %id added."; // %id = objective ID;
-	public String OBJ_REQ_ADD_USAGE = "<obj_ID> <prerequisites>";
-	public String OBJ_REQ_REMOVE = "Prerequisites of objective %id removed."; // %id = objective ID;
-	public String OBJ_REQ_REMOVE_USAGE = "<obj_ID> <prerequisites>";
+	public String OBJ_PREREQ_ADD = "Prerequisites to objective %id added."; // %id = objective ID;
+	public String OBJ_PREREQ_ADD_USAGE = "<objective ID> <prerequisite1>...";
+	public String OBJ_PREREQ_REMOVE = "Prerequisites of objective %id removed."; // %id = objective ID;
+	public String OBJ_PREREQ_REMOVE_USAGE = "<objective ID> <prerequisite1>...";
 	
 	public String OBJ_BREAK_USAGE = "%cmd objective add break {<item>} <amount> [hand]";
 	
@@ -241,10 +241,10 @@ public class QuesterStrings {
 	// EVENT STRINGS
 	
 	public String EVT_ADD = "%type event added."; // %type = event type;
-	public String EVT_ADD_AVAILABLE = "Available event types: ";
+	public String EVT_LIST = "Available event types";
 	public String EVT_ADD_USAGE = "<event_type> [args]";
 	public String EVT_REMOVE = "Event %id removed.";// %id = event ID;
-	public String EVT_REMOVE_USAGE = "<id_number>";
+	public String EVT_REMOVE_USAGE = "<event ID>";
 	public String EVT_SPECIFY = "Specify occasion and delay.";
 	
 	public String EVT_MSG_USAGE = "{<occasion>} <message>";

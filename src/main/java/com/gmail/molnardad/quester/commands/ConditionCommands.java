@@ -49,7 +49,7 @@ public class ConditionCommands {
 	
 	@QCommandLabels({"remove", "r"})
 	@QCommand(
-			desc = "removes quest from holder",
+			desc = "removes condition",
 			min = 1,
 			max = 1,
 			usage = "<condition ID>")

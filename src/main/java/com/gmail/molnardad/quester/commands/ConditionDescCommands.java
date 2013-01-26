@@ -32,7 +32,7 @@ public class ConditionDescCommands {
 	
 	@QCommandLabels({"remove", "r"})
 	@QCommand(
-			desc = "adds to quest description",
+			desc = "adds to condition description",
 			min = 1,
 			max = 1,
 			usage = "<condition ID>")
