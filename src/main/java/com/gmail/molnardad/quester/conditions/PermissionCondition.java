@@ -42,7 +42,6 @@ public final class PermissionCondition extends Condition {
 	@QCommand(
 			min = 1,
 			max = 1,
-			desc = "requires player to have certain permission",
 			usage = "<permission>")
 	public static Condition fromCommand(QCommandContext context) throws QCommandException {
 		String perm = context.getString(0);

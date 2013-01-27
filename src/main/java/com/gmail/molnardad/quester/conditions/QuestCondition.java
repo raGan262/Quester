@@ -56,7 +56,6 @@ public final class QuestCondition extends Condition {
 	@QCommand(
 			min = 1,
 			max = 2,
-			desc = "requires player to have specified quest completed",
 			usage = "<quest name> [time in seconds]")
 	public static Condition fromCommand(QCommandContext context) throws QCommandException {
 		String qst = context.getString(0);

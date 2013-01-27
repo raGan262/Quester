@@ -69,7 +69,6 @@ public final class ItemCondition extends Condition {
 	@QCommand(
 			min = 1,
 			max = 2,
-			desc = "requires player to have certain item",
 			usage = "{<item>} <amount>")
 	public static Condition fromCommand(QCommandContext context) throws QCommandException {
 		int[] itm = Util.parseItem(context.getString(0));

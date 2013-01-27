@@ -42,7 +42,6 @@ public final class PointCondition extends Condition {
 	@QCommand(
 			min = 1,
 			max = 1,
-			desc = "requires player to have certain amount of points",
 			usage = "<amount>")
 	public static Condition fromCommand(QCommandContext context) throws QCommandException {
 		try {

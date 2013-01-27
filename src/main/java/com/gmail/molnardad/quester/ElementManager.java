@@ -6,8 +6,10 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
+import com.gmail.molnardad.quester.commandbase.exceptions.QUsageException;
 import com.gmail.molnardad.quester.elements.*;
 import com.gmail.molnardad.quester.exceptions.ElementException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
@@ -30,8 +32,8 @@ public class ElementManager {
 	final class ElementInfo<E> {
 		private Class<? extends E> clss;
 		private String usage;
-		private String help;
 		private Method method;
+		private QCommand command;
 	}
 	
 	// instance
@@ -100,28 +102,28 @@ public class ElementManager {
 		return ei.usage;
 	}
 	
-	public String getConditionHelp(String type) {
+	public QCommand getConditionCommand(String type) {
 		ElementInfo<Condition> ei = conditions.get(type.toUpperCase());
 		if(ei == null) {
 			return null;
 		}
-		return ei.help;
+		return ei.command;
 	}
 	
-	public String getObjectiveHelp(String type) {
+	public QCommand getObjectiveHelp(String type) {
 		ElementInfo<Objective> ei = objectives.get(type.toUpperCase());
 		if(ei == null) {
 			return null;
 		}
-		return ei.help;
+		return ei.command;
 	}
 	
-	public String getEventHelp(String type) {
+	public QCommand getEventHelp(String type) {
 		ElementInfo<Qevent> ei = events.get(type.toUpperCase());
 		if(ei == null) {
 			return null;
 		}
-		return ei.help;
+		return ei.command;
 	}
 	
 	public String getConditionList() {
@@ -139,6 +141,14 @@ public class ElementManager {
 	private Element getFromCommand(ElementInfo<? extends Element> ei, QCommandContext context) throws QCommandException, QuesterException {
 		Object obj = null; 
 		try {
+			// TODO dynamic language use
+			if(context.length() < ei.command.min()) {
+				throw new QUsageException("Not enough argmunents.", ei.usage);
+			}
+			if(!(ei.command.max() < 0) && context.length() > ei.command.max()) {
+				throw new QUsageException("Too many argmunents.", ei.usage);
+			}
+			
 			obj = ei.method.invoke(null, context);
 		}
 		catch (IllegalAccessException e) {
@@ -232,7 +242,7 @@ public class ElementManager {
 			ElementInfo<Condition> ei = new ElementInfo<Condition>();
 			ei.clss = clss;
 			ei.usage = usage;
-			ei.help = help;
+			ei.command = fromCommand.getAnnotation(QCommand.class);
 			ei.method = fromCommand;
 			conditions.put(clss.getAnnotation(QElement.class).value(), ei);
 		}
@@ -253,7 +263,7 @@ public class ElementManager {
 			ElementInfo<Qevent> ei = new ElementInfo<Qevent>();
 			ei.clss = clss;
 			ei.usage = usage;
-			ei.help = help;
+			ei.command = fromCommand.getAnnotation(QCommand.class);
 			events.put(clss.getAnnotation(QElement.class).value(), ei);
 		}
 		else {
@@ -273,7 +283,7 @@ public class ElementManager {
 			ElementInfo<Objective> ei = new ElementInfo<Objective>();
 			ei.clss = clss;
 			ei.usage = usage;
-			ei.help = help;
+			ei.command = fromCommand.getAnnotation(QCommand.class);
 			objectives.put(clss.getAnnotation(QElement.class).value(), ei);
 		}
 		else {

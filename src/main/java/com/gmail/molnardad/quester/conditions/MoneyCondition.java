@@ -50,7 +50,6 @@ public final class MoneyCondition extends Condition {
 	@QCommand(
 			min = 1,
 			max = 1,
-			desc = "requires player to have certain amount of money",
 			usage = "<amount>")
 	public static Condition fromCommand(QCommandContext context) throws QCommandException {
 		try {

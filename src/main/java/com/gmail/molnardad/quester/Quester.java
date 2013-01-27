@@ -160,7 +160,6 @@ public class Quester extends JavaPlugin {
 			QuestManager.setInstance(null);
 			LanguageManager.setInstance(null);
 			DataManager.setInstance(null);
-			//TODO setLang() only temporary
 		}
 		
 		@Override
