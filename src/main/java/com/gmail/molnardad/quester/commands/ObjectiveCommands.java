@@ -64,7 +64,7 @@ public class ObjectiveCommands {
 			desc = "objective list")
 	public void list(QCommandContext context, CommandSender sender) throws QuesterException {
 		sender.sendMessage(ChatColor.RED + context.getSenderLang().OBJ_LIST + ": "
-				+ ChatColor.WHITE + ElementManager.getInstance().getObjectiveList());
+				+ ChatColor.WHITE + ElementManager.getInstance().getObjectiveList());	
 	}
 	
 	@QCommandLabels({"swap"})
