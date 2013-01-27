@@ -1,7 +1,6 @@
 package com.gmail.molnardad.quester.conditions;
 
 import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -72,7 +71,7 @@ public final class ItemCondition extends Condition {
 			max = 2,
 			desc = "requires player to have certain item",
 			usage = "{<item>} <amount>")
-	public static Condition fromCommand(QCommandContext context, CommandSender sender) throws QCommandException {
+	public static Condition fromCommand(QCommandContext context) throws QCommandException {
 		int[] itm = Util.parseItem(context.getString(0));
 		Material mat = Material.getMaterial(itm[0]);
 		int dat = itm[1];

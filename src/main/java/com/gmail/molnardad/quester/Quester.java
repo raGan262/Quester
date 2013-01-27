@@ -26,8 +26,11 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QUsageException;
 import com.gmail.molnardad.quester.commands.AdminCommands;
 import com.gmail.molnardad.quester.commands.ModificationCommands;
 import com.gmail.molnardad.quester.commands.UserCommands;
+import com.gmail.molnardad.quester.conditions.*;
+import com.gmail.molnardad.quester.objectives.*;
+import com.gmail.molnardad.quester.qevents.*;
 import com.gmail.molnardad.quester.config.*;
-import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.exceptions.*;
 
 public class Quester extends JavaPlugin {
 
@@ -75,7 +78,28 @@ public class Quester extends JavaPlugin {
 			elements = new ElementManager();
 			ElementManager.setInstance(elements);
 			
-			//Load configs
+			//TODO separate method for element class registration
+			// condtions
+			try {
+				elements.register(ItemCondition.class,
+						"{<item>} <amount>");
+				elements.register(MoneyCondition.class,
+						"<amount>");
+				elements.register(PermissionCondition.class,
+						"<quest_name>");
+				elements.register(PointCondition.class,
+						"<amount>");
+				elements.register(QuestCondition.class,
+						"<quest_name> [time in seconds]");
+				elements.register(QuestNotCondition.class,
+						"<quest_name> [time in seconds]");
+			}
+			catch (ElementException e1) {
+				e1.printStackTrace();
+			}
+			//elements.register();
+			
+			//Load configs TODO load after all other plugins
 			profileConfig = new ProfileConfig(this, "profiles.yml");
 			questConfig = new QuestConfig(this, "quests.yml");
 			holderConfig = new HolderConfig(this, "holders.yml");

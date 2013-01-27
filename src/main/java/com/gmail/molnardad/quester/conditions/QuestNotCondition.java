@@ -1,6 +1,5 @@
 package com.gmail.molnardad.quester.conditions;
 
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -59,7 +58,7 @@ public final class QuestNotCondition extends Condition {
 			max = 2,
 			desc = "requires player to not have specified quest completed",
 			usage = "<quest name> [time in seconds]")
-	public static Condition fromCommand(QCommandContext context, CommandSender sender) throws QCommandException {
+	public static Condition fromCommand(QCommandContext context) throws QCommandException {
 		String qst = context.getString(0);
 		int t = 0;
 		if(context.length() > 1) {
