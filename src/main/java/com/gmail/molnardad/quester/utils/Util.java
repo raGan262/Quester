@@ -479,13 +479,23 @@ public class Util {
 	}
 	
 	public static int parseAction(String arg) {
+		try {
+			int i = Integer.parseInt(arg);
+			if(i < 0 || i > 3) {
+				return 0;
+			}
+			else {
+				return i;
+			}
+		}
+		catch (NumberFormatException ignore) {}
 		if(arg.equalsIgnoreCase("left")) {
 			return 1;
 		}
-		if(arg.equalsIgnoreCase("right")) {
+		else if(arg.equalsIgnoreCase("right")) {
 			return 2;
 		}
-		if(arg.equalsIgnoreCase("push")) {
+		else if(arg.equalsIgnoreCase("push")) {
 			return 3;
 		}
 		return 0;
