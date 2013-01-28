@@ -161,25 +161,19 @@ public class ModificationCommands {
 	public void condition(QCommandContext context, CommandSender sender) throws QCommandException {
 	}
 
-	@QCommandLabels({""})
+	@QCommandLabels({"event", "evt"})
 	@QCommand(
-			desc = "",
-			min = 0,
-			max = 1,
-			usage = "",
+			desc = "event manipulation",
 			permission = DataManager.PERM_MODIFY)
-	public void l(QCommandContext context, CommandSender sender) throws QCommandException {
-		
+	@QNestedCommand(QeventCommands.class)
+	public void event(QCommandContext context, CommandSender sender) throws QCommandException {
 	}
 
-	@QCommandLabels({""})
+	@QCommandLabels({"objective", "ibj"})
 	@QCommand(
-			desc = "",
-			min = 0,
-			max = 1,
-			usage = "",
+			desc = "objective manipulation",
 			permission = DataManager.PERM_MODIFY)
-	public void m(QCommandContext context, CommandSender sender) throws QCommandException {
-		
+	@QNestedCommand(ObjectiveCommands.class)
+	public void objective(QCommandContext context, CommandSender sender) throws QCommandException {
 	}
 }

@@ -7,6 +7,6 @@ public abstract class QuesterException extends Exception {
  	private static final long serialVersionUID = 2477882018035034147L;
  	
 	public QuesterException(String msg) {
-		super(ChatColor.RED + msg);
+		super(msg);
 	}
 }

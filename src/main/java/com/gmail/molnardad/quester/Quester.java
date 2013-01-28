@@ -30,6 +30,7 @@ import com.gmail.molnardad.quester.conditions.*;
 import com.gmail.molnardad.quester.objectives.*;
 import com.gmail.molnardad.quester.qevents.*;
 import com.gmail.molnardad.quester.config.*;
+import com.gmail.molnardad.quester.elements.Element;
 import com.gmail.molnardad.quester.exceptions.*;
 
 public class Quester extends JavaPlugin {
@@ -78,26 +79,7 @@ public class Quester extends JavaPlugin {
 			elements = new ElementManager();
 			ElementManager.setInstance(elements);
 			
-			//TODO separate method for element class registration
-			// condtions
-			try {
-				elements.register(ItemCondition.class,
-						"{<item>} <amount>");
-				elements.register(MoneyCondition.class,
-						"<amount>");
-				elements.register(PermissionCondition.class,
-						"<quest_name>");
-				elements.register(PointCondition.class,
-						"<amount>");
-				elements.register(QuestCondition.class,
-						"<quest_name> [time in seconds]");
-				elements.register(QuestNotCondition.class,
-						"<quest_name> [time in seconds]");
-			}
-			catch (ElementException e1) {
-				e1.printStackTrace();
-			}
-			//elements.register();
+			registerElements();
 			
 			//Load configs TODO load after all other plugins
 			profileConfig = new ProfileConfig(this, "profiles.yml");
@@ -171,7 +153,7 @@ public class Quester extends JavaPlugin {
 					commands.execute(args, sender);
 				}
 				catch (QuesterException e) {
-					sender.sendMessage(e.getMessage());
+					sender.sendMessage(ChatColor.RED + e.getMessage());
 				}
 				catch (QCommandException e) {
 					if(e instanceof QUsageException) {
@@ -316,6 +298,70 @@ public class Quester extends JavaPlugin {
 			}
 			if(epicboss) {
 				getServer().getPluginManager().registerEvents(new BossDeathListener(), this);
+			}
+		}
+		
+		private void registerElements() {
+			@SuppressWarnings("unchecked")
+			Class<? extends Element>[] classes = new Class[]{
+					// conditions 
+					ItemCondition.class,
+					MoneyCondition.class,
+					PermissionCondition.class,
+					PointCondition.class,
+					QuestCondition.class,
+					QuestNotCondition.class,
+					
+					// qevents
+					CancelQevent.class,
+					CommandQevent.class,
+					ExplosionQevent.class,
+					LightningQevent.class,
+					MessageQevent.class,
+					ObjectiveCompleteQevent.class,
+					QuestQevent.class,
+					SetBlockQevent.class,
+					SpawnQevent.class,
+					TeleportQevent.class,
+					ToggleQevent.class,
+					EffectQevent.class,
+					ExperienceQevent.class,
+					MoneyQevent.class,
+					PointQevent.class,
+					ItemQevent.class,
+					
+					// objectives
+					BreakObjective.class,
+					CollectObjective.class,
+					CraftObjective.class,
+					DeathObjective.class,
+					EnchantObjective.class,
+					ExpObjective.class,
+					FishObjective.class,
+					ItemObjective.class,
+					LocObjective.class,
+					MilkObjective.class,
+					MobKillObjective.class,
+					MoneyObjective.class,
+					PlaceObjective.class,
+					PlayerKillObjective.class,
+					ShearObjective.class,
+					SmeltObjective.class,
+					TameObjective.class,
+					WorldObjective.class,
+					ActionObjective.class,
+					NpcObjective.class,
+					DyeObjective.class,
+					BossObjective.class,
+					NpcKillObjective.class
+			};
+			for(Class<? extends Element> clss : classes) {
+				try {
+					elements.register(clss);
+				}
+				catch (ElementException e) {
+					log.warning("(" + clss.getSimpleName() + ") Failed to register quester element: " + e.getMessage());
+				}
 			}
 		}
 		
