@@ -1,5 +1,9 @@
 package com.gmail.molnardad.quester.objectives;
 
+import static com.gmail.molnardad.quester.utils.Util.getLoc;
+import static com.gmail.molnardad.quester.utils.Util.parseAction;
+import static com.gmail.molnardad.quester.utils.Util.parseItem;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -7,6 +11,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
@@ -69,6 +76,38 @@ public final class ActionObjective extends Objective {
 		String handStr = inHand == null ? "ANY" : inHand.name() + "[" + inHand.getId() + handDatStr + "]";
 		String clickStr = click == 1 ? "LEFT" : click == 2 ? "RIGHT" : click == 3 ? "PUSH" : "ALL";
 		return clickStr + "; BLOCK: " + blockStr + "; HAND: " + handStr + "; LOC: " + Util.displayLocation(location) + "; RNG: " + range;
+	}
+	
+	@QCommand(
+			min = 1,
+			max = 5,
+			usage = "{<click>} {[block]} {[item]} {[location]} [range]")
+	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+		Material mat = null, hmat = null;
+		int dat = -1, hdat = -1, rng = 0, click = 0;
+		Location loc = null;
+		int[] itm;
+		click = parseAction(context.getString(0));
+		if(context.length() > 1) {
+			itm = parseItem(context.getString(1));
+			if(itm[0] > 255) {
+				throw new QCommandException(context.getSenderLang().ERROR_CMD_BLOCK_UNKNOWN);
+			}
+			mat = Material.getMaterial(itm[0]);
+			dat = itm[1];
+			if(context.length() > 2) {
+				itm = parseItem(context.getString(2));
+				hmat = Material.getMaterial(itm[0]);
+				hdat = itm[1];
+				if(context.length() > 3) {
+					loc = getLoc(context.getPlayer(), context.getString(3));
+					if(context.length() > 4) {
+						rng = Integer.parseInt(context.getString(4));	
+					}
+				}
+			}
+		}
+		return new ActionObjective(mat, dat, hmat, hdat, click, loc, rng);
 	}
 
 	// TODO serialization

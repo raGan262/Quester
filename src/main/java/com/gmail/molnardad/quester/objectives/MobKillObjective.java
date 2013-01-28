@@ -1,8 +1,13 @@
 package com.gmail.molnardad.quester.objectives;
 
+import static com.gmail.molnardad.quester.utils.Util.parseEntity;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
@@ -33,6 +38,22 @@ public final class MobKillObjective extends Objective {
 	protected String info() {
 		String entStr = entity == null ? "ANY" : entity.getName();
 		return entStr + "; AMT: " + amount;
+	}
+	
+	@QCommand(
+			min = 1,
+			max = 2,
+			usage = "<amount> {[entity]}")
+	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+		EntityType ent = null;
+		int amt = context.getInt(0);
+		if(amt < 1) {
+			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
+		}
+		if(context.length() > 1) {
+			ent = parseEntity(context.getString(1));
+		} 
+		return new MobKillObjective(amt, ent);
 	}
 
 	// TODO serialization

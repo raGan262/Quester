@@ -1,5 +1,8 @@
 package com.gmail.molnardad.quester.objectives;
 
+import static com.gmail.molnardad.quester.utils.Util.parseEnchants;
+import static com.gmail.molnardad.quester.utils.Util.parseItem;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +14,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
@@ -72,6 +77,34 @@ public final class ItemObjective extends Objective {
 			return true;
 		}
 		return false;
+	}
+	
+	@QCommand(
+			min = 1,
+			max = 3,
+			usage = "{<item>} [amount] {[enchants]}")
+	public static Objective fromCommand(QCommandContext context) {
+		Material mat = null;
+		int dat;
+		int amt = 1;
+		Map<Integer, Integer> enchs = null;
+		int[] itm = parseItem(context.getString(0), context.getSenderLang());
+		mat = Material.getMaterial(itm[0]);
+		dat = itm[1];
+		if(context.length() > 1) {
+			amt = context.getInt(1);
+			if(context.length() > 2) {
+				enchs = parseEnchants(context.getString(2));
+			}
+		}
+		if(amt < 1 || dat < -1) {
+			throw new IllegalArgumentException(context.getSenderLang().ERROR_CMD_ITEM_NUMBERS);
+		}
+		if(context.length() > 2) {
+			enchs = parseEnchants(context.getString(2));
+		}
+		
+		return new ItemObjective(mat, dat, amt, enchs);
 	}
 
 	// TODO serialization

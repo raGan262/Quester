@@ -3,6 +3,8 @@ package com.gmail.molnardad.quester.objectives;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 
@@ -38,6 +40,20 @@ public final class PlayerKillObjective extends Objective {
 		String player = playerName.isEmpty() ? "ANY" : playerName;
 		return player + "; AMT: " + amount + "; PERM: " + perm;
 	}
+	
+	@QCommand(
+			min = 1,
+			max = 2,
+			usage = "<amount> [player] (-p)")
+	public static Objective fromCommand(QCommandContext context) {
+		int amt = context.getInt(0);
+		boolean perm = context.hasFlag('p');
+		String name = "";
+		if(context.length() > 1) {
+			name = context.getString(1);
+		}
+		return new PlayerKillObjective(amt, name, perm);
+	}
 
 	// TODO serialization
 	
@@ -66,12 +82,12 @@ public final class PlayerKillObjective extends Objective {
 	//Custom methods
 	
 	public boolean checkPlayer(Player player) {
-		if(perm) {
+		if(playerName.isEmpty()) {
+			return true;
+		}
+		else if(perm) {
 			return player.hasPermission(playerName);
 		}
-		else if(playerName.isEmpty()) {
-			return true;
-		} 
 		else {
 			return player.getName().equalsIgnoreCase(playerName);
 		}

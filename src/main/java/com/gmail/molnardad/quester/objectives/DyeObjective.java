@@ -1,8 +1,13 @@
 package com.gmail.molnardad.quester.objectives;
 
+import static com.gmail.molnardad.quester.utils.Util.parseColor;
+
 import org.bukkit.DyeColor;
 import org.bukkit.configuration.ConfigurationSection;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
@@ -37,6 +42,25 @@ public final class DyeObjective extends Objective {
 	@Override
 	protected String info() {
 		return amount + "; COLOR:" + (colorName.isEmpty() ? " ANY" : colorName + "(" + (15 - color.getDyeData()) + ")");
+	}
+	
+	@QCommand(
+			min = 1,
+			max = 2,
+			usage = "<amount> {[color]}")
+	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+		int id = context.getInt(0);
+		DyeColor col = null;
+		if(id < 0) {
+			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
+		}
+		if(context.length() > 1) {
+			col = parseColor(context.getString(1));
+			if(col == null) {
+				throw new QCommandException(context.getSenderLang().ERROR_CMD_COLOR_UNKNOWN);
+			}
+		}
+		return new DyeObjective(id, col);
 	}
 	
 	// TODO serialization

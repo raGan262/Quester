@@ -1,8 +1,13 @@
 package com.gmail.molnardad.quester.objectives;
 
+import static com.gmail.molnardad.quester.utils.Util.getLoc;
+
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
@@ -32,6 +37,22 @@ public final class LocObjective extends Objective {
 	@Override
 	protected String info() {
 		return Util.serializeLocString(location) + "; RNG: " + range;
+	}
+	
+	@QCommand(
+			min = 1,
+			max = 2,
+			usage = "{<location>} [range]")
+	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+		int rng = 3;			
+		Location loc = getLoc(context.getPlayer(), context.getString(0));
+		if(context.length() > 4){
+			rng = context.getInt(1);
+			if(rng < 1) {
+				throw new QCommandException(context.getSenderLang().ERROR_CMD_RANGE_INVALID);
+			}
+		}
+		return new LocObjective(loc, rng);
 	}
 
 	// TODO serialization

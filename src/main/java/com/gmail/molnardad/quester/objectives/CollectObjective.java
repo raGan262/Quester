@@ -1,8 +1,13 @@
 package com.gmail.molnardad.quester.objectives;
 
+import static com.gmail.molnardad.quester.utils.Util.parseItem;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
@@ -35,6 +40,21 @@ public final class CollectObjective extends Objective {
 	protected String info() {
 		String dataStr = (data < 0 ? "" : ":" + data);
 		return material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount;
+	}
+	
+	@QCommand(
+			min = 2,
+			max = 2,
+			usage = "{<item>} <amount>")
+	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+		int[] itm = parseItem(context.getString(0));
+		Material mat = Material.getMaterial(itm[0]);
+		int dat = itm[1];
+		int amt = Integer.parseInt(context.getString(1));
+		if(amt < 1 || dat < -1) {
+			throw new QCommandException(context.getSenderLang().ERROR_CMD_ITEM_NUMBERS);
+		}
+		return new CollectObjective(amt, mat, dat);
 	}
 
 	// TODO serialization

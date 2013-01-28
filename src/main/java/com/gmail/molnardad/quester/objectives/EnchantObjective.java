@@ -1,5 +1,8 @@
 package com.gmail.molnardad.quester.objectives;
 
+import static com.gmail.molnardad.quester.utils.Util.parseEnchants;
+import static com.gmail.molnardad.quester.utils.Util.parseItem;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,6 +11,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
@@ -55,6 +61,27 @@ public final class EnchantObjective extends Objective {
 			enchs = enchs + " " + Enchantment.getById(e).getName() + ":" + enchants.get(e);
 		}
 		return itm + enchs ;
+	}
+	
+	@QCommand(
+			min = 1,
+			max = 3,
+			usage = "{<item>} [amount] {[enchants]}")
+	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+		Map<Integer, Integer> enchs = null;
+		int amt = 1;
+		int[] itm = parseItem(context.getString(0));
+		Material mat = Material.getMaterial(itm[0]);
+		if(context.length() > 1) {
+			amt = context.getInt(1);
+			if(amt < 1) {
+				throw new QCommandException(context.getSenderLang().ERROR_CMD_ENCH_LEVEL);
+			}
+			if(context.length() > 2) {
+				enchs = parseEnchants(context.getString(2));
+			}
+		}
+		return new EnchantObjective(mat, amt, enchs);
 	}
 
 	// TODO serialization

@@ -2,6 +2,9 @@ package com.gmail.molnardad.quester.objectives;
 
 import org.bukkit.configuration.ConfigurationSection;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 
@@ -27,6 +30,18 @@ public final class FishObjective extends Objective {
 	@Override
 	protected String info() {
 		return String.valueOf(amount);
+	}
+	
+	@QCommand(
+			min = 1,
+			max = 1,
+			usage = "<amount>")
+	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+		int amt = context.getInt(0);
+		if(amt < 1) {
+			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
+		}
+		return new FishObjective(amt);
 	}
 
 	// TODO serialization
