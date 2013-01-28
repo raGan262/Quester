@@ -237,7 +237,7 @@ public class ElementManager {
 			throw new NoSuchMethodException("Method is not static.");
 		}
 		if(fromCommand.getReturnType() != Condition.class) {
-			throw new NoSuchMethodError("Method does not return Condition.");
+			throw new NoSuchMethodException("Method does not return Condition.");
 		}
 		ElementInfo<Condition> ei = new ElementInfo<Condition>();
 		ei.clss = clss;
@@ -259,7 +259,7 @@ public class ElementManager {
 			throw new NoSuchMethodException("Method is not static.");
 		}
 		if(fromCommand.getReturnType() != Qevent.class) {
-			throw new NoSuchMethodError("Method does not return Qevent.");
+			throw new NoSuchMethodException("Method does not return Qevent.");
 		}
 		ElementInfo<Qevent> ei = new ElementInfo<Qevent>();
 		ei.clss = clss;
@@ -280,8 +280,8 @@ public class ElementManager {
 		if(!Modifier.isStatic(fromCommand.getModifiers())) {
 			throw new NoSuchMethodException("Method is not static.");
 		}
-		if(fromCommand.getReturnType() != Qevent.class) {
-			throw new NoSuchMethodError("Method does not return Objective.");
+		if(fromCommand.getReturnType() != Objective.class) {
+			throw new NoSuchMethodException("Method does not return Objective.");
 		}
 		ElementInfo<Objective> ei = new ElementInfo<Objective>();
 		ei.clss = clss;
