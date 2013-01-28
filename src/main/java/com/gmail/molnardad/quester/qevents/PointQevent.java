@@ -5,6 +5,8 @@ import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.PlayerProfile;
 import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 
@@ -28,6 +30,14 @@ public final class PointQevent extends Qevent {
 		PlayerProfile prof = qMan.getProfile(player.getName());
 		prof.addPoints(amount);
 		qMan.checkRank(prof);
+	}
+
+	@QCommand(
+			min = 1,
+			max = 1,
+			usage = "<amount>")
+	public static Qevent fromCommand(QCommandContext context) {
+		return new PointQevent(context.getInt(0));
 	}
 
 	// TODO serialization

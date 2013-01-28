@@ -164,6 +164,9 @@ public class ElementManager {
 			else if(e.getCause() instanceof QuesterException) {
 				throw (QuesterException) e.getCause();
 			}
+			else if(e.getCause() instanceof IllegalArgumentException) {
+				throw new QCommandException(e.getCause().getMessage());
+			}
 			else {
 				e.printStackTrace();
 			}

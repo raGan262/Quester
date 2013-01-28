@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
@@ -31,6 +33,14 @@ public final class ToggleQevent extends Qevent {
 		} catch (QuesterException e) {
 			Quester.log.info("Event failed to toggle quest. Reason: " + ChatColor.stripColor(e.getMessage()));
 		}
+	}
+
+	@QCommand(
+			min = 1,
+			max = 1,
+			usage = "<quest ID>")
+	public static Qevent fromCommand(QCommandContext context) {
+		return new ToggleQevent(context.getInt(0));
 	}
 
 	// TODO serialization

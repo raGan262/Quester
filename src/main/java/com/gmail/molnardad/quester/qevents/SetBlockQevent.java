@@ -1,9 +1,15 @@
 package com.gmail.molnardad.quester.qevents;
 
+import static com.gmail.molnardad.quester.utils.Util.getLoc;
+import static com.gmail.molnardad.quester.utils.Util.parseItem;
+
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.utils.Util;
@@ -29,6 +35,20 @@ public final class SetBlockQevent extends Qevent {
 	@Override
 	protected void run(Player player) {
 		location.getBlock().setTypeIdAndData(material, data, true);
+	}
+
+	@QCommand(
+			min = 2,
+			max = 2,
+			usage = "{<block>} {<location>}")
+	public static Qevent fromCommand(QCommandContext context) throws QCommandException {
+		int[] itm = parseItem(context.getString(0));
+		if(itm[0] > 255) {
+			throw new QCommandException(context.getSenderLang().ERROR_CMD_BLOCK_UNKNOWN);
+		}
+		int dat = itm[1] < 0 ? 0 : itm[1];
+		Location loc = getLoc(context.getPlayer(), context.getString(1));
+		return new SetBlockQevent(itm[0], dat, loc);
 	}
 
 	// TODO serialization

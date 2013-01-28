@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
@@ -13,8 +15,7 @@ import com.gmail.molnardad.quester.exceptions.QuesterException;
 @QElement("CANCEL")
 public final class CancelQevent extends Qevent {
 
-	public CancelQevent(){
-	}
+	public CancelQevent() {}
 
 	@Override
 	protected String info() {
@@ -28,6 +29,12 @@ public final class CancelQevent extends Qevent {
 		} catch (QuesterException e) {
 			Quester.log.info("Event failed to cancel " + player.getName() + "'s quest. Reason: " + ChatColor.stripColor(e.getMessage()));
 		}
+	}
+	
+	@QCommand(
+			max = 0)
+	public static Qevent fromCommand(QCommandContext context) {
+		return new CancelQevent();
 	}
 	
 	// TODO serialization

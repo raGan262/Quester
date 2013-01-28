@@ -1,5 +1,6 @@
 package com.gmail.molnardad.quester.qevents;
 
+import static com.gmail.molnardad.quester.utils.Util.parseEnchants;
 import static com.gmail.molnardad.quester.utils.Util.parseItem;
 
 import java.util.HashMap;
@@ -72,7 +73,7 @@ public final class ItemQevent extends Qevent {
         	round = Math.min(maxSize, given);
 	        item = new ItemStack(material, round, data);
 	        for(Integer j : enchants.keySet()) {
-				item.addEnchantment(Enchantment.getById(j), enchants.get(j));
+				item.addUnsafeEnchantment(Enchantment.getById(j), enchants.get(j));
 			}
 	        inv.addItem(item);
 	        given -= round;
@@ -93,28 +94,31 @@ public final class ItemQevent extends Qevent {
 	}
 
 	@QCommand(
-			min = 0,
-			max = 0,
-			usage = "")
+			min = 1,
+			max = 3,
+			usage = "{<item>} [amount] {[enchants]}")
 	public static Qevent fromCommand(QCommandContext context) throws QCommandException {
-		Material mat;
+		Material mat = null;
 		int dat;
 		int amt = 1;
 		Map<Integer, Integer> enchs = null;
-		try {
-			int[] itm = parseItem(context.getString(0), context.getSenderLang());
-			mat = Material.getMaterial(itm[0]);
-			dat = itm[1];
-			if(context.length() > 1) {
-				amt = context.getInt(1);
+		int[] itm = parseItem(context.getString(0), context.getSenderLang());
+		mat = Material.getMaterial(itm[0]);
+		dat = itm[1];
+		if(context.length() > 1) {
+			amt = context.getInt(1);
+			if(context.length() > 2) {
+				enchs = parseEnchants(context.getString(2));
 			}
-			if(amt < 1 || dat < -1) {
-				throw new IllegalArgumentException(context.getSenderLang().ERROR_CMD_ITEM_NUMBERS);
-			}
-		} catch (IllegalArgumentException e) {
-			throw new QCommandException(e.getMessage());
 		}
-		return null;
+		if(amt < 1 || dat < -1) {
+			throw new IllegalArgumentException(context.getSenderLang().ERROR_CMD_ITEM_NUMBERS);
+		}
+		if(context.length() > 2) {
+			enchs = parseEnchants(context.getString(2));
+		}
+		
+		return new ItemQevent(mat, dat, amt, enchs);
 	}
 
 	// TODO serialization

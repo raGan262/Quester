@@ -249,11 +249,11 @@ public class QuesterStrings {
 	
 	public String EVT_MSG_USAGE = "{<occasion>} <message>";
 	
-	public String EVT_QUEST_USAGE = "{<occasion>} <quest_name>";
+	public String EVT_QUEST_USAGE = "{<occasion>} <quest ID>";
 	
-	public String EVT_TOGGLE_USAGE = "{<occasion>} <quest_ID>";
+	public String EVT_TOGGLE_USAGE = "{<occasion>} <quest ID>";
 	
-	public String EVT_OBJCOM_USAGE = "{<occasion>} <objective_ID>";
+	public String EVT_OBJCOM_USAGE = "{<occasion>} <objective ID>";
 	
 	public String EVT_CANCEL_USAGE = "{<occasion>}";
 	

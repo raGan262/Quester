@@ -4,6 +4,8 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.utils.Util;
@@ -42,6 +44,19 @@ public final class LightningQevent extends Qevent {
 			loc.getWorld().strikeLightning(loc);
 		else
 			loc.getWorld().strikeLightningEffect(loc);
+	}
+
+	@QCommand(
+			min = 1,
+			max = 2,
+			usage = "{<location>} [range] (-d)")
+	public static Qevent fromCommand(QCommandContext context) {
+		Location loc = Util.getLoc(context.getPlayer(), context.getString(0));
+		int range = 0;
+		if(context.length() > 1) {
+			range = context.getInt(1);
+		}
+		return new LightningQevent(loc, range, context.hasFlag('d'));
 	}
 
 	// TODO serialization

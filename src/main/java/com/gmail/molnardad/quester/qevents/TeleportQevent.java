@@ -6,6 +6,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.utils.Util;
@@ -33,6 +35,14 @@ public final class TeleportQevent extends Qevent {
 		loc = location.clone();
 		loc.setY(loc.getY()+1);
 		player.getWorld().playEffect(loc, Effect.ENDER_SIGNAL, 1);
+	}
+
+	@QCommand(
+			min = 1,
+			max = 1,
+			usage = "{<location>}")
+	public static Qevent fromCommand(QCommandContext context) {
+		return new TeleportQevent(Util.getLoc(context.getPlayer(), context.getString(0), context.getSenderLang()));
 	}
 
 	// TODO serialization

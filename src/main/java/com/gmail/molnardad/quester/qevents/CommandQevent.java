@@ -4,8 +4,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
+import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("CMD")
 public final class CommandQevent extends Qevent {
@@ -24,6 +27,13 @@ public final class CommandQevent extends Qevent {
 	@Override
 	protected void run(Player player) {
 		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replace("%p", player.getName()));
+	}
+	
+	@QCommand(
+			min = 1,
+			usage = "<command>")
+	public static Qevent fromCommand(QCommandContext context) {
+		return new CommandQevent(Util.implode(context.getArgs()));
 	}
 
 	// TODO serialization
