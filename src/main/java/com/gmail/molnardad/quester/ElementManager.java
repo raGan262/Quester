@@ -195,99 +195,96 @@ public class ElementManager {
 		return null;
 	}
 	
-	public void register(Class<? extends Element> clss) throws ElementException {
-		register(clss, "", "");
-	}
-	
-	public void register(Class<? extends Element> clss, String usage) throws ElementException {
-		register(clss, usage, "");
-	}
-	
 	@SuppressWarnings("unchecked")
-	public void register(Class<? extends Element> clss, String usage, String help) throws ElementException {
+	public void register(Class<? extends Element> clss) throws ElementException {
 		if(!clss.isAnnotationPresent(QElement.class)) {
 			throw new ElementException("Annotation not present.");
 		}
 		try {
 			if(clss.getSuperclass() == Condition.class) {
-				registerCondition((Class<? extends Condition>) clss, usage, help);
+				registerCondition((Class<? extends Condition>) clss);
 			}
 			else if(clss.getSuperclass() == Qevent.class) {
-				registerEvent((Class<? extends Qevent>) clss, usage, help);
+				registerEvent((Class<? extends Qevent>) clss);
 			}
 			else if(clss.getSuperclass() == Objective.class) {
-				registerObjective((Class<? extends Objective>) clss, usage, help);
+				registerObjective((Class<? extends Objective>) clss);
 			}
 			else {
 				throw new ElementException("Unknown element type.");
 			}
 		}
 		catch (NoSuchMethodException e) {
-			throw new ElementException(e.getMessage());
+			throw new ElementException("Missing or incorrect fromCommand method.");
 		}
 		catch (SecurityException e) {
 			throw new ElementException("Element can't be accessed.");
 		}
 	}
 	
-	private void registerCondition(Class<? extends Condition> clss, String usage, String help) throws NoSuchMethodException, SecurityException {
+	private void registerCondition(Class<? extends Condition> clss) throws NoSuchMethodException, SecurityException, ElementException {
 		Method fromCommand = clss.getMethod("fromCommand", QCommandContext.class); 
-		if(fromCommand != null) {
-			if(!Modifier.isStatic(fromCommand.getModifiers())) {
-				throw new NoSuchMethodException("Method is not static.");
-			}
-			if(fromCommand.getReturnType() != Condition.class) {
-				throw new NoSuchMethodError("Method does not return Condition.");
-			}
-			ElementInfo<Condition> ei = new ElementInfo<Condition>();
-			ei.clss = clss;
-			ei.usage = usage;
-			ei.command = fromCommand.getAnnotation(QCommand.class);
-			ei.method = fromCommand;
-			conditions.put(clss.getAnnotation(QElement.class).value(), ei);
+		
+		String type = clss.getAnnotation(QElement.class).value().toUpperCase();
+		if(conditions.containsKey(type)) {
+			throw new ElementException("Condition of the same type already registered.");
 		}
-		else {
-			throw new NoSuchMethodException("Method null.");
+		
+		if(!Modifier.isStatic(fromCommand.getModifiers())) {
+			throw new NoSuchMethodException("Method is not static.");
 		}
+		if(fromCommand.getReturnType() != Condition.class) {
+			throw new NoSuchMethodError("Method does not return Condition.");
+		}
+		ElementInfo<Condition> ei = new ElementInfo<Condition>();
+		ei.clss = clss;
+		ei.command = fromCommand.getAnnotation(QCommand.class);
+		ei.method = fromCommand;
+		ei.usage = ei.command.usage();
+		conditions.put(type, ei);
 	}
 	
-	private void registerEvent(Class<? extends Qevent> clss, String usage, String help) throws NoSuchMethodException, SecurityException { 
+	private void registerEvent(Class<? extends Qevent> clss) throws NoSuchMethodException, SecurityException, ElementException { 
 		Method fromCommand = clss.getMethod("fromCommand", QCommandContext.class);
-		if(fromCommand != null) {
-			if(!Modifier.isStatic(fromCommand.getModifiers())) {
-				throw new NoSuchMethodException("Method is not static.");
-			}
-			if(fromCommand.getReturnType() != Qevent.class) {
-				throw new NoSuchMethodError("Method does not return Qevent.");
-			}
-			ElementInfo<Qevent> ei = new ElementInfo<Qevent>();
-			ei.clss = clss;
-			ei.usage = usage;
-			ei.command = fromCommand.getAnnotation(QCommand.class);
-			events.put(clss.getAnnotation(QElement.class).value(), ei);
+		
+		String type = clss.getAnnotation(QElement.class).value().toUpperCase();
+		if(events.containsKey(type)) {
+			throw new ElementException("Event of the same type already registered.");
 		}
-		else {
-			throw new NoSuchMethodException("Method null.");
+
+		if(!Modifier.isStatic(fromCommand.getModifiers())) {
+			throw new NoSuchMethodException("Method is not static.");
 		}
+		if(fromCommand.getReturnType() != Qevent.class) {
+			throw new NoSuchMethodError("Method does not return Qevent.");
+		}
+		ElementInfo<Qevent> ei = new ElementInfo<Qevent>();
+		ei.clss = clss;
+		ei.command = fromCommand.getAnnotation(QCommand.class);
+		ei.method = fromCommand;
+		ei.usage = ei.command.usage();
+		events.put(type, ei);
 	}
 
-	private void registerObjective(Class<? extends Objective> clss, String usage, String help) throws NoSuchMethodException, SecurityException {
+	private void registerObjective(Class<? extends Objective> clss) throws NoSuchMethodException, SecurityException, ElementException {
 		Method fromCommand = clss.getMethod("fromCommand", QCommandContext.class);
-		if(fromCommand != null) {
-			if(!Modifier.isStatic(fromCommand.getModifiers())) {
-				throw new NoSuchMethodException("Method is not static.");
-			}
-			if(fromCommand.getReturnType() != Qevent.class) {
-				throw new NoSuchMethodError("Method does not return Objective.");
-			}
-			ElementInfo<Objective> ei = new ElementInfo<Objective>();
-			ei.clss = clss;
-			ei.usage = usage;
-			ei.command = fromCommand.getAnnotation(QCommand.class);
-			objectives.put(clss.getAnnotation(QElement.class).value(), ei);
+		
+		String type = clss.getAnnotation(QElement.class).value().toUpperCase();
+		if(objectives.containsKey(type)) {
+			throw new ElementException("Objective of the same type already registered.");
 		}
-		else {
-			throw new NoSuchMethodException("Method null.");
+		
+		if(!Modifier.isStatic(fromCommand.getModifiers())) {
+			throw new NoSuchMethodException("Method is not static.");
 		}
+		if(fromCommand.getReturnType() != Qevent.class) {
+			throw new NoSuchMethodError("Method does not return Objective.");
+		}
+		ElementInfo<Objective> ei = new ElementInfo<Objective>();
+		ei.clss = clss;
+		ei.command = fromCommand.getAnnotation(QCommand.class);
+		ei.method = fromCommand;
+		ei.usage = ei.command.usage();
+		objectives.put(type, ei);
 	}
 }
