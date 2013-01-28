@@ -105,7 +105,7 @@ public class QCommandManager {
 
 		// check every permission for nested command
 		QCommand cmd = annotations.get(method);
-		if(!cmd.permission().isEmpty() && (sender == null || !Util.permCheck(sender, cmd.permission(), false))) {
+		if(!cmd.permission().isEmpty() && (sender == null || !Util.permCheck(sender, cmd.permission(), false, null))) {
 			throw new QPermissionException();
 		}
 		

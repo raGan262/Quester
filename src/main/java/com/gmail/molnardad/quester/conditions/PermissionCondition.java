@@ -21,7 +21,7 @@ public final class PermissionCondition extends Condition {
 
 	@Override
 	public boolean isMet(Player player) {
-		return Util.permCheck(player, perm, false);
+		return Util.permCheck(player, perm, false, null);
 	}
 	
 	@Override

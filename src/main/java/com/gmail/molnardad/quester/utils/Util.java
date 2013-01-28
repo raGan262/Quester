@@ -53,8 +53,11 @@ public class Util {
 	}
 	
 	public static Location getLoc(CommandSender sender, String arg) throws IllegalArgumentException {
+		return getLoc(sender, arg, LanguageManager.getInstance().getDefaultLang());
+	}
+	
+	public static Location getLoc(CommandSender sender, String arg, QuesterStrings lang) throws IllegalArgumentException {
 		DataManager data = DataManager.getInstance();
-		QuesterStrings lang = LanguageManager.getInstance().getDefaultLang();
 		
 		String args[] = arg.split(";");
 		Location loc;
@@ -82,6 +85,9 @@ public class Util {
 				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_BLOCK
 						.replaceAll("%block", data.locLabelBlock));
 			}
+		}
+		else if(args[0].equalsIgnoreCase(data.locLabelPlayer)) {
+			return null;
 		}
 		
 		if(args.length > 3){
@@ -154,16 +160,16 @@ public class Util {
 		return result.toString();
 	}
 	
-	public static boolean permCheck(Player player, String perm, boolean message) {
-		return permCheck((CommandSender) player, perm, message);
+	public static boolean permCheck(Player player, String perm, boolean message, QuesterStrings lang) {
+		return permCheck((CommandSender) player, perm, message, lang);
 	}
 	
-	public static boolean permCheck(CommandSender sender, String perm, boolean message) {
+	public static boolean permCheck(CommandSender sender, String perm, boolean message, QuesterStrings lang) {
 		if(sender.isOp() || sender.hasPermission(perm) || sender.hasPermission(DataManager.PERM_ADMIN)) {
 			return true;
 		}
 		if(message)
-			sender.sendMessage(ChatColor.RED + LanguageManager.getInstance().getDefaultLang().MSG_PERMS);
+			sender.sendMessage(ChatColor.RED + lang.MSG_PERMS);
 		return false;
 	}
 	
@@ -226,7 +232,10 @@ public class Util {
 	}
 	
 	public static int[] parseItem(String arg) throws IllegalArgumentException {
-		QuesterStrings lang = LanguageManager.getInstance().getDefaultLang();
+		return parseItem(arg, LanguageManager.getInstance().getDefaultLang());
+	}
+	
+	public static int[] parseItem(String arg, QuesterStrings lang) throws IllegalArgumentException {
 		
 		int[] itm = new int[2];
 		String[] s = arg.split(":");
@@ -283,7 +292,10 @@ public class Util {
 	}
 	
 	public static PotionEffect parseEffect(String arg) throws IllegalArgumentException {
-		QuesterStrings lang = LanguageManager.getInstance().getDefaultLang();
+		return parseEffect(arg, LanguageManager.getInstance().getDefaultLang());
+	}
+	
+	public static PotionEffect parseEffect(String arg, QuesterStrings lang) throws IllegalArgumentException {
 		
 		PotionEffectType type = null;
 		int dur = 0, amp = 0;
@@ -389,11 +401,15 @@ public class Util {
 	}
 	
 	public static EntityType parseEntity(String arg) throws IllegalArgumentException {
+		return parseEntity(arg, LanguageManager.getInstance().getDefaultLang());
+	}
+	
+	public static EntityType parseEntity(String arg, QuesterStrings lang) throws IllegalArgumentException {
 		EntityType ent = EntityType.fromName(arg.toUpperCase());
 		if(ent == null) {
 			ent = EntityType.fromId(Integer.parseInt(arg));
 			if(ent == null || ent.getTypeId() < 50) {
-				throw new IllegalArgumentException(LanguageManager.getInstance().getDefaultLang().ERROR_CMD_ENTITY_UNKNOWN);
+				throw new IllegalArgumentException(lang.ERROR_CMD_ENTITY_UNKNOWN);
 			}
 		}
 		return ent;

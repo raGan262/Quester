@@ -668,7 +668,7 @@ public class QuestManager {
 		}
 		if(command && qst.hasFlag(QuestFlag.HIDDEN))
 			throw new QuestException(lang.ERROR_Q_NOT_CMD);
-		if (!Util.permCheck(player, DataManager.PERM_ADMIN, false)){
+		if (!Util.permCheck(player, DataManager.PERM_ADMIN, false, null)){
 			for(Condition con : qst.getConditions()) {
 				if(!con.isMet(player)) {
 					player.sendMessage(ChatColor.RED + con.inShow());
@@ -854,7 +854,7 @@ public class QuestManager {
 		if(qst == null)
 			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
 		if(!qst.hasFlag(QuestFlag.ACTIVE) || qst.hasFlag(QuestFlag.HIDDEN)) {
-			if(!Util.permCheck(sender, DataManager.PERM_MODIFY, false)) {
+			if(!Util.permCheck(sender, DataManager.PERM_MODIFY, false, null)) {
 				throw new QuestException(lang.ERROR_Q_NOT_EXIST);
 			}
 		}

@@ -61,13 +61,13 @@ public class SignListeners implements Listener {
 				}
 			}
 			
-			if(!Util.permCheck(player, DataManager.PERM_USE_SIGN, true)) {
+			if(!Util.permCheck(player, DataManager.PERM_USE_SIGN, true, lang)) {
 				return;
 			}
 			if(player.isSneaking()) {
 				return;
 			}
-			boolean isOp = Util.permCheck(player, DataManager.PERM_MODIFY, false);
+			boolean isOp = Util.permCheck(player, DataManager.PERM_MODIFY, false, null);
 
 			event.setCancelled(true);
 			QuestHolder qh = qm.getHolder(qs.getHolderID());
@@ -170,7 +170,7 @@ public class SignListeners implements Listener {
 		if(block.getType().getId() == 63 || block.getType().getId() == 68) {
 			Sign sign = (Sign) block.getState();
 			if(qData.signs.get(sign.getLocation().getWorld().getName() + sign.getLocation().getBlockX() + sign.getLocation().getBlockY() + sign.getLocation().getBlockZ()) != null) {
-				if(!event.getPlayer().isSneaking() || !Util.permCheck(event.getPlayer(), DataManager.PERM_MODIFY, false)) {
+				if(!event.getPlayer().isSneaking() || !Util.permCheck(event.getPlayer(), DataManager.PERM_MODIFY, false, null)) {
 					event.setCancelled(true);
 					return;
 				}
@@ -184,7 +184,7 @@ public class SignListeners implements Listener {
 	public void onSignChange(SignChangeEvent event) {
 		Block block = event.getBlock();
 		if(event.getLine(0).equals("[Quester]")) {
-			if(!Util.permCheck(event.getPlayer(), DataManager.PERM_MODIFY, true)) {
+			if(!Util.permCheck(event.getPlayer(), DataManager.PERM_MODIFY, true, lang)) {
 				block.breakNaturally();
 			}
 			event.setLine(0, ChatColor.BLUE + "[Quester]");

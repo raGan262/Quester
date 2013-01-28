@@ -40,7 +40,7 @@ public class UserCommands {
 			max = 0,
 			permission = DataManager.PERM_USE_LIST)
 	public void list(QCommandContext context, CommandSender sender) {
-		if(Util.permCheck(sender, DataManager.PERM_MODIFY, false)) {
+		if(Util.permCheck(sender, DataManager.PERM_MODIFY, false, null)) {
 			qMan.showFullQuestList(sender);
 		}
 		else {
@@ -55,7 +55,7 @@ public class UserCommands {
 			usage = "[player]",
 			permission = DataManager.PERM_USE_PROFILE)
 	public void profile(QCommandContext context, CommandSender sender) throws QuesterException {
-		if(Util.permCheck(sender, DataManager.PERM_ADMIN, false) && context.length() > 0) {
+		if(Util.permCheck(sender, DataManager.PERM_ADMIN, false, null) && context.length() > 0) {
 			qMan.showProfile(sender, context.getString(0));
 		}
 		else {
@@ -74,14 +74,14 @@ public class UserCommands {
 			return;
 		}
 		if(context.length() == 0) {
-			if(Util.permCheck(sender, DataManager.PERM_USE_START_RANDOM, false)) {
+			if(Util.permCheck(sender, DataManager.PERM_USE_START_RANDOM, false, null)) {
 				qMan.startRandomQuest(context.getPlayer());
 			}
 			else {
 				throw new QPermissionException();
 			}
 		}
-		else if(Util.permCheck(sender, DataManager.PERM_USE_START_PICK, false)) {
+		else if(Util.permCheck(sender, DataManager.PERM_USE_START_PICK, false, null)) {
 			qMan.startQuest((Player) sender, context.getString(0), true);
 		}
 		else {
@@ -162,7 +162,7 @@ public class UserCommands {
 			usage = "[player]",
 			permission = DataManager.PERM_USE_QUESTS)
 	public void quests(QCommandContext context, CommandSender sender) throws QuesterException {
-		if(Util.permCheck(sender, DataManager.PERM_ADMIN, false) && context.length() > 0) {
+		if(Util.permCheck(sender, DataManager.PERM_ADMIN, false, null) && context.length() > 0) {
 			qMan.showTakenQuests(sender, context.getString(0));
 		}
 		else {
