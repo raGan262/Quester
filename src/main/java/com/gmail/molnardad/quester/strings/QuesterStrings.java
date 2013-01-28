@@ -167,15 +167,15 @@ public class QuesterStrings {
 	public String OBJ_PREREQ_REMOVE = "Prerequisites of objective %id removed."; // %id = objective ID;
 	public String OBJ_PREREQ_REMOVE_USAGE = "<objective ID> <prerequisite1>...";
 	
-	public String OBJ_BREAK_USAGE = "%cmd objective add break {<item>} <amount> [hand]";
+	public String OBJ_BREAK_USAGE = "{<item>} <amount> [hand]";
 	
-	public String OBJ_PLACE_USAGE = "%cmd objective add place {<item>} <amount>";
+	public String OBJ_PLACE_USAGE = "{<item>} <amount>";
 	
-	public String OBJ_ITEM_USAGE = "%cmd objective add item {<item>} [amount] {[ench1]}...";
+	public String OBJ_ITEM_USAGE = "{<item>} [amount] {[ench1]}...";
 	
 	public String OBJ_COLLECT_USAGE = "{<item>} <amount>";
 	
-	public String OBJ_ENCH_USAGE = "{<item>} [amount] {[enchants]}.";
+	public String OBJ_ENCHANT_USAGE = "{<item>} [amount] {[enchants]}";
 	
 	public String OBJ_EXP_USAGE = "<amount>";
 	
@@ -187,7 +187,7 @@ public class QuesterStrings {
 	
 	public String OBJ_MOBKILL_USAGE = "<amount> {[entity]}";
 	
-	public String OBJ_KILL_USAGE = "<amount> [player]";
+	public String OBJ_KILL_USAGE = "<amount> [player] (-p)";
 	
 	public String OBJ_CRAFT_USAGE = "{<item>} <amount>";
 	
@@ -242,44 +242,42 @@ public class QuesterStrings {
 	
 	public String EVT_ADD = "%type event added."; // %type = event type;
 	public String EVT_LIST = "Available event types";
-	public String EVT_ADD_USAGE = "<event_type> [args]";
+	public String EVT_ADD_USAGE = "{<occasion>} <event_type> [args]";
 	public String EVT_REMOVE = "Event %id removed.";// %id = event ID;
 	public String EVT_REMOVE_USAGE = "<event ID>";
 	public String EVT_SPECIFY = "Specify occasion and delay.";
 	
-	public String EVT_MSG_USAGE = "{<occasion>} <message>";
+	public String EVT_MSG_USAGE = "<message>";
 	
-	public String EVT_QUEST_USAGE = "{<occasion>} <quest ID>";
+	public String EVT_QUEST_USAGE = "<quest ID>";
 	
-	public String EVT_TOGGLE_USAGE = "{<occasion>} <quest ID>";
+	public String EVT_TOGGLE_USAGE = "<quest ID>";
 	
-	public String EVT_OBJCOM_USAGE = "{<occasion>} <objective ID>";
+	public String EVT_OBJCOM_USAGE = "<objective ID>";
 	
-	public String EVT_CANCEL_USAGE = "{<occasion>}";
+	public String EVT_CMD_USAGE = "<command>";
 	
-	public String EVT_CMD_USAGE = "{<occasion>} <command>";
+	public String EVT_EXPLOSION_USAGE = "{<location>} [range] (-d)";
 	
-	public String EVT_EXPL_USAGE = "{<occasion>} {<location>} [range] (-d)";
+	public String EVT_LIGHTNING_USAGE = "{<location>} [range] (-d)";
 	
-	public String EVT_LIGHT_USAGE = "{<occasion>} {<location>} [range] (-d)";
+	public String EVT_TELE_USAGE = "{<location>}";
 	
-	public String EVT_TELE_USAGE = "{<occasion>} {<location>}";
+	public String EVT_BLOCK_USAGE = "{<block>} {<location>}";
 	
-	public String EVT_BLOCK_USAGE = "{<occasion>} {<block>} {<location>}";
-	
-	public String EVT_SPAWN_USAGE = "{<occasion>} {<entity>} <amount> {<location>} [range]";
+	public String EVT_SPAWN_USAGE = "{<entity>} <amount> {<location>} [range]";
 
-	public String EVT_EFF_USAGE = "{<occasion>} {<potion effect>}";
+	public String EVT_EFF_USAGE = "{<potion effect>}";
 	
-	public String EVT_ITEM_USAGE = "{<occasion>} {<item>} [amount] {[enchants]}";
+	public String EVT_ITEM_USAGE = "{<item>} [amount] {[enchants]}";
 	
-	public String EVT_MONEY_USAGE = "{<occasion>} <amount>";
+	public String EVT_MONEY_USAGE = "<amount>";
 	
-	public String EVT_EXP_USAGE = "{<occasion>} <amount>";
+	public String EVT_EXP_USAGE = "<amount>";
 	
-	public String EVT_POINT_USAGE = "{<occasion>} <amount>";
+	public String EVT_POINT_USAGE = "<amount>";
 	
-	public String EVT_DSCRIPT_USAGE = "{<occasion>} <script> [npc ID] (-cn)";
+	public String EVT_DSCRIPT_USAGE = "<script> [npc ID] (-cn)";
 	
 	// ERROR STRINGS
 
@@ -305,7 +303,6 @@ public class QuesterStrings {
 	public String ERROR_CMD_LOC_NOBLOCK = "No block targeted.";
 	public String ERROR_CMD_COORDS_INVALID = "Invalid coordinates.";
 	public String ERROR_CMD_ENTITY_UNKNOWN = "Unknown entity.";
-	public String ERROR_CMD_ENTITY_NUMBERS = "Amount must be > 0. Id must be number or valid entity name.";
 	public String ERROR_CMD_COLOR_UNKNOWN = "Unknown color.";
 	public String ERROR_CMD_ARGUMENTS_UNKNOWN = "Unknown arguments.";
 	public String ERROR_CMD_ID_OUT_OF_BOUNDS = "Index does not exist.";
