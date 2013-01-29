@@ -17,6 +17,7 @@ import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.QuestHolder;
 import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.QuesterTrait;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.exceptions.HolderException;
@@ -31,8 +32,8 @@ public class Citizens2Listener implements Listener {
 	private QuestManager qm;
 	private QuesterStrings lang;
 	
-	public Citizens2Listener() {
-		this.qm = QuestManager.getInstance();
+	public Citizens2Listener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
 		this.lang = LanguageManager.getInstance().getDefaultLang();
 	}
 	

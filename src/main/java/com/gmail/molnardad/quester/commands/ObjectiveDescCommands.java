@@ -15,7 +15,7 @@ public class ObjectiveDescCommands {
 	QuestManager qMan = null;
 	
 	public ObjectiveDescCommands(Quester plugin) {
-		qMan = QuestManager.getInstance();
+		qMan = plugin.getQuestManager();
 	}
 	
 	@QCommandLabels({"add", "a"})

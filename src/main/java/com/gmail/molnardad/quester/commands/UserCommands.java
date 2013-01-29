@@ -20,7 +20,7 @@ public class UserCommands {
 	private QuestManager qMan = null;
 	
 	public UserCommands(Quester plugin) {
-		this.qMan = QuestManager.getInstance();
+		qMan = plugin.getQuestManager();
 	}
 	
 	@QCommandLabels({"show"})

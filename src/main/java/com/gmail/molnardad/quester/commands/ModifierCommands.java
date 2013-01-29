@@ -19,7 +19,7 @@ public class ModifierCommands {
 	QuestManager qMan = null;
 	
 	public ModifierCommands(Quester plugin) {
-		qMan = QuestManager.getInstance();
+		qMan = plugin.getQuestManager();
 	}
 	
 	private QuestFlag[] getModifiers(String[] args) {

@@ -60,7 +60,7 @@ public abstract class Qevent extends Element {
 	}
 	
 	protected abstract String info();
-	protected abstract void run(Player player);
+	protected abstract void run(Player player, Quester plugin);
 
 	private String delayString() {
 		if(delay > 0) {
@@ -97,14 +97,14 @@ public abstract class Qevent extends Element {
 		}
 	}
 	
-	public final void execute(final Player player, Quester plugin) {
+	public final void execute(final Player player, final Quester plugin) {
 		
 		if(delay > 0) {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
 					try {
-						Qevent.this.run(player);
+						Qevent.this.run(player, plugin);
 					}
 					catch (Exception e) {
 						Quester.log.warning(getType() + " event external exception. [" + occasion + ":" + delay + "]");
@@ -114,7 +114,7 @@ public abstract class Qevent extends Element {
 			}.runTaskLater(plugin, delay*20);
 		} else {
 			try {
-				Qevent.this.run(player);
+				Qevent.this.run(player, plugin);
 			}
 			catch (Exception e) {
 				Quester.log.warning(getType() + " event external exception. [" + occasion + ":" + delay + "]");

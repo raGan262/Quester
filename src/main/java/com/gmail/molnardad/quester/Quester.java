@@ -46,6 +46,7 @@ public class Quester extends JavaPlugin {
 		
 		private DataManager data = null;
 		private LanguageManager langMan = null;
+		private QuestManager questMan = null;
 		private ElementManager elements = null;
 		private QCommandManager commands = null;
 		
@@ -74,7 +75,7 @@ public class Quester extends JavaPlugin {
 			LanguageManager.setInstance(langMan);
 			this.loadLocal();
 			
-			QuestManager.setInstance(new QuestManager(this));
+			questMan = new QuestManager(this);
 			
 			elements = new ElementManager();
 			
@@ -138,7 +139,6 @@ public class Quester extends JavaPlugin {
 			epicboss = false;
 			vault = false;
 			denizen = false;
-			QuestManager.setInstance(null);
 			LanguageManager.setInstance(null);
 			DataManager.setInstance(null);
 		}
@@ -181,6 +181,10 @@ public class Quester extends JavaPlugin {
 		
 		public ElementManager getElementManager() {
 			return elements;
+		}
+		
+		public QuestManager getQuestManager() {
+			return questMan;
 		}
 		
 		private boolean setupEconomy() {
@@ -278,29 +282,29 @@ public class Quester extends JavaPlugin {
 			// getServer().getPluginManager().registerEvents(new MoveListener(), this);
 			
 			// NEW CHECKER
-			PositionListener posCheck = new PositionListener();
+			PositionListener posCheck = new PositionListener(this);
 			Bukkit.getScheduler().scheduleSyncRepeatingTask(this, posCheck, 20, 20);
 			
-			getServer().getPluginManager().registerEvents(new BreakListener(), this);
-			getServer().getPluginManager().registerEvents(new DeathListener(), this);
-			getServer().getPluginManager().registerEvents(new MobKillListener(), this);
-			getServer().getPluginManager().registerEvents(new PlaceListener(), this);
-			getServer().getPluginManager().registerEvents(new CraftSmeltListener(), this);
-			getServer().getPluginManager().registerEvents(new EnchantListener(), this);
-			getServer().getPluginManager().registerEvents(new ShearListener(), this);
-			getServer().getPluginManager().registerEvents(new FishListener(), this);
-			getServer().getPluginManager().registerEvents(new MilkListener(), this);
-			getServer().getPluginManager().registerEvents(new CollectListener(), this);
-			getServer().getPluginManager().registerEvents(new DropListener(), this);
-			getServer().getPluginManager().registerEvents(new TameListener(), this);
-			getServer().getPluginManager().registerEvents(new SignListeners(), this);
-			getServer().getPluginManager().registerEvents(new ActionListener(), this);
-			getServer().getPluginManager().registerEvents(new DyeListener(), this);
+			getServer().getPluginManager().registerEvents(new BreakListener(this), this);
+			getServer().getPluginManager().registerEvents(new DeathListener(this), this);
+			getServer().getPluginManager().registerEvents(new MobKillListener(this), this);
+			getServer().getPluginManager().registerEvents(new PlaceListener(this), this);
+			getServer().getPluginManager().registerEvents(new CraftSmeltListener(this), this);
+			getServer().getPluginManager().registerEvents(new EnchantListener(this), this);
+			getServer().getPluginManager().registerEvents(new ShearListener(this), this);
+			getServer().getPluginManager().registerEvents(new FishListener(this), this);
+			getServer().getPluginManager().registerEvents(new MilkListener(this), this);
+			getServer().getPluginManager().registerEvents(new CollectListener(this), this);
+			getServer().getPluginManager().registerEvents(new DropListener(this), this);
+			getServer().getPluginManager().registerEvents(new TameListener(this), this);
+			getServer().getPluginManager().registerEvents(new SignListeners(this), this);
+			getServer().getPluginManager().registerEvents(new ActionListener(this), this);
+			getServer().getPluginManager().registerEvents(new DyeListener(this), this);
 			if(citizens2) {
-				getServer().getPluginManager().registerEvents(new Citizens2Listener(), this);
+				getServer().getPluginManager().registerEvents(new Citizens2Listener(this), this);
 			}
 			if(epicboss) {
-				getServer().getPluginManager().registerEvents(new BossDeathListener(), this);
+				getServer().getPluginManager().registerEvents(new BossDeathListener(this), this);
 			}
 		}
 		

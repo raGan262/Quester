@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.objectives.DyeObjective;
 
@@ -22,8 +23,8 @@ public class DyeListener implements Listener {
 
 	private QuestManager qm;
 	
-	public DyeListener() {
-		this.qm = QuestManager.getInstance();
+	public DyeListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

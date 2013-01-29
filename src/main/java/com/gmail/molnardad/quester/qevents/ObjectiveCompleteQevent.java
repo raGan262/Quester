@@ -30,9 +30,9 @@ public final class ObjectiveCompleteQevent extends Qevent {
 	}
 
 	@Override
-	protected void run(Player player) {
+	protected void run(Player player, Quester plugin) {
 		try {
-			QuestManager qMan = QuestManager.getInstance();
+			QuestManager qMan = plugin.getQuestManager();
 			List<Integer> prog = qMan.getProfile(player.getName()).getProgress();
 			if(objective >= 0 && objective < prog.size()) {
 				int req = qMan.getPlayerQuest(player.getName()).getObjective(objective).getTargetAmount();

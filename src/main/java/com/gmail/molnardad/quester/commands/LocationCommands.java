@@ -18,7 +18,7 @@ public class LocationCommands {
 	QuestManager qMan = null;
 	
 	public LocationCommands(Quester plugin) {
-		qMan = QuestManager.getInstance();
+		qMan = plugin.getQuestManager();
 	}
 	
 	@QCommandLabels({"set", "s"})

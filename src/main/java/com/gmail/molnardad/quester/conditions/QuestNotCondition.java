@@ -4,7 +4,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.PlayerProfile;
-import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
@@ -28,8 +28,8 @@ public final class QuestNotCondition extends Condition {
 	}
 
 	@Override
-	public boolean isMet(Player player) {
-		PlayerProfile profile = QuestManager.getInstance().getProfile(player.getName());
+	public boolean isMet(Player player, Quester plugin) {
+		PlayerProfile profile = plugin.getQuestManager().getProfile(player.getName());
 		if (!profile.isCompleted(quest)) {
 			return true;
 		}

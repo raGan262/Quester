@@ -13,6 +13,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.objectives.BreakObjective;
 
@@ -21,8 +22,8 @@ public class BreakListener implements Listener {
 	private QuestManager qm;
 	private DataManager qData;
 	
-	public BreakListener() {
-		this.qm = QuestManager.getInstance();
+	public BreakListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
 		this.qData = DataManager.getInstance();
 	}
 	

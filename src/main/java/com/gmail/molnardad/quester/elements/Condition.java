@@ -49,7 +49,7 @@ public abstract class Condition extends Element {
 	protected abstract String parseDescription(String description);
 	protected abstract String show();
 	protected abstract String info();
-	public abstract boolean isMet(Player player);
+	public abstract boolean isMet(Player player, Quester plugin);
 	
 	public String inShow() {
 		if(!desc.isEmpty()) {

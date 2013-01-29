@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.objectives.BossObjective;
 
@@ -20,8 +21,8 @@ public class BossDeathListener implements Listener {
 
 	private QuestManager qm;
 	
-	public BossDeathListener() {
-		this.qm = QuestManager.getInstance();
+	public BossDeathListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
 	}
 		
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

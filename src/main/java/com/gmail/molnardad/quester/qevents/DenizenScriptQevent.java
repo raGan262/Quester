@@ -39,7 +39,7 @@ public final class DenizenScriptQevent extends Qevent {
 	}
 
 	@Override
-	protected void run(Player player) {
+	protected void run(Player player, Quester plugin) {
 		try {
 			if(Quester.denizen) {
 				Denizen den = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");

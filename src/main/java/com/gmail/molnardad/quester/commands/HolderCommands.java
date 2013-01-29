@@ -15,7 +15,7 @@ public class HolderCommands {
 	QuestManager qMan = null;
 	
 	public HolderCommands(Quester plugin) {
-		qMan = QuestManager.getInstance();
+		qMan = plugin.getQuestManager();
 	}
 	
 	@QCommandLabels({"create", "c"})

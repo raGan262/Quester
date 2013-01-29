@@ -3,6 +3,7 @@ package com.gmail.molnardad.quester.conditions;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
@@ -20,7 +21,7 @@ public final class PermissionCondition extends Condition {
 	}
 
 	@Override
-	public boolean isMet(Player player) {
+	public boolean isMet(Player player, Quester plugin) {
 		return Util.permCheck(player, perm, false, null);
 	}
 	

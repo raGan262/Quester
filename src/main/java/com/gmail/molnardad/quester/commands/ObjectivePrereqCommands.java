@@ -19,7 +19,7 @@ public class ObjectivePrereqCommands {
 	QuestManager qMan = null;
 	
 	public ObjectivePrereqCommands(Quester plugin) {
-		qMan = QuestManager.getInstance();
+		qMan = plugin.getQuestManager();
 	}
 	
 	@QCommandLabels({"add", "a"})

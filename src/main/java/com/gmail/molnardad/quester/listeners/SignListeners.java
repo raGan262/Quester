@@ -32,8 +32,8 @@ public class SignListeners implements Listener {
 	private DataManager qData;
 	private QuesterStrings lang;
 	
-	public SignListeners() {
-		this.qm = QuestManager.getInstance();
+	public SignListeners(Quester plugin) {
+		this.qm = plugin.getQuestManager();
 		this.qData = DataManager.getInstance();
 		this.lang = LanguageManager.getInstance().getDefaultLang();
 	}

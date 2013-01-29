@@ -22,7 +22,7 @@ public class ConditionCommands {
 	ElementManager eMan = null;
 	
 	public ConditionCommands(Quester plugin) {
-		qMan = QuestManager.getInstance();
+		qMan = plugin.getQuestManager();
 		eMan = plugin.getElementManager();
 	}
 	

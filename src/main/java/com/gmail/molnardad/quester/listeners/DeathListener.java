@@ -11,6 +11,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestFlag;
 import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.objectives.DeathObjective;
@@ -20,8 +21,8 @@ public class DeathListener implements Listener {
 
 	private QuestManager qm;
 	
-	public DeathListener() {
-		this.qm = QuestManager.getInstance();
+	public DeathListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
 	}
 		
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

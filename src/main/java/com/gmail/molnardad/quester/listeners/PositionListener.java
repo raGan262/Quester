@@ -10,6 +10,7 @@ import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestFlag;
 import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.objectives.LocObjective;
@@ -20,8 +21,8 @@ public class PositionListener implements Runnable {
 	private QuestManager qm;
 	private DataManager qData;
 	
-	public PositionListener() {
-		qm = QuestManager.getInstance();
+	public PositionListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
 		qData = DataManager.getInstance();
 	}
 	

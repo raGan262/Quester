@@ -6,6 +6,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
@@ -27,7 +28,7 @@ public final class TeleportQevent extends Qevent {
 	}
 
 	@Override
-	protected void run(Player player) {
+	protected void run(Player player, Quester plugin) {
 		Location loc = player.getLocation().clone();
 		loc.setY(loc.getY()+1);
 		player.getWorld().playEffect(loc, Effect.ENDER_SIGNAL, 0);

@@ -15,7 +15,7 @@ public class DescCommands {
 	QuestManager qMan = null;
 	
 	public DescCommands(Quester plugin) {
-		qMan = QuestManager.getInstance();
+		qMan = plugin.getQuestManager();
 	}
 	
 	@QCommandLabels({"set", "s"})

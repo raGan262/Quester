@@ -3,7 +3,7 @@ package com.gmail.molnardad.quester.conditions;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
@@ -25,8 +25,8 @@ public final class PointCondition extends Condition {
 	}
 	
 	@Override
-	public boolean isMet(Player player) {
-		return QuestManager.getInstance().getProfile(player.getName()).getPoints() >= amount;
+	public boolean isMet(Player player, Quester plugin) {
+		return plugin.getQuestManager().getProfile(player.getName()).getPoints() >= amount;
 	}
 	
 	@Override

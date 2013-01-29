@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.objectives.CollectObjective;
 
@@ -20,8 +21,8 @@ public class DropListener implements Listener {
 	private QuestManager qm;
 	private DataManager qData;
 	
-	public DropListener() {
-		this.qm = QuestManager.getInstance();
+	public DropListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
 		this.qData = DataManager.getInstance();
 	}
 		

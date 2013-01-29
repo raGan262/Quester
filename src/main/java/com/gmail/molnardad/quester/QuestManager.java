@@ -27,8 +27,6 @@ public class QuestManager {
 	// TODO rewrite this whole class to not be so terrible
 	// spit to ProfileManager, QuestManager (and maybe Messenger)
 	
-	private static QuestManager instance = null;
-	
 	private QuesterStrings lang;
 	private DataManager qData;
 	private Quester plugin;
@@ -37,14 +35,6 @@ public class QuestManager {
 		this.lang = LanguageManager.getInstance().getDefaultLang();
 		this.qData = DataManager.getInstance();
 		this.plugin = plugin;
-	}
-	
-	protected static void setInstance(QuestManager questManager) {
-		instance = questManager;
-	}
-	
-	public static QuestManager getInstance() {
-		return instance;
 	}
 
 	private Quest getSelected(String name) {
@@ -169,7 +159,7 @@ public class QuestManager {
 		if(quest == null)
 			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
 		for(Condition c : quest.getConditions()) {
-			if(!c.isMet(player))
+			if(!c.isMet(player, plugin))
 				return false;
 		}
 		
@@ -597,7 +587,7 @@ public class QuestManager {
 	}
 	
 	public int createHolder(String name) {
-		QuestHolder qh = new QuestHolder(name);
+		QuestHolder qh = new QuestHolder(name, plugin);
 		int id = qData.getNewHolderID();
 		qData.holderIds.put(id, qh);
 		qData.saveHolders();
@@ -670,7 +660,7 @@ public class QuestManager {
 			throw new QuestException(lang.ERROR_Q_NOT_CMD);
 		if (!Util.permCheck(player, DataManager.PERM_ADMIN, false, null)){
 			for(Condition con : qst.getConditions()) {
-				if(!con.isMet(player)) {
+				if(!con.isMet(player, plugin)) {
 					player.sendMessage(ChatColor.RED + con.inShow());
 					return;
 				}
@@ -871,7 +861,7 @@ public class QuestManager {
 		ChatColor color = ChatColor.WHITE;
 		for(int i = 0; i < cons.size(); i++) {
 			if(player != null) {
-				color = cons.get(i).isMet(player) ? ChatColor.GREEN : ChatColor.RED;
+				color = cons.get(i).isMet(player, plugin) ? ChatColor.GREEN : ChatColor.RED;
 			}
 			sender.sendMessage(color + " - " + cons.get(i).inShow());
 		}

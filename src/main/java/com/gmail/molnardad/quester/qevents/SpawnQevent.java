@@ -7,6 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
@@ -36,6 +37,18 @@ public final class SpawnQevent extends Qevent {
 			locStr = Util.displayLocation(location);
 		}
 		return entity.getName() + "; AMT: " + amount + "; LOC: " + locStr + "; RNG: " + range;
+	}
+
+	@Override
+	protected void run(Player player, Quester plugin) {
+		Location temp;
+		if(location == null)
+			temp = player.getLocation();
+		else
+			temp = location;
+		for(int i = 0; i < amount; i++) {
+			temp.getWorld().spawnEntity(Util.move(temp, range), entity);
+		}
 	}
 
 	@QCommand(
@@ -94,17 +107,5 @@ public final class SpawnQevent extends Qevent {
 		}
 		
 		return new SpawnQevent(loc, rng, ent, amt);
-	}
-
-	@Override
-	protected void run(Player player) {
-		Location temp;
-		if(location == null)
-			temp = player.getLocation();
-		else
-			temp = location;
-		for(int i = 0; i < amount; i++) {
-			temp.getWorld().spawnEntity(Util.move(temp, range), entity);
-		}
 	}
 }

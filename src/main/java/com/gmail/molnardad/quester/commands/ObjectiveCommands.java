@@ -22,7 +22,7 @@ public class ObjectiveCommands {
 	ElementManager eMan = null;
 	
 	public ObjectiveCommands(Quester plugin) {
-		qMan = QuestManager.getInstance();
+		qMan = plugin.getQuestManager();
 		eMan = plugin.getElementManager();
 	}
 	

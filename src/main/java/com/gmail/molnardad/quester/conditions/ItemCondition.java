@@ -5,6 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
@@ -26,7 +27,7 @@ public final class ItemCondition extends Condition {
 	}
 
 	@Override
-	public boolean isMet(Player player) {
+	public boolean isMet(Player player, Quester plugin) {
         int amt = 0;
         ItemStack[] contents = player.getInventory().getContents();
        

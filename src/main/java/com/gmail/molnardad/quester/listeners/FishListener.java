@@ -11,14 +11,15 @@ import org.bukkit.event.player.PlayerFishEvent.State;
 
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestManager;
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 
 public class FishListener implements Listener {
 
 	private QuestManager qm;
 	
-	public FishListener() {
-		this.qm = QuestManager.getInstance();
+	public FishListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

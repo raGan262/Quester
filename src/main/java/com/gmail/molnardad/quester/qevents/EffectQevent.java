@@ -29,7 +29,7 @@ public class EffectQevent extends Qevent {
 	}
 	
 	@Override
-	protected void run(Player player) {
+	protected void run(Player player, Quester plugin) {
 		player.addPotionEffect(effect, true);
 	}
 

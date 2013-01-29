@@ -15,7 +15,7 @@ public class ConditionDescCommands {
 	QuestManager qMan = null;
 	
 	public ConditionDescCommands(Quester plugin) {
-		qMan = QuestManager.getInstance();
+		qMan = plugin.getQuestManager();
 	}
 	
 	@QCommandLabels({"add", "a"})

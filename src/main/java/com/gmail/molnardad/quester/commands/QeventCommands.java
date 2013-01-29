@@ -21,7 +21,7 @@ public class QeventCommands {
 	ElementManager eMan = null;
 	
 	public QeventCommands(Quester plugin) {
-		qMan = QuestManager.getInstance();
+		qMan = plugin.getQuestManager();
 		eMan = plugin.getElementManager();
 	}
 	

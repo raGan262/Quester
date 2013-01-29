@@ -18,7 +18,7 @@ public class ModificationCommands {
 	private QuestManager qMan = null;
 	
 	public ModificationCommands(Quester plugin) {
-		qMan = QuestManager.getInstance();
+		qMan = plugin.getQuestManager();
 	}
 	
 	@QCommandLabels({"info"})

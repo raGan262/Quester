@@ -19,7 +19,7 @@ public class WorldCommands {
 	DataManager dtMan = null;
 	
 	public WorldCommands(Quester plugin) {
-		qMan = QuestManager.getInstance();
+		qMan = plugin.getQuestManager();
 		dtMan = DataManager.getInstance();
 	}
 	
