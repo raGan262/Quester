@@ -1,4 +1,4 @@
-package com.gmail.molnardad.quester;
+package com.gmail.molnardad.quester.managers;
 
 
 import java.security.InvalidKeyException;
@@ -10,6 +10,13 @@ import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import com.gmail.molnardad.quester.PlayerProfile;
+import com.gmail.molnardad.quester.Quest;
+import com.gmail.molnardad.quester.QuestFlag;
+import com.gmail.molnardad.quester.QuestHolder;
+import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.QuesterSign;
 
 public class DataManager {
 	
@@ -77,7 +84,7 @@ public class DataManager {
 		return instance;
 	}
 	
-	protected static void setInstance(DataManager dataManager) {
+	public static void setInstance(DataManager dataManager) {
 		instance = dataManager;
 	}
 	
@@ -163,7 +170,7 @@ public class DataManager {
 	}
 
 	public void loadProfiles() {
-		QuestManager qMan = QuestManager.getInstance();
+		QuestManager qMan = plugin.getQuestManager();
 		if(qMan == null) {
 			Quester.log.info("Failed to reload profiles: QuestManager null");
 			return;
@@ -272,7 +279,7 @@ public class DataManager {
 				for(String key : holders.getKeys(false)) {
 					try {
 						int id = Integer.parseInt(key);
-						qh = QuestHolder.deserialize(holders.getConfigurationSection(key));
+						qh = QuestHolder.deserialize(holders.getConfigurationSection(key), plugin);
 						if(qh == null){
 							throw new InvalidKeyException();
 						}

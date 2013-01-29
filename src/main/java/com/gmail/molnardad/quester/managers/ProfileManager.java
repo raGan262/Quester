@@ -1,4 +1,4 @@
-package com.gmail.molnardad.quester;
+package com.gmail.molnardad.quester.managers;
 
 public class ProfileManager {
 

@@ -12,9 +12,9 @@ import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.molnardad.quester.Quest;
-import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.EnchantObjective;
 
 

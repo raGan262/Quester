@@ -1,4 +1,4 @@
-package com.gmail.molnardad.quester;
+package com.gmail.molnardad.quester.managers;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

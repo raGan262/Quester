@@ -1,9 +1,10 @@
-package com.gmail.molnardad.quester;
+package com.gmail.molnardad.quester.managers;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.config.LanguageConfig;
 import com.gmail.molnardad.quester.strings.QuesterStrings;
 
@@ -18,7 +19,7 @@ public class LanguageManager {
 		this.plugin = plugin;
 	}
 	
-	protected static void setInstance(LanguageManager languageManager) {
+	public static void setInstance(LanguageManager languageManager) {
 		instance = languageManager;
 	}
 	

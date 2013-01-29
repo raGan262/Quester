@@ -1,7 +1,7 @@
 package com.gmail.molnardad.quester.config;
 
-import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.managers.DataManager;
 
 public final class QuestConfig extends CustomConfig {
 

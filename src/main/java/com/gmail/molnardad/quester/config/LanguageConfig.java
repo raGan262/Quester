@@ -2,8 +2,8 @@ package com.gmail.molnardad.quester.config;
 
 import java.lang.reflect.Field;
 
-import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.managers.DataManager;
 import com.gmail.molnardad.quester.strings.QuesterStrings;
 
 public class LanguageConfig extends CustomConfig {

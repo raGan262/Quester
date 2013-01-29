@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.QuesterSign;
+import com.gmail.molnardad.quester.managers.DataManager;
 
 
 public class HolderConfig extends CustomConfig {

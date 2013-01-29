@@ -8,8 +8,8 @@ import java.util.Map;
 
 import org.bukkit.configuration.ConfigurationSection;
 
-import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.managers.DataManager;
 
 public class BaseConfig extends CustomConfig {
 

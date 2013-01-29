@@ -13,11 +13,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("ITEM")

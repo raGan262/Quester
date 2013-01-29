@@ -6,13 +6,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestFlag;
-import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.LocObjective;
 import com.gmail.molnardad.quester.objectives.WorldObjective;
 

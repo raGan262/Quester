@@ -7,7 +7,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.conditions.ItemCondition;
 import com.gmail.molnardad.quester.conditions.MoneyCondition;
@@ -15,6 +14,7 @@ import com.gmail.molnardad.quester.conditions.PermissionCondition;
 import com.gmail.molnardad.quester.conditions.PointCondition;
 import com.gmail.molnardad.quester.conditions.QuestCondition;
 import com.gmail.molnardad.quester.conditions.QuestNotCondition;
+import com.gmail.molnardad.quester.managers.DataManager;
 
 public abstract class Condition extends Element {
 

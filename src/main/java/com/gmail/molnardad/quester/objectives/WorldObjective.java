@@ -5,12 +5,12 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.managers.DataManager;
 
 @QElement("WORLD")
 public final class WorldObjective extends Objective {

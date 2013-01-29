@@ -1,4 +1,4 @@
-package com.gmail.molnardad.quester;
+package com.gmail.molnardad.quester.managers;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +15,11 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.molnardad.quester.PlayerProfile;
+import com.gmail.molnardad.quester.Quest;
+import com.gmail.molnardad.quester.QuestFlag;
+import com.gmail.molnardad.quester.QuestHolder;
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.Qevent;

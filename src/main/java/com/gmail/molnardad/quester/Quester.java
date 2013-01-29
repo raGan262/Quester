@@ -20,6 +20,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
 import com.gmail.molnardad.quester.listeners.*;
+import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.ElementManager;
+import com.gmail.molnardad.quester.managers.LanguageManager;
+import com.gmail.molnardad.quester.managers.CommandManager;
+import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QPermissionException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QUsageException;
@@ -48,7 +53,7 @@ public class Quester extends JavaPlugin {
 		private LanguageManager langMan = null;
 		private QuestManager questMan = null;
 		private ElementManager elements = null;
-		private QCommandManager commands = null;
+		private CommandManager commands = null;
 		
 		private boolean loaded = false;
 		private int saveID = 0;
@@ -112,7 +117,7 @@ public class Quester extends JavaPlugin {
 			
 			this.setupListeners();
 			
-			commands = new QCommandManager(this);
+			commands = new CommandManager(this);
 			
 			commands.register(UserCommands.class);
 			commands.register(AdminCommands.class);
@@ -175,7 +180,7 @@ public class Quester extends JavaPlugin {
 			return false;
 		}
 		
-		public QCommandManager getCommandManager() {
+		public CommandManager getCommandManager() {
 			return commands;
 		}
 		

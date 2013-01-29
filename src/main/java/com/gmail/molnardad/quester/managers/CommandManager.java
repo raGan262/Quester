@@ -1,4 +1,4 @@
-package com.gmail.molnardad.quester;
+package com.gmail.molnardad.quester.managers;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import org.bukkit.command.CommandSender;
 
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.QCommandLabels;
@@ -20,7 +21,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QUsageException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.utils.Util;
 
-public class QCommandManager {
+public class CommandManager {
 
 	Logger logger = null;
 	Quester plugin = null;
@@ -30,7 +31,7 @@ public class QCommandManager {
 	private Map<Method, Object> instances = new HashMap<Method, Object>();
 	private Map<Method, QCommand> annotations = new HashMap<Method, QCommand>();
 	
-	public QCommandManager(Quester plugin) {
+	public CommandManager(Quester plugin) {
 		this.logger = Quester.log;
 		this.plugin = plugin;
 	}

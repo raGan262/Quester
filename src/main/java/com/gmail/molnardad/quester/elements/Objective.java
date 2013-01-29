@@ -8,8 +8,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.DataManager;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.managers.DataManager;
 import com.gmail.molnardad.quester.objectives.ActionObjective;
 import com.gmail.molnardad.quester.objectives.BossObjective;
 import com.gmail.molnardad.quester.objectives.BreakObjective;

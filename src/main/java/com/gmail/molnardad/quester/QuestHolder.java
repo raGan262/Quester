@@ -11,6 +11,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.exceptions.HolderException;
+import com.gmail.molnardad.quester.managers.LanguageManager;
+import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestHolder {

@@ -4,12 +4,12 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.PlayerProfile;
-import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
+import com.gmail.molnardad.quester.managers.QuestManager;
 
 @QElement("POINT")
 public final class PointQevent extends Qevent {

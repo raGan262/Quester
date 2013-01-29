@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.bukkit.configuration.ConfigurationSection;
 
+import com.gmail.molnardad.quester.managers.DataManager;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class PlayerProfile {
