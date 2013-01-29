@@ -77,7 +77,6 @@ public class Quester extends JavaPlugin {
 			QuestManager.setInstance(new QuestManager(this));
 			
 			elements = new ElementManager();
-			ElementManager.setInstance(elements);
 			
 			registerElements();
 			
@@ -178,6 +177,10 @@ public class Quester extends JavaPlugin {
 		
 		public QCommandManager getCommandManager() {
 			return commands;
+		}
+		
+		public ElementManager getElementManager() {
+			return elements;
 		}
 		
 		private boolean setupEconomy() {

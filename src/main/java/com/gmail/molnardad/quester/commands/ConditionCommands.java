@@ -19,9 +19,11 @@ import com.gmail.molnardad.quester.strings.QuesterStrings;
 public class ConditionCommands {
 	
 	QuestManager qMan = null;
+	ElementManager eMan = null;
 	
 	public ConditionCommands(Quester plugin) {
 		qMan = QuestManager.getInstance();
+		eMan = plugin.getElementManager();
 	}
 	
 	@QCommandLabels({"add", "a"})
@@ -30,7 +32,6 @@ public class ConditionCommands {
 			min = 1,
 			usage = "<condition type> [args]")
 	public void add(QCommandContext context, CommandSender sender) throws QCommandException, QuesterException {
-		ElementManager eMan = ElementManager.getInstance();
 		QuesterStrings lang = context.getSenderLang();
 		String type = context.getString(0);
 		if(!eMan.isCondition(type)) {
@@ -71,6 +72,6 @@ public class ConditionCommands {
 			desc = "condition list")
 	public void list(QCommandContext context, CommandSender sender) throws QuesterException {
 		sender.sendMessage(ChatColor.RED + context.getSenderLang().CON_LIST + ": "
-				+ ChatColor.WHITE + ElementManager.getInstance().getConditionList());
+				+ ChatColor.WHITE + eMan.getConditionList());
 	}
 }

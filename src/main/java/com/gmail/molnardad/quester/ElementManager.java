@@ -16,18 +16,6 @@ import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class ElementManager {
-
-	// static part
-	
-	private static ElementManager instance = null;
-	
-	protected static void setInstance(ElementManager elementManager) {
-		instance = elementManager;
-	}
-	
-	public static ElementManager getInstance() {
-		return instance;
-	}
 	
 	final class ElementInfo<E> {
 		private Class<? extends E> clss;

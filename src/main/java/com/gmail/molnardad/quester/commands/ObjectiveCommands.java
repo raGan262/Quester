@@ -19,9 +19,11 @@ import com.gmail.molnardad.quester.strings.QuesterStrings;
 public class ObjectiveCommands {
 	
 	QuestManager qMan = null;
+	ElementManager eMan = null;
 	
 	public ObjectiveCommands(Quester plugin) {
 		qMan = QuestManager.getInstance();
+		eMan = plugin.getElementManager();
 	}
 	
 	@QCommandLabels({"add", "a"})
@@ -30,7 +32,6 @@ public class ObjectiveCommands {
 			min = 1,
 			usage = "<objective type> [args]")
 	public void add(QCommandContext context, CommandSender sender) throws QCommandException, QuesterException {
-		ElementManager eMan = ElementManager.getInstance();
 		QuesterStrings lang = context.getSenderLang();
 		String type = context.getString(0);
 		if(!eMan.isObjective(type)) {
@@ -64,7 +65,7 @@ public class ObjectiveCommands {
 			desc = "objective list")
 	public void list(QCommandContext context, CommandSender sender) throws QuesterException {
 		sender.sendMessage(ChatColor.RED + context.getSenderLang().OBJ_LIST + ": "
-				+ ChatColor.WHITE + ElementManager.getInstance().getObjectiveList());	
+				+ ChatColor.WHITE + eMan.getObjectiveList());	
 	}
 	
 	@QCommandLabels({"swap"})

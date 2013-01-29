@@ -18,9 +18,11 @@ import com.gmail.molnardad.quester.strings.QuesterStrings;
 public class QeventCommands {
 	
 	QuestManager qMan = null;
+	ElementManager eMan = null;
 	
 	public QeventCommands(Quester plugin) {
 		qMan = QuestManager.getInstance();
+		eMan = plugin.getElementManager();
 	}
 	
 	@QCommandLabels({"add", "a"})
@@ -29,7 +31,6 @@ public class QeventCommands {
 			min = 1,
 			usage = "<event type> [args]")
 	public void add(QCommandContext context, CommandSender sender) throws QCommandException, QuesterException {
-		ElementManager eMan = ElementManager.getInstance();
 		QuesterStrings lang = context.getSenderLang();
 		String type = context.getString(0);
 		if(!eMan.isEvent(type)) {
@@ -63,6 +64,6 @@ public class QeventCommands {
 			desc = "event list")
 	public void list(QCommandContext context, CommandSender sender) throws QuesterException {
 		sender.sendMessage(ChatColor.RED + context.getSenderLang().EVT_LIST + ": "
-				+ ChatColor.WHITE + ElementManager.getInstance().getEventList());
+				+ ChatColor.WHITE + eMan.getEventList());
 	}
 }
