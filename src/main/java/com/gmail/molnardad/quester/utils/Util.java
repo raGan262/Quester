@@ -26,7 +26,6 @@ import org.bukkit.util.Vector;
 
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.managers.DataManager;
-import com.gmail.molnardad.quester.managers.LanguageManager;
 import com.gmail.molnardad.quester.strings.QuesterStrings;
 
 public class Util {
@@ -53,27 +52,26 @@ public class Util {
 	}
 	
 	public static Location getLoc(CommandSender sender, String arg) throws IllegalArgumentException {
-		return getLoc(sender, arg, LanguageManager.getInstance().getDefaultLang());
+		return getLoc(sender, arg, new QuesterStrings());
 	}
 	
 	public static Location getLoc(CommandSender sender, String arg, QuesterStrings lang) throws IllegalArgumentException {
-		DataManager data = DataManager.getInstance();
 		
 		String args[] = arg.split(";");
 		Location loc;
 		if(args.length < 1)
 			throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_INVALID);
 		
-		if(args[0].equalsIgnoreCase(data.locLabelHere)) {
+		if(args[0].equalsIgnoreCase(DataManager.locLabelHere)) {
 			if(sender instanceof Player) {
 				return ((Player) sender).getLocation();
 			}
 			else {
 				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_HERE
-						.replaceAll("%here", data.locLabelHere));
+						.replaceAll("%here", DataManager.locLabelHere));
 			}
 		}
-		else if(args[0].equalsIgnoreCase(data.locLabelBlock)) {
+		else if(args[0].equalsIgnoreCase(DataManager.locLabelBlock)) {
 			if(sender instanceof Player) {
 				Block block = ((Player) sender).getTargetBlock(null, 5);
 				if(block == null) {
@@ -83,10 +81,10 @@ public class Util {
 			}
 			else {
 				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_BLOCK
-						.replaceAll("%block", data.locLabelBlock));
+						.replaceAll("%block", DataManager.locLabelBlock));
 			}
 		}
-		else if(args[0].equalsIgnoreCase(data.locLabelPlayer)) {
+		else if(args[0].equalsIgnoreCase(DataManager.locLabelPlayer)) {
 			return null;
 		}
 		
@@ -102,7 +100,7 @@ public class Util {
 			if(y < 0) {
 				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_COORDS_INVALID);
 			}
-			if(sender instanceof Player && args[3].equalsIgnoreCase(data.worldLabelThis)) {
+			if(sender instanceof Player && args[3].equalsIgnoreCase(DataManager.worldLabelThis)) {
 				loc = new Location(((Player)sender).getWorld(), x, y, z);
 			} else {
 				World world = Bukkit.getServer().getWorld(args[3]);
@@ -189,7 +187,10 @@ public class Util {
 	}
 	
 	public static Map<Integer, Integer> parseEnchants(String arg) throws IllegalArgumentException {
-		QuesterStrings lang = LanguageManager.getInstance().getDefaultLang();
+		return parseEnchants(arg, new QuesterStrings());
+	}
+	
+	public static Map<Integer, Integer> parseEnchants(String arg, QuesterStrings lang) throws IllegalArgumentException {
 		
 		Map<Integer, Integer> enchs = new HashMap<Integer, Integer>();
 		String[] args = arg.split(",");
@@ -232,7 +233,7 @@ public class Util {
 	}
 	
 	public static int[] parseItem(String arg) throws IllegalArgumentException {
-		return parseItem(arg, LanguageManager.getInstance().getDefaultLang());
+		return parseItem(arg, new QuesterStrings());
 	}
 	
 	public static int[] parseItem(String arg, QuesterStrings lang) throws IllegalArgumentException {
@@ -292,7 +293,7 @@ public class Util {
 	}
 	
 	public static PotionEffect parseEffect(String arg) throws IllegalArgumentException {
-		return parseEffect(arg, LanguageManager.getInstance().getDefaultLang());
+		return parseEffect(arg, new QuesterStrings());
 	}
 	
 	public static PotionEffect parseEffect(String arg, QuesterStrings lang) throws IllegalArgumentException {
@@ -401,7 +402,7 @@ public class Util {
 	}
 	
 	public static EntityType parseEntity(String arg) throws IllegalArgumentException {
-		return parseEntity(arg, LanguageManager.getInstance().getDefaultLang());
+		return parseEntity(arg, new QuesterStrings());
 	}
 	
 	public static EntityType parseEntity(String arg, QuesterStrings lang) throws IllegalArgumentException {
@@ -560,7 +561,7 @@ public class Util {
 				pitch = Float.parseFloat(split[5]);
 			loc = new Location(world, x, y, z, yaw, pitch);
 		} catch (Exception e) {
-			if(DataManager.getInstance().debug)
+			if(DataManager.debug)
 				Quester.log.severe("Error when deserializing location.");
 		}
 		

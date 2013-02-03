@@ -14,7 +14,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.Qevent;
-import com.gmail.molnardad.quester.managers.DataManager;
 import com.gmail.molnardad.quester.utils.Util;
 import com.gmail.molnardad.quester.QuestFlag;
 
@@ -275,7 +274,6 @@ public class Quest {
 	@SuppressWarnings("unchecked")
 	public static Quest deserialize(ConfigurationSection section) {
 		Quest quest;
-		DataManager data = DataManager.getInstance();
 		try {
 			String name;
 			if(section.isString("name")) {
@@ -317,8 +315,6 @@ public class Quest {
 				}
 			}
 
-			if(data.debug)
-				Quester.log.info("Deserializing objectives.");
 			Objective obj = null;
 			if(section.isConfigurationSection("objectives")) {
 				ConfigurationSection subsection = section.getConfigurationSection("objectives");
@@ -327,15 +323,11 @@ public class Quest {
 					obj = Objective.deserialize(subsection.getConfigurationSection(String.valueOf(i)));
 					if(obj != null) {
 						quest.addObjective(obj);
-						if(data.debug)
-							Quester.log.info("Objective " + i + " OK.");
 					} else
 						Quester.log.severe("Error occured when deserializing objective ID " + i + " in quest '" + quest.getName() + "'.");
 				}
 			}
 
-			if(data.debug)
-				Quester.log.info("Deserializing conditions.");
 			Condition con = null;
 			if(section.isConfigurationSection("conditions")) {
 				ConfigurationSection subsection = section.getConfigurationSection("conditions");
@@ -344,15 +336,11 @@ public class Quest {
 					//con = Condition.deserialize(subsection.getConfigurationSection(String.valueOf(i)));
 					if(con != null) {
 						quest.addCondition(con);
-						if(data.debug)
-							Quester.log.info("Condition " + i + " OK.");
 					} else
 						Quester.log.severe("Error occured when deserializing condition ID " + i + " in quest '" + quest.getName() + "'.");
 				}
 			}
 
-			if(data.debug)
-				Quester.log.info("Deserializing events.");
 			Qevent qvt = null;
 			if(section.isConfigurationSection("events")) {
 				ConfigurationSection subsection = section.getConfigurationSection("events");
@@ -361,8 +349,6 @@ public class Quest {
 					qvt = Qevent.deserialize(subsection.getConfigurationSection(String.valueOf(i)));
 					if(qvt != null) {
 						quest.addQevent(qvt);
-						if(data.debug)
-							Quester.log.info("Event " + i + " OK.");
 					} else
 						Quester.log.severe("Error occured when deserializing event ID:" + i + " in quest '" + quest.getName() + "'.");
 				}

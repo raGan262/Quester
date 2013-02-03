@@ -20,11 +20,9 @@ import com.gmail.molnardad.quester.objectives.BreakObjective;
 public class BreakListener implements Listener {
 
 	private QuestManager qm;
-	private DataManager qData;
 	
 	public BreakListener(Quester plugin) {
 		this.qm = plugin.getQuestManager();
-		this.qData = DataManager.getInstance();
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -54,7 +52,7 @@ public class BreakListener implements Listener {
 	    			if(passed && obj.checkHand(player.getItemInHand().getTypeId())) {
 	    				// if DATA >= 0 compare
 	    				if(obj.getData() < 0 || obj.getData() == block.getData()) {
-	    					if(qData.brkNoDrops) {
+	    					if(DataManager.brkNoDrops) {
 	    						block.setType(Material.AIR);
 	    					}
 	    					qm.incProgress(player, i);

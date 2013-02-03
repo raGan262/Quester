@@ -24,6 +24,8 @@ import com.gmail.molnardad.quester.managers.DataManager;
 import com.gmail.molnardad.quester.managers.ElementManager;
 import com.gmail.molnardad.quester.managers.LanguageManager;
 import com.gmail.molnardad.quester.managers.CommandManager;
+import com.gmail.molnardad.quester.managers.ProfileManager;
+import com.gmail.molnardad.quester.managers.QuestHolderManager;
 import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QPermissionException;
@@ -49,9 +51,10 @@ public class Quester extends JavaPlugin {
 		public HolderConfig holderConfig = null;
 		public YamlConfiguration config = null;
 		
-		private DataManager data = null;
-		private LanguageManager langMan = null;
-		private QuestManager questMan = null;
+		private LanguageManager langs = null;
+		private QuestManager quests = null;
+		private ProfileManager profiles = null;
+		private QuestHolderManager holders = null;
 		private ElementManager elements = null;
 		private CommandManager commands = null;
 		
@@ -72,27 +75,25 @@ public class Quester extends JavaPlugin {
 			
 			log = this.getLogger();
 			//Data first
-			data = new DataManager(this);
-			DataManager.setInstance(data);
 			this.initializeConfig();
 			//Load languages
-			langMan = new LanguageManager(this);
-			LanguageManager.setInstance(langMan);
+			langs = new LanguageManager(this);
 			this.loadLocal();
 			
-			questMan = new QuestManager(this);
+			quests = new QuestManager(this);
 			
 			elements = new ElementManager();
 			
 			registerElements();
 			
+			holders = new QuestHolderManager(this);
+			
 			//Load configs TODO load after all other plugins
 			profileConfig = new ProfileConfig(this, "profiles.yml");
 			questConfig = new QuestConfig(this, "quests.yml");
 			holderConfig = new HolderConfig(this, "holders.yml");
-			data.loadQuests();
-			data.loadProfiles();
-			data.loadHolders();	
+			
+			// TODO LOADING
 			
 			try {
 			    Metrics metrics = new Metrics(this);
@@ -131,10 +132,8 @@ public class Quester extends JavaPlugin {
 		public void onDisable() {
 			if(loaded) {
 				stopSaving();
-				data.saveQuests();
-				data.saveProfiles();
-				data.saveHolders();
-				if(data.verbose) {
+				// TODO SAVING
+				if(DataManager.verbose) {
 					log.info("Quester data saved.");
 				}
 			}
@@ -144,8 +143,6 @@ public class Quester extends JavaPlugin {
 			epicboss = false;
 			vault = false;
 			denizen = false;
-			LanguageManager.setInstance(null);
-			DataManager.setInstance(null);
 		}
 		
 		@Override
@@ -162,11 +159,11 @@ public class Quester extends JavaPlugin {
 				catch (QCommandException e) {
 					if(e instanceof QUsageException) {
 						sender.sendMessage(ChatColor.RED + e.getMessage());
-						sender.sendMessage(ChatColor.RED + langMan.getPlayerLang(sender.getName()).USAGE_LABEL
+						sender.sendMessage(ChatColor.RED + langs.getPlayerLang(sender.getName()).USAGE_LABEL
 								+ ((QUsageException) e).getUsage());
 					}
 					else if(e instanceof QPermissionException) {
-						sender.sendMessage(ChatColor.RED + langMan.getDefaultLang().MSG_PERMS);
+						sender.sendMessage(ChatColor.RED + langs.getDefaultLang().MSG_PERMS);
 					}
 					else {
 						sender.sendMessage(ChatColor.RED + e.getMessage());
@@ -189,7 +186,19 @@ public class Quester extends JavaPlugin {
 		}
 		
 		public QuestManager getQuestManager() {
-			return questMan;
+			return quests;
+		}
+		
+		public ProfileManager getProfileManager() {
+			return profiles;
+		}
+		
+		public LanguageManager getLanguageManager() {
+			return langs;
+		}
+		
+		public QuestHolderManager getHolderManager() {
+			return holders;
 		}
 		
 		private boolean setupEconomy() {
@@ -246,23 +255,23 @@ public class Quester extends JavaPlugin {
 
 		public void initializeConfig() {
 			config = (new BaseConfig(this, "config.yml")).getConfig();
-			if(data.verbose) {
+			if(DataManager.verbose) {
 				log.info("Config loaded.");
-				log.info(data.ranks.size() + " ranks loaded.");
+				log.info(profiles.getRanks().size() + " ranks loaded.");
 			}
 		}
 		
 		private void loadLocal() {
-			if(langMan == null) {
+			if(langs == null) {
 				log.info("Failed to load languages: LanguageManager null");
 			}
-			langMan.loadLang("english", "langEN");
+			langs.loadLang("english", "langEN");
 			int i = 1;
 			if(config.isConfigurationSection("languges")) {
 				ConfigurationSection langSection = config.getConfigurationSection("languages");
 				for(String key : langSection.getKeys(false)) {
 					if(langSection.isString(key)) {
-						langMan.loadLang(key, langSection.getString(key));
+						langs.loadLang(key, langSection.getString(key));
 						i++;
 					}
 				}
@@ -271,12 +280,12 @@ public class Quester extends JavaPlugin {
 		}
 		
 		public void reloadLocal() {
-			if(langMan == null) {
+			if(langs == null) {
 				log.info("Failed to reload languages: LanguageManager null");
 			}
 			int i = 0;
-			for(String lang : langMan.getLangSet()) {
-				langMan.reloadLang(lang);
+			for(String lang : langs.getLangSet()) {
+				langs.reloadLang(lang);
 				i++;
 			}
 			log.info("Languages reloaded. (" + i + ")");
@@ -379,14 +388,14 @@ public class Quester extends JavaPlugin {
 		
 		public boolean startSaving() {
 			if(saveID == 0) {
-				if(data.saveInterval > 0) {
+				if(DataManager.saveInterval > 0) {
 					saveID = getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 						
 						@Override
 						public void run() {
-							data.saveProfiles();
+							profiles.saveProfiles();
 						}
-					}, data.saveInterval * 20L * 60L, data.saveInterval * 20L * 60L);
+					}, DataManager.saveInterval * 20L * 60L, DataManager.saveInterval * 20L * 60L);
 				}
 				return true;
 			}

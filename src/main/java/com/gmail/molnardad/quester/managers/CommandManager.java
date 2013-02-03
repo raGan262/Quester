@@ -25,6 +25,7 @@ public class CommandManager {
 
 	Logger logger = null;
 	Quester plugin = null;
+	LanguageManager langMan = null;
 	
 	private Map<Method, Map<String, Method>> labels = new HashMap<Method, Map<String, Method>>();
 	private Map<Method, Map<String, Method>> aliases = new HashMap<Method, Map<String, Method>>();
@@ -34,6 +35,7 @@ public class CommandManager {
 	public CommandManager(Quester plugin) {
 		this.logger = Quester.log;
 		this.plugin = plugin;
+		this.langMan = plugin.getLanguageManager();
 	}
 	
 	public void register(Class<?> clss) {
@@ -126,7 +128,7 @@ public class CommandManager {
 			System.arraycopy(args, 0, parentArgs, 0, level+1);
 			System.arraycopy(args, level+1, realArgs, 0, args.length - level - 1);
 			
-			QCommandContext context = new QCommandContext(realArgs, parentArgs, sender, this);
+			QCommandContext context = new QCommandContext(realArgs, parentArgs, sender, this, langMan.getPlayerLang(sender.getName()));
 			
 			if(context.length() < cmd.min()) {
 				throw new QUsageException("Not enough argmunents.", getUsage(args, level, method));
@@ -164,7 +166,7 @@ public class CommandManager {
 		}
 		if(ex != null) {
 			logger.warning("Failed to execute command.");
-			if(DataManager.getInstance().debug) {
+			if(DataManager.debug) {
 				ex.printStackTrace();
 			}
 		}
@@ -174,7 +176,7 @@ public class CommandManager {
 		
 		StringBuilder usage = new StringBuilder();
 		
-		usage.append(DataManager.getInstance().displayedCmd);
+		usage.append(DataManager.displayedCmd);
 		
 		if(method != null) {
 			for(int i = 0; i <= level; i++) {
@@ -208,7 +210,7 @@ public class CommandManager {
 	
 	public String getUsage(String[] args) {
 		StringBuilder usage = new StringBuilder();
-		usage.append(DataManager.getInstance().displayedCmd);
+		usage.append(DataManager.displayedCmd);
 		
 		Method method = null;
 		Method oldMethod = null;
@@ -268,7 +270,7 @@ public class CommandManager {
 			ex = e;
 		}
 		if(ex != null) {
-			if(DataManager.getInstance().debug) {
+			if(DataManager.debug) {
 				logger.info("Instantiating class '" + clss.getCanonicalName() + " failed.");
 				ex.printStackTrace();
 			}

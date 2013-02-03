@@ -33,7 +33,7 @@ public class LocationCommands {
 		if(range < 1) {
 			throw new NumberFormatException();
 		}
-		qMan.setQuestLocation(sender.getName(), getLoc(sender, context.getString(1)), range);
+		qMan.setQuestLocation(sender.getName(), getLoc(sender, context.getString(1)), range, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_LOC_SET);
 		}
 		catch (NumberFormatException e) {
@@ -49,7 +49,7 @@ public class LocationCommands {
 			desc = "removes quest location",
 			max = 0)
 	public void remove(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.removeQuestLocation(sender.getName());
+		qMan.removeQuestLocation(sender.getName(), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_LOC_REMOVED);
 	}
 }

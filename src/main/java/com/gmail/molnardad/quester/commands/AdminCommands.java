@@ -8,13 +8,16 @@ import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.ProfileManager;
 
 public class AdminCommands {
 
 	private Quester plugin = null;
+	private ProfileManager profMan = null;
 	
 	public AdminCommands(Quester plugin) {
 		this.plugin = plugin;
+		this.profMan = plugin.getProfileManager();
 	}
 	
 	@QCommandLabels({"save"})
@@ -23,7 +26,7 @@ public class AdminCommands {
 			max = 0,
 			permission = DataManager.PERM_ADMIN)
 	public void save(QCommandContext context, CommandSender sender) {
-		DataManager.getInstance().saveProfiles();
+		profMan.saveProfiles();
 		sender.sendMessage(context.getSenderLang().MSG_PROFILES_SAVE);
 	}
 	
@@ -33,13 +36,13 @@ public class AdminCommands {
 			max = 0,
 			permission = DataManager.PERM_ADMIN)
 	public void startsave(QCommandContext context, CommandSender sender) {
-		if(DataManager.getInstance().saveInterval == 0) {
+		if(DataManager.saveInterval == 0) {
 			sender.sendMessage(ChatColor.RED + context.getSenderLang().MSG_AUTOSAVE_DISABLED);
 			return;
 		}
 		if(plugin.startSaving()) {
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().MSG_AUTOSAVE_STARTED
-					.replaceAll("%interval", String.valueOf(DataManager.getInstance().saveInterval)));
+					.replaceAll("%interval", String.valueOf(DataManager.saveInterval)));
 		} else {
 			sender.sendMessage(ChatColor.RED + context.getSenderLang().MSG_AUTOSAVE_RUNNING);
 		}
@@ -51,7 +54,7 @@ public class AdminCommands {
 			max = 0,
 			permission = DataManager.PERM_ADMIN)
 	public void stopsave(QCommandContext context, CommandSender sender) {
-		if(DataManager.getInstance().saveInterval == 0) {
+		if(DataManager.saveInterval == 0) {
 			sender.sendMessage(ChatColor.RED + context.getSenderLang().MSG_AUTOSAVE_DISABLED);
 			return;
 		}

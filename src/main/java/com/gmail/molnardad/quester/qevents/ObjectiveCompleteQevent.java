@@ -13,7 +13,6 @@ import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.ObjectiveException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
-import com.gmail.molnardad.quester.managers.QuestManager;
 
 @QElement("OBJCOM")
 public final class ObjectiveCompleteQevent extends Qevent {
@@ -32,10 +31,9 @@ public final class ObjectiveCompleteQevent extends Qevent {
 	@Override
 	protected void run(Player player, Quester plugin) {
 		try {
-			QuestManager qMan = plugin.getQuestManager();
-			List<Integer> prog = qMan.getProfile(player.getName()).getProgress();
+			List<Integer> prog = plugin.getProfileManager().getProfile(player.getName()).getProgress();
 			if(objective >= 0 && objective < prog.size()) {
-				int req = qMan.getPlayerQuest(player.getName()).getObjective(objective).getTargetAmount();
+				int req = plugin.getQuestManager().getPlayerQuest(player.getName()).getObjective(objective).getTargetAmount();
 				prog.set(objective, req);
 			} else {
 				throw new ObjectiveException("Objective index out of bounds."); // objective does not exist

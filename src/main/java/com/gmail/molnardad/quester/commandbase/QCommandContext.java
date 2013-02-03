@@ -9,7 +9,6 @@ import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.managers.LanguageManager;
 import com.gmail.molnardad.quester.managers.CommandManager;
 import com.gmail.molnardad.quester.strings.QuesterStrings;
 import com.google.common.collect.Lists;
@@ -33,11 +32,11 @@ public class QCommandContext {
 		this.lang = lang;
 	}
 	
-	public QCommandContext(String[] args, String[] parentArgs, CommandSender sender, CommandManager cMan) {
+	public QCommandContext(String[] args, String[] parentArgs, CommandSender sender, CommandManager cMan, QuesterStrings lang) {
 		this.sender = sender;
 		this.parentArgs = parentArgs;
 		this.comMan = cMan;
-		this.lang = LanguageManager.getInstance().getPlayerLang(sender.getName());
+		this.lang = lang;
 		this.flags = new HashSet<Character>();
 		
 		int i = 1;

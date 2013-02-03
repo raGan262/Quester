@@ -21,6 +21,8 @@ import com.gmail.molnardad.quester.exceptions.HolderException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.managers.DataManager;
 import com.gmail.molnardad.quester.managers.LanguageManager;
+import com.gmail.molnardad.quester.managers.ProfileManager;
+import com.gmail.molnardad.quester.managers.QuestHolderManager;
 import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.NpcKillObjective;
 import com.gmail.molnardad.quester.objectives.NpcObjective;
@@ -29,19 +31,24 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public class Citizens2Listener implements Listener {
 	
-	private QuestManager qm;
-	private QuesterStrings lang;
+	private QuestManager qm = null;
+	private QuestHolderManager holMan = null;
+	private LanguageManager langMan = null;
+	private ProfileManager profMan = null;
 	
 	public Citizens2Listener(Quester plugin) {
 		this.qm = plugin.getQuestManager();
-		this.lang = LanguageManager.getInstance().getDefaultLang();
+		this.langMan = plugin.getLanguageManager();
+		this.holMan = plugin.getHolderManager();
+		this.profMan = plugin.getProfileManager();
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onLeftClick(NPCLeftClickEvent event) {
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
-			QuestHolder qh = qm.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
+			QuestHolder qh = holMan.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
 			Player player = event.getClicker();
+			QuesterStrings lang = langMan.getPlayerLang(player.getName());
 			if(!Util.permCheck(player, DataManager.PERM_USE_NPC, true, lang)) {
 				return;
 			}
@@ -62,7 +69,7 @@ public class Citizens2Listener implements Listener {
 				player.sendMessage(ChatColor.RED + lang.ERROR_HOL_INTERACT);
 			}
 			try {
-				qh.selectNext();
+				qh.selectNext(lang);
 			} catch (HolderException e) {
 				player.sendMessage(e.getMessage());
 				if(!isOp) {
@@ -83,8 +90,9 @@ public class Citizens2Listener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onRightClick(NPCRightClickEvent event) {
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
-			QuestHolder qh = qm.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
+			QuestHolder qh = holMan.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
 			Player player = event.getClicker();
+			QuesterStrings lang = langMan.getPlayerLang(player.getName());
 			if(!Util.permCheck(player, DataManager.PERM_USE_NPC, true, lang)) {
 				return;
 			}
@@ -92,7 +100,7 @@ public class Citizens2Listener implements Listener {
 			// If player has perms and holds blaze rod
 			if(isOP) {
 				if(player.getItemInHand().getTypeId() == 369) {
-					int sel = qm.getSelectedHolderID(player.getName());
+					int sel = profMan.getProfile(player.getName()).getHolderID();
 					if(sel < 0){
 						player.sendMessage(ChatColor.RED + lang.ERROR_HOL_NOT_SELECTED);
 					} else {
@@ -120,10 +128,10 @@ public class Citizens2Listener implements Listener {
 				// player has quest and quest giver accepts this quest
 				if(questID >= 0 && qsts.contains(questID)) {
 					try {
-						qm.complete(player, false);
+						qm.complete(player, false, lang);
 					} catch (QuesterException e) {
 						try {
-							qm.showProgress(player);
+							qm.showProgress(player, lang);
 						} catch (QuesterException f) {
 							player.sendMessage(ChatColor.DARK_PURPLE + lang.ERROR_INTERESTING);
 						}
@@ -134,7 +142,7 @@ public class Citizens2Listener implements Listener {
 			// player doesn't have quest
 			if(qm.isQuestActive(selected)) {
 				try {
-					qm.startQuest(player, qm.getQuestNameByID(selected), false);
+					qm.startQuest(player, qm.getQuestName(selected), false, lang);
 				} catch (QuesterException e) {
 					player.sendMessage(e.getMessage());
 				}

@@ -20,11 +20,9 @@ import com.gmail.molnardad.quester.objectives.PlaceObjective;
 public class PlaceListener implements Listener {
 
 	private QuestManager qm;
-	private DataManager qData;
 	
 	public PlaceListener(Quester plugin) {
 		this.qm = plugin.getQuestManager();
-		this.qData = DataManager.getInstance();
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -36,7 +34,7 @@ public class PlaceListener implements Listener {
 	    		return;
 	    	List<Objective> objs = quest.getObjectives();
 			Block block = event.getBlock();
-	    	if(qData.brkSubOnPlace) {
+	    	if(DataManager.brkSubOnPlace) {
 		    	for(int i = 0; i < objs.size(); i++) {
 		    		// check if Objective is type BREAK
 		    		if(objs.get(i).getType().equalsIgnoreCase("BREAK")) {

@@ -44,7 +44,7 @@ public class ConditionCommands {
 		if(con == null) {
 			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
 		}
-		qMan.addQuestCondition(sender.getName(), con);
+		qMan.addQuestCondition(sender.getName(), con, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + lang.CON_ADD.replaceAll("%type", type.toUpperCase()));
 	}
 	
@@ -55,7 +55,7 @@ public class ConditionCommands {
 			max = 1,
 			usage = "<condition ID>")
 	public void remove(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.removeQuestCondition(sender.getName(), context.getInt(0));
+		qMan.removeQuestCondition(sender.getName(), context.getInt(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().CON_REMOVE.replaceAll("%id", context.getString(0)));
 	}
 	

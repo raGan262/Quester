@@ -10,21 +10,11 @@ import com.gmail.molnardad.quester.strings.QuesterStrings;
 
 public class LanguageManager {
 	
-	private static LanguageManager instance = null;
-	
 	private Quester plugin;
 	private Map<String, LanguageConfig> languages = new HashMap<String, LanguageConfig>();
 
 	public LanguageManager(Quester plugin) {
 		this.plugin = plugin;
-	}
-	
-	public static void setInstance(LanguageManager languageManager) {
-		instance = languageManager;
-	}
-	
-	public static LanguageManager getInstance() {
-		return instance;
 	}
 	
 	public boolean hasLang(String name) {

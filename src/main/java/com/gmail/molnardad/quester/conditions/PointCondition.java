@@ -26,7 +26,7 @@ public final class PointCondition extends Condition {
 	
 	@Override
 	public boolean isMet(Player player, Quester plugin) {
-		return plugin.getQuestManager().getProfile(player.getName()).getPoints() >= amount;
+		return plugin.getProfileManager().getProfile(player.getName()).getPoints() >= amount;
 	}
 	
 	@Override

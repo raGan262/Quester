@@ -29,7 +29,7 @@ public class ObjectivePrereqCommands {
 			usage = "<objective ID> <prerequisite1>...")
 	public void add(QCommandContext context, CommandSender sender) throws QuesterException {
 		Set<Integer> prereq = parsePrerequisites(context.getArgs(), 1);
-		qMan.addObjectivePrerequisites(sender.getName(), context.getInt(0), prereq);
+		qMan.addObjectivePrerequisites(sender.getName(), context.getInt(0), prereq, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().OBJ_PREREQ_ADD
 				.replaceAll("%id", context.getString(0)));
 	}
@@ -41,7 +41,7 @@ public class ObjectivePrereqCommands {
 			usage = "<objective ID> <prerequisite1>...")
 	public void remove(QCommandContext context, CommandSender sender) throws QuesterException {
 		Set<Integer> prereq = parsePrerequisites(context.getArgs(), 1);
-		qMan.removeObjectivePrerequisites(sender.getName(), context.getInt(0), prereq);
+		qMan.removeObjectivePrerequisites(sender.getName(), context.getInt(0), prereq, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().OBJ_PREREQ_REMOVE
 				.replaceAll("%id", context.getString(0)));
 	}

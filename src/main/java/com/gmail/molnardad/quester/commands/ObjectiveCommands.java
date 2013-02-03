@@ -44,7 +44,7 @@ public class ObjectiveCommands {
 		if(obj == null) {
 			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
 		}
-		qMan.addQuestObjective(sender.getName(), obj);
+		qMan.addQuestObjective(sender.getName(), obj, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + lang.OBJ_ADD.replaceAll("%type", type.toUpperCase()));
 	}
 	
@@ -55,7 +55,7 @@ public class ObjectiveCommands {
 			max = 1,
 			usage = "<objective ID>")
 	public void remove(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.removeQuestObjective(sender.getName(), context.getInt(0));
+		qMan.removeQuestObjective(sender.getName(), context.getInt(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().OBJ_REMOVE.replaceAll("%id", context.getString(0)));
 	}
 	
@@ -75,7 +75,7 @@ public class ObjectiveCommands {
 			desc = "swaps two objectives",
 			usage = "<obj ID 1> <obj ID 2>")
 	public void swap(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.swapQuestObjectives(sender.getName(), context.getInt(0), context.getInt(1));
+		qMan.swapQuestObjectives(sender.getName(), context.getInt(0), context.getInt(1), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().OBJ_SWAP
 				.replaceAll("%id1", context.getString(0)).replaceAll("%id2", context.getString(1)));
 	}
@@ -87,7 +87,7 @@ public class ObjectiveCommands {
 			desc = "moves an objective",
 			usage = "<ID from> <ID to>")
 	public void move(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.moveQuestObjective(sender.getName(), context.getInt(0), context.getInt(1));
+		qMan.moveQuestObjective(sender.getName(), context.getInt(0), context.getInt(1), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().OBJ_MOVE
 				.replaceAll("%id1", context.getString(0)).replaceAll("%id2", context.getString(1)));
 	}

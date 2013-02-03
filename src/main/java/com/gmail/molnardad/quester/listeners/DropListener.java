@@ -19,16 +19,14 @@ import com.gmail.molnardad.quester.objectives.CollectObjective;
 public class DropListener implements Listener {
 
 	private QuestManager qm;
-	private DataManager qData;
 	
 	public DropListener(Quester plugin) {
 		this.qm = plugin.getQuestManager();
-		this.qData = DataManager.getInstance();
 	}
 		
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onDrop(PlayerDropItemEvent event) {
-		if(qData.colSubOnDrop) {
+		if(DataManager.colSubOnDrop) {
 		    Player player = event.getPlayer();
 	    	Quest quest = qm.getPlayerQuest(player.getName());
 		    if(quest != null) {

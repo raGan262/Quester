@@ -23,8 +23,6 @@ public class ElementManager {
 		private Method method;
 		private QCommand command;
 	}
-	
-	// instance
 
 	private Map<String, ElementInfo<Condition>> conditions = new HashMap<String, ElementInfo<Condition>>();
 	private Map<String, ElementInfo<Objective>> objectives = new HashMap<String, ElementInfo<Objective>>();

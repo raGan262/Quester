@@ -42,7 +42,7 @@ public final class WorldObjective extends Objective {
 			usage = "{<world>}")
 	public static Objective fromCommand(QCommandContext context) throws QCommandException {
 		World world = null;
-		String label = DataManager.getInstance().worldLabelThis;
+		String label = DataManager.worldLabelThis;
 		if(context.getString(0).equalsIgnoreCase(label)) {
 			Player player = context.getPlayer();
 			if(player != null) {

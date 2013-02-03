@@ -9,7 +9,7 @@ import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
-import com.gmail.molnardad.quester.managers.QuestManager;
+import com.gmail.molnardad.quester.managers.ProfileManager;
 
 @QElement("POINT")
 public final class PointQevent extends Qevent {
@@ -27,10 +27,10 @@ public final class PointQevent extends Qevent {
 
 	@Override
 	protected void run(Player player, Quester plugin) {
-		QuestManager qMan = plugin.getQuestManager();
-		PlayerProfile prof = qMan.getProfile(player.getName());
+		ProfileManager profMan = plugin.getProfileManager();
+		PlayerProfile prof = profMan.getProfile(player.getName());
 		prof.addPoints(amount);
-		qMan.checkRank(prof);
+		profMan.checkRank(prof);
 	}
 
 	@QCommand(

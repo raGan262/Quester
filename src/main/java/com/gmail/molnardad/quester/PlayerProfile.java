@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.configuration.ConfigurationSection;
-
-import com.gmail.molnardad.quester.managers.DataManager;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class PlayerProfile {
@@ -242,125 +239,127 @@ public class PlayerProfile {
 		rank = newRank;
 	}
 	
-	public void serialize(ConfigurationSection section) {
-		
-		section.set("name", name);
-		
-		section.set("points", null);
-		if(points != 0) {
-			section.set("points", points);
-		}
-		
-		section.set("completed", null);
-		if(!completed.isEmpty()) {
-			ConfigurationSection subsection = section.createSection("completed");
-			for(String name : completed.keySet()) {
-				subsection.set(name, completed.get(name));
-			}
-		}
-		
-		section.set("active", null);
-		if(quest != null) {
-			int index = progresses.indexOf(quest);
-			if(index > -1) {
-				section.set("active", index);
-			}
-		}
-		
-		section.set("quests", null);
-		if(!progresses.isEmpty()) {
-			ConfigurationSection prgs = section.createSection("quests");
-			for(Progress prg : progresses) {
-				if(prg != null) {
-					prgs.set(prg.quest, Util.implodeInt(prg.progress.toArray(new Integer[0]), "|"));
-				}
-			}
-		}
-	}
+	// TODO STORAGE METHODS
 	
-	public static PlayerProfile deserialize(ConfigurationSection section) {
-		PlayerProfile prof = null;
-		DataManager data = DataManager.getInstance();
-		
-		if(section.isString("name")) {
-			prof = new PlayerProfile(section.getString("name"));
-		}
-		else {
-			if(data.debug) {
-				Quester.log.info("Profile name not found.");
-			}
-			return null;
-		}
-		
-		if(section.isInt("points")) {
-			prof.addPoints(section.getInt("points"));
-		}
-		
-		if(section.isList("completed")) {
-			List<String> l = section.getStringList("completed");
-			for(String s : l) {
-				prof.addCompleted(s);
-			}
-		}
-		else if(section.isConfigurationSection("completed")) {
-			ConfigurationSection subsection = section.getConfigurationSection("completed");
-			for(String key : subsection.getKeys(false)) {
-				prof.addCompleted(key, subsection.getInt(key, 0));
-			}
-		}
-		
-		if(section.isString("quest")) {
-			if(section.isString("progress")) {
-				try {
-					Progress prg = prof.new Progress(section.getString("quest"));
-					String[] strs = section.getString("progress", "").split("\\|");
-					for(String s : strs) {
-						prg.addToProgress(Integer.parseInt(s));
-					}
-					prof.addQuest(prg);
-					prof.setQuest(0);
-				} catch (Exception e) {
-					if(data.verbose) {
-						Quester.log.info("Invalid progress in profile.");
-					}
-				}
-			}
-			else {
-				if(data.verbose) {
-					Quester.log.info("Invalid or missing progress for quest '" + section.getString("quest", "non-existant") + "' in profile.");
-				}
-			}
-		}
-		
-		if(section.isConfigurationSection("quests")) {
-			ConfigurationSection subsection = section.getConfigurationSection("quests");
-			for(String key : subsection.getKeys(false)) {
-				if(subsection.isString(key)) {
-					try {
-						Progress prg = prof.new Progress(key);
-						String[] strs = subsection.getString(key).split("\\|");
-						if(strs.length != 1 || !strs[0].isEmpty()) {
-							for(String s : strs) {
-								prg.addToProgress(Integer.parseInt(s));
-							}
-						}		
-						prof.addQuest(prg);
-					} catch (Exception e) {
-						if(data.verbose) {
-							Quester.log.info("Invalid progress in profile.");
-						}
-					}
-				}
-				else {
-					if(data.verbose) {
-						Quester.log.info("Invalid or missing progress for quest '" + key + "' in profile.");
-					}
-				}
-			}
-		}
-		
-		prof.setQuest(section.getInt("active"));
-		
-		return prof;
-	}
+//	public void serialize(ConfigurationSection section) {
+//		
+//		section.set("name", name);
+//		
+//		section.set("points", null);
+//		if(points != 0) {
+//			section.set("points", points);
+//		}
+//		
+//		section.set("completed", null);
+//		if(!completed.isEmpty()) {
+//			ConfigurationSection subsection = section.createSection("completed");
+//			for(String name : completed.keySet()) {
+//				subsection.set(name, completed.get(name));
+//			}
+//		}
+//		
+//		section.set("active", null);
+//		if(quest != null) {
+//			int index = progresses.indexOf(quest);
+//			if(index > -1) {
+//				section.set("active", index);
+//			}
+//		}
+//		
+//		section.set("quests", null);
+//		if(!progresses.isEmpty()) {
+//			ConfigurationSection prgs = section.createSection("quests");
+//			for(Progress prg : progresses) {
+//				if(prg != null) {
+//					prgs.set(prg.quest, Util.implodeInt(prg.progress.toArray(new Integer[0]), "|"));
+//				}
+//			}
+//		}
+//	}
+//	
+//	public static PlayerProfile deserialize(ConfigurationSection section) {
+//		PlayerProfile prof = null;
+//		DataManager data = DataManager.getInstance();
+//		
+//		if(section.isString("name")) {
+//			prof = new PlayerProfile(section.getString("name"));
+//		}
+//		else {
+//			if(data.debug) {
+//				Quester.log.info("Profile name not found.");
+//			}
+//			return null;
+//		}
+//		
+//		if(section.isInt("points")) {
+//			prof.addPoints(section.getInt("points"));
+//		}
+//		
+//		if(section.isList("completed")) {
+//			List<String> l = section.getStringList("completed");
+//			for(String s : l) {
+//				prof.addCompleted(s);
+//			}
+//		}
+//		else if(section.isConfigurationSection("completed")) {
+//			ConfigurationSection subsection = section.getConfigurationSection("completed");
+//			for(String key : subsection.getKeys(false)) {
+//				prof.addCompleted(key, subsection.getInt(key, 0));
+//			}
+//		}
+//		
+//		if(section.isString("quest")) {
+//			if(section.isString("progress")) {
+//				try {
+//					Progress prg = prof.new Progress(section.getString("quest"));
+//					String[] strs = section.getString("progress", "").split("\\|");
+//					for(String s : strs) {
+//						prg.addToProgress(Integer.parseInt(s));
+//					}
+//					prof.addQuest(prg);
+//					prof.setQuest(0);
+//				} catch (Exception e) {
+//					if(data.verbose) {
+//						Quester.log.info("Invalid progress in profile.");
+//					}
+//				}
+//			}
+//			else {
+//				if(data.verbose) {
+//					Quester.log.info("Invalid or missing progress for quest '" + section.getString("quest", "non-existant") + "' in profile.");
+//				}
+//			}
+//		}
+//		
+//		if(section.isConfigurationSection("quests")) {
+//			ConfigurationSection subsection = section.getConfigurationSection("quests");
+//			for(String key : subsection.getKeys(false)) {
+//				if(subsection.isString(key)) {
+//					try {
+//						Progress prg = prof.new Progress(key);
+//						String[] strs = subsection.getString(key).split("\\|");
+//						if(strs.length != 1 || !strs[0].isEmpty()) {
+//							for(String s : strs) {
+//								prg.addToProgress(Integer.parseInt(s));
+//							}
+//						}		
+//						prof.addQuest(prg);
+//					} catch (Exception e) {
+//						if(data.verbose) {
+//							Quester.log.info("Invalid progress in profile.");
+//						}
+//					}
+//				}
+//				else {
+//					if(data.verbose) {
+//						Quester.log.info("Invalid or missing progress for quest '" + key + "' in profile.");
+//					}
+//				}
+//			}
+//		}
+//		
+//		prof.setQuest(section.getInt("active"));
+//		
+//		return prof;
+//	}
 }

@@ -11,14 +11,17 @@ import com.gmail.molnardad.quester.commandbase.QNestedCommand;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.ProfileManager;
 import com.gmail.molnardad.quester.managers.QuestManager;
 
 public class ModificationCommands {
 
 	private QuestManager qMan = null;
+	private ProfileManager profMan = null;
 	
 	public ModificationCommands(Quester plugin) {
 		qMan = plugin.getQuestManager();
+		profMan = plugin.getProfileManager();
 	}
 	
 	@QCommandLabels({"info"})
@@ -29,10 +32,10 @@ public class ModificationCommands {
 			permission = DataManager.PERM_MODIFY)
 	public void info(QCommandContext context, CommandSender sender) throws QuesterException {
 		if(context.length() > 0) {
-			qMan.showQuestInfo(sender, context.getInt(0));
+			qMan.showQuestInfo(sender, context.getInt(0), context.getSenderLang());
 		}
 		else {
-			qMan.showQuestInfo(sender);
+			qMan.showQuestInfo(sender, context.getSenderLang());
 		}
 	}
 	
@@ -44,9 +47,9 @@ public class ModificationCommands {
 			usage = "<quest name>",
 			permission = DataManager.PERM_MODIFY)
 	public void create(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.createQuest(sender.getName(), context.getString(0));
+		qMan.createQuest(sender.getName(), context.getString(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_CREATED);
-		if(DataManager.getInstance().verbose) {
+		if(DataManager.verbose) {
 			Quester.log.info(sender.getName() + " created quest '" + context.getString(0) + "'.");
 		}
 	}
@@ -59,9 +62,9 @@ public class ModificationCommands {
 			usage = "<quest ID>",
 			permission = DataManager.PERM_MODIFY)
 	public void remove(QCommandContext context, CommandSender sender) throws QuesterException {
-		String name = qMan.removeQuest(sender.getName(), context.getInt(0)).getName();
+		String name = qMan.removeQuest(sender.getName(), context.getInt(0), context.getSenderLang()).getName();
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_REMOVED);
-		if(DataManager.getInstance().verbose) {
+		if(DataManager.verbose) {
 			Quester.log.info(sender.getName() + " removed quest '" + name + "'.");
 		}
 	}
@@ -74,7 +77,7 @@ public class ModificationCommands {
 			usage = "<new name>",
 			permission = DataManager.PERM_MODIFY)
 	public void name(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.changeQuestName(sender.getName(), context.getString(0));
+		qMan.changeQuestName(sender.getName(), context.getString(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_RENAMED.replaceAll("%q", context.getString(0)));
 	}
 
@@ -87,10 +90,10 @@ public class ModificationCommands {
 	public void i(QCommandContext context, CommandSender sender) throws QCommandException, QuesterException {
 		boolean active;
 		if(context.length() > 0) {
-			active = qMan.toggleQuest(context.getInt(0));
+			active = qMan.toggleQuest(context.getInt(0), context.getSenderLang());
 		}
 		else {
-			active = qMan.toggleQuest(sender);
+			active = qMan.toggleQuest(sender, context.getSenderLang());
 		}
 		if(active){
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_ACTIVATED);
@@ -107,7 +110,7 @@ public class ModificationCommands {
 			usage = "<quest ID>",
 			permission = DataManager.PERM_MODIFY)
 	public void select(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.selectQuest(sender.getName(), context.getInt(0));
+		profMan.selectQuest(sender.getName(), context.getInt(0));
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_SELECTED);
 	}
 

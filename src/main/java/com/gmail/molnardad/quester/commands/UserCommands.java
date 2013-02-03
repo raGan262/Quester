@@ -12,15 +12,18 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QPermissionException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.ProfileManager;
 import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class UserCommands {
 
 	private QuestManager qMan = null;
+	private ProfileManager profMan = null;
 	
 	public UserCommands(Quester plugin) {
 		qMan = plugin.getQuestManager();
+		profMan = plugin.getProfileManager();
 	}
 	
 	@QCommandLabels({"show"})
@@ -31,7 +34,7 @@ public class UserCommands {
 			usage = "\"<quest name>\"",
 			permission = DataManager.PERM_USE_SHOW)
 	public void show(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.showQuest(sender, context.getString(0));
+		qMan.showQuest(sender, context.getString(0), context.getSenderLang());
 	}
 	
 	@QCommandLabels({"list"})
@@ -41,10 +44,10 @@ public class UserCommands {
 			permission = DataManager.PERM_USE_LIST)
 	public void list(QCommandContext context, CommandSender sender) {
 		if(Util.permCheck(sender, DataManager.PERM_MODIFY, false, null)) {
-			qMan.showFullQuestList(sender);
+			qMan.showFullQuestList(sender, context.getSenderLang());
 		}
 		else {
-			qMan.showQuestList(sender);
+			qMan.showQuestList(sender, context.getSenderLang());
 		}
 	}
 	
@@ -56,10 +59,10 @@ public class UserCommands {
 			permission = DataManager.PERM_USE_PROFILE)
 	public void profile(QCommandContext context, CommandSender sender) throws QuesterException {
 		if(Util.permCheck(sender, DataManager.PERM_ADMIN, false, null) && context.length() > 0) {
-			qMan.showProfile(sender, context.getString(0));
+			profMan.showProfile(sender, context.getString(0), context.getSenderLang());
 		}
 		else {
-			qMan.showProfile(sender);
+			profMan.showProfile(sender);
 		}
 	}
 	
@@ -75,14 +78,14 @@ public class UserCommands {
 		}
 		if(context.length() == 0) {
 			if(Util.permCheck(sender, DataManager.PERM_USE_START_RANDOM, false, null)) {
-				qMan.startRandomQuest(context.getPlayer());
+				qMan.startRandomQuest(context.getPlayer(), context.getSenderLang());
 			}
 			else {
 				throw new QPermissionException();
 			}
 		}
 		else if(Util.permCheck(sender, DataManager.PERM_USE_START_PICK, false, null)) {
-			qMan.startQuest((Player) sender, context.getString(0), true);
+			qMan.startQuest((Player) sender, context.getString(0), true, context.getSenderLang());
 		}
 		else {
 			throw new QPermissionException();
@@ -99,7 +102,7 @@ public class UserCommands {
 			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);
 			return;
 		}
-		qMan.complete((Player) sender, true);
+		qMan.complete((Player) sender, true, context.getSenderLang());
 	}
 
 	@QCommandLabels({"cancel"})
@@ -117,7 +120,7 @@ public class UserCommands {
 		if(context.length() > 0) {
 			index = context.getInt(0);
 		}
-		qMan.cancelQuest((Player) sender, index, true);
+		qMan.cancelQuest((Player) sender, index, true, context.getSenderLang());
 	}
 	
 	@QCommandLabels({"switch"})
@@ -132,7 +135,7 @@ public class UserCommands {
 			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);
 			return;
 		}
-		if (qMan.switchQuest((Player) sender, context.getInt(0))) {
+		if (profMan.switchQuest((Player) sender, context.getInt(0))) {
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_SWITCHED);
 		}
 	}
@@ -152,7 +155,7 @@ public class UserCommands {
 		if(context.length() > 0) {
 			index = context.getInt(0);
 		}
-		qMan.showProgress((Player) sender, index);
+		qMan.showProgress((Player) sender, index, context.getSenderLang());
 	}
 	
 	@QCommandLabels({"quests"})
@@ -163,7 +166,7 @@ public class UserCommands {
 			permission = DataManager.PERM_USE_QUESTS)
 	public void quests(QCommandContext context, CommandSender sender) throws QuesterException {
 		if(Util.permCheck(sender, DataManager.PERM_ADMIN, false, null) && context.length() > 0) {
-			qMan.showTakenQuests(sender, context.getString(0));
+			qMan.showTakenQuests(sender, context.getString(0), context.getSenderLang());
 		}
 		else {
 			qMan.showTakenQuests(sender);

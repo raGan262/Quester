@@ -11,19 +11,19 @@ import com.gmail.molnardad.quester.QuestFlag;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
-import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.LanguageManager;
 import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.LocObjective;
 import com.gmail.molnardad.quester.objectives.WorldObjective;
 
 public class PositionListener implements Runnable {
 	
-	private QuestManager qm;
-	private DataManager qData;
+	private QuestManager qm = null;
+	private LanguageManager langMan = null;
 	
 	public PositionListener(Quester plugin) {
 		this.qm = plugin.getQuestManager();
-		qData = DataManager.getInstance();
+		this.langMan = plugin.getLanguageManager();
 	}
 	
 	@Override
@@ -59,13 +59,13 @@ public class PositionListener implements Runnable {
 		    	
 		    } else {
 		    	Location loc = player.getLocation();
-		    	for(int ID : qData.questLocations.keySet()) {
+		    	for(int ID : qm.questLocations.keySet()) {
 		    		Quest qst = qm.getQuest(ID);
-		    		Location loc2 = qData.questLocations.get(ID);
+		    		Location loc2 = qm.questLocations.get(ID);
 		    		if(loc2.getWorld().getName().equals(loc.getWorld().getName())) {
 			    		if(loc2.distanceSquared(loc) <= qst.getRange()*qst.getRange() && qst.hasFlag(QuestFlag.ACTIVE)) {
 			    			try {
-								qm.startQuest(player, qst.getName(), false);
+								qm.startQuest(player, qst.getName(), false, langMan.getPlayerLang(player.getName()));
 							} catch (QuesterException e) {
 							}
 			    		}

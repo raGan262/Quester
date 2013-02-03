@@ -8,14 +8,17 @@ import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
-import com.gmail.molnardad.quester.managers.QuestManager;
+import com.gmail.molnardad.quester.managers.ProfileManager;
+import com.gmail.molnardad.quester.managers.QuestHolderManager;
 
 public class HolderCommands {
 	
-	QuestManager qMan = null;
+	QuestHolderManager holMan = null;
+	ProfileManager profMan = null;
 	
 	public HolderCommands(Quester plugin) {
-		qMan = plugin.getQuestManager();
+		holMan = plugin.getHolderManager();
+		profMan = plugin.getProfileManager();
 	}
 	
 	@QCommandLabels({"create", "c"})
@@ -25,8 +28,8 @@ public class HolderCommands {
 			max = 1,
 			usage = "<holder name>")
 	public void set(QCommandContext context, CommandSender sender) throws QuesterException {
-		int id = qMan.createHolder(context.getString(0));
-		qMan.getProfile(sender.getName()).setHolderID(id);
+		int id = holMan.createHolder(context.getString(0));
+		profMan.getProfile(sender.getName()).setHolderID(id);
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().HOL_CREATED);
 	}
 	
@@ -37,7 +40,7 @@ public class HolderCommands {
 			max = 1,
 			usage = "<holder ID>")
 	public void delete(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.removeHolder(context.getInt(0));
+		holMan.removeHolder(context.getInt(0));
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().HOL_REMOVED);
 	}
 	
@@ -48,7 +51,7 @@ public class HolderCommands {
 			max = 1,
 			usage = "<quest ID>")
 	public void add(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.addHolderQuest(sender.getName(), context.getInt(0));
+		holMan.addHolderQuest(sender.getName(), context.getInt(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().HOL_Q_ADDED);
 	}
 	
@@ -59,7 +62,7 @@ public class HolderCommands {
 			max = 1,
 			usage = "<quest ID>")
 	public void remove(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.removeHolderQuest(sender.getName(), context.getInt(0));
+		holMan.removeHolderQuest(sender.getName(), context.getInt(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().HOL_Q_REMOVED);
 	}
 	
@@ -70,7 +73,7 @@ public class HolderCommands {
 			max = 2,
 			usage = "<from> <to>")
 	public void move(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.moveHolderQuest(sender.getName(), context.getInt(0), context.getInt(1));
+		holMan.moveHolderQuest(sender.getName(), context.getInt(0), context.getInt(1), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().HOL_Q_MOVED);
 	}
 	
@@ -79,7 +82,7 @@ public class HolderCommands {
 			desc = "lists quest holders",
 			max = 0)
 	public void list(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.showHolderList(sender);
+		holMan.showHolderList(sender, context.getSenderLang());
 	}
 	
 	@QCommandLabels({"info", "i"})
@@ -93,7 +96,7 @@ public class HolderCommands {
 		if(context.length() > 0) {
 			id = context.getInt(0);
 		}
-		qMan.showHolderInfo(sender, id);
+		holMan.showHolderInfo(sender, id, context.getSenderLang());
 	}
 	
 	@QCommandLabels({"select", "sel"})
@@ -103,7 +106,7 @@ public class HolderCommands {
 			max = 1,
 			usage = "<holder ID>")
 	public void select(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.selectHolder(sender.getName(), context.getInt(0));
+		profMan.selectHolder(sender.getName(), context.getInt(0));
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().HOL_SELECTED);
 	}
 }

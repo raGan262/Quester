@@ -25,7 +25,7 @@ public class ObjectiveDescCommands {
 			max = 2,
 			usage = "<objective ID> <description>")
 	public void add(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.addObjectiveDescription(sender.getName(), context.getInt(0), context.getString(1));
+		qMan.addObjectiveDescription(sender.getName(), context.getInt(0), context.getString(1), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().OBJ_DESC_ADD.replaceAll("%id", context.getString(0)));
 	}
@@ -37,7 +37,7 @@ public class ObjectiveDescCommands {
 			max = 1,
 			usage = "<objective ID>")
 	public void remove(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.removeObjectiveDescription(sender.getName(), context.getInt(0));
+		qMan.removeObjectiveDescription(sender.getName(), context.getInt(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().OBJ_DESC_REMOVE.replaceAll("%id", context.getString(0)));
 	}

@@ -25,7 +25,7 @@ public class ConditionDescCommands {
 			max = 2,
 			usage = "<condition ID> <description>")
 	public void add(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.addConditionDescription(sender.getName(), context.getInt(0), context.getString(1));
+		qMan.addConditionDescription(sender.getName(), context.getInt(0), context.getString(1), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().CON_DESC_ADD.replaceAll("%id", context.getString(0)));
 	}
@@ -37,7 +37,7 @@ public class ConditionDescCommands {
 			max = 1,
 			usage = "<condition ID>")
 	public void remove(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.removeConditionDescription(sender.getName(), context.getInt(0));
+		qMan.removeConditionDescription(sender.getName(), context.getInt(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().CON_DESC_REMOVE.replaceAll("%id", context.getString(0)));
 	}

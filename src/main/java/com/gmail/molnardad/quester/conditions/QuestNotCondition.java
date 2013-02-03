@@ -29,7 +29,7 @@ public final class QuestNotCondition extends Condition {
 
 	@Override
 	public boolean isMet(Player player, Quester plugin) {
-		PlayerProfile profile = plugin.getQuestManager().getProfile(player.getName());
+		PlayerProfile profile = plugin.getProfileManager().getProfile(player.getName());
 		if (!profile.isCompleted(quest)) {
 			return true;
 		}
