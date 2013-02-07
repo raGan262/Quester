@@ -79,25 +79,22 @@ public final class BreakObjective extends Objective {
 	
 	public static Objective deser(ConfigurationSection section) {
 		Material mat;
-		int dat, amt = 1;
+		int dat, amt;
 		int hnd = -1;
 		try {
 			int[] itm = Util.parseItem(section.getString("block", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
-			} catch (QuesterException e) {
-				return null;
-		}
-		if(section.isInt("amount")) {
-			amt = section.getInt("amount");
-			if(amt < 1)
-				return null;
-		} else 
+		} catch (QuesterException e) {
 			return null;
-		try {
-				hnd = Util.parseItem(section.getString("inhand", ""))[0];
-			} catch (QuesterException e) {
 		}
+		amt = section.getInt("amount", 1);
+		if(amt < 1) {
+			return null;
+		}
+		try {
+			hnd = Util.parseItem(section.getString("inhand", ""))[0];
+		} catch (QuesterException ignore) {}
 		return new BreakObjective(amt, mat, dat, hnd);
 	}
 }
