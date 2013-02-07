@@ -31,14 +31,12 @@ public class BaseConfig extends CustomConfig {
 	@Override
 	public void initialize() {
 		
-		DataManager data = DataManager.getInstance();
-		
 		String path;
 		String temp;
 		// VERBOSE-LOGGING
 		path = "general.verbose-logging";
 		checkBoolean(path);
-		data.verbose = this.config.getBoolean(path);
+		DataManager.verbose = this.config.getBoolean(path);
 
 		// SAVE INTERVAL
 		path = "general.save-interval";
@@ -46,37 +44,37 @@ public class BaseConfig extends CustomConfig {
 			this.config.set(path, 15);
 			wrongConfig(path);
 		}
-		data.saveInterval = this.config.getInt(path);
+		DataManager.saveInterval = this.config.getInt(path);
 		
 		// DEBUG INFO
 		path = "general.debug-info";
 		checkBoolean(path);
-		data.debug = this.config.getBoolean(path);
+		DataManager.debug = this.config.getBoolean(path);
 		
 		// SHOW ONLY CURRENT
 		path = "objectives.show-only-current";
 		checkBoolean(path);
-		data.ordOnlyCurrent = this.config.getBoolean(path);
+		DataManager.ordOnlyCurrent = this.config.getBoolean(path);
 		
 		// BREAK NO DROPS
 		path = "objectives.break.no-drops";
 		checkBoolean(path);
-		data.brkNoDrops = this.config.getBoolean(path);
+		DataManager.brkNoDrops = this.config.getBoolean(path);
 		
 		// BREAK SUBTRACT ON PLACE
 		path = "objectives.break.subtract-on-place";
 		checkBoolean(path);
-		data.brkSubOnPlace = this.config.getBoolean(path);
+		DataManager.brkSubOnPlace = this.config.getBoolean(path);
 		
 		// COLLECT REMOVE ON PICKUP
 		path = "objectives.collect.remove-on-pickup";
 		checkBoolean(path);
-		data.colRemPickup = this.config.getBoolean(path);
+		DataManager.colRemPickup = this.config.getBoolean(path);
 				
 		// COLLECT SUBTRACT ON DROP
 		path = "objectives.collect.subtract-on-drop";
 		checkBoolean(path);
-		data.colSubOnDrop = this.config.getBoolean(path);
+		DataManager.colSubOnDrop = this.config.getBoolean(path);
 		
 		// MAX QUESTS
 		path = "quests.max-amount";
@@ -84,24 +82,24 @@ public class BaseConfig extends CustomConfig {
 			this.config.set(path, 1);
 			wrongConfig(path);
 		}
-		data.maxQuests = this.config.getInt(path);
+		DataManager.maxQuests = this.config.getInt(path);
 		
 		// PROGRES MESSAGES
 		path = "quests.messages.start-show";
 		checkBoolean(path);
-		data.progMsgStart = this.config.getBoolean(path);
+		DataManager.progMsgStart = this.config.getBoolean(path);
 		
 		path = "quests.messages.cancel-show";
 		checkBoolean(path);
-		data.progMsgCancel = this.config.getBoolean(path);
+		DataManager.progMsgCancel = this.config.getBoolean(path);
 		
 		path = "quests.messages.done-show";
 		checkBoolean(path);
-		data.progMsgDone = this.config.getBoolean(path);
+		DataManager.progMsgDone = this.config.getBoolean(path);
 		
 		path = "quests.messages.objective-show";
 		checkBoolean(path);
-		data.progMsgObj = this.config.getBoolean(path);
+		DataManager.progMsgObj = this.config.getBoolean(path);
 	
 		// COMMANDS
 		
@@ -111,7 +109,7 @@ public class BaseConfig extends CustomConfig {
 			this.config.set(path, "/q");
 			wrongConfig(path);
 		}
-		data.displayedCmd = this.config.getString(path);
+		DataManager.displayedCmd = this.config.getString(path);
 		
 		path = "commands.world-label-this";
 		temp = this.config.getString(path, "");
@@ -119,7 +117,7 @@ public class BaseConfig extends CustomConfig {
 			this.config.set(path, "this");
 			wrongConfig(path);
 		}
-		data.worldLabelThis = this.config.getString(path);
+		DataManager.worldLabelThis = this.config.getString(path);
 		
 		path = "commands.loc-label-here";
 		temp = this.config.getString(path, "");
@@ -127,26 +125,26 @@ public class BaseConfig extends CustomConfig {
 			this.config.set(path, "here");
 			wrongConfig(path);
 		}
-		data.locLabelHere = this.config.getString(path);
+		DataManager.locLabelHere = this.config.getString(path);
 		
 		path = "commands.loc-label-player";
 		temp = this.config.getString(path, "");
 		if(temp.isEmpty()
-				|| temp.equalsIgnoreCase(data.locLabelHere)) {
+				|| temp.equalsIgnoreCase(DataManager.locLabelHere)) {
 			this.config.set(path, "player");
 			wrongConfig(path);
 		}
-		data.locLabelPlayer = this.config.getString(path);
+		DataManager.locLabelPlayer = this.config.getString(path);
 		
 		path = "commands.loc-label-block";
 		temp = this.config.getString(path, "");
 		if(temp.isEmpty() 
-				|| temp.equalsIgnoreCase(data.locLabelHere)
-				|| temp.equalsIgnoreCase(data.locLabelPlayer)) {
+				|| temp.equalsIgnoreCase(DataManager.locLabelHere)
+				|| temp.equalsIgnoreCase(DataManager.locLabelPlayer)) {
 			this.config.set(path, "block");
 			wrongConfig(path);
 		}
-		data.locLabelPlayer = this.config.getString(path);
+		DataManager.locLabelPlayer = this.config.getString(path);
 		
 		// QUESTER RANKS
 		
@@ -173,8 +171,8 @@ public class BaseConfig extends CustomConfig {
 			sortedRanks.add(50);
 		}
 		Collections.sort(sortedRanks);
-		data.ranks = rankMap;
-		data.sortedRanks = sortedRanks;
+		//DataManager.ranks = rankMap;
+		//DataManager.sortedRanks = sortedRanks;
 		
 		
 		saveConfig();
