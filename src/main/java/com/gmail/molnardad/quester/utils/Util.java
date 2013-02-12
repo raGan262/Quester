@@ -351,6 +351,8 @@ public class Util {
 					break;
 			case 6 : result = "Aqua Affinity";
 					break;
+			case 7 : result = "Thorns";
+					break;
 			case 16 : result = "Sharpness";
 					break;
 			case 17 : result = "Smite";
