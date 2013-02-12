@@ -1,46 +1,57 @@
 package com.gmail.molnardad.quester.conditions;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
+import com.gmail.molnardad.quester.elements.Condition;
+import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
 
+@QElement("PERM")
 public final class PermissionCondition extends Condition {
 	
-	public static final String TYPE = "PERM";
 	private final String perm;
 	
 	public PermissionCondition(String perm) {
 		this.perm = perm;
 	}
-	
-	@Override
-	public String getType() {
-		return TYPE;
-	}
 
 	@Override
-	public boolean isMet(Player player) {
-		return Util.permCheck(player, perm, false);
+	public boolean isMet(Player player, Quester plugin) {
+		return Util.permCheck(player, perm, false, null);
+	}
+	
+	@Override
+	protected String parseDescription(String description) {
+		return description.replaceAll("%perm", perm);
 	}
 	
 	@Override
 	public String show() {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%perm", perm);
-		}
 		return "Must have permission '" + perm + "'";
 	}
 	
 	@Override
-	public String toString() {
-		return TYPE + ": " + perm + coloredDesc().replaceAll("%perm", perm);
+	public String info() {
+		return perm;
 	}
 	
-	@Override
+	@QCommand(
+			min = 1,
+			max = 1,
+			usage = "<permission>")
+	public static Condition fromCommand(QCommandContext context) throws QCommandException {
+		String perm = context.getString(0);
+		return new PermissionCondition(perm);
+	}
+	
+	// TODO serialization
+
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
 		section.set("permission", perm);
 	}
 

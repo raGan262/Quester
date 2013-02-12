@@ -7,41 +7,57 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
-import com.gmail.molnardad.quester.exceptions.ExceptionType;
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.elements.Qevent;
+import com.gmail.molnardad.quester.exceptions.ObjectiveException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 
+@QElement("OBJCOM")
 public final class ObjectiveCompleteQevent extends Qevent {
 
-	public static final String TYPE = "OBJCOM";
 	private final int objective;
 	
-	public ObjectiveCompleteQevent(int occ, int del, int obj) {
-		super(occ, del);
+	public ObjectiveCompleteQevent(int obj) {
 		this.objective = obj;
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
-	}
-	
-	@Override
-	public int getOccasion() {
-		return occasion;
-	}
-	
-	@Override
-	public String toString() {
-		return TYPE + ": " + objective + appendSuper();
+	public String info() {
+		return String.valueOf(objective);
 	}
 
 	@Override
+	protected void run(Player player, Quester plugin) {
+		try {
+			List<Integer> prog = plugin.getProfileManager().getProfile(player.getName()).getProgress();
+			if(objective >= 0 && objective < prog.size()) {
+				int req = plugin.getQuestManager().getPlayerQuest(player.getName()).getObjective(objective).getTargetAmount();
+				prog.set(objective, req);
+			} else {
+				throw new ObjectiveException("Objective index out of bounds."); // objective does not exist
+			}
+		} catch (QuesterException e) {
+			Quester.log.info("Event failed to complete objective. Reason: " + ChatColor.stripColor(e.getMessage()));
+		}
+	}
+
+	@QCommand(
+			min = 1,
+			max = 1,
+			usage = "<objective ID>")
+	public static Qevent fromCommand(QCommandContext context) {
+		return new ObjectiveCompleteQevent(context.getInt(0));
+	}
+
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
 		section.set("objective", objective);
 	}
 	
-	public static ObjectiveCompleteQevent deser(int occ, int del, ConfigurationSection section) {
+	public static ObjectiveCompleteQevent deser(ConfigurationSection section) {
 		int obj;
 		
 		if(section.isInt("objective"))
@@ -49,21 +65,6 @@ public final class ObjectiveCompleteQevent extends Qevent {
 		else
 			return null;
 		
-		return new ObjectiveCompleteQevent(occ, del, obj);
-	}
-
-	@Override
-	void run(Player player) {
-		try {
-			List<Integer> prog = Quester.qMan.getProfile(player.getName()).getProgress();
-			if(objective >= 0 && objective < prog.size()) {
-				int req = Quester.qMan.getPlayerQuest(player.getName()).getObjective(objective).getTargetAmount();
-				prog.set(objective, req);
-			} else {
-				throw new QuesterException(ExceptionType.OBJ_NOT_EXIST);
-			}
-		} catch (QuesterException e) {
-			Quester.log.info("Event failed to complete objective. Reason: " + ChatColor.stripColor(e.message()));
-		}
+		return new ObjectiveCompleteQevent(obj);
 	}
 }

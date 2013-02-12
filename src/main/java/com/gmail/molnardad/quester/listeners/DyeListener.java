@@ -14,16 +14,21 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.molnardad.quester.Quest;
-import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.DyeObjective;
-import com.gmail.molnardad.quester.objectives.Objective;
 
 public class DyeListener implements Listener {
 
+	private QuestManager qm;
+	
+	public DyeListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+	}
+	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onEntityRightClick(PlayerInteractEntityEvent event) {
-	    QuestManager qm = Quester.qMan;
 	    Player player = event.getPlayer();
     	Quest quest = qm.getPlayerQuest(player.getName());
 	    if(quest != null) {

@@ -1,20 +1,26 @@
 package com.gmail.molnardad.quester.objectives;
 
+import static com.gmail.molnardad.quester.utils.Util.parseEnchants;
+import static com.gmail.molnardad.quester.utils.Util.parseItem;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
 
+@QElement("ENCHANT")
 public final class EnchantObjective extends Objective {
 
-	public static final String TYPE = "ENCHANT";
 	private final Material material;
 	private final int amount;
 	private final Map<Integer, Integer> enchants;
@@ -27,27 +33,14 @@ public final class EnchantObjective extends Objective {
 		else
 			this.enchants = new HashMap<Integer, Integer>();
 	}
-	
-	@Override
-	public String getType() {
-		return TYPE;
-	}
 
 	@Override
 	public int getTargetAmount() {
 		return amount;
 	}
-
-	@Override
-	public boolean isComplete(Player player, int progress) {
-		return progress >= amount;
-	}
 	
 	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
-		}
+	protected String show(int progress) {
 		String pcs = amount == 1 ? " piece of " : " pieces of ";
 		String enchs = "\n -- Required enchants:";
 		if(enchants.isEmpty()) {
@@ -60,34 +53,40 @@ public final class EnchantObjective extends Objective {
 	}
 	
 	@Override
-	public String toString() {
+	protected String info() {
 		String mat = material==null?"ANY ITEM":material.name()+"["+material.getId()+"]";
 		String itm = mat + "; AMT: "+amount;
 		String enchs = enchants.isEmpty() ? "" : "\n -- ENCH:";
 		for(Integer e : enchants.keySet()) {
 			enchs = enchs + " " + Enchantment.getById(e).getName() + ":" + enchants.get(e);
 		}
-		return TYPE+": "+itm+enchs + coloredDesc();
+		return itm + enchs ;
 	}
 	
-	public boolean check(ItemStack item, Map<Enchantment, Integer> enchs) {
-		if(item.getTypeId() != material.getId())
-			return false;
-		for(int i : enchants.keySet()) {
-			if(enchs.get(Enchantment.getById(i)) == null) {
-				return false;
-			} else if(enchs.get(Enchantment.getById(i)) < enchants.get(i)) {
-				return false;
+	@QCommand(
+			min = 1,
+			max = 3,
+			usage = "{<item>} [amount] {[enchants]}")
+	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+		Map<Integer, Integer> enchs = null;
+		int amt = 1;
+		int[] itm = parseItem(context.getString(0));
+		Material mat = Material.getMaterial(itm[0]);
+		if(context.length() > 1) {
+			amt = context.getInt(1);
+			if(amt < 1) {
+				throw new QCommandException(context.getSenderLang().ERROR_CMD_ENCH_LEVEL);
+			}
+			if(context.length() > 2) {
+				enchs = parseEnchants(context.getString(2));
 			}
 		}
-		return true;
+		return new EnchantObjective(mat, amt, enchs);
 	}
 
-	@Override
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-
-
 		section.set("enchants", Util.serializeEnchants(enchants));
 		if(material != null)
 			section.set("item", Util.serializeItem(material, -1));
@@ -120,5 +119,20 @@ public final class EnchantObjective extends Objective {
 		}
 		
 		return new EnchantObjective(mat, amt, enchs);
+	}
+	
+	// Custom methods
+	
+	public boolean check(ItemStack item, Map<Enchantment, Integer> enchs) {
+		if(item.getTypeId() != material.getId())
+			return false;
+		for(int i : enchants.keySet()) {
+			if(enchs.get(Enchantment.getById(i)) == null) {
+				return false;
+			} else if(enchs.get(Enchantment.getById(i)) < enchants.get(i)) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

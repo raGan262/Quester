@@ -15,16 +15,20 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.molnardad.quester.Quest;
-import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.CraftObjective;
-import com.gmail.molnardad.quester.objectives.Objective;
 import com.gmail.molnardad.quester.objectives.SmeltObjective;
 
 
 public class CraftSmeltListener implements Listener {
 
-	private QuestManager qm = Quester.qMan;
+	private QuestManager qm;
+	
+	public CraftSmeltListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onCraft(CraftItemEvent event) {

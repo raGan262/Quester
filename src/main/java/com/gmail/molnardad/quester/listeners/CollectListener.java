@@ -13,17 +13,25 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import com.gmail.molnardad.quester.Quest;
-import com.gmail.molnardad.quester.QuestData;
-import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.ProfileManager;
+import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.CollectObjective;
-import com.gmail.molnardad.quester.objectives.Objective;
 
 public class CollectListener implements Listener {
-
+	
+	private QuestManager qm = null;
+	private ProfileManager profMan = null;
+	
+	public CollectListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+		this.profMan = plugin.getProfileManager();
+	}
+	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPickup(PlayerPickupItemEvent event) {
-	    QuestManager qm = Quester.qMan;
 	    Player player = event.getPlayer();
     	Quest quest = qm.getPlayerQuest(player.getName());
 	    if(quest != null) {
@@ -43,7 +51,7 @@ public class CollectListener implements Listener {
 	    				// if DATA >= 0 compare
 	    				if(obj.getData() < 0 || obj.getData() == item.getDurability()) {
 	    					int rem = event.getRemaining(); // amount not picked up (full inventory)
-	    					int req = obj.getTargetAmount() - qm.getProfile(player.getName()).getProgress().get(i); // amount required by objective
+	    					int req = obj.getTargetAmount() - profMan.getProfile(player.getName()).getProgress().get(i); // amount required by objective
 	    					if(req < 0) { // can't be less than 0
 	    						req = 0;
 	    					}
@@ -52,7 +60,7 @@ public class CollectListener implements Listener {
 	    						more = 0;
 	    					}
 	    					qm.incProgress(player, i, item.getAmount()); // increase by amount actually picked up
-	    					if(QuestData.colRemPickup) {
+	    					if(DataManager.colRemPickup) {
 		    					Location loc = event.getItem().getLocation();
 		    					event.getItem().remove();
 		    					if((more + rem) > 0) {

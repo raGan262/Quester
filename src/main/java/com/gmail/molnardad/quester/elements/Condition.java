@@ -1,15 +1,22 @@
-package com.gmail.molnardad.quester.conditions;
+package com.gmail.molnardad.quester.elements;
 
 import java.lang.reflect.Method;
 
+import org.apache.commons.lang.SerializationException;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.conditions.ItemCondition;
+import com.gmail.molnardad.quester.conditions.MoneyCondition;
+import com.gmail.molnardad.quester.conditions.PermissionCondition;
+import com.gmail.molnardad.quester.conditions.PointCondition;
+import com.gmail.molnardad.quester.conditions.QuestCondition;
+import com.gmail.molnardad.quester.conditions.QuestNotCondition;
+import com.gmail.molnardad.quester.managers.DataManager;
 
-public abstract class Condition {
+public abstract class Condition extends Element {
 
 	@SuppressWarnings("unchecked")
 	private static Class<? extends Condition>[] classes = new Class[]{
@@ -20,11 +27,10 @@ public abstract class Condition {
 		QuestCondition.class,
 		QuestNotCondition.class
 	};
-	String desc = "";
 	
-	public abstract String getType();
+	private String desc = "";
 	
-	public String coloredDesc() {
+	private String coloredDesc() {
 		String des = "";
 		if(!desc.isEmpty()) {
 			des = "\n  - " + ChatColor.translateAlternateColorCodes('&', desc) + ChatColor.RESET;
@@ -32,27 +38,47 @@ public abstract class Condition {
 		return des;
 	}
 	
-	public void addDescription(String msg) {
+	public final void addDescription(String msg) {
 		this.desc += (" " + msg).trim();
 	}
 	
-	public void removeDescription() {
+	public final void removeDescription() {
 		this.desc = "";
 	}
 	
-	public abstract boolean isMet(Player player);
-	public abstract String show();
-	public abstract String toString();
-
-	public abstract void serialize(ConfigurationSection section);
+	protected abstract String parseDescription(String description);
+	protected abstract String show();
+	protected abstract String info();
+	public abstract boolean isMet(Player player, Quester plugin);
 	
-	void serialize(ConfigurationSection section, String type) {
+	public String inShow() {
+		if(!desc.isEmpty()) {
+			return ChatColor.translateAlternateColorCodes('&', parseDescription(desc));
+		}
+		return show();
+	}
+	
+	public String inInfo() {
+		return getType() + ": " + info() + coloredDesc();
+	}
+
+	public final String toString() {
+		return "Condition (type=" + getType() + ")";
+	}
+	
+	// TODO serialization
+	
+	protected void save(ConfigurationSection section) throws SerializationException {
+		String type = getType();
+		if(type.isEmpty()) {
+			throw new SerializationException("Unknown type");
+		}
 		section.set("type", type);
 		if(!desc.isEmpty())
 			section.set("description", desc);
 	}
 	
-	public static Condition deserialize(ConfigurationSection section) {
+	public static Condition load(ConfigurationSection section) {
 		if(section == null) {
 			Quester.log.severe("Condition deserialization error: section null.");
 			return null;
@@ -84,14 +110,14 @@ public abstract class Condition {
 						break;
 					} catch (Exception e) {
 						Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Method deser() missing or broken. " + e.getClass().getName());
-						if(QuestData.debug)
+						if(DataManager.debug)
 							e.printStackTrace();
 						return null;
 					}
 				}
 			} catch (Exception e) {
 				Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Field 'TYPE' missing or access denied. " + e.getClass().getName());
-				if(QuestData.debug)
+				if(DataManager.debug)
 					e.printStackTrace();
 				return null;
 			}

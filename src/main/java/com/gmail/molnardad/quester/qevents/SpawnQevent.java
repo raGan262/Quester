@@ -1,22 +1,29 @@
 package com.gmail.molnardad.quester.qevents;
 
+import static com.gmail.molnardad.quester.utils.Util.parseEntity;
+
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
+import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.utils.Util;
 
+@QElement("SPAWN")
 public final class SpawnQevent extends Qevent {
 
-	public static final String TYPE = "SPAWN";
 	private final Location location;
 	private final EntityType entity;
 	private final int range;
 	private final int amount;
 	
-	public SpawnQevent(int occ, int del, Location loc, int rng, EntityType ent, int amt) {
-		super(occ, del);
+	public SpawnQevent(Location loc, int rng, EntityType ent, int amt) {
 		this.location = loc;
 		this.range = rng;
 		this.entity = ent;
@@ -24,28 +31,50 @@ public final class SpawnQevent extends Qevent {
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
-	}
-	
-	@Override
-	public int getOccasion() {
-		return occasion;
-	}
-	
-	@Override
-	public String toString() {
-		String locStr;
-		if(location == null)
-			locStr = "PLAYER";
-		else
-			locStr = String.format("%.1f:%.1f:%.1f("+location.getWorld().getName()+")", location.getX(), location.getY(), location.getZ());
-		return TYPE + ": " + entity.getName() + "; AMT: " + amount + "; LOC: " + locStr + "; RNG: " + range + appendSuper();
+	public String info() {
+		String locStr = "PLAYER";
+		if(location != null) {
+			locStr = Util.displayLocation(location);
+		}
+		return entity.getName() + "; AMT: " + amount + "; LOC: " + locStr + "; RNG: " + range;
 	}
 
 	@Override
+	protected void run(Player player, Quester plugin) {
+		Location temp;
+		if(location == null)
+			temp = player.getLocation();
+		else
+			temp = location;
+		for(int i = 0; i < amount; i++) {
+			temp.getWorld().spawnEntity(Util.move(temp, range), entity);
+		}
+	}
+
+	@QCommand(
+			min = 3,
+			max = 4,
+			usage = "{<entity>} <amount> {<location>} [range]")
+	public static Qevent fromCommand(QCommandContext context) throws QCommandException {
+		EntityType ent = parseEntity(context.getString(0));
+		int amt = context.getInt(1);
+		Location loc = Util.getLoc(context.getPlayer(), context.getString(2));
+		int rng = 0;
+		if(amt < 1) {
+			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
+		}
+		if(context.length() > 3) {
+			rng = context.getInt(3);
+			if(rng < 0) {
+				throw new QCommandException(context.getSenderLang().ERROR_CMD_RANGE_INVALID);
+			}
+		}
+		return new SpawnQevent(loc, rng, ent, amt);
+	}
+
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
 		if(amount != 1)
 			section.set("amount", amount);
 		section.set("entity", entity.getTypeId());
@@ -54,7 +83,7 @@ public final class SpawnQevent extends Qevent {
 			section.set("range", range);
 	}
 	
-	public static SpawnQevent deser(int occ, int del, ConfigurationSection section) {
+	public static SpawnQevent deser(ConfigurationSection section) {
 		int rng = 0, amt = 1;
 		EntityType ent = null;
 		Location loc = null;
@@ -77,18 +106,6 @@ public final class SpawnQevent extends Qevent {
 			return null;
 		}
 		
-		return new SpawnQevent(occ, del, loc, rng, ent, amt);
-	}
-
-	@Override
-	void run(Player player) {
-		Location temp;
-		if(location == null)
-			temp = player.getLocation();
-		else
-			temp = location;
-		for(int i = 0; i < amount; i++) {
-			temp.getWorld().spawnEntity(Util.move(temp, range), entity);
-		}
+		return new SpawnQevent(loc, rng, ent, amt);
 	}
 }

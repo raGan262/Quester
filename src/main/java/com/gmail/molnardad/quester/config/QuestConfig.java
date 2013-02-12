@@ -1,20 +1,21 @@
 package com.gmail.molnardad.quester.config;
 
-import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.managers.DataManager;
 
 public final class QuestConfig extends CustomConfig {
 
-	public QuestConfig(String fileName) {
-		super(Quester.plugin, fileName);
+	public QuestConfig(Quester plugin, String fileName) {
+		super(plugin, fileName);
 	}
 
 	@Override
 	public void saveConfig() {
+		DataManager data = DataManager.getInstance();
 		for(String key : config.getKeys(false))
 			config.set(key, null);
-		for(String key : QuestData.allQuests.keySet()) {
-			QuestData.allQuests.get(key).serialize(config.createSection(key));
+		for(String key : data.allQuests.keySet()) {
+			data.allQuests.get(key).serialize(config.createSection(key));
 		}
 		super.saveConfig();
 	}

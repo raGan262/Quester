@@ -4,29 +4,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.QuesterSign;
+import com.gmail.molnardad.quester.managers.DataManager;
 
 
 public class HolderConfig extends CustomConfig {
 
-	public HolderConfig(String fileName) {
-		super(Quester.plugin, fileName);
+	public HolderConfig(Quester plugin, String fileName) {
+		super(plugin, fileName);
 	}
 
 	@Override
 	public void saveConfig() {
+		DataManager data = DataManager.getInstance();
 		config.set("signs", null);
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		for(QuesterSign sign : QuestData.signs.values()) {
+		for(QuesterSign sign : data.signs.values()) {
 			list.add(sign.serialize());
 		}
 		config.set("signs", list);
 		
 		config.set("holders", null);
-		for(int key : QuestData.holderIds.keySet()) {
-			config.set("holders." + key, QuestData.holderIds.get(key).serialize());
+		for(int key : data.holderIds.keySet()) {
+			config.set("holders." + key, data.holderIds.get(key).serialize());
 		}
 		super.saveConfig();
 	}

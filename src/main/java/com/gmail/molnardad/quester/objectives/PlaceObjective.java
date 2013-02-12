@@ -1,16 +1,20 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
+import static com.gmail.molnardad.quester.utils.Util.parseItem;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
 
+@QElement("PLACE")
 public final class PlaceObjective extends Objective {
 
-	public static final String TYPE = "PLACE";
 	private final Material material;
 	private final byte data;
 	private final int amount;
@@ -20,19 +24,6 @@ public final class PlaceObjective extends Objective {
 		material = mat;
 		data = (byte)dat;
 	}
-	
-	@Override
-	public String getType() {
-		return TYPE;
-	}
-	
-	public Material getMaterial() {
-		return material;
-	}
-	
-	public byte getData() {
-		return data;
-	}
 
 	@Override
 	public int getTargetAmount() {
@@ -40,29 +31,39 @@ public final class PlaceObjective extends Objective {
 	}
 
 	@Override
-	public boolean isComplete(Player player, int progress) {
-		return progress >= amount;
-	}
-	
-	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
-		}
+	protected String show(int progress) {
 		String datStr = data < 0 ? " " : " (data " + data + ") ";
 		return "Place " + material.name().toLowerCase().replace('_', ' ') + datStr + "- " + (amount - progress) + "x.";
 	}
 	
 	@Override
-	public String toString() {
+	protected String info() {
 		String dataStr = (data < 0 ? "" : ":" + data);
-		return TYPE + ": " + material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount + coloredDesc();
+		//return String.format("%s[%d%s]; AMT: %d ", material.name(), material.getId(), dataStr, amount);
+		return material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount;
+	}
+	
+	@QCommand(
+			min = 2,
+			max = 2,
+			usage = "{<item>} <amount>")
+	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+		int[] itm = parseItem(context.getString(0));
+		Material mat = Material.getMaterial(itm[0]);
+		byte dat = (byte)itm[1];
+		if(mat.getId() > 255) {
+			throw new QCommandException(context.getSenderLang().ERROR_CMD_BLOCK_UNKNOWN);
+		}
+		int amt = Integer.parseInt(context.getString(1));
+		if(amt < 1 || dat < -1) {
+			throw new QCommandException(context.getSenderLang().ERROR_CMD_ITEM_NUMBERS);
+		}
+		return new PlaceObjective(amt, mat, dat);
 	}
 
-	@Override
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		
 		section.set("block", Util.serializeItem(material, data));
 		if(amount > 1)
 			section.set("amount", amount);
@@ -75,7 +76,7 @@ public final class PlaceObjective extends Objective {
 			int[] itm = Util.parseItem(section.getString("block", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
-			} catch (QuesterException e) {
+			} catch (IllegalArgumentException e) {
 				return null;
 		}
 		if(section.isInt("amount")) {
@@ -84,5 +85,15 @@ public final class PlaceObjective extends Objective {
 				amt = 1;
 		}
 		return new PlaceObjective(amt, mat, dat);
+	}
+	
+	//Custom methods
+	
+	public Material getMaterial() {
+		return material;
+	}
+	
+	public byte getData() {
+		return data;
 	}
 }

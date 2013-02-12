@@ -10,16 +10,20 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.gmail.molnardad.quester.Quest;
-import com.gmail.molnardad.quester.QuestData;
-import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.BreakObjective;
-import com.gmail.molnardad.quester.objectives.Objective;
 import com.gmail.molnardad.quester.objectives.PlaceObjective;
 
 public class PlaceListener implements Listener {
 
-	private QuestManager qm = Quester.qMan;
+	private QuestManager qm;
+	
+	public PlaceListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onBreak(BlockPlaceEvent event) {
@@ -30,7 +34,7 @@ public class PlaceListener implements Listener {
 	    		return;
 	    	List<Objective> objs = quest.getObjectives();
 			Block block = event.getBlock();
-	    	if(QuestData.brkSubOnPlace) {
+	    	if(DataManager.brkSubOnPlace) {
 		    	for(int i = 0; i < objs.size(); i++) {
 		    		// check if Objective is type BREAK
 		    		if(objs.get(i).getType().equalsIgnoreCase("BREAK")) {

@@ -12,15 +12,19 @@ import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.molnardad.quester.Quest;
-import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.EnchantObjective;
-import com.gmail.molnardad.quester.objectives.Objective;
 
 
 public class EnchantListener implements Listener {
 
-	private QuestManager qm = Quester.qMan;
+	private QuestManager qm;
+	
+	public EnchantListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onEnchant(EnchantItemEvent event) {

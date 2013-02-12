@@ -1,5 +1,8 @@
 package com.gmail.molnardad.quester.qevents;
 
+import static com.gmail.molnardad.quester.utils.Util.parseEnchants;
+import static com.gmail.molnardad.quester.utils.Util.parseItem;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,19 +13,23 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
+import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.utils.Util;
 
+@QElement("ITEM")
 public final class ItemQevent extends Qevent {
 
-	public static final String TYPE = "ITEM";
 	public final Material material;
 	public final short data;
 	private final int amount;
 	private final Map<Integer, Integer> enchants;
 	
-	public ItemQevent(int occ, int del, Material mat, int dat, int amt, Map<Integer, Integer> enchs) {
-		super(occ, del);
+	public ItemQevent(Material mat, int dat, int amt, Map<Integer, Integer> enchs) {
 		this.material = mat;
 		this.data = (short) dat;
 		this.amount = amt;
@@ -33,66 +40,17 @@ public final class ItemQevent extends Qevent {
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
-	}
-	
-	@Override
-	public int getOccasion() {
-		return occasion;
-	}
-	
-	@Override
-	public String toString() {
+	public String info() {
 		String itm = material.name()+"["+material.getId()+":"+data+"]; AMT: "+amount;
 		String enchs = enchants.isEmpty() ? "" : "\n -- ENCH:";
 		for(Integer e : enchants.keySet()) {
 			enchs = enchs + " " + Enchantment.getById(e).getName() + ":" + enchants.get(e);
 		}
-		return TYPE+": "+itm + appendSuper() + enchs;
+		return itm + enchs;
 	}
 
 	@Override
-	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-
-		section.set("item", Util.serializeItem(material, data));
-		if(!enchants.isEmpty())
-			section.set("enchants", Util.serializeEnchants(enchants));
-		if(amount != 1)
-			section.set("amount", amount);
-	}
-	
-	public static ItemQevent deser(int occ, int del, ConfigurationSection section) {
-		Material mat = null;
-		int dat = 0, amt = 1;
-		Map<Integer, Integer> enchs = null;
-		try {
-			int[] itm = Util.parseItem(section.getString("item"));
-			mat = Material.getMaterial(itm[0]);
-			dat = itm[1];
-			if(dat < 0)
-				dat = 0;
-			if(section.isInt("amount"))
-				amt = section.getInt("amount");
-			if(amt < 1)
-				amt = 1;
-			
-			if(section.isString("enchants"))
-				try {
-					enchs = Util.parseEnchants(section.getString("enchants"));
-				} catch (QuesterException e) {
-					enchs = null;
-				}
-		} catch (Exception e) {
-			return null;
-		}
-		
-		return new ItemQevent(occ, del, mat, dat, amt, enchs);
-	}
-
-	@Override
-	void run(Player player) {
+	protected void run(Player player, Quester plugin) {
 		int maxSize = material.getMaxStackSize();
         int toGive = amount;
         int numSpaces = 0;
@@ -116,7 +74,7 @@ public final class ItemQevent extends Qevent {
         	round = Math.min(maxSize, given);
 	        item = new ItemStack(material, round, data);
 	        for(Integer j : enchants.keySet()) {
-				item.addEnchantment(Enchantment.getById(j), enchants.get(j));
+				item.addUnsafeEnchantment(Enchantment.getById(j), enchants.get(j));
 			}
 	        inv.addItem(item);
 	        given -= round;
@@ -134,5 +92,70 @@ public final class ItemQevent extends Qevent {
 	        	toGive -= given;
         	}
         }
+	}
+
+	@QCommand(
+			min = 1,
+			max = 3,
+			usage = "{<item>} [amount] {[enchants]}")
+	public static Qevent fromCommand(QCommandContext context) throws QCommandException {
+		Material mat = null;
+		int dat;
+		int amt = 1;
+		Map<Integer, Integer> enchs = null;
+		int[] itm = parseItem(context.getString(0), context.getSenderLang());
+		mat = Material.getMaterial(itm[0]);
+		dat = itm[1];
+		if(context.length() > 1) {
+			amt = context.getInt(1);
+			if(context.length() > 2) {
+				enchs = parseEnchants(context.getString(2));
+			}
+		}
+		if(amt < 1 || dat < -1) {
+			throw new IllegalArgumentException(context.getSenderLang().ERROR_CMD_ITEM_NUMBERS);
+		}
+		if(context.length() > 2) {
+			enchs = parseEnchants(context.getString(2));
+		}
+		
+		return new ItemQevent(mat, dat, amt, enchs);
+	}
+
+	// TODO serialization
+	public void serialize(ConfigurationSection section) {
+		section.set("item", Util.serializeItem(material, data));
+		if(!enchants.isEmpty())
+			section.set("enchants", Util.serializeEnchants(enchants));
+		if(amount != 1)
+			section.set("amount", amount);
+	}
+	
+	public static ItemQevent deser(ConfigurationSection section) {
+		Material mat = null;
+		int dat = 0, amt = 1;
+		Map<Integer, Integer> enchs = null;
+		try {
+			int[] itm = Util.parseItem(section.getString("item"));
+			mat = Material.getMaterial(itm[0]);
+			dat = itm[1];
+			if(dat < 0)
+				dat = 0;
+			if(section.isInt("amount"))
+				amt = section.getInt("amount");
+			if(amt < 1)
+				amt = 1;
+			
+			if(section.isString("enchants"))
+				try {
+					enchs = Util.parseEnchants(section.getString("enchants"));
+				} catch (IllegalArgumentException e) {
+					enchs = null;
+				}
+		} catch (Exception e) {
+			return null;
+		}
+		
+		return new ItemQevent(mat, dat, amt, enchs);
 	}
 }

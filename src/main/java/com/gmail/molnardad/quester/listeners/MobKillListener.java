@@ -10,15 +10,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import com.gmail.molnardad.quester.Quest;
-import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.MobKillObjective;
-import com.gmail.molnardad.quester.objectives.Objective;
 
 public class MobKillListener implements Listener {
 
-	private QuestManager qm = Quester.qMan;
+	private QuestManager qm;
 	
+	public MobKillListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+	}
+		
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onDeath(EntityDeathEvent event) {
 		if(event.getEntity().getKiller() != null) {

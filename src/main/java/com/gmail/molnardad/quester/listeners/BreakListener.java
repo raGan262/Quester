@@ -11,17 +11,22 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import com.gmail.molnardad.quester.Quest;
-import com.gmail.molnardad.quester.QuestData;
-import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.BreakObjective;
-import com.gmail.molnardad.quester.objectives.Objective;
 
 public class BreakListener implements Listener {
 
+	private QuestManager qm;
+	
+	public BreakListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+	}
+	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBreak(BlockBreakEvent event) {
-	    QuestManager qm = Quester.qMan;
 	    Player player = event.getPlayer();
     	Quest quest = qm.getPlayerQuest(player.getName());
 	    if(quest != null) {
@@ -47,7 +52,7 @@ public class BreakListener implements Listener {
 	    			if(passed && obj.checkHand(player.getItemInHand().getTypeId())) {
 	    				// if DATA >= 0 compare
 	    				if(obj.getData() < 0 || obj.getData() == block.getData()) {
-	    					if(QuestData.brkNoDrops) {
+	    					if(DataManager.brkNoDrops) {
 	    						block.setType(Material.AIR);
 	    					}
 	    					qm.incProgress(player, i);

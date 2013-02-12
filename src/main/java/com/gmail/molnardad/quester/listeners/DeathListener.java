@@ -10,17 +10,24 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestFlag;
-import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.managers.LanguageManager;
+import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.DeathObjective;
-import com.gmail.molnardad.quester.objectives.Objective;
 import com.gmail.molnardad.quester.objectives.PlayerKillObjective;
 
 public class DeathListener implements Listener {
 
-	private QuestManager qm = Quester.qMan;
+	private QuestManager qm = null;
+	private LanguageManager langMan = null;
 	
+	public DeathListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+		this.langMan = plugin.getLanguageManager();
+	}
+		
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onDeath(PlayerDeathEvent event) {
 	    Player player = event.getEntity();
@@ -30,7 +37,7 @@ public class DeathListener implements Listener {
 	    	// DEATH CHECK
 	    	if(quest.hasFlag(QuestFlag.DEATHCANCEL)) {
 	    		try {
-					qm.cancelQuest(player, false);
+					qm.cancelQuest(player, false, langMan.getPlayerLang(player.getName()));
 				} catch (QuesterException e) {
 				}
 	    		return;

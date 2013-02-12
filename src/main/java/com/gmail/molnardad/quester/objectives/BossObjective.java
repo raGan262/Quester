@@ -1,12 +1,16 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
+
+@QElement("BOSS")
 public final class BossObjective extends Objective {
 
-	public static final String TYPE = "BOSS";
 	private final int amount;
 	private final String name;
 	
@@ -21,39 +25,44 @@ public final class BossObjective extends Objective {
 		}
 		return name.equalsIgnoreCase(boss);
 	}
-	
-	@Override
-	public String getType() {
-		return TYPE;
-	}
 
 	@Override
 	public int getTargetAmount() {
 		return amount;
 	}
-
-	@Override
-	public boolean isComplete(Player player, int progress) {
-		return progress >= amount;
-	}
 	
 	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
-		}
+	protected String show(int progress) {
 		return "Kill boss named " + name + " - " + (amount - progress) + "x";
 	}
 	
 	@Override
-	public String toString() {
-		return TYPE + ": " + name + "; AMT: " + amount + coloredDesc();
+	protected String info() {
+		return name + "; AMT: " + amount;
+	}
+	
+	@QCommand(
+			min = 1,
+			max = 2,
+			usage = "<name> [amount]")
+	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+		int amt = 1;
+		String boss = context.getString(0);
+		if(boss.equalsIgnoreCase("ANY")) {
+			boss = "";
+		}
+		if(context.length() > 1) {
+			amt = context.getInt(1);
+			if(amt < 1) {
+				throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
+			}
+		}
+		return new BossObjective(boss, amt);
 	}
 
-	@Override
-	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
+	// TODO serialization
 
+	public void serialize(ConfigurationSection section) {
 		section.set("amount", amount);
 		section.set("boss", name);
 	}

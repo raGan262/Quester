@@ -1,15 +1,20 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
+import static com.gmail.molnardad.quester.utils.Util.parseColor;
+
 import org.bukkit.DyeColor;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
 
+@QElement("DYE")
 public final class DyeObjective extends Objective {
 
-	public static final String TYPE = "DYE";
 	private final int amount;
 	private final DyeColor color;
 	private final String colorName;
@@ -23,43 +28,44 @@ public final class DyeObjective extends Objective {
 			colorName = "";
 		}
 	}
-	
-	@Override
-	public String getType() {
-		return TYPE;
-	}
 
 	@Override
 	public int getTargetAmount() {
 		return amount;
 	}
-
-	@Override
-	public boolean isComplete(Player player, int progress) {
-		return progress >= amount;
-	}
 	
 	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
-		}
+	protected String show(int progress) {
 		return "Dye sheep" +  colorName + " - " + (amount - progress) + "x";
 	}
 	
 	@Override
-	public String toString() {
-		return TYPE + ": " + amount + "; COLOR:" + (colorName.isEmpty() ? " ANY" : colorName + "(" + (15 - color.getDyeData()) + ")") + coloredDesc();
-	}
-
-	public boolean checkDye(int data) {
-		return (color == null) || (color.getDyeData() == data);
+	protected String info() {
+		return amount + "; COLOR:" + (colorName.isEmpty() ? " ANY" : colorName + "(" + (15 - color.getDyeData()) + ")");
 	}
 	
-	@Override
+	@QCommand(
+			min = 1,
+			max = 2,
+			usage = "<amount> {[color]}")
+	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+		int id = context.getInt(0);
+		DyeColor col = null;
+		if(id < 0) {
+			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
+		}
+		if(context.length() > 1) {
+			col = parseColor(context.getString(1));
+			if(col == null) {
+				throw new QCommandException(context.getSenderLang().ERROR_CMD_COLOR_UNKNOWN);
+			}
+		}
+		return new DyeObjective(id, col);
+	}
+	
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		
 		if(amount > 1)
 			section.set("amount", amount);
 		if(color != null) {
@@ -75,5 +81,11 @@ public final class DyeObjective extends Objective {
 			return null;
 		col = Util.parseColor(section.getString("color", "default"));
 		return new DyeObjective(amt, col);
+	}
+	
+	// Custom methods
+
+	public boolean checkDye(int data) {
+		return (color == null) || (color.getDyeData() == data);
 	}
 }

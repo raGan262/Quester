@@ -1,12 +1,17 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+
+@QElement("NPC")
 public final class NpcObjective extends Objective {
 
-	public static final String TYPE = "NPC";
 	private final int index;
 	private final boolean cancel;
 	
@@ -15,36 +20,37 @@ public final class NpcObjective extends Objective {
 		cancel = ccl;
 	}
 	
-	public boolean getCancel() {
-		return cancel;
+	@Override
+	public int getTargetAmount() {
+		return 1;
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
-	}
-	
-	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(1 - progress)).replaceAll("%t", String.valueOf(1));
-		}
+	protected String show(int progress) {
 		return "Interact with NPC ID " + index + ".";
 	}
 	
 	@Override
-	public String toString() {
-		return TYPE + ": " + index + "; CANCEL: " + cancel + coloredDesc();
+	protected String info() {
+		return index + "; CANCEL: " + cancel;
 	}
 	
-	public boolean checkNpc(int npc) {
-		return npc == index;
+	@QCommand(
+			min = 1,
+			max = 1,
+			usage = "<id> (-c)")
+	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+		int id = context.getInt(0);
+		boolean ccl = context.hasFlag('c');
+		if(id < 0) {
+			throw new QCommandException(context.getSenderLang().ERROR_CMD_BAD_ID);
+		}
+		return new NpcObjective(id, ccl);
 	}
 
-	@Override
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		
 		section.set("index", index);
 		if(cancel) {
 			section.set("cancel", cancel);
@@ -59,5 +65,15 @@ public final class NpcObjective extends Objective {
 			return null;
 		ccl = section.getBoolean("cancel", false);
 		return new NpcObjective(id, ccl);
+	}
+	
+	//Custom methods
+	
+	public boolean checkNpc(int npc) {
+		return npc == index;
+	}
+	
+	public boolean getCancel() {
+		return cancel;
 	}
 }

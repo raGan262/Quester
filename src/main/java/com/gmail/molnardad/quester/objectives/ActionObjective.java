@@ -1,6 +1,9 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
+import static com.gmail.molnardad.quester.utils.Util.getLoc;
+import static com.gmail.molnardad.quester.utils.Util.parseAction;
+import static com.gmail.molnardad.quester.utils.Util.parseItem;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -8,12 +11,16 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 
-import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
 
+@QElement("ACTION")
 public final class ActionObjective extends Objective {
 
-	public static final String TYPE = "ACTION";
 	private final Material block;
 	private final int blockData;
 	private final Material inHand;
@@ -43,9 +50,109 @@ public final class ActionObjective extends Objective {
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
+	public int getTargetAmount() {
+		return 1;
 	}
+	
+	@Override
+	protected String show(int progress) {
+		String clickStr = click == 1 ? "Left-click" : click == 2 ? "Right-click" : click == 3 ? "Walk on" : "Click";
+		String blockStr = (block == null) ? "" : " " + block.name().toLowerCase().replace('_', ' ');
+		if(blockStr.isEmpty() && click == 3) {
+			blockStr = " pressure plate";
+		}
+		String datStr = blockData < 0 ? "" : "(data" + blockData + ")";
+		String handStr = (inHand == null) ? "" : (inHand.getId() == 0) ? " with empty hand " : " with " + inHand.name().toLowerCase().replace('_', ' ') + " in hand";
+		String handDatStr = inHandData < 0 ? "" : "(data" + inHandData + ")";
+		String locStr = location == null ? "" : " " + range + " blocks close to " + Util.displayLocation(location);
+		return clickStr + blockStr + datStr + handStr + handDatStr + locStr + ".";
+	}
+	
+	@Override
+	protected String info() {
+		String datStr = blockData < 0 ? "" : ":" + blockData;
+		String blockStr = block == null ? "ANY" : block.name() + "[" + block.getId() + datStr + "]";
+		String handDatStr = inHandData < 0 ? "" : ":" + inHandData;
+		String handStr = inHand == null ? "ANY" : inHand.name() + "[" + inHand.getId() + handDatStr + "]";
+		String clickStr = click == 1 ? "LEFT" : click == 2 ? "RIGHT" : click == 3 ? "PUSH" : "ALL";
+		return clickStr + "; BLOCK: " + blockStr + "; HAND: " + handStr + "; LOC: " + Util.displayLocation(location) + "; RNG: " + range;
+	}
+	
+	@QCommand(
+			min = 1,
+			max = 5,
+			usage = "{<click>} {[block]} {[item]} {[location]} [range]")
+	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+		Material mat = null, hmat = null;
+		int dat = -1, hdat = -1, rng = 0, click = 0;
+		Location loc = null;
+		int[] itm;
+		click = parseAction(context.getString(0));
+		if(context.length() > 1) {
+			itm = parseItem(context.getString(1));
+			if(itm[0] > 255) {
+				throw new QCommandException(context.getSenderLang().ERROR_CMD_BLOCK_UNKNOWN);
+			}
+			mat = Material.getMaterial(itm[0]);
+			dat = itm[1];
+			if(context.length() > 2) {
+				itm = parseItem(context.getString(2));
+				hmat = Material.getMaterial(itm[0]);
+				hdat = itm[1];
+				if(context.length() > 3) {
+					loc = getLoc(context.getPlayer(), context.getString(3));
+					if(context.length() > 4) {
+						rng = Integer.parseInt(context.getString(4));	
+					}
+				}
+			}
+		}
+		return new ActionObjective(mat, dat, hmat, hdat, click, loc, rng);
+	}
+
+	// TODO serialization
+	
+	public void serialize(ConfigurationSection section) {
+		if(block != null) {
+			section.set("block", Util.serializeItem(block, blockData));
+		}
+		if(inHand != null) {
+			section.set("hand", Util.serializeItem(inHand, inHandData));
+		}
+		if(click > 0 && click < 4) {
+			section.set("click", click);
+		}
+		if(location != null) {
+			section.set("location", Util.serializeLocString(location));
+			if(range > 0) {
+				section.set("range", range);
+			}
+		}
+	}
+	
+	public static Objective deser(ConfigurationSection section) {
+		Material mat = null, hnd = null;
+		Location loc = null;
+		int dat = -1, hdat = -1, rng = 0, clck = 0;
+		int[] itm;
+		try {
+			itm = Util.parseItem(section.getString("block", ""));
+			mat = Material.getMaterial(itm[0]);
+			dat = itm[1];
+		} catch (IllegalArgumentException ignore) {}
+		try {
+			itm = Util.parseItem(section.getString("hand", ""));
+			hnd = Material.getMaterial(itm[0]);
+			hdat = itm[1];
+		} catch (IllegalArgumentException ignore) {}
+		clck = section.getInt("click", 0);
+		loc = Util.deserializeLocString(section.getString("location", ""));
+		rng = section.getInt("range", 0);
+		
+		return new ActionObjective(mat, dat, hnd, hdat, clck, loc, rng);
+	}
+	
+	// Custom methods
 	
 	public boolean checkBlock(Block blck) {
 		if(block == null) {
@@ -96,75 +203,5 @@ public final class ActionObjective extends Objective {
 			return true;
 		}
 		return false;
-	}
-	
-	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(1 - progress)).replaceAll("%t", String.valueOf(1));
-		}
-		String clickStr = click == 1 ? "Left-click" : click == 2 ? "Right-click" : click == 3 ? "Walk on" : "Click";
-		String blockStr = (block == null) ? "" : " " + block.name().toLowerCase().replace('_', ' ');
-		if(blockStr.isEmpty() && click == 3) {
-			blockStr = " pressure plate";
-		}
-		String datStr = blockData < 0 ? "" : "(data" + blockData + ")";
-		String handStr = (inHand == null) ? "" : (inHand.getId() == 0) ? " with empty hand " : " with " + inHand.name().toLowerCase().replace('_', ' ') + " in hand";
-		String handDatStr = inHandData < 0 ? "" : "(data" + inHandData + ")";
-		String locStr = location == null ? "" : " " + range + " blocks close to " + Util.displayLocation(location);
-		return clickStr + blockStr + datStr + handStr + handDatStr + locStr + ".";
-	}
-	
-	@Override
-	public String toString() {
-		String datStr = blockData < 0 ? "" : ":" + blockData;
-		String blockStr = block == null ? "ANY" : block.name() + "[" + block.getId() + datStr + "]";
-		String handDatStr = inHandData < 0 ? "" : ":" + inHandData;
-		String handStr = inHand == null ? "ANY" : inHand.name() + "[" + inHand.getId() + handDatStr + "]";
-		String clickStr = click == 1 ? "LEFT" : click == 2 ? "RIGHT" : click == 3 ? "PUSH" : "ALL";
-		return TYPE + ": " + clickStr + "; BLOCK: " + blockStr + "; HAND: " + handStr + "; LOC: " + Util.displayLocation(location) + "; RNG: " + range + coloredDesc();
-	}
-
-	@Override
-	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		
-		if(block != null) {
-			section.set("block", Util.serializeItem(block, blockData));
-		}
-		if(inHand != null) {
-			section.set("hand", Util.serializeItem(inHand, inHandData));
-		}
-		if(click > 0 && click < 4) {
-			section.set("click", click);
-		}
-		if(location != null) {
-			section.set("location", Util.serializeLocString(location));
-			if(range > 0) {
-				section.set("range", range);
-			}
-		}
-	}
-	
-	public static Objective deser(ConfigurationSection section) {
-		Material mat = null, hnd = null;
-		Location loc = null;
-		int dat = -1, hdat = -1, rng = 0, clck = 0;
-		int[] itm;
-		try {
-			itm = Util.parseItem(section.getString("block", ""));
-			mat = Material.getMaterial(itm[0]);
-			dat = itm[1];
-		} catch (QuesterException ignore) {}
-		try {
-			itm = Util.parseItem(section.getString("hand", ""));
-			hnd = Material.getMaterial(itm[0]);
-			hdat = itm[1];
-		} catch (QuesterException ignore) {}
-		clck = section.getInt("click", 0);
-		loc = Util.deserializeLocString(section.getString("location", ""));
-		rng = section.getInt("range", 0);
-		
-		return new ActionObjective(mat, dat, hnd, hdat, clck, loc, rng);
 	}
 }

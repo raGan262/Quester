@@ -13,46 +13,65 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import com.gmail.molnardad.quester.Quest;
-import com.gmail.molnardad.quester.QuestData;
 import com.gmail.molnardad.quester.QuestHolder;
-import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.QuesterTrait;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.exceptions.HolderException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.LanguageManager;
+import com.gmail.molnardad.quester.managers.ProfileManager;
+import com.gmail.molnardad.quester.managers.QuestHolderManager;
+import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.NpcKillObjective;
 import com.gmail.molnardad.quester.objectives.NpcObjective;
-import com.gmail.molnardad.quester.objectives.Objective;
+import com.gmail.molnardad.quester.strings.QuesterStrings;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class Citizens2Listener implements Listener {
 	
-	QuestManager qm = Quester.qMan;
+	private QuestManager qm = null;
+	private QuestHolderManager holMan = null;
+	private LanguageManager langMan = null;
+	private ProfileManager profMan = null;
+	
+	public Citizens2Listener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+		this.langMan = plugin.getLanguageManager();
+		this.holMan = plugin.getHolderManager();
+		this.profMan = plugin.getProfileManager();
+	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onLeftClick(NPCLeftClickEvent event) {
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
-			QuestHolder qh = qm.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
+			QuestHolder qh = holMan.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
 			Player player = event.getClicker();
-			if(!Util.permCheck(player, QuestData.PERM_USE_NPC, true)) {
+			QuesterStrings lang = langMan.getPlayerLang(player.getName());
+			if(!Util.permCheck(player, DataManager.PERM_USE_NPC, true, lang)) {
 				return;
 			}
 			// If player has perms and holds blaze rod
-			boolean isOp = Util.permCheck(player, QuestData.MODIFY_PERM, false);
+			boolean isOp = Util.permCheck(player, DataManager.PERM_MODIFY, false, null);
 			if(isOp) {
 				if(player.getItemInHand().getTypeId() == 369) {
 					event.getNPC().getTrait(QuesterTrait.class).setHolderID(-1);
-					player.sendMessage(ChatColor.GREEN + Quester.strings.HOL_UNASSIGNED);
+					player.sendMessage(ChatColor.GREEN + lang.HOL_UNASSIGNED);
 				    return;
 				}
 			}
 			if(qh == null) {
-				player.sendMessage(ChatColor.RED + Quester.strings.ERROR_HOL_NOT_ASSIGNED);
+				player.sendMessage(ChatColor.RED + lang.ERROR_HOL_NOT_ASSIGNED);
 				return;
 			}
+			if(!qh.canInteract()) {
+				player.sendMessage(ChatColor.RED + lang.ERROR_HOL_INTERACT);
+			}
 			try {
-				qh.selectNext();
-			} catch (QuesterException e) {
-				player.sendMessage(e.message());
+				qh.selectNext(lang);
+			} catch (HolderException e) {
+				player.sendMessage(e.getMessage());
 				if(!isOp) {
 					return;
 				}
@@ -71,28 +90,28 @@ public class Citizens2Listener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onRightClick(NPCRightClickEvent event) {
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
-			QuestManager qm = Quester.qMan;
-			QuestHolder qh = qm.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
+			QuestHolder qh = holMan.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
 			Player player = event.getClicker();
-			if(!Util.permCheck(player, QuestData.PERM_USE_NPC, true)) {
+			QuesterStrings lang = langMan.getPlayerLang(player.getName());
+			if(!Util.permCheck(player, DataManager.PERM_USE_NPC, true, lang)) {
 				return;
 			}
-			boolean isOP = Util.permCheck(player, QuestData.MODIFY_PERM, false);
+			boolean isOP = Util.permCheck(player, DataManager.PERM_MODIFY, false, null);
 			// If player has perms and holds blaze rod
 			if(isOP) {
 				if(player.getItemInHand().getTypeId() == 369) {
-					int sel = qm.getSelectedHolderID(player.getName());
+					int sel = profMan.getProfile(player.getName()).getHolderID();
 					if(sel < 0){
-						player.sendMessage(ChatColor.RED + Quester.strings.ERROR_HOL_NOT_SELECTED);
+						player.sendMessage(ChatColor.RED + lang.ERROR_HOL_NOT_SELECTED);
 					} else {
 						event.getNPC().getTrait(QuesterTrait.class).setHolderID(sel);
-						player.sendMessage(ChatColor.GREEN + Quester.strings.HOL_ASSIGNED);
+						player.sendMessage(ChatColor.GREEN + lang.HOL_ASSIGNED);
 					}
 				    return;
 				}
 			}
 			if(qh == null) {
-				player.sendMessage(ChatColor.RED + Quester.strings.ERROR_HOL_NOT_ASSIGNED);
+				player.sendMessage(ChatColor.RED + lang.ERROR_HOL_NOT_ASSIGNED);
 				return;
 			}
 			int selected = qh.getSelected();
@@ -103,18 +122,18 @@ public class Citizens2Listener implements Listener {
 				int questID = currentQuest == null ? -1 : currentQuest.getID();
 				// player has quest and quest giver does not accept this quest
 				if(questID >= 0 && !qsts.contains(questID)) {
-					player.sendMessage(ChatColor.RED + Quester.strings.ERROR_Q_NOT_HERE);
+					player.sendMessage(ChatColor.RED + lang.ERROR_Q_NOT_HERE);
 					return;
 				}
 				// player has quest and quest giver accepts this quest
 				if(questID >= 0 && qsts.contains(questID)) {
 					try {
-						qm.complete(player, false);
+						qm.complete(player, false, lang);
 					} catch (QuesterException e) {
 						try {
-							qm.showProgress(player);
+							qm.showProgress(player, lang);
 						} catch (QuesterException f) {
-							player.sendMessage(ChatColor.DARK_PURPLE + Quester.strings.ERROR_INTERESTING);
+							player.sendMessage(ChatColor.DARK_PURPLE + lang.ERROR_INTERESTING);
 						}
 					}
 					return;
@@ -123,12 +142,12 @@ public class Citizens2Listener implements Listener {
 			// player doesn't have quest
 			if(qm.isQuestActive(selected)) {
 				try {
-					qm.startQuest(player, qm.getQuestNameByID(selected), false);
+					qm.startQuest(player, qm.getQuestName(selected), false, lang);
 				} catch (QuesterException e) {
-					player.sendMessage(e.message());
+					player.sendMessage(e.getMessage());
 				}
 			} else {
-				player.sendMessage(ChatColor.RED + Quester.strings.ERROR_Q_NOT_SELECTED);
+				player.sendMessage(ChatColor.RED + lang.ERROR_Q_NOT_SELECTED);
 			}
 		}
 	}

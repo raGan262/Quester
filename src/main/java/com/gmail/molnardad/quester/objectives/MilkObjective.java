@@ -1,54 +1,52 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
+
+@QElement("MILK")
 public final class MilkObjective extends Objective {
 
-	public static final String TYPE = "MILK";
 	private final int amount;
 	
 	public MilkObjective(int amt) {
 		amount = amt;
-	}
-	
-	@Override
-	public String getType() {
-		return TYPE;
 	}
 
 	@Override
 	public int getTargetAmount() {
 		return amount;
 	}
-
-	@Override
-	public boolean isComplete(Player player, int progress) {
-		return progress >= amount;
-	}
 	
 	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
-		}
+	protected String show(int progress) {
 		return "Milk cow - " + (amount - progress) + "x";
 	}
 	
 	@Override
-	public String toString() {
-		return TYPE + ": " + amount + coloredDesc();
+	protected String info() {
+		return String.valueOf(amount);
 	}
 	
-	public int takeExp(int amt) {
-		return amt - amount;
+	@QCommand(
+			min = 1,
+			max = 1,
+			usage = "<amount>")
+	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+		int amt = context.getInt(0);
+		if(amt < 1) {
+			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
+		}
+		return new MilkObjective(amt);
 	}
 
-	@Override
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		
 		section.set("amount", amount);
 	}
 	

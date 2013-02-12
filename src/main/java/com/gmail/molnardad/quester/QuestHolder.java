@@ -10,20 +10,30 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.exceptions.ExceptionType;
-import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.exceptions.HolderException;
+import com.gmail.molnardad.quester.managers.QuestManager;
+import com.gmail.molnardad.quester.strings.QuesterStrings;
 import com.gmail.molnardad.quester.utils.Util;
 
-import static com.gmail.molnardad.quester.Quester.qMan;
-
 public class QuestHolder {
-
+	
 	private List<Integer> heldQuests = new ArrayList<Integer>();
 	private int selected = -1;
 	private String name;
+	private long lastAction = 0;
+	private QuestManager qMan = null;
 	
-	public QuestHolder(String name) {
+	public QuestHolder(String name, Quester plugin) {
 		this.name = name;
+		this.qMan = plugin.getQuestManager();
+	}
+	
+	public boolean canInteract() {
+		if(System.currentTimeMillis() - lastAction < 500) {
+			lastAction = System.currentTimeMillis();
+			return true;
+		}
+		return false;
 	}
 	
 	public void setname(String newName) {
@@ -49,13 +59,14 @@ public class QuestHolder {
 		return selected;
 	}
 	
-	public void selectNext() throws QuesterException {
+	public boolean selectNext(QuesterStrings lang) throws HolderException {
+		lastAction = System.currentTimeMillis();
 		if(heldQuests.isEmpty())
-			throw new QuesterException(ExceptionType.Q_NONE);
+			throw new HolderException(lang.ERROR_Q_NONE);
 		if(getSelected() == -1) {
 			selected = 0;
 			if(qMan.isQuestActive(heldQuests.get(0)))
-				return;
+				return true;
 		}
 		int i = selected;
 		boolean notChosen = true;
@@ -68,9 +79,10 @@ public class QuestHolder {
 				selected = i;
 				notChosen = false;
 			} else if(i == selected) {
-				throw new QuesterException(ExceptionType.Q_NONE_ACTIVE);
+				throw new HolderException(lang.ERROR_Q_NONE_ACTIVE);
 			}
 		}
+		return true;
 	}
 	
 	private void checkQuests() {
@@ -98,20 +110,17 @@ public class QuestHolder {
 		checkQuests();
 	}
 	
-	public void moveQuest(int from, int to) throws QuesterException {
-		try{
-			heldQuests.get(from);
-			heldQuests.get(to);
-			Util.moveListUnit(heldQuests, from, to);
-		} catch (IndexOutOfBoundsException e) {
-			throw new QuesterException(Quester.strings.ERROR_CMD_ID_OUT_OF_BOUNDS);
-		}
+	public void moveQuest(int from, int to) throws HolderException, IndexOutOfBoundsException {
+		heldQuests.get(from);
+		heldQuests.get(to);
+		Util.moveListUnit(heldQuests, from, to);
 	}
 	
 	public void showQuestsUse(Player player) {
 		for(int i=0; i<heldQuests.size(); i++) {
 			if(qMan.isQuestActive(heldQuests.get(i))) {
-				player.sendMessage((i == selected ? ChatColor.GREEN : ChatColor.BLUE) + " - " + qMan.getQuestNameByID(heldQuests.get(i)));
+				player.sendMessage((i == selected ? ChatColor.GREEN : ChatColor.BLUE) + " - "
+						+ qMan.getQuestName(heldQuests.get(i)));
 			}
 		}
 	}
@@ -121,7 +130,8 @@ public class QuestHolder {
 		for(int i=0; i<heldQuests.size(); i++) {
 			ChatColor col = qMan.isQuestActive(heldQuests.get(i)) ? ChatColor.BLUE : ChatColor.RED;
 			
-			sender.sendMessage(i + ". " + (i == selected ? ChatColor.GREEN : ChatColor.BLUE) + "[" + heldQuests.get(i) + "] " + col + qMan.getQuestNameByID(heldQuests.get(i)));
+			sender.sendMessage(i + ". " + (i == selected ? ChatColor.GREEN : ChatColor.BLUE) + "["
+					+ heldQuests.get(i) + "] " + col + qMan.getQuestName(heldQuests.get(i)));
 		}
 	}
 	
@@ -142,7 +152,7 @@ public class QuestHolder {
 		return map;
 	}
 	
-	public static QuestHolder deserialize(ConfigurationSection section) {
+	public static QuestHolder deserialize(ConfigurationSection section, Quester plugin) {
 		QuestHolder qHolder = null;
 		try{
 			if(section == null)
@@ -150,7 +160,7 @@ public class QuestHolder {
 			String name = section.getString("name", "QuestHolder");
 			String str = section.getString("quests", "");
 			
-			qHolder = new QuestHolder(name);
+			qHolder = new QuestHolder(name, plugin);
 			String[] split = str.split(",");
 			
 			int i;

@@ -11,16 +11,21 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.molnardad.quester.Quest;
-import com.gmail.molnardad.quester.QuestManager;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.ActionObjective;
-import com.gmail.molnardad.quester.objectives.Objective;
 
 public class ActionListener implements Listener {
 
+	private QuestManager qm;
+	
+	public ActionListener(Quester plugin) {
+		this.qm = plugin.getQuestManager();
+	}
+	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onAction(PlayerInteractEvent event) {
-	    QuestManager qm = Quester.qMan;
 	    Player player = event.getPlayer();
     	Quest quest = qm.getPlayerQuest(player.getName());
 	    if(quest != null) {

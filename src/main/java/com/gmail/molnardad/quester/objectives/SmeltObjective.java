@@ -1,17 +1,21 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
+import static com.gmail.molnardad.quester.utils.Util.parseItem;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.Util;
 
+@QElement("SMELT")
 public final class SmeltObjective extends Objective {
 
-	public static final String TYPE = "SMELT";
 	private final Material material;
 	private final short data;
 	private final int amount;
@@ -21,50 +25,44 @@ public final class SmeltObjective extends Objective {
 		amount = amt;
 		data = (short)dat;
 	}
-	
-	@Override
-	public String getType() {
-		return TYPE;
-	}
 
 	@Override
 	public int getTargetAmount() {
 		return amount;
 	}
-
-	@Override
-	public boolean isComplete(Player player, int progress) {
-		return progress >= amount;
-	}
 	
 	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
-		}
+	protected String show(int progress) {
 		String datStr = data < 0 ? " " : " (data " + data + ") ";
 		String pcs = (amount - progress) == 1 ? " piece of " : " pieces of ";
 		String mat = material.getId() == 351 ? "dye" : material.name().toLowerCase();
 		return "Smelt " + (amount - progress) + pcs + mat + datStr + ".";
 	}
 	
-	public String toString() {
+	@Override
+	protected String info() {
 		String dataStr = (data < 0 ? "" : ":" + data);
-		return TYPE + ": " + material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount + coloredDesc();
+		return material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount;
 	}
 	
-	public boolean check(ItemStack item) {
-		if(item.getTypeId() != material.getId())
-			return false;
-		if(item.getDurability() != data && data >= 0)
-			return false;
-		return true;
+	@QCommand(
+			min = 2,
+			max = 2,
+			usage = "{<item>} <amount>")
+	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+		int[] itm = parseItem(context.getString(0));
+		Material mat = Material.getMaterial(itm[0]);
+		int dat = itm[1];
+		int amt = context.getInt(1);
+		if(amt < 1 || dat < -1) {
+			throw new QCommandException(context.getSenderLang().ERROR_CMD_ITEM_NUMBERS);
+		}
+		return new SmeltObjective(amt, mat, dat);
 	}
 
-	@Override
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		
 		section.set("item", Util.serializeItem(material, data));
 		if(amount > 1)
 			section.set("amount", amount);
@@ -77,7 +75,7 @@ public final class SmeltObjective extends Objective {
 			int[] itm = Util.parseItem(section.getString("item", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
-			} catch (QuesterException e) {
+			} catch (IllegalArgumentException e) {
 				return null;
 		}
 		if(section.isInt("amount")) {
@@ -86,5 +84,15 @@ public final class SmeltObjective extends Objective {
 				amt = 1;
 		}
 		return new SmeltObjective(amt, mat, dat);
+	}
+	
+	//Custom methods
+	
+	public boolean check(ItemStack item) {
+		if(item.getTypeId() != material.getId())
+			return false;
+		if(item.getDurability() != data && data >= 0)
+			return false;
+		return true;
 	}
 }

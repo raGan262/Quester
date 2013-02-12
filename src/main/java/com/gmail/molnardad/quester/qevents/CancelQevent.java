@@ -5,46 +5,43 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 
+@QElement("CANCEL")
 public final class CancelQevent extends Qevent {
 
-	public static final String TYPE = "CANCEL";
-	
-	public CancelQevent(int occ, int del){
-		super(occ, del);
-	}
-	
+	public CancelQevent() {}
+
 	@Override
-	public String getType() {
-		return TYPE;
-	}
-	
-	@Override
-	public int getOccasion() {
-		return occasion;
-	}
-	
-	@Override
-	public String toString() {
-		return TYPE + appendSuper();
+	protected String info() {
+		return "";
 	}
 
 	@Override
-	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-	}
-	
-	public static Qevent deser(int occ, int del, ConfigurationSection section) {	
-		return new CancelQevent(occ, del);
-	}
-
-	@Override
-	void run(Player player) {
+	protected void run(Player player, Quester plugin) {
 		try {
-			Quester.qMan.cancelQuest(player, false);
+			plugin.getQuestManager().cancelQuest(player, false, plugin.getLanguageManager().getPlayerLang(player.getName()));
 		} catch (QuesterException e) {
-			Quester.log.info("Event failed to cancel " + player.getName() + "'s quest. Reason: " + ChatColor.stripColor(e.message()));
+			Quester.log.info("Event failed to cancel " + player.getName() + "'s quest. Reason: " + ChatColor.stripColor(e.getMessage()));
 		}
+	}
+	
+	@QCommand(
+			max = 0)
+	public static Qevent fromCommand(QCommandContext context) {
+		return new CancelQevent();
+	}
+	
+	// TODO serialization
+	
+	public void serialize(ConfigurationSection section) {
+	}
+	
+	public static Qevent deser(ConfigurationSection section) {	
+		return new CancelQevent();
 	}
 }

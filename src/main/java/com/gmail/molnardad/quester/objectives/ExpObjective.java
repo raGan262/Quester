@@ -1,14 +1,18 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.utils.ExpManager;
 
+@QElement("EXP")
 public final class ExpObjective extends Objective {
 
-	public static final String TYPE = "EXP";
 	private final int amount;
 	
 	public ExpObjective(int amt) {
@@ -16,41 +20,18 @@ public final class ExpObjective extends Objective {
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
+	public int getTargetAmount() {
+		return 1;
 	}
 	
 	@Override
-	public String progress(int progress) {
-		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(1 - progress)).replaceAll("%t", String.valueOf(amount));
-		}
+	protected String show(int progress) {
 		return "Have " + amount + " experience points on completion.";
 	}
 	
 	@Override
-	public String toString() {
-		return TYPE + ": " + amount + coloredDesc();
-	}
-	
-	public int takeExp(int amt) {
-		return amt - amount;
-	}
-
-	@Override
-	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
-		
-		section.set("amount", amount);
-	}
-	
-	public static Objective deser(ConfigurationSection section) {
-		int amt = 0;
-		if(section.isInt("amount"))
-			amt = section.getInt("amount");
-		if(amt < 1)
-			return null;
-		return new ExpObjective(amt);
+	protected String info() {
+		return String.valueOf(amount);
 	}
 
 	@Override
@@ -62,5 +43,38 @@ public final class ExpObjective extends Objective {
 			return true;
 		}
 		return false;
+	}
+	
+	@QCommand(
+			min = 1,
+			max = 1,
+			usage = "<amount>")
+	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+		int amt = context.getInt(0);
+		if(amt < 1) {
+			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
+		}
+		return new ExpObjective(amt);
+	}
+
+	// TODO serialization
+	
+	public void serialize(ConfigurationSection section) {
+		section.set("amount", amount);
+	}
+	
+	public static Objective deser(ConfigurationSection section) {
+		int amt = 0;
+		if(section.isInt("amount"))
+			amt = section.getInt("amount");
+		if(amt < 1)
+			return null;
+		return new ExpObjective(amt);
+	}
+	
+	// Custom methods
+	
+	public int takeExp(int amt) {
+		return amt - amount;
 	}
 }

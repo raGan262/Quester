@@ -3,40 +3,51 @@ package com.gmail.molnardad.quester.qevents;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.PlayerProfile;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.commandbase.QCommand;
+import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.elements.Qevent;
+import com.gmail.molnardad.quester.managers.ProfileManager;
 
+@QElement("POINT")
 public final class PointQevent extends Qevent {
 
-	public static final String TYPE = "POINT";
 	private final int amount;
 	
-	public PointQevent(int occ, int del, int amt) {
-		super(occ, del);
+	public PointQevent(int amt) {
 		this.amount = amt;
 	}
 	
 	@Override
-	public String getType() {
-		return TYPE;
-	}
-	
-	@Override
-	public int getOccasion() {
-		return occasion;
-	}
-	
-	@Override
-	public String toString() {
-		return TYPE + ": " + amount + appendSuper();
+	public String info() {
+		return String.valueOf(amount);
 	}
 
 	@Override
+	protected void run(Player player, Quester plugin) {
+		ProfileManager profMan = plugin.getProfileManager();
+		PlayerProfile prof = profMan.getProfile(player.getName());
+		prof.addPoints(amount);
+		profMan.checkRank(prof);
+	}
+
+	@QCommand(
+			min = 1,
+			max = 1,
+			usage = "<amount>")
+	public static Qevent fromCommand(QCommandContext context) {
+		return new PointQevent(context.getInt(0));
+	}
+
+	// TODO serialization
+	
 	public void serialize(ConfigurationSection section) {
-		super.serialize(section, TYPE);
 		section.set("amount", amount);
 	}
 	
-	public static PointQevent deser(int occ, int del, ConfigurationSection section) {
+	public static PointQevent deser(ConfigurationSection section) {
 		int amt;
 		
 		if(section.isInt("amount"))
@@ -44,12 +55,6 @@ public final class PointQevent extends Qevent {
 		else
 			return null;
 		
-		return new PointQevent(occ, del, amt);
-	}
-
-	@Override
-	void run(Player player) {
-		Quester.qMan.getProfile(player.getName()).addPoints(amount);
-		Quester.qMan.checkRank(Quester.qMan.getProfile(player.getName()));
+		return new PointQevent(amt);
 	}
 }

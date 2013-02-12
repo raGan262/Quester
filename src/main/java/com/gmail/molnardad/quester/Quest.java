@@ -11,9 +11,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
-import com.gmail.molnardad.quester.conditions.Condition;
-import com.gmail.molnardad.quester.objectives.Objective;
-import com.gmail.molnardad.quester.qevents.Qevent;
+import com.gmail.molnardad.quester.elements.Condition;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.utils.Util;
 import com.gmail.molnardad.quester.QuestFlag;
 
@@ -223,9 +223,9 @@ public class Quest {
 	}
 	
 	public boolean removeWorld(String worldName) {
-		if(!worlds.contains(worldName))
+		if(!worlds.contains(worldName.toLowerCase()))
 			return false;
-		worlds.remove(worldName);
+		worlds.remove(worldName.toLowerCase());
 		return true;
 	}
 	
@@ -251,19 +251,19 @@ public class Quest {
 		if(!objectives.isEmpty()) {
 			ConfigurationSection subsection = section.createSection("objectives");
 			for(int i=0; i<objectives.size(); i++) {
-				objectives.get(i).serialize(subsection.createSection(String.valueOf(i)));
+				//objectives.get(i).serialize(subsection.createSection(String.valueOf(i)));
 			}
 		}
 		if(!conditions.isEmpty()) {
 			ConfigurationSection subsection = section.createSection("conditions");
 			for(int i=0; i<conditions.size(); i++) {
-				conditions.get(i).serialize(subsection.createSection(String.valueOf(i)));
+				//conditions.get(i).serialize(subsection.createSection(String.valueOf(i)));
 			}
 		}
 		if(!qevents.isEmpty()) {
 			ConfigurationSection subsection = section.createSection("events");
 			for(int i=0; i<qevents.size(); i++) {
-				qevents.get(i).serialize(subsection.createSection(String.valueOf(i)));
+				//qevents.get(i).serialize(subsection.createSection(String.valueOf(i)));
 			}
 		}
 		
@@ -315,8 +315,6 @@ public class Quest {
 				}
 			}
 
-			if(QuestData.debug)
-				Quester.log.info("Deserializing objectives.");
 			Objective obj = null;
 			if(section.isConfigurationSection("objectives")) {
 				ConfigurationSection subsection = section.getConfigurationSection("objectives");
@@ -325,32 +323,24 @@ public class Quest {
 					obj = Objective.deserialize(subsection.getConfigurationSection(String.valueOf(i)));
 					if(obj != null) {
 						quest.addObjective(obj);
-						if(QuestData.debug)
-							Quester.log.info("Objective " + i + " OK.");
 					} else
 						Quester.log.severe("Error occured when deserializing objective ID " + i + " in quest '" + quest.getName() + "'.");
 				}
 			}
 
-			if(QuestData.debug)
-				Quester.log.info("Deserializing conditions.");
 			Condition con = null;
 			if(section.isConfigurationSection("conditions")) {
 				ConfigurationSection subsection = section.getConfigurationSection("conditions");
 				Set<String> keys = subsection.getKeys(false);
 				for(int i=0; i<keys.size(); i++) {
-					con = Condition.deserialize(subsection.getConfigurationSection(String.valueOf(i)));
+					//con = Condition.deserialize(subsection.getConfigurationSection(String.valueOf(i)));
 					if(con != null) {
 						quest.addCondition(con);
-						if(QuestData.debug)
-							Quester.log.info("Condition " + i + " OK.");
 					} else
 						Quester.log.severe("Error occured when deserializing condition ID " + i + " in quest '" + quest.getName() + "'.");
 				}
 			}
 
-			if(QuestData.debug)
-				Quester.log.info("Deserializing events.");
 			Qevent qvt = null;
 			if(section.isConfigurationSection("events")) {
 				ConfigurationSection subsection = section.getConfigurationSection("events");
@@ -359,8 +349,6 @@ public class Quest {
 					qvt = Qevent.deserialize(subsection.getConfigurationSection(String.valueOf(i)));
 					if(qvt != null) {
 						quest.addQevent(qvt);
-						if(QuestData.debug)
-							Quester.log.info("Event " + i + " OK.");
 					} else
 						Quester.log.severe("Error occured when deserializing event ID:" + i + " in quest '" + quest.getName() + "'.");
 				}
