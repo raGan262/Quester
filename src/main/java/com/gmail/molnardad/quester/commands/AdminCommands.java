@@ -71,8 +71,9 @@ public class AdminCommands {
 			max = 0,
 			permission = DataManager.PERM_ADMIN)
 	public void reload(QCommandContext context, CommandSender sender) {
-		plugin.initializeConfig();
-		plugin.reloadLocal();
+		// TODO reloading once loading is done
+		//DataManager.reloadData();
+		//plugin.reloadLocal();
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().MSG_CONFIG_RELOADED);
 	}
 
