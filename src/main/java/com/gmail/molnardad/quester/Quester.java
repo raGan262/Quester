@@ -15,8 +15,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
@@ -38,7 +36,7 @@ import com.gmail.molnardad.quester.commands.UserCommands;
 import com.gmail.molnardad.quester.conditions.*;
 import com.gmail.molnardad.quester.objectives.*;
 import com.gmail.molnardad.quester.qevents.*;
-import com.gmail.molnardad.quester.config.*;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.elements.Element;
 import com.gmail.molnardad.quester.exceptions.*;
 
@@ -47,11 +45,6 @@ public class Quester extends JavaPlugin {
 		public static Logger log = null;
 		public static Random randGen = new Random();
 		public static Economy econ = null;
-		
-		public ProfileConfig profileConfig = null;
-		public QuestConfig questConfig = null;
-		public HolderConfig holderConfig = null;
-		public YamlConfiguration config = null;
 		
 		private LanguageManager langs = null;
 		private QuestManager quests = null;
@@ -76,7 +69,16 @@ public class Quester extends JavaPlugin {
 		public void onEnable() {
 			
 			log = this.getLogger();
-			//Data first
+			
+			// LOAD ORDER
+			// 1. Data
+			// 2. Languages
+			// instantiate remaining managers
+			// 3. Holders TODO remove QuestManager dependency
+			// Wait for others to load
+			// 4. Quests
+			// 5. Profiles - dependent on quests (validity check)
+			
 			DataManager.createInstance(this);
 			try {
 				DataManager.loadData();
@@ -104,7 +106,7 @@ public class Quester extends JavaPlugin {
 			    Metrics metrics = new Metrics(this);
 			    metrics.start();
 			} catch (IOException e) {
-			    // Failed to submit the stats :-(
+			    // Failed to submit the statistics :-(
 			}
 			
 			if(this.setupEconomy()) {
@@ -138,6 +140,9 @@ public class Quester extends JavaPlugin {
 			if(loaded) {
 				stopSaving();
 				// TODO SAVING
+				// profiles
+				// holders, signs
+				// quests
 				if(DataManager.verbose) {
 					log.info("Quester data saved.");
 				}
@@ -235,7 +240,7 @@ public class Quester extends JavaPlugin {
 		}
 		
 		private boolean setupEpicBoss() {
-			epicboss = (getServer().getPluginManager().getPlugin("EpicBoss") != null); //TODO EpicBossRecoded
+			epicboss = (getServer().getPluginManager().getPlugin("EpicBossRecoded") != null);
 		    return epicboss;
 		}
 		
@@ -264,14 +269,18 @@ public class Quester extends JavaPlugin {
 			}
 			langs.loadLang("english", "langEN");
 			int i = 1;
-			if(config.isConfigurationSection("languges")) {
-				ConfigurationSection langSection = config.getConfigurationSection("languages");
-				for(String key : langSection.getKeys(false)) {
-					if(langSection.isString(key)) {
-						langs.loadLang(key, langSection.getString(key));
-						i++;
+			try {
+				if(DataManager.getConfigKey("languges").hasSubKeys()) {
+					for(StorageKey subKey : DataManager.getConfigKey("languges").getSubKeys()) {
+						if(subKey.getString("") != null) {
+							langs.loadLang(subKey.getName(), subKey.getString(""));
+							i++;
+						}
 					}
 				}
+			}
+			catch (InstanceNotFoundException e) {
+				log.severe("DataManager instance exception occured while loading languages.");
 			}
 			log.info("Languages loaded. (" + i + ")");
 		}
@@ -330,7 +339,7 @@ public class Quester extends JavaPlugin {
 					QuestCondition.class,
 					QuestNotCondition.class,
 					
-					// qevents
+					// events
 					CancelQevent.class,
 					CommandQevent.class,
 					ExplosionQevent.class,
