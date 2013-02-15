@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.logging.Logger;
 
+import javax.management.InstanceNotFoundException;
+
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitFactory;
 import net.citizensnpcs.api.trait.TraitInfo;
@@ -75,7 +77,15 @@ public class Quester extends JavaPlugin {
 			
 			log = this.getLogger();
 			//Data first
-			this.initializeConfig();
+			DataManager.createInstance(this);
+			try {
+				DataManager.loadData();
+			}
+			catch (InstanceNotFoundException e1) {
+				log.severe("DataManager instance exception. Disabling quester...");
+				this.getPluginLoader().disablePlugin(this);
+				return;
+			}
 			//Load languages
 			langs = new LanguageManager(this);
 			this.loadLocal();
@@ -87,11 +97,6 @@ public class Quester extends JavaPlugin {
 			registerElements();
 			
 			holders = new QuestHolderManager(this);
-			
-			//Load configs TODO load after all other plugins
-			profileConfig = new ProfileConfig(this, "profiles.yml");
-			questConfig = new QuestConfig(this, "quests.yml");
-			holderConfig = new HolderConfig(this, "holders.yml");
 			
 			// TODO LOADING
 			
@@ -251,14 +256,6 @@ public class Quester extends JavaPlugin {
 				} 
 			}
 			return denizen;
-		}
-
-		public void initializeConfig() {
-			config = (new BaseConfig(this, "config.yml")).getConfig();
-			if(DataManager.verbose) {
-				log.info("Config loaded.");
-				log.info(profiles.getRanks().size() + " ranks loaded.");
-			}
 		}
 		
 		private void loadLocal() {
