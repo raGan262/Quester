@@ -1,10 +1,14 @@
 package com.gmail.molnardad.quester.managers;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.management.InstanceNotFoundException;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -14,12 +18,16 @@ import com.gmail.molnardad.quester.PlayerProfile;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.storage.ConfigStorage;
+import com.gmail.molnardad.quester.storage.Storage;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.strings.QuesterStrings;
 
 public class ProfileManager {
 
-	QuestManager qMan = null;
-	LanguageManager langMan = null;
+	private Storage profileStorage = null;
+	private QuestManager qMan = null;
+	private LanguageManager langMan = null;
 
 	private Map<String, PlayerProfile> profiles = new HashMap<String, PlayerProfile>();
 	private Map<Integer, String> ranks = new HashMap<Integer, String>();
@@ -29,6 +37,8 @@ public class ProfileManager {
 	public ProfileManager(Quester plugin) {
 		qMan = plugin.getQuestManager();
 		langMan = plugin.getLanguageManager();
+		File file = new File(plugin.getDataFolder(), "profiles.yml");
+		profileStorage = new ConfigStorage(file, Quester.log, null);
 	}
 
 	
@@ -151,54 +161,67 @@ public class ProfileManager {
 		
 	}
 	
-	// TODO STORAGE METHODS
+	// STORAGE
 
-	public void saveProfiles(){}
+	public void loadRanks() {
+		Map<Integer, String> rankMap = new HashMap<Integer, String>();
+		List<Integer> sortedList = new ArrayList<Integer>();
+		
+		StorageKey rankKey = null;
+		try {
+			rankKey = DataManager.getConfigKey("ranks");
+		}
+		catch (InstanceNotFoundException e) {
+			Quester.log.severe("DataManager instance exception occured while acessing ranks.");
+		}
+		if(rankKey != null) {
+			for(StorageKey subKey : rankKey.getSubKeys()) {
+				rankMap.put(subKey.getInt(""), subKey.getName().replace('-', ' '));
+				sortedRanks.add(subKey.getInt(""));
+			}
+		}
+		if(sortedRanks.size() == 0) {
+			rankKey.setInt("Default-Rank", 0);
+			rankMap.put(0, "Default-Rank");
+			sortedList.add(0);
+			Quester.log.info("No ranks found. Added default rank.");
+			try {
+				DataManager.saveData();
+			}
+			catch (InstanceNotFoundException ignore) { }
+		}
+		Collections.sort(sortedList);
+		this.ranks = rankMap;
+		this.sortedRanks = sortedList;
+	}
 	
-	public void loadProfiles() {}
+	public void loadProfiles() {
+		profileStorage.load();
+		StorageKey mainKey = profileStorage.getKey("");
+		PlayerProfile prof;
+		for(StorageKey subKey : mainKey.getSubKeys()) {
+			prof = PlayerProfile.deserialize(subKey);
+			if(prof != null) {
+				if(!prof.getQuest().isEmpty()) {
+					if(!qMan.isQuestActive(prof.getQuest()) || 
+							(qMan.getObjectiveAmount(prof.getQuest()) != prof.getProgress().size())) {
+						prof.unsetQuest();
+						Quester.log.info("Incorrect quest info in profile: " + subKey.getName());
+					}
+				}
+				checkRank(prof);
+				profiles.put(prof.getName().toLowerCase(), prof);
+			} else {
+				Quester.log.info("Invalid key in profiles.yml: " + subKey.getName());
+			}
+		}
+		saveProfiles();
+		if(DataManager.verbose) {
+			Quester.log.info(profiles.size() + " profiles loaded.");
+		}
+	}
 	
-//	public void saveProfiles(){
-//		plugin.profileConfig.saveConfig();
-//	}
-//
-//	public void loadProfiles() {
-//		QuestManager qMan = plugin.getQuestManager();
-//		if(qMan == null) {
-//			Quester.log.info("Failed to reload profiles: QuestManager null");
-//			return;
-//		}
-//		try {
-//			YamlConfiguration config = plugin.profileConfig.getConfig();
-//			PlayerProfile prof;
-//			for(String key : config.getKeys(false)) {
-//				prof = null;
-//				if(config.isConfigurationSection(key)) {
-//					if(debug) {
-//						Quester.log.info("Deserializing profile: " + key);
-//					}
-//					prof = PlayerProfile.deserialize(config.getConfigurationSection(key));
-//				} 
-//				if(prof != null) {
-//					if(!prof.getQuest().isEmpty()) {
-//						if(!qMan.isQuestActive(prof.getQuest()) || 
-//								(qMan.getObjectiveAmount(prof.getQuest()) != prof.getProgress().size())) {
-//							prof.unsetQuest();
-//							Quester.log.info("Incorrect quest info in profile: " + key);
-//						}
-//					}
-//					qMan.checkRank(prof);
-//					profiles.put(prof.getName().toLowerCase(), prof);
-//				} else {
-//					Quester.log.info("Invalid key in profiles.yml: " + key);
-//				}
-//			}
-//			saveProfiles();
-//			if(verbose) {
-//				Quester.log.info(profiles.size() + " profiles loaded.");
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		
-//	}
+	public void saveProfiles(){
+		profileStorage.save();
+	}
 }

@@ -83,7 +83,7 @@ public class DataManager {
 		return instance.storage.getKey(key);
 	}
 	
-	// TODO STORAGE METHODS
+	// STORAGE METHODS
 	
 	public static void reloadData() throws InstanceNotFoundException {
 		if(instance == null) {
