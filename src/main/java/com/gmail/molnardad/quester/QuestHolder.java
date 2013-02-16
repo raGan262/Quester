@@ -5,38 +5,41 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
-
 import com.gmail.molnardad.quester.exceptions.HolderException;
-import com.gmail.molnardad.quester.managers.QuestManager;
-import com.gmail.molnardad.quester.strings.QuesterLang;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestHolder {
 	
 	private List<Integer> heldQuests = new ArrayList<Integer>();
-	private int selected = -1;
 	private String name;
-	private long lastAction = 0;
-	private QuestManager qMan = null;
+	private Map<String, Long> interactions = new HashMap<String, Long>();
+	private Map<String, Integer> selected = new HashMap<String, Integer>();
 	
-	public QuestHolder(String name, Quester plugin) {
+	public QuestHolder(String name) {
 		this.name = name;
-		this.qMan = plugin.getQuestManager();
 	}
 	
-	public boolean canInteract() {
-		if(System.currentTimeMillis() - lastAction < 500) {
-			lastAction = System.currentTimeMillis();
-			return true;
+	public void interact(String interacter) {
+		interactions.put(interacter, System.currentTimeMillis());
+	}
+	
+	public boolean canInteract(String interacter) {
+		return System.currentTimeMillis() - interactions.get(interacter) < 500;
+	}
+	
+	public void setSelected(String name, int id) {
+		selected.put(name, id);
+	}
+	
+	public int getSelected(String name) {
+		if(selected.get(name) == null) {
+			selected.put(name, -1);
 		}
-		return false;
+		return selected.get(name);
 	}
 	
-	public void setname(String newName) {
+	protected void setname(String newName) {
 		name = newName;
 	}
 	
@@ -48,55 +51,9 @@ public class QuestHolder {
 		return heldQuests;
 	}
 	
-	public int getSelected() {
-		if(heldQuests.size() > selected && selected >= 0)
-			return heldQuests.get(selected);
-		else
-			return -1;
-	}
-	
-	public int getSelectedIndex() {
-		return selected;
-	}
-	
-	public boolean selectNext(QuesterLang lang) throws HolderException {
-		lastAction = System.currentTimeMillis();
-		if(heldQuests.isEmpty())
-			throw new HolderException(lang.ERROR_Q_NONE);
-		if(getSelected() == -1) {
-			selected = 0;
-			if(qMan.isQuestActive(heldQuests.get(0)))
-				return true;
-		}
-		int i = selected;
-		boolean notChosen = true;
-		while(notChosen) {
-			if(i < heldQuests.size()-1)
-				i++;
-			else
-				i = 0;
-			if(qMan.isQuestActive(heldQuests.get(i))) {
-				selected = i;
-				notChosen = false;
-			} else if(i == selected) {
-				throw new HolderException(lang.ERROR_Q_NONE_ACTIVE);
-			}
-		}
-		return true;
-	}
-	
-	private void checkQuests() {
-		for(int i=heldQuests.size()-1; i>=0; i--) {
-			if(!qMan.isQuest(heldQuests.get(i))) {
-				heldQuests.remove(i);
-			}
-		}
-	}
-	
 	public void addQuest(int questID) {
 		if(!heldQuests.contains(questID)) {
 			heldQuests.add(questID);
-			checkQuests();
 		}
 	}
 	
@@ -107,7 +64,6 @@ public class QuestHolder {
 				break;
 			}
 		}
-		checkQuests();
 	}
 	
 	public void moveQuest(int from, int to) throws HolderException, IndexOutOfBoundsException {
@@ -116,27 +72,7 @@ public class QuestHolder {
 		Util.moveListUnit(heldQuests, from, to);
 	}
 	
-	public void showQuestsUse(Player player) {
-		for(int i=0; i<heldQuests.size(); i++) {
-			if(qMan.isQuestActive(heldQuests.get(i))) {
-				player.sendMessage((i == selected ? ChatColor.GREEN : ChatColor.BLUE) + " - "
-						+ qMan.getQuestName(heldQuests.get(i)));
-			}
-		}
-	}
-	
-	public void showQuestsModify(CommandSender sender){
-		sender.sendMessage(ChatColor.GOLD + "Holder name: " + ChatColor.RESET + name);
-		for(int i=0; i<heldQuests.size(); i++) {
-			ChatColor col = qMan.isQuestActive(heldQuests.get(i)) ? ChatColor.BLUE : ChatColor.RED;
-			
-			sender.sendMessage(i + ". " + (i == selected ? ChatColor.GREEN : ChatColor.BLUE) + "["
-					+ heldQuests.get(i) + "] " + col + qMan.getQuestName(heldQuests.get(i)));
-		}
-	}
-	
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
+	public void serialize(StorageKey key) {
 		String str = "";
 		boolean first = true;
 		for(int i : heldQuests) {
@@ -146,21 +82,20 @@ public class QuestHolder {
 			} else 
 				str += "," + i;
 		}
-		map.put("name", name);
-		map.put("quests", str);
-		
-		return map;
+		key.setString("name", name);
+		key.setString("quests", str);
 	}
 	
-	public static QuestHolder deserialize(ConfigurationSection section, Quester plugin) {
+	public static QuestHolder deserialize(StorageKey key) {
 		QuestHolder qHolder = null;
 		try{
-			if(section == null)
+			if(!key.hasSubKeys()) {
 				return null;
-			String name = section.getString("name", "QuestHolder");
-			String str = section.getString("quests", "");
+			}
+			String name = key.getString("name", "QuestHolder");
+			String str = key.getString("quests", "");
 			
-			qHolder = new QuestHolder(name, plugin);
+			qHolder = new QuestHolder(name);
 			String[] split = str.split(",");
 			
 			int i;
@@ -172,11 +107,8 @@ public class QuestHolder {
 				}
 			}
 			
-		} catch (Exception e) {
-		}
+		} catch (Exception ignore) {}
 		
-		if(qHolder != null)
-			qHolder.checkQuests();
 		return qHolder;
 	}
 }

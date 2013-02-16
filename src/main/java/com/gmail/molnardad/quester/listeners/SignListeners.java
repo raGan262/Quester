@@ -47,20 +47,20 @@ public class SignListeners implements Listener {
 		Player player = event.getPlayer();
 		if(event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			Block block = event.getClickedBlock();
-			QuesterSign qs = holMan.signs.get(block.getLocation().getWorld().getName() + block.getLocation().getBlockX() + block.getLocation().getBlockY() + block.getLocation().getBlockZ());
+			QuesterSign qs = holMan.getSign(block.getLocation());
 			if(qs == null) {
 				return;
 			}
 			QuesterLang lang = langMan.getPlayerLang(player.getName());
 			if(block.getType().getId() != 63 && block.getType().getId() != 68) {
-				holMan.signs.remove(block.getLocation().getWorld().getName() + block.getLocation().getBlockX() + block.getLocation().getBlockY() + block.getLocation().getBlockZ());
+				holMan.removeSign(block.getLocation());
 				player.sendMessage(Quester.LABEL + lang.SIGN_UNREGISTERED);
 				return;
 			} else { 
 				Sign sign = (Sign) block.getState();
 				if(!sign.getLine(0).equals(ChatColor.BLUE + "[Quester]")) {
 					block.breakNaturally();
-					holMan.signs.remove(block.getLocation().getWorld().getName() + block.getLocation().getBlockX() + block.getLocation().getBlockY() + block.getLocation().getBlockZ());
+					holMan.removeSign(block.getLocation());
 					player.sendMessage(Quester.LABEL + lang.SIGN_UNREGISTERED);
 					return;
 				}
@@ -91,11 +91,11 @@ public class SignListeners implements Listener {
 					return;
 				}
 
-				if(!qh.canInteract()) {
+				if(!qh.canInteract(player.getName())) {
 					player.sendMessage(ChatColor.RED + lang.ERROR_HOL_INTERACT);
 				}
 				try {
-					qh.selectNext(lang);
+					holMan.selectNext(player.getName(), qh, lang);
 				} catch (HolderException e) {
 					player.sendMessage(e.getMessage());
 					if(!isOp) {
@@ -106,9 +106,9 @@ public class SignListeners implements Listener {
 				
 				player.sendMessage(Util.line(ChatColor.BLUE, lang.SIGN_HEADER, ChatColor.GOLD));
 				if(isOp) {
-					qh.showQuestsModify(player);
+					holMan.showQuestsModify(qh, player);
 				} else {
-					qh.showQuestsUse(player);
+					holMan.showQuestsUse(qh, player);
 				}
 				
 			} else {
@@ -129,7 +129,7 @@ public class SignListeners implements Listener {
 					player.sendMessage(ChatColor.RED + lang.ERROR_HOL_NOT_ASSIGNED);
 					return;
 				}
-				int selected = qh.getSelected();
+				int selected = qh.getSelected(player.getName());
 				List<Integer> qsts = qh.getQuests();
 				
 				Quest currentQuest = qm.getPlayerQuest(player.getName());
@@ -174,13 +174,13 @@ public class SignListeners implements Listener {
 		Block block = event.getBlock();
 		if(block.getType().getId() == 63 || block.getType().getId() == 68) {
 			Sign sign = (Sign) block.getState();
-			if(holMan.signs.get(sign.getLocation().getWorld().getName() + sign.getLocation().getBlockX() + sign.getLocation().getBlockY() + sign.getLocation().getBlockZ()) != null) {
+			if(holMan.getSign(sign.getLocation()) != null) {
 				QuesterLang lang = langMan.getPlayerLang(event.getPlayer().getName());
 				if(!event.getPlayer().isSneaking() || !Util.permCheck(event.getPlayer(), DataManager.PERM_MODIFY, false, null)) {
 					event.setCancelled(true);
 					return;
 				}
-				holMan.signs.remove(sign.getLocation().getWorld().getName() + sign.getLocation().getBlockX() + sign.getLocation().getBlockY() + sign.getLocation().getBlockZ());
+				holMan.removeSign(sign.getLocation());
 				event.getPlayer().sendMessage(Quester.LABEL + lang.SIGN_UNREGISTERED);;
 			}
 		}
@@ -196,7 +196,7 @@ public class SignListeners implements Listener {
 			}
 			event.setLine(0, ChatColor.BLUE + "[Quester]");
 			QuesterSign sign = new QuesterSign(block.getLocation());
-			holMan.signs.put(sign.getLocation().getWorld().getName() + sign.getLocation().getBlockX() + sign.getLocation().getBlockY() + sign.getLocation().getBlockZ(), sign);
+			holMan.addSign(sign);
 			event.getPlayer().sendMessage(Quester.LABEL + lang.SIGN_REGISTERED);;
 		}
 	}

@@ -74,8 +74,7 @@ public class Quester extends JavaPlugin {
 			// LOAD ORDER
 			// 1. Data
 			// 2. Languages
-			// instantiate remaining managers
-			// 3. Holders TODO remove QuestManager dependency
+			// 3. Holders
 			// Wait for others to load
 			// 4. Quests
 			// 5. Profiles - dependent on quests (validity check)
@@ -89,18 +88,18 @@ public class Quester extends JavaPlugin {
 				this.getPluginLoader().disablePlugin(this);
 				return;
 			}
-			//Load languages
+			
+			//Managers
 			langs = new LanguageManager();
-			this.loadLocal();
-			
-			quests = new QuestManager(this);
-			
 			elements = new ElementManager();
-			
-			registerElements();
-			
 			holders = new QuestHolderManager(this);
-			
+			quests = new QuestManager(this);
+			commands = new CommandManager(this);
+
+			this.loadLocal();
+			registerElements();
+			profiles.loadRanks();
+			holders.loadHolders();
 			// TODO LOADING
 			
 			try {
@@ -126,11 +125,21 @@ public class Quester extends JavaPlugin {
 			
 			this.setupListeners();
 			
-			commands = new CommandManager(this);
-			
 			commands.register(UserCommands.class);
 			commands.register(AdminCommands.class);
 			commands.register(ModificationCommands.class);
+			
+			if (getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
+				public void run() {
+					Quester.this.quests.loadQuests();
+					Quester.this.profiles.loadProfiles();
+					Quester.this.holders.checkHolders();
+				}
+			}, 1L) == -1) {
+				Quester.log.severe("Failed to schedule loading task. Disabling Quester...");
+				getServer().getPluginManager().disablePlugin(this);
+				return;
+			}
 			
 			startSaving();
 			loaded = true;

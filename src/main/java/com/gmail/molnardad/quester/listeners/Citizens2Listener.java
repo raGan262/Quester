@@ -65,11 +65,11 @@ public class Citizens2Listener implements Listener {
 				player.sendMessage(ChatColor.RED + lang.ERROR_HOL_NOT_ASSIGNED);
 				return;
 			}
-			if(!qh.canInteract()) {
+			if(!qh.canInteract(player.getName())) {
 				player.sendMessage(ChatColor.RED + lang.ERROR_HOL_INTERACT);
 			}
 			try {
-				qh.selectNext(lang);
+				holMan.selectNext(player.getName(), qh, lang);
 			} catch (HolderException e) {
 				player.sendMessage(e.getMessage());
 				if(!isOp) {
@@ -80,9 +80,9 @@ public class Citizens2Listener implements Listener {
 			
 			player.sendMessage(Util.line(ChatColor.BLUE, event.getNPC().getName() + "'s quests", ChatColor.GOLD));
 			if(isOp) {
-				qh.showQuestsModify(player);
+				holMan.showQuestsModify(qh, player);
 			} else {
-				qh.showQuestsUse(player);
+				holMan.showQuestsUse(qh, player);
 			}
 		}
 	}
@@ -114,7 +114,7 @@ public class Citizens2Listener implements Listener {
 				player.sendMessage(ChatColor.RED + lang.ERROR_HOL_NOT_ASSIGNED);
 				return;
 			}
-			int selected = qh.getSelected();
+			int selected = qh.getSelected(player.getName());
 			List<Integer> qsts = qh.getQuests();
 			
 			Quest currentQuest = qm.getPlayerQuest(player.getName());
