@@ -1,5 +1,6 @@
 package com.gmail.molnardad.quester.managers;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,6 +25,9 @@ import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.*;
+import com.gmail.molnardad.quester.storage.ConfigStorage;
+import com.gmail.molnardad.quester.storage.Storage;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.strings.QuesterLang;
 import com.gmail.molnardad.quester.utils.Util;
 
@@ -36,6 +40,7 @@ public class QuestManager {
 	private LanguageManager langMan = null;
 	private ProfileManager profMan = null;
 	private Quester plugin = null;
+	private Storage questStorage = null;
 	
 	private Map<String, Quest> allQuests = new HashMap<String, Quest>();
 	private Map<Integer, String> questIds = new HashMap<Integer, String>();
@@ -47,6 +52,8 @@ public class QuestManager {
 		this.langMan = plugin.getLanguageManager();
 		profMan = plugin.getProfileManager();
 		this.plugin = plugin;
+		File file = new File(plugin.getDataFolder(), "quests.yml");
+		questStorage = new ConfigStorage(file, Quester.log, null);
 	}
 
 	// QUEST ID MANIPULATION
@@ -910,56 +917,65 @@ public class QuestManager {
 	
 	// TODO STORAGE METHODS
 	
-	public void saveQuests() {}
+	public void saveQuests() {
+		questStorage.save();
+	}
 	
-	public void loadQuests() {}
-	
-	
-//	public void saveQuests(){
-//		plugin.questConfig.saveConfig();
-//	}
-//	
-//	public void loadQuests(){
-//		YamlConfiguration config = plugin.questConfig.getConfig();
-//		for(String key : config.getKeys(false)) {
-//			if(config.isConfigurationSection(key)) {
-//				if(debug)
-//					Quester.log.info("Deserializing quest " + key + ".");
-//				Quest quest = Quest.deserialize(config.getConfigurationSection(key));
-//				if(quest == null) {
-//					Quester.log.severe("Quest " + key + " corrupted.");
-//					continue;
-//				}
-//				allQuests.put(quest.getName().toLowerCase(), quest);
-//				if(quest.hasID())
-//					questIds.put(quest.getID(), quest.getName().toLowerCase());
-//				for(int i=0; i<quest.getObjectives().size(); i++) {
-//					if(quest.getObjective(i) == null) {
-//						Quester.log.info("Objective " + i + " is invalid.");
-//						quest.removeObjective(i);
-//						quest.removeFlag(QuestFlag.ACTIVE);
-//					}
-//				}
-//				for(int i=0; i<quest.getConditions().size(); i++) {
-//					if(quest.getCondition(i) == null) {
-//						Quester.log.info("Condition " + i + " is invalid.");
-//						quest.removeCondition(i);
-//					}
-//				}
-//			}
-//		}
-//		adjustQuestID();
-//		for(Quest q : allQuests.values()) {
-//			if(!q.hasID()) {
-//				assignQuestID(q);
-//				questIds.put(q.getID(), q.getName().toLowerCase());
-//			}
-//			if(q.hasLocation()) {
-//				questLocations.put(q.getID(), q.getLocation());
-//			}
-//		}
-//		if(verbose) {
-//			Quester.log.info(allQuests.size() + " quests loaded.");
-//		}
-//	}
+	public void loadQuests() {
+		questStorage.load();
+		for(StorageKey questKey : questStorage.getKey("").getSubKeys()) {
+			if(questKey.hasSubKeys()) {
+				if(DataManager.debug) {
+					Quester.log.info("Deserializing quest " + questKey.getName() + ".");
+				}
+				Quest quest = Quest.deserialize(questKey);
+				if(quest == null) {
+					Quester.log.severe("Quest " + questKey.getName() + " corrupted.");
+					continue;
+				}
+				allQuests.put(quest.getName().toLowerCase(), quest);
+				if(quest.hasID()) {
+					if(questIds.get(quest.getID()) != null) {
+						Quester.log.severe("Duplicate quest ID in quest " + questKey.getName() + " detected, new ID will be assigned.");
+						quest.setID(-1);
+					}
+					else {
+						questIds.put(quest.getID(), quest.getName().toLowerCase());
+					}
+				}
+				for(int i=0; i<quest.getObjectives().size(); i++) {
+					if(quest.getObjective(i) == null) {
+						Quester.log.info("Objective " + i + " is invalid.");
+						quest.removeObjective(i);
+						quest.removeFlag(QuestFlag.ACTIVE);
+					}
+				}
+				for(int i=0; i<quest.getConditions().size(); i++) {
+					if(quest.getCondition(i) == null) {
+						Quester.log.info("Condition " + i + " is invalid.");
+						quest.removeCondition(i);
+					}
+				}
+				for(int i=0; i<quest.getQevents().size(); i++) {
+					if(quest.getQevent(i) == null) {
+						Quester.log.info("Event " + i + " is invalid.");
+						quest.removeQevent(i);
+					}
+				}
+			}
+		}
+		adjustQuestID();
+		for(Quest q : allQuests.values()) {
+			if(!q.hasID()) {
+				assignQuestID(q);
+				questIds.put(q.getID(), q.getName().toLowerCase());
+			}
+			if(q.hasLocation()) {
+				questLocations.put(q.getID(), q.getLocation());
+			}
+		}
+		if(DataManager.verbose) {
+			Quester.log.info(allQuests.size() + " quests loaded.");
+		}
+	}
 }

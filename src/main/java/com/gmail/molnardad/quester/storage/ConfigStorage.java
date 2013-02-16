@@ -118,7 +118,7 @@ public class ConfigStorage implements Storage {
 		}
 		
 		@Override
-		public Iterable<StorageKey> getSubKeys() {
+		public List<StorageKey> getSubKeys() {
 			Set<String> keySet = null;
 			if(path == "") {
 				ConfigStorage.this.config.getKeys(false);

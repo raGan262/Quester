@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.SerializationException;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -33,6 +34,7 @@ import com.gmail.molnardad.quester.objectives.ShearObjective;
 import com.gmail.molnardad.quester.objectives.SmeltObjective;
 import com.gmail.molnardad.quester.objectives.TameObjective;
 import com.gmail.molnardad.quester.objectives.WorldObjective;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 public abstract class Objective extends Element {
@@ -137,15 +139,24 @@ public abstract class Objective extends Element {
 
 	// TODO serialization
 	
-	protected void serialize(ConfigurationSection section, String type) {
-		section.set("type", type);
-		if(!desc.isEmpty())
-			section.set("description", desc);
-		if(!prerequisites.isEmpty())
-			section.set("prerequisites", Util.serializePrerequisites(prerequisites));
+	protected abstract void save(StorageKey key);
+	
+	public void serialize(StorageKey key) {
+		String type = getType();
+		if(type.isEmpty()) {
+			throw new SerializationException("Unknown type");
+		}
+		save(key);
+		key.setString("type", type);
+		if(!desc.isEmpty()) {
+			key.setString("description", desc);
+		}
+		if(!prerequisites.isEmpty()) {
+			key.setString("prerequisites", Util.serializePrerequisites(prerequisites));
+		}
 	}
 	
-	public static Objective deserialize(ConfigurationSection section) {
+	public static Objective deserialize(StorageKey key) {
 		if(section == null) {
 			Quester.log.severe("Objective deserialization error: section null.");
 			return null;

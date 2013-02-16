@@ -1,5 +1,7 @@
 package com.gmail.molnardad.quester.storage;
 
+import java.util.List;
+
 public abstract class StorageKey {
 	
 	protected String path = "";
@@ -30,7 +32,7 @@ public abstract class StorageKey {
 	
 	public abstract StorageKey getSubKey(String key);
 	
-	public abstract Iterable<StorageKey> getSubKeys();
+	public abstract List<StorageKey> getSubKeys();
 	
 	public abstract boolean hasSubKeys();
 	

@@ -9,11 +9,11 @@ import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.Qevent;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 import com.gmail.molnardad.quester.QuestFlag;
 
@@ -233,82 +233,85 @@ public class Quest {
 		return (worlds.contains(worldName.toLowerCase()) || worlds.isEmpty());
 	}
 	
-	public void serialize(ConfigurationSection section) {
+	public void serialize(StorageKey key) {
 		
-		section.set("name", name);
-		if(!description.isEmpty())
-			section.set("description", description);
-		if(location != null) {
-			section.set("location", Util.serializeLocString(location));
-			if(range > 1)
-				section.set("range", range);
+		key.setString("name", name);
+		if(!description.isEmpty()) {
+			key.setString("description", description);
 		}
-		if(!worlds.isEmpty())
-			section.set("worlds", worlds.toArray(new String[0]));
-		if(!flags.isEmpty())
-			section.set("flags", QuestFlag.serialize(flags));
+		if(location != null) {
+			key.setString("location", Util.serializeLocString(location));
+			if(range > 1) {
+				key.setInt("range", range);
+			}
+		}
+		if(!worlds.isEmpty()) {
+			key.setRaw("worlds", worlds.toArray(new String[0]));
+		}
+		if(!flags.isEmpty()) {
+			key.setString("flags", QuestFlag.serialize(flags));
+		}
 		
 		if(!objectives.isEmpty()) {
-			ConfigurationSection subsection = section.createSection("objectives");
+			StorageKey subKey = key.getSubKey("objectives");
 			for(int i=0; i<objectives.size(); i++) {
-				//objectives.get(i).serialize(subsection.createSection(String.valueOf(i)));
+				objectives.get(i).serialize(subKey.getSubKey(String.valueOf(i)));
 			}
 		}
 		if(!conditions.isEmpty()) {
-			ConfigurationSection subsection = section.createSection("conditions");
+			StorageKey subKey = key.getSubKey("conditions");
 			for(int i=0; i<conditions.size(); i++) {
-				//conditions.get(i).serialize(subsection.createSection(String.valueOf(i)));
+				conditions.get(i).serialize(subKey.getSubKey(String.valueOf(i)));
 			}
 		}
 		if(!qevents.isEmpty()) {
-			ConfigurationSection subsection = section.createSection("events");
+			StorageKey subKey = key.getSubKey("events");
 			for(int i=0; i<qevents.size(); i++) {
-				//qevents.get(i).serialize(subsection.createSection(String.valueOf(i)));
+				qevents.get(i).serialize(subKey.getSubKey(String.valueOf(i)));
 			}
 		}
 		
-		if(hasID())
-			section.set("ID", ID);
+		if(hasID()) {
+			key.setInt("ID", ID);
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static Quest deserialize(ConfigurationSection section) {
+	public static Quest deserialize(StorageKey key) {
 		Quest quest;
 		try {
 			String name;
-			if(section.isString("name")) {
-				name = section.getString("name");
+			if(key.getString("name") != null) {
+				name = key.getString("name");
 				quest = new Quest(name);
-			} else
+			} 
+			else {
 				return null;
-			if(section.isString("description"))
-				quest.setDescription((String) section.getString("description"));
+			}
+			if(key.getString("description") != null) {
+				quest.setDescription(key.getString("description"));
+			}
 			
-			if(section.isString("location")) {
-				quest.setLocation(Util.deserializeLocString(section.getString("location")));
-				if(section.isInt("range")) {
-					int rng = section.getInt("range");
-					if(rng > 1)
-						quest.setRange(rng);
+			if(key.getString("location") != null) {
+				quest.setLocation(Util.deserializeLocString(key.getString("location")));
+				if(key.getInt("range", 1) > 1) {
+					quest.setRange(key.getInt("range"));
 				}
 			}
 			
-			if(section.isInt("ID")) {
-				int id = (Integer) section.getInt("ID");
-				if(id >= 0) {
-					quest.setID(id);
-				}
+			if(key.getInt("ID", -1) >= 0) {
+				quest.setID(key.getInt("ID"));
 			}
 			
-			if(section.isString("flags")) {
-				Set<QuestFlag> flags = QuestFlag.deserialize(section.getString("flags"));
+			if(key.getString("flags") != null) {
+				Set<QuestFlag> flags = QuestFlag.deserialize(key.getString("flags"));
 				for(QuestFlag f : flags) {
 					quest.addFlag(f);
 				}
 			}
 			
-			if(section.isList("worlds")) {
-				List<String> strs = (List<String>) section.getList("worlds", new ArrayList<String>());
+			if(key.getRaw("worlds") instanceof List) {
+				List<String> strs = (List<String>) key.getRaw("worlds", new ArrayList<String>());
 				for(String s : strs) {
 					if(s != null)
 						quest.addWorld(s);
@@ -316,11 +319,11 @@ public class Quest {
 			}
 
 			Objective obj = null;
-			if(section.isConfigurationSection("objectives")) {
-				ConfigurationSection subsection = section.getConfigurationSection("objectives");
-				Set<String> keys = subsection.getKeys(false);
+			if(key.getSubKey("objectives").hasSubKeys()) {
+				StorageKey subKey = key.getSubKey("objectives");
+				List<StorageKey> keys = subKey.getSubKeys();
 				for(int i=0; i<keys.size(); i++) {
-					obj = Objective.deserialize(subsection.getConfigurationSection(String.valueOf(i)));
+					obj = Objective.deserialize(subKey.getSubKey(String.valueOf(i)));
 					if(obj != null) {
 						quest.addObjective(obj);
 					} else
@@ -329,11 +332,11 @@ public class Quest {
 			}
 
 			Condition con = null;
-			if(section.isConfigurationSection("conditions")) {
-				ConfigurationSection subsection = section.getConfigurationSection("conditions");
-				Set<String> keys = subsection.getKeys(false);
+			if(key.getSubKey("conditions").hasSubKeys()) {
+				StorageKey subKey = key.getSubKey("conditions");
+				List<StorageKey> keys = subKey.getSubKeys();
 				for(int i=0; i<keys.size(); i++) {
-					//con = Condition.deserialize(subsection.getConfigurationSection(String.valueOf(i)));
+					con = Condition.deserialize(subKey.getSubKey(String.valueOf(i)));
 					if(con != null) {
 						quest.addCondition(con);
 					} else
@@ -342,11 +345,11 @@ public class Quest {
 			}
 
 			Qevent qvt = null;
-			if(section.isConfigurationSection("events")) {
-				ConfigurationSection subsection = section.getConfigurationSection("events");
-				Set<String> keys = subsection.getKeys(false);
+			if(key.getSubKey("events").hasSubKeys()) {
+				StorageKey subKey = key.getSubKey("events");
+				List<StorageKey> keys = subKey.getSubKeys();
 				for(int i=0; i<keys.size(); i++) {
-					qvt = Qevent.deserialize(subsection.getConfigurationSection(String.valueOf(i)));
+					qvt = Qevent.deserialize(subKey.getSubKey(String.valueOf(i)));
 					if(qvt != null) {
 						quest.addQevent(qvt);
 					} else

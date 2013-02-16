@@ -15,6 +15,7 @@ import com.gmail.molnardad.quester.conditions.PointCondition;
 import com.gmail.molnardad.quester.conditions.QuestCondition;
 import com.gmail.molnardad.quester.conditions.QuestNotCondition;
 import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.storage.StorageKey;
 
 public abstract class Condition extends Element {
 
@@ -68,17 +69,21 @@ public abstract class Condition extends Element {
 	
 	// TODO serialization
 	
-	protected void save(ConfigurationSection section) throws SerializationException {
+	protected abstract void save(StorageKey key);
+	
+	public void serialize(StorageKey key) throws SerializationException {
 		String type = getType();
 		if(type.isEmpty()) {
 			throw new SerializationException("Unknown type");
 		}
-		section.set("type", type);
-		if(!desc.isEmpty())
-			section.set("description", desc);
+		save(key);
+		key.setString("type", type);
+		if(!desc.isEmpty()) {
+			key.setString("description", desc);
+		}
 	}
 	
-	public static Condition load(ConfigurationSection section) {
+	public static Condition deserialize(StorageKey key) {
 		if(section == null) {
 			Quester.log.severe("Condition deserialization error: section null.");
 			return null;

@@ -2,6 +2,7 @@ package com.gmail.molnardad.quester.elements;
 
 import java.lang.reflect.Method;
 
+import org.apache.commons.lang.SerializationException;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -25,6 +26,7 @@ import com.gmail.molnardad.quester.qevents.SetBlockQevent;
 import com.gmail.molnardad.quester.qevents.SpawnQevent;
 import com.gmail.molnardad.quester.qevents.TeleportQevent;
 import com.gmail.molnardad.quester.qevents.ToggleQevent;
+import com.gmail.molnardad.quester.storage.StorageKey;
 
 public abstract class Qevent extends Element {
 
@@ -124,17 +126,26 @@ public abstract class Qevent extends Element {
 	}
 	
 	// TODO serialization
+
+	protected abstract void save(StorageKey key);
 	
-	protected void serialize(ConfigurationSection section, String type) {
-		section.set("type", type);
-		section.set("occasion", occasion);
-		if(delay != 0)
-			section.set("delay", delay);
-		else
-			section.set("delay", null);
+	public void serialize(StorageKey key) {
+		String type = getType();
+		if(type.isEmpty()) {
+			throw new SerializationException("Unknown type");
+		}
+		save(key);
+		key.setString("type", type);
+		key.setInt("occasion", occasion);
+		if(delay != 0) {
+			key.setLong("delay", delay);
+		}
+		else {
+			key.removeKey("delay");
+		}
 	}
 	
-	public static Qevent deserialize(ConfigurationSection section) {
+	public static Qevent deserialize(StorageKey key) {
 		if(section == null) {
 			Quester.log.severe("Qevent deserialization error: section null.");
 			return null;
