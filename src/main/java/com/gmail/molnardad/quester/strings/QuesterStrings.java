@@ -1,5 +1,7 @@
 package com.gmail.molnardad.quester.strings;
 
+import java.io.File;
+
 public class QuesterStrings {
 
 	public String MSG_ONLY_PLAYER = "This command can only be run by player.";
@@ -337,5 +339,16 @@ public class QuesterStrings {
 	public String ERROR_EVT_NOT_EXIST = "Event does not exist.";
 	public String ERROR_WHY = "Why would you want to do this ?";
 	public String ERROR_INTERESTING = "Interesting error, you should definitely notify Quester developer.";
+
 	
+	
+	private File file = null;
+	
+	public QuesterStrings(File file) {
+		this.file = file;
+	}
+	
+	public File getFile() {
+		return this.file;
+	}
 }

@@ -1,22 +1,21 @@
 package com.gmail.molnardad.quester.managers;
 
+import java.io.File;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import com.gmail.molnardad.quester.Quester;
-import com.gmail.molnardad.quester.config.LanguageConfig;
+import com.gmail.molnardad.quester.storage.ConfigStorage;
+import com.gmail.molnardad.quester.storage.Storage;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.strings.QuesterStrings;
 
 public class LanguageManager {
 	
-	private Quester plugin;
-	private Map<String, LanguageConfig> languages = new HashMap<String, LanguageConfig>();
+	private Map<String, QuesterStrings> languages = new HashMap<String, QuesterStrings>();
 
-	public LanguageManager(Quester plugin) {
-		this.plugin = plugin;
-	}
-	
 	public boolean hasLang(String name) {
 		return languages.get(name.toLowerCase()) != null;
 	}
@@ -26,23 +25,56 @@ public class LanguageManager {
 	}
 	
 	public QuesterStrings getDefaultLang() {
-		return languages.get("english").getStrings();
+		return languages.get("english");
 	}
 	
 	public QuesterStrings getLang(String name) {
 		if(!hasLang(name)) {
 			return null;
 		}
-		return languages.get(name).getStrings();
+		return languages.get(name);
 	}
 	
-	public boolean loadLang (String name, String fileName) {
+	public boolean loadLang (String name, File file) {
 		if(hasLang(name)) {
 			return false;
 		}
-		LanguageConfig cnf = new LanguageConfig(plugin, fileName);
-		languages.put(name.toLowerCase(), cnf);
-		cnf.saveConfig();
+		Storage storage = new ConfigStorage(file, Quester.log, null);
+		storage.load();
+		StorageKey key = storage.getKey("");
+		QuesterStrings lang = new QuesterStrings(file);
+		Exception ex = null;
+		int eCount = 0;
+		for(Field f : lang.getClass().getFields()) {
+			String val = key.getString(f.getName(), "");
+			if(val.isEmpty()) {
+				try {
+					key.setString(f.getName(),((String)f.get(lang)).replaceAll("\\n", "%n"));
+					if(DataManager.debug) {
+						Quester.log.info(f.getName() + " in " + file.getName() + " reset to default.");
+					}
+				} catch (Exception e) {
+					ex = e;
+					eCount++;
+				}
+			} else {
+				try {
+					f.set(lang, (String) val.replaceAll("%n", "\n"));
+				} catch (Exception e) {
+					ex = e;
+					eCount++;
+				}
+			}
+		}
+		if(ex != null) {
+			Quester.log.info(eCount + " error(s) occured while loading strings from file " + file.getName() + ".");
+			if(DataManager.debug) {
+				Quester.log.info("Last error:");
+				ex.printStackTrace();
+			}
+		}
+		languages.put(name.toLowerCase(), lang);
+		storage.save();
 		return true;
 	}
 	
@@ -50,8 +82,9 @@ public class LanguageManager {
 		if(!hasLang(name)) {
 			return false;
 		}
-		
-		languages.get(name).reloadStrings();
+		File file = languages.get(name).getFile();
+		languages.remove(name);
+		loadLang(name, file);
 		return true;
 	}
 	

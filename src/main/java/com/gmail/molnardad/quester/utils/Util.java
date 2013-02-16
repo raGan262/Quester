@@ -52,7 +52,7 @@ public class Util {
 	}
 	
 	public static Location getLoc(CommandSender sender, String arg) throws IllegalArgumentException {
-		return getLoc(sender, arg, new QuesterStrings());
+		return getLoc(sender, arg, new QuesterStrings(null));
 	}
 	
 	public static Location getLoc(CommandSender sender, String arg, QuesterStrings lang) throws IllegalArgumentException {
@@ -187,7 +187,7 @@ public class Util {
 	}
 	
 	public static Map<Integer, Integer> parseEnchants(String arg) throws IllegalArgumentException {
-		return parseEnchants(arg, new QuesterStrings());
+		return parseEnchants(arg, new QuesterStrings(null));
 	}
 	
 	public static Map<Integer, Integer> parseEnchants(String arg, QuesterStrings lang) throws IllegalArgumentException {
@@ -233,7 +233,7 @@ public class Util {
 	}
 	
 	public static int[] parseItem(String arg) throws IllegalArgumentException {
-		return parseItem(arg, new QuesterStrings());
+		return parseItem(arg, new QuesterStrings(null));
 	}
 	
 	public static int[] parseItem(String arg, QuesterStrings lang) throws IllegalArgumentException {
@@ -293,7 +293,7 @@ public class Util {
 	}
 	
 	public static PotionEffect parseEffect(String arg) throws IllegalArgumentException {
-		return parseEffect(arg, new QuesterStrings());
+		return parseEffect(arg, new QuesterStrings(null));
 	}
 	
 	public static PotionEffect parseEffect(String arg, QuesterStrings lang) throws IllegalArgumentException {
@@ -404,7 +404,7 @@ public class Util {
 	}
 	
 	public static EntityType parseEntity(String arg) throws IllegalArgumentException {
-		return parseEntity(arg, new QuesterStrings());
+		return parseEntity(arg, new QuesterStrings(null));
 	}
 	
 	public static EntityType parseEntity(String arg, QuesterStrings lang) throws IllegalArgumentException {

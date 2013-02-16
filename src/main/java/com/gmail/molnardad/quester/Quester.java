@@ -1,5 +1,6 @@
 package com.gmail.molnardad.quester;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 import java.util.logging.Logger;
@@ -89,7 +90,7 @@ public class Quester extends JavaPlugin {
 				return;
 			}
 			//Load languages
-			langs = new LanguageManager(this);
+			langs = new LanguageManager();
 			this.loadLocal();
 			
 			quests = new QuestManager(this);
@@ -267,13 +268,13 @@ public class Quester extends JavaPlugin {
 			if(langs == null) {
 				log.info("Failed to load languages: LanguageManager null");
 			}
-			langs.loadLang("english", "langEN");
+			langs.loadLang("english", new File(getDataFolder(), "langEN.yml"));
 			int i = 1;
 			try {
 				if(DataManager.getConfigKey("languges").hasSubKeys()) {
 					for(StorageKey subKey : DataManager.getConfigKey("languges").getSubKeys()) {
 						if(subKey.getString("") != null) {
-							langs.loadLang(subKey.getName(), subKey.getString(""));
+							langs.loadLang(subKey.getName(), new File(getDataFolder(), subKey.getString("") + ".yml"));
 							i++;
 						}
 					}
