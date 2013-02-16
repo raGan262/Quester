@@ -26,7 +26,7 @@ import org.bukkit.util.Vector;
 
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.managers.DataManager;
-import com.gmail.molnardad.quester.strings.QuesterStrings;
+import com.gmail.molnardad.quester.strings.QuesterLang;
 
 public class Util {
 	
@@ -52,10 +52,10 @@ public class Util {
 	}
 	
 	public static Location getLoc(CommandSender sender, String arg) throws IllegalArgumentException {
-		return getLoc(sender, arg, new QuesterStrings(null));
+		return getLoc(sender, arg, new QuesterLang(null));
 	}
 	
-	public static Location getLoc(CommandSender sender, String arg, QuesterStrings lang) throws IllegalArgumentException {
+	public static Location getLoc(CommandSender sender, String arg, QuesterLang lang) throws IllegalArgumentException {
 		
 		String args[] = arg.split(";");
 		Location loc;
@@ -158,11 +158,11 @@ public class Util {
 		return result.toString();
 	}
 	
-	public static boolean permCheck(Player player, String perm, boolean message, QuesterStrings lang) {
+	public static boolean permCheck(Player player, String perm, boolean message, QuesterLang lang) {
 		return permCheck((CommandSender) player, perm, message, lang);
 	}
 	
-	public static boolean permCheck(CommandSender sender, String perm, boolean message, QuesterStrings lang) {
+	public static boolean permCheck(CommandSender sender, String perm, boolean message, QuesterLang lang) {
 		if(sender.isOp() || sender.hasPermission(perm) || sender.hasPermission(DataManager.PERM_ADMIN)) {
 			return true;
 		}
@@ -187,10 +187,10 @@ public class Util {
 	}
 	
 	public static Map<Integer, Integer> parseEnchants(String arg) throws IllegalArgumentException {
-		return parseEnchants(arg, new QuesterStrings(null));
+		return parseEnchants(arg, new QuesterLang(null));
 	}
 	
-	public static Map<Integer, Integer> parseEnchants(String arg, QuesterStrings lang) throws IllegalArgumentException {
+	public static Map<Integer, Integer> parseEnchants(String arg, QuesterLang lang) throws IllegalArgumentException {
 		
 		Map<Integer, Integer> enchs = new HashMap<Integer, Integer>();
 		String[] args = arg.split(",");
@@ -233,10 +233,10 @@ public class Util {
 	}
 	
 	public static int[] parseItem(String arg) throws IllegalArgumentException {
-		return parseItem(arg, new QuesterStrings(null));
+		return parseItem(arg, new QuesterLang(null));
 	}
 	
-	public static int[] parseItem(String arg, QuesterStrings lang) throws IllegalArgumentException {
+	public static int[] parseItem(String arg, QuesterLang lang) throws IllegalArgumentException {
 		
 		int[] itm = new int[2];
 		String[] s = arg.split(":");
@@ -293,10 +293,10 @@ public class Util {
 	}
 	
 	public static PotionEffect parseEffect(String arg) throws IllegalArgumentException {
-		return parseEffect(arg, new QuesterStrings(null));
+		return parseEffect(arg, new QuesterLang(null));
 	}
 	
-	public static PotionEffect parseEffect(String arg, QuesterStrings lang) throws IllegalArgumentException {
+	public static PotionEffect parseEffect(String arg, QuesterLang lang) throws IllegalArgumentException {
 		
 		PotionEffectType type = null;
 		int dur = 0, amp = 0;
@@ -404,10 +404,10 @@ public class Util {
 	}
 	
 	public static EntityType parseEntity(String arg) throws IllegalArgumentException {
-		return parseEntity(arg, new QuesterStrings(null));
+		return parseEntity(arg, new QuesterLang(null));
 	}
 	
-	public static EntityType parseEntity(String arg, QuesterStrings lang) throws IllegalArgumentException {
+	public static EntityType parseEntity(String arg, QuesterLang lang) throws IllegalArgumentException {
 		EntityType ent = EntityType.fromName(arg.toUpperCase());
 		if(ent == null) {
 			ent = EntityType.fromId(Integer.parseInt(arg));

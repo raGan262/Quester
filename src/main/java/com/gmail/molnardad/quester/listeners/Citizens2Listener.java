@@ -26,7 +26,7 @@ import com.gmail.molnardad.quester.managers.QuestHolderManager;
 import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.NpcKillObjective;
 import com.gmail.molnardad.quester.objectives.NpcObjective;
-import com.gmail.molnardad.quester.strings.QuesterStrings;
+import com.gmail.molnardad.quester.strings.QuesterLang;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class Citizens2Listener implements Listener {
@@ -48,7 +48,7 @@ public class Citizens2Listener implements Listener {
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
 			QuestHolder qh = holMan.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
 			Player player = event.getClicker();
-			QuesterStrings lang = langMan.getPlayerLang(player.getName());
+			QuesterLang lang = langMan.getPlayerLang(player.getName());
 			if(!Util.permCheck(player, DataManager.PERM_USE_NPC, true, lang)) {
 				return;
 			}
@@ -92,7 +92,7 @@ public class Citizens2Listener implements Listener {
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
 			QuestHolder qh = holMan.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
 			Player player = event.getClicker();
-			QuesterStrings lang = langMan.getPlayerLang(player.getName());
+			QuesterLang lang = langMan.getPlayerLang(player.getName());
 			if(!Util.permCheck(player, DataManager.PERM_USE_NPC, true, lang)) {
 				return;
 			}

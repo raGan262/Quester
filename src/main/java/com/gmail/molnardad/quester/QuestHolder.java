@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.exceptions.HolderException;
 import com.gmail.molnardad.quester.managers.QuestManager;
-import com.gmail.molnardad.quester.strings.QuesterStrings;
+import com.gmail.molnardad.quester.strings.QuesterLang;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestHolder {
@@ -59,7 +59,7 @@ public class QuestHolder {
 		return selected;
 	}
 	
-	public boolean selectNext(QuesterStrings lang) throws HolderException {
+	public boolean selectNext(QuesterLang lang) throws HolderException {
 		lastAction = System.currentTimeMillis();
 		if(heldQuests.isEmpty())
 			throw new HolderException(lang.ERROR_Q_NONE);

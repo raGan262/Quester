@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.managers.CommandManager;
-import com.gmail.molnardad.quester.strings.QuesterStrings;
+import com.gmail.molnardad.quester.strings.QuesterLang;
 import com.google.common.collect.Lists;
 
 public class QCommandContext {
@@ -20,10 +20,10 @@ public class QCommandContext {
 	private final String[] parentArgs;
 	private final CommandSender sender;
 	private final Set<Character> flags;
-	private final QuesterStrings lang;
+	private final QuesterLang lang;
 	// valueFlags will be added once it is needed :)
 	
-	private QCommandContext(String[] args, String[] parentArgs, CommandSender sender, CommandManager cMan, Set<Character> flags, QuesterStrings lang) {
+	private QCommandContext(String[] args, String[] parentArgs, CommandSender sender, CommandManager cMan, Set<Character> flags, QuesterLang lang) {
 		this.args = args;
 		this.parentArgs = args;
 		this.comMan = cMan;
@@ -32,7 +32,7 @@ public class QCommandContext {
 		this.lang = lang;
 	}
 	
-	public QCommandContext(String[] args, String[] parentArgs, CommandSender sender, CommandManager cMan, QuesterStrings lang) {
+	public QCommandContext(String[] args, String[] parentArgs, CommandSender sender, CommandManager cMan, QuesterLang lang) {
 		this.sender = sender;
 		this.parentArgs = parentArgs;
 		this.comMan = cMan;
@@ -119,7 +119,7 @@ public class QCommandContext {
 		return null;
 	}
 	
-	public QuesterStrings getSenderLang() {
+	public QuesterLang getSenderLang() {
 		return lang;
 	}
 	

@@ -12,7 +12,7 @@ import com.gmail.molnardad.quester.QuesterSign;
 import com.gmail.molnardad.quester.exceptions.CustomException;
 import com.gmail.molnardad.quester.exceptions.HolderException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
-import com.gmail.molnardad.quester.strings.QuesterStrings;
+import com.gmail.molnardad.quester.strings.QuesterLang;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestHolderManager {
@@ -75,7 +75,7 @@ public class QuestHolderManager {
 		saveHolders();
 	}
 	
-	public void addHolderQuest(String issuer, int questID, QuesterStrings lang) throws QuesterException {
+	public void addHolderQuest(String issuer, int questID, QuesterLang lang) throws QuesterException {
 		QuestHolder qh = getHolder(profMan.getProfile(issuer).getHolderID());
 		if(qh == null) {
 			throw new HolderException(lang.ERROR_HOL_NOT_EXIST);
@@ -84,7 +84,7 @@ public class QuestHolderManager {
 		saveHolders();
 	}
 	
-	public void removeHolderQuest(String issuer, int questID, QuesterStrings lang) throws QuesterException {
+	public void removeHolderQuest(String issuer, int questID, QuesterLang lang) throws QuesterException {
 		QuestHolder qh = getHolder(profMan.getProfile(issuer).getHolderID());
 		if(qh == null) {
 			throw new HolderException(lang.ERROR_HOL_NOT_EXIST);
@@ -93,7 +93,7 @@ public class QuestHolderManager {
 		saveHolders();
 	}
 	
-	public void moveHolderQuest(String issuer, int which, int where, QuesterStrings lang) throws QuesterException {
+	public void moveHolderQuest(String issuer, int which, int where, QuesterLang lang) throws QuesterException {
 		QuestHolder qh = getHolder(profMan.getProfile(issuer).getHolderID());
 		if(qh == null) {
 			throw new HolderException(lang.ERROR_HOL_NOT_SELECTED);
@@ -107,14 +107,14 @@ public class QuestHolderManager {
 		saveHolders();
 	}
 
-	public void showHolderList(CommandSender sender, QuesterStrings lang) {
+	public void showHolderList(CommandSender sender, QuesterLang lang) {
 		sender.sendMessage(Util.line(ChatColor.BLUE, lang.INFO_HOLDER_LIST, ChatColor.GOLD));
 		for(int id : getHolders().keySet()){
 			sender.sendMessage(ChatColor.BLUE + "[" + id + "]" + ChatColor.GOLD + " " + getHolder(id).getName());
 		}
 	}
 
-	public void showHolderInfo(CommandSender sender, int holderID, QuesterStrings lang) throws QuesterException {
+	public void showHolderInfo(CommandSender sender, int holderID, QuesterLang lang) throws QuesterException {
 		QuestHolder qh;
 		int id;
 		if(holderID < 0) {

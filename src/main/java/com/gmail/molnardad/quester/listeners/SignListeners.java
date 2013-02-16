@@ -25,7 +25,7 @@ import com.gmail.molnardad.quester.managers.LanguageManager;
 import com.gmail.molnardad.quester.managers.ProfileManager;
 import com.gmail.molnardad.quester.managers.QuestHolderManager;
 import com.gmail.molnardad.quester.managers.QuestManager;
-import com.gmail.molnardad.quester.strings.QuesterStrings;
+import com.gmail.molnardad.quester.strings.QuesterLang;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class SignListeners implements Listener {
@@ -51,7 +51,7 @@ public class SignListeners implements Listener {
 			if(qs == null) {
 				return;
 			}
-			QuesterStrings lang = langMan.getPlayerLang(player.getName());
+			QuesterLang lang = langMan.getPlayerLang(player.getName());
 			if(block.getType().getId() != 63 && block.getType().getId() != 68) {
 				holMan.signs.remove(block.getLocation().getWorld().getName() + block.getLocation().getBlockX() + block.getLocation().getBlockY() + block.getLocation().getBlockZ());
 				player.sendMessage(Quester.LABEL + lang.SIGN_UNREGISTERED);
@@ -175,7 +175,7 @@ public class SignListeners implements Listener {
 		if(block.getType().getId() == 63 || block.getType().getId() == 68) {
 			Sign sign = (Sign) block.getState();
 			if(holMan.signs.get(sign.getLocation().getWorld().getName() + sign.getLocation().getBlockX() + sign.getLocation().getBlockY() + sign.getLocation().getBlockZ()) != null) {
-				QuesterStrings lang = langMan.getPlayerLang(event.getPlayer().getName());
+				QuesterLang lang = langMan.getPlayerLang(event.getPlayer().getName());
 				if(!event.getPlayer().isSneaking() || !Util.permCheck(event.getPlayer(), DataManager.PERM_MODIFY, false, null)) {
 					event.setCancelled(true);
 					return;
@@ -190,7 +190,7 @@ public class SignListeners implements Listener {
 	public void onSignChange(SignChangeEvent event) {
 		Block block = event.getBlock();
 		if(event.getLine(0).equals("[Quester]")) {
-			QuesterStrings lang = langMan.getPlayerLang(event.getPlayer().getName());
+			QuesterLang lang = langMan.getPlayerLang(event.getPlayer().getName());
 			if(!Util.permCheck(event.getPlayer(), DataManager.PERM_MODIFY, true, lang)) {
 				block.breakNaturally();
 			}

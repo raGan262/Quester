@@ -14,7 +14,7 @@ import com.gmail.molnardad.quester.exceptions.ElementException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.managers.ElementManager;
 import com.gmail.molnardad.quester.managers.QuestManager;
-import com.gmail.molnardad.quester.strings.QuesterStrings;
+import com.gmail.molnardad.quester.strings.QuesterLang;
 
 public class ConditionCommands {
 	
@@ -32,7 +32,7 @@ public class ConditionCommands {
 			min = 1,
 			usage = "<condition type> [args]")
 	public void add(QCommandContext context, CommandSender sender) throws QCommandException, QuesterException {
-		QuesterStrings lang = context.getSenderLang();
+		QuesterLang lang = context.getSenderLang();
 		String type = context.getString(0);
 		if(!eMan.isCondition(type)) {
 			sender.sendMessage(ChatColor.RED + lang.ERROR_CON_NOT_EXIST);

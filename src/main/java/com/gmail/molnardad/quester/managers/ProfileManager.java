@@ -21,7 +21,7 @@ import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;
-import com.gmail.molnardad.quester.strings.QuesterStrings;
+import com.gmail.molnardad.quester.strings.QuesterLang;
 
 public class ProfileManager {
 
@@ -148,7 +148,7 @@ public class ProfileManager {
 		showProfile(sender, sender.getName(), langMan.getPlayerLang(sender.getName()));
 	}
 	
-	public void showProfile(CommandSender sender, String name, QuesterStrings lang) {
+	public void showProfile(CommandSender sender, String name, QuesterLang lang) {
 		if(!hasProfile(name)) {
 			sender.sendMessage(ChatColor.RED + lang.INFO_PROFILE_NOT_EXIST.replaceAll("%p", name));
 			return;

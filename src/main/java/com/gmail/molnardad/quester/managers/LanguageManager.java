@@ -10,25 +10,25 @@ import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;
-import com.gmail.molnardad.quester.strings.QuesterStrings;
+import com.gmail.molnardad.quester.strings.QuesterLang;
 
 public class LanguageManager {
 	
-	private Map<String, QuesterStrings> languages = new HashMap<String, QuesterStrings>();
+	private Map<String, QuesterLang> languages = new HashMap<String, QuesterLang>();
 
 	public boolean hasLang(String name) {
 		return languages.get(name.toLowerCase()) != null;
 	}
 	
-	public QuesterStrings getPlayerLang(String playerName) {
+	public QuesterLang getPlayerLang(String playerName) {
 		return getDefaultLang();
 	}
 	
-	public QuesterStrings getDefaultLang() {
+	public QuesterLang getDefaultLang() {
 		return languages.get("english");
 	}
 	
-	public QuesterStrings getLang(String name) {
+	public QuesterLang getLang(String name) {
 		if(!hasLang(name)) {
 			return null;
 		}
@@ -42,7 +42,7 @@ public class LanguageManager {
 		Storage storage = new ConfigStorage(file, Quester.log, null);
 		storage.load();
 		StorageKey key = storage.getKey("");
-		QuesterStrings lang = new QuesterStrings(file);
+		QuesterLang lang = new QuesterLang(file);
 		Exception ex = null;
 		int eCount = 0;
 		for(Field f : lang.getClass().getFields()) {

@@ -2,7 +2,7 @@ package com.gmail.molnardad.quester.strings;
 
 import java.io.File;
 
-public class QuesterStrings {
+public class QuesterLang {
 
 	public String MSG_ONLY_PLAYER = "This command can only be run by player.";
 	public String MSG_PROFILES_SAVE = "Profiles saved.";
@@ -344,7 +344,7 @@ public class QuesterStrings {
 	
 	private File file = null;
 	
-	public QuesterStrings(File file) {
+	public QuesterLang(File file) {
 		this.file = file;
 	}
 	
