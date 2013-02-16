@@ -92,8 +92,9 @@ public class Quester extends JavaPlugin {
 			//Managers
 			langs = new LanguageManager();
 			elements = new ElementManager();
-			holders = new QuestHolderManager(this);
 			quests = new QuestManager(this);
+			profiles = new ProfileManager(this);
+			holders = new QuestHolderManager(this);
 			commands = new CommandManager(this);
 
 			this.loadLocal();
