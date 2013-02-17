@@ -1,6 +1,5 @@
 package com.gmail.molnardad.quester.conditions;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
@@ -9,13 +8,14 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("MONEY")
 public final class MoneyCondition extends Condition {
 
-	private final int amount;
+	private final double amount;
 	
-	public MoneyCondition(int amount) {
+	public MoneyCondition(double amount) {
 		this.amount = amount;
 	}
 
@@ -29,7 +29,7 @@ public final class MoneyCondition extends Condition {
 	
 	@Override
 	protected String parseDescription(String description) {
-		return description.replaceAll("%amt", amount+"");
+		return description.replaceAll("%amt", String.valueOf(amount));
 	}
 	
 	@Override
@@ -53,7 +53,7 @@ public final class MoneyCondition extends Condition {
 			usage = "<amount>")
 	public static Condition fromCommand(QCommandContext context) throws QCommandException {
 		try {
-			int amt = context.getInt(1);
+			double amt = context.getDouble(1);
 			return new MoneyCondition(amt);
 		}
 		catch (NumberFormatException e) {
@@ -61,19 +61,19 @@ public final class MoneyCondition extends Condition {
 		}
 	}
 	
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		section.set("amount", amount);
+	public void save(StorageKey key) {
+		key.setDouble("amount", amount);
 	}
 
-	public static MoneyCondition deser(ConfigurationSection section) {
-		int amt;
+	public static MoneyCondition load(StorageKey key) {
+		double amt;
 		
-		if(section.isInt("amount"))
-			amt = section.getInt("amount");
-		else
+		try {
+			amt = Double.parseDouble(key.getString("amount"));
+		}
+		catch (Exception e) {
 			return null;
+		}
 		
 		return new MoneyCondition(amt);
 	}

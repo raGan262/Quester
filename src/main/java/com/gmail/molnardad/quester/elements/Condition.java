@@ -4,30 +4,14 @@ import java.lang.reflect.Method;
 
 import org.apache.commons.lang.SerializationException;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
-import com.gmail.molnardad.quester.conditions.ItemCondition;
-import com.gmail.molnardad.quester.conditions.MoneyCondition;
-import com.gmail.molnardad.quester.conditions.PermissionCondition;
-import com.gmail.molnardad.quester.conditions.PointCondition;
-import com.gmail.molnardad.quester.conditions.QuestCondition;
-import com.gmail.molnardad.quester.conditions.QuestNotCondition;
 import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.ElementManager;
 import com.gmail.molnardad.quester.storage.StorageKey;
 
 public abstract class Condition extends Element {
-
-	@SuppressWarnings("unchecked")
-	private static Class<? extends Condition>[] classes = new Class[]{
-		ItemCondition.class,
-		MoneyCondition.class,
-		PermissionCondition.class,
-		PointCondition.class,
-		QuestCondition.class,
-		QuestNotCondition.class
-	};
 	
 	private String desc = "";
 	
@@ -67,8 +51,6 @@ public abstract class Condition extends Element {
 		return "Condition (type=" + getType() + ")";
 	}
 	
-	// TODO serialization
-	
 	protected abstract void save(StorageKey key);
 	
 	public void serialize(StorageKey key) throws SerializationException {
@@ -84,51 +66,45 @@ public abstract class Condition extends Element {
 	}
 	
 	public static Condition deserialize(StorageKey key) {
-		if(section == null) {
-			Quester.log.severe("Condition deserialization error: section null.");
+		if(!key.hasSubKeys()) {
+			Quester.log.severe("Condition deserialization error: no subkeys");
 			return null;
 		}
 		Condition con = null;
 		String type = null, des = null;
 		
-		if(section.isString("type"))
-			type = section.getString("type");
+		if(key.getString("type") != null) {
+			type = key.getString("type");
+		}
 		else {
 			Quester.log.severe("Condition type missing.");
 			return null;
 		}
-		if(section.isString("description"))
-			des = section.getString("description");
-		
-		boolean success = false;
-		for(Class<? extends Condition> c : classes) {
+		if(key.getString("description") != null) {
+			des = key.getString("description");
+		}
+		Class<? extends Condition> c = ElementManager.getInstance().getConditionClass(type);
+		if(c != null) {
 			try {
-				if(((String) c.getField("TYPE").get(null)).equalsIgnoreCase(type)) {
-					try {
-						Method deser = c.getMethod("deser", ConfigurationSection.class);
-						con = (Condition) deser.invoke(null, section);
-						if(con == null)
-							return null;
-						if(des != null)
-							con.addDescription(des);
-						success = true;
-						break;
-					} catch (Exception e) {
-						Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Method deser() missing or broken. " + e.getClass().getName());
-						if(DataManager.debug)
-							e.printStackTrace();
-						return null;
-					}
+				Method load = c.getMethod("load", StorageKey.class);
+				con = (Condition) load.invoke(null, key);
+				if(con == null) {
+					return null;
+				}
+				if(des != null) {
+					con.addDescription(des);
 				}
 			} catch (Exception e) {
-				Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Field 'TYPE' missing or access denied. " + e.getClass().getName());
-				if(DataManager.debug)
+				Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Method load() missing or invalid. " + e.getClass().getName());
+				if(DataManager.debug) {
 					e.printStackTrace();
+				}
 				return null;
 			}
 		}
-		if(!success)
+		else {
 			Quester.log.severe("Unknown condition type: '" + type  + "'");
+		}
 		
 		return con;
 	}

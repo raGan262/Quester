@@ -32,10 +32,6 @@ import com.gmail.molnardad.quester.strings.QuesterLang;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestManager {
-	
-	// TODO rewrite this whole class to not be so terrible
-	// spit to ProfileManager, QuestManager (and maybe Messenger)
-	// partially done, finish storage methods
 
 	private LanguageManager langMan = null;
 	private ProfileManager profMan = null;
@@ -913,9 +909,6 @@ public class QuestManager {
 		}
 		return inv;
 	}
-
-	
-	// TODO STORAGE METHODS
 	
 	public void saveQuests() {
 		questStorage.save();

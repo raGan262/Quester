@@ -1,6 +1,5 @@
 package com.gmail.molnardad.quester.conditions;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
@@ -9,6 +8,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("PERM")
@@ -48,18 +48,16 @@ public final class PermissionCondition extends Condition {
 		String perm = context.getString(0);
 		return new PermissionCondition(perm);
 	}
-	
-	// TODO serialization
 
-	public void serialize(ConfigurationSection section) {
-		section.set("permission", perm);
+	public void save(StorageKey key) {
+		key.setString("permission", perm);
 	}
 
-	public static PermissionCondition deser(ConfigurationSection section) {
+	public static PermissionCondition load(StorageKey key) {
 		String perm;
 		
-		if(section.isString("permission"))
-			perm = section.getString("permission");
+		if(key.getString("permission") != null)
+			perm = key.getString("permission");
 		else
 			return null;
 		

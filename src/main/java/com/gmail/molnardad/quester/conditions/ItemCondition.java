@@ -1,7 +1,6 @@
 package com.gmail.molnardad.quester.conditions;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -11,6 +10,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("ITEM")
@@ -91,24 +91,23 @@ public final class ItemCondition extends Condition {
 		return new ItemCondition(mat, amt, dat);
 	}
 	
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		section.set("item", Util.serializeItem(material.getId(), data));
-		section.set("amount", amount);
+	@Override
+	protected void save(StorageKey key) {
+		key.setString("item", Util.serializeItem(material.getId(), data));
+		key.setInt("amount", amount);
 	}
 
-	public static ItemCondition deser(ConfigurationSection section) {
+	protected static ItemCondition load(StorageKey key) {
 		int amt = 1, dat;
 		Material mat;
 		try {
-			int[] itm = Util.parseItem(section.getString("item"));
+			int[] itm = Util.parseItem(key.getString("item"));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
-			if(section.isInt("amount"))
-				amt = section.getInt("amount");
-			if(amt < 1)
+			key.getInt("amount", 1);
+			if(amt < 1) {
 				amt = 1;
+			}
 		} catch (Exception e) {
 			return null;
 		}

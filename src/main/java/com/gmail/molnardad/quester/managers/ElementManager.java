@@ -24,10 +24,20 @@ public class ElementManager {
 		private QCommand command;
 	}
 
+	private static ElementManager instance = null;
+	
 	private Map<String, ElementInfo<Condition>> conditions = new HashMap<String, ElementInfo<Condition>>();
 	private Map<String, ElementInfo<Objective>> objectives = new HashMap<String, ElementInfo<Objective>>();
 	private Map<String, ElementInfo<Qevent>> events = new HashMap<String, ElementInfo<Qevent>>();
 
+	public static ElementManager getInstance() {
+		return instance;
+	}
+	
+	public static void setInstance(ElementManager eMan) {
+		instance = eMan;
+	}
+	
 	public Class<? extends Condition> getConditionClass(String type) {
 		ElementInfo<Condition> ei = conditions.get(type.toUpperCase());
 		if(ei == null) {

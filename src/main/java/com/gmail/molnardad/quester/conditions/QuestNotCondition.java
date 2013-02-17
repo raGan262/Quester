@@ -1,6 +1,5 @@
 package com.gmail.molnardad.quester.conditions;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.PlayerProfile;
@@ -10,6 +9,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("QUESTNOT")
 public final class QuestNotCondition extends Condition {
@@ -66,25 +66,25 @@ public final class QuestNotCondition extends Condition {
 		return new QuestNotCondition(qst, t);
 	}
 	
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		section.set("quest", quest);
+	public void save(StorageKey key) {
+		key.setString("quest", quest);
 		if(time != 0) {
-			section.set("time", time);
+			key.setInt("time", time);
 		}
 	}
 
-	public static QuestNotCondition deser(ConfigurationSection section) {
+	public static QuestNotCondition load(StorageKey key) {
 		String qst;
 		int time;
 		
-		if(section.isString("quest"))
-			qst = section.getString("quest");
-		else
+		if(key.getString("quest") != null) {
+			qst = key.getString("quest");
+		}	
+		else {
 			return null;
+		}
 		
-		time = section.getInt("time", 0);
+		time = key.getInt("time");
 		
 		return new QuestNotCondition(qst, time);
 	}

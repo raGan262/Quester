@@ -1,6 +1,5 @@
 package com.gmail.molnardad.quester.conditions;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
@@ -9,6 +8,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("POINT")
 public final class PointCondition extends Condition {
@@ -53,19 +53,19 @@ public final class PointCondition extends Condition {
 		}
 	}
 	
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		section.set("amount", amount);
+	public void save(StorageKey key) {
+		key.setInt("amount", amount);
 	}
 
-	public static PointCondition deser(ConfigurationSection section) {
+	public static PointCondition load(StorageKey key) {
 		int amt;
 		
-		if(section.isInt("amount"))
-			amt = section.getInt("amount");
-		else
+		try {
+			amt = Integer.parseInt(key.getString("amount"));
+		}
+		catch (Exception e) {
 			return null;
+		}
 		
 		return new PointCondition(amt);
 	}
