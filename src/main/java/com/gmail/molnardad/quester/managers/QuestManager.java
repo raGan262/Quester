@@ -243,7 +243,7 @@ public class QuestManager {
 		questIds.remove(q.getID());
 		questLocations.remove(q.getID());
 		allQuests.remove(q.getName().toLowerCase());
-		// TODO plugin.questConfig.getConfig().set(q.getName().toLowerCase(), null);
+		questStorage.getKey("").removeKey(q.getName().toLowerCase());
 		adjustQuestID();
 		saveQuests();
 		return q;
@@ -300,7 +300,7 @@ public class QuestManager {
 		modifyCheck(quest, lang);
 		
 		allQuests.remove(quest.getName().toLowerCase());
-		// TODO plugin.questConfig.getConfig().set(quest.getName().toLowerCase(), null);
+		questStorage.getKey("").removeKey(quest.getName().toLowerCase());
 		quest.setName(newName);
 		allQuests.put(newName.toLowerCase(), quest);
 		questIds.put(questId, newName.toLowerCase());
@@ -911,6 +911,7 @@ public class QuestManager {
 	}
 	
 	public void saveQuests() {
+		// TODO redo storage and save what is in the hashmap
 		questStorage.save();
 	}
 	

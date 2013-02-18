@@ -22,7 +22,6 @@ public abstract class Condition extends Element {
 		}
 		return des;
 	}
-	
 	public final void addDescription(String msg) {
 		this.desc += (" " + msg).trim();
 	}
