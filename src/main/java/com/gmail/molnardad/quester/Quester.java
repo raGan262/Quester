@@ -64,9 +64,6 @@ public class Quester extends JavaPlugin {
 			if(this.setupEpicBoss()) {
 				log.info("EpicBoss found and hooked...");
 			}
-//			if(this.setupDenizen()) {
-//				log.info("Denizen found and hooked...");
-//			}
 			
 			this.initializeConfig();
 
@@ -89,7 +86,7 @@ public class Quester extends JavaPlugin {
 		@Override
 		public void onDisable() {
 			if(loaded) {
-				stopSaving();
+				stopTasks();
 				QuestData.saveQuests();
 				QuestData.saveProfiles();
 				QuestData.saveHolders();
@@ -116,7 +113,6 @@ public class Quester extends JavaPlugin {
 	        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
 	        if (rsp == null) {
 				log.info("Economy plugin not found, economy support disabled.");
-	            getServer().getPluginManager().disablePlugin(this);
 	            return false;
 	        }
 	        econ = rsp.getProvider();
@@ -141,11 +137,6 @@ public class Quester extends JavaPlugin {
 			epicboss = (getServer().getPluginManager().getPlugin("EpicBossRecoded") != null);
 		    return epicboss;
 		}
-		
-//		private boolean setupDenizen() {
-//			denizen = (getServer().getPluginManager().getPlugin("Denizen") != null);
-//			return epicboss;
-//		}
 
 		public void initializeConfig() {
 			config = (new BaseConfig("config.yml")).getConfig();
@@ -217,6 +208,10 @@ public class Quester extends JavaPlugin {
 			if(epicboss) {
 				getServer().getPluginManager().registerEvents(new BossDeathListener(), this);
 			}
+		}
+		
+		private void stopTasks() {
+			Bukkit.getScheduler().cancelTasks(this);
 		}
 		
 		public boolean startSaving() {
