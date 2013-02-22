@@ -84,6 +84,7 @@ public class Quester extends JavaPlugin {
 			//Managers
 			langs = new LanguageManager();
 			elements = new ElementManager();
+			ElementManager.setInstance(elements);
 			quests = new QuestManager(this);
 			profiles = new ProfileManager(this);
 			quests.setProfileManager(profiles); // loading conflicts...

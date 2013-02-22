@@ -9,24 +9,29 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.managers.DataManager;
 import com.gmail.molnardad.quester.managers.ProfileManager;
+import com.gmail.molnardad.quester.managers.QuestManager;
 
 public class AdminCommands {
 
 	private Quester plugin = null;
 	private ProfileManager profMan = null;
+	private QuestManager qMan = null;
 	
 	public AdminCommands(Quester plugin) {
 		this.plugin = plugin;
 		this.profMan = plugin.getProfileManager();
+		this.qMan = plugin.getQuestManager();
 	}
 	
 	@QCommandLabels({"save"})
 	@QCommand(
-			desc = "saves profiles",
+			desc = "saves quests and profiles",
 			max = 0,
 			permission = DataManager.PERM_ADMIN)
 	public void save(QCommandContext context, CommandSender sender) {
 		profMan.saveProfiles();
+		qMan.saveQuests();
+		// TODO change message to match this
 		sender.sendMessage(context.getSenderLang().MSG_PROFILES_SAVE);
 	}
 	

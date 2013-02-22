@@ -6,7 +6,6 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
@@ -203,7 +202,6 @@ public class ElementManager {
 		}
 		try {
 			Method load = clss.getDeclaredMethod("load", StorageKey.class); 
-			Quester.log.info("Zbehne.");
 			if(!Modifier.isStatic(load.getModifiers()) || !Modifier.isProtected(load.getModifiers())) {
 				throw new ElementException("Incorrect load method modifiers, expected protected static.");
 			}

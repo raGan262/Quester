@@ -85,7 +85,8 @@ public abstract class Condition extends Element {
 		Class<? extends Condition> c = ElementManager.getInstance().getConditionClass(type);
 		if(c != null) {
 			try {
-				Method load = c.getMethod("load", StorageKey.class);
+				Method load = c.getDeclaredMethod("load", StorageKey.class);
+				load.setAccessible(true);
 				con = (Condition) load.invoke(null, key);
 				if(con == null) {
 					return null;

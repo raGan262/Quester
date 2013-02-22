@@ -236,7 +236,6 @@ public class QuestManager {
 		allQuests.put(questName.toLowerCase(), q);
 		questIds.put(q.getID(), questName.toLowerCase());
 		profMan.selectQuest(issuer, q.getID());
-		saveQuests();
 		return q;
 	}
 	
@@ -246,20 +245,17 @@ public class QuestManager {
 		questIds.remove(q.getID());
 		questLocations.remove(q.getID());
 		allQuests.remove(q.getName().toLowerCase());
-		questStorage.getKey("").removeKey(q.getName().toLowerCase());
+		questStorage.getKey(q.getName().toLowerCase()).removeKey("");
 		adjustQuestID();
-		saveQuests();
 		return q;
 	}
 	
 	public void activateQuest(Quest q) {
 		q.addFlag(QuestFlag.ACTIVE);
-		saveQuests();
 	}
 	
 	public void deactivateQuest(Quest q) {
 		q.removeFlag(QuestFlag.ACTIVE);
-		saveQuests();
 		for(PlayerProfile prof: profMan.getProfiles()) {
 			while(prof.hasQuest(q.getName())) {
 				prof.unsetQuest(q.getName());
@@ -303,25 +299,22 @@ public class QuestManager {
 		modifyCheck(quest, lang);
 		
 		allQuests.remove(quest.getName().toLowerCase());
-		questStorage.getKey("").removeKey(quest.getName().toLowerCase());
+		questStorage.getKey(quest.getName().toLowerCase()).removeKey("");
 		quest.setName(newName);
 		allQuests.put(newName.toLowerCase(), quest);
 		questIds.put(questId, newName.toLowerCase());
-		saveQuests();
 	}
 	
 	public void setQuestDescription(String issuer, String newDesc, QuesterLang lang) throws QuesterException {
 		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
 		modifyCheck(quest, lang);
 		quest.setDescription(newDesc);
-		saveQuests();
 	}
 	
 	public void addQuestDescription(String issuer, String descToAdd, QuesterLang lang) throws QuesterException {
 		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
 		modifyCheck(quest, lang);
 		quest.addDescription(descToAdd);
-		saveQuests();
 	}
 	
 	public void setQuestLocation(String issuer, Location loc, int range, QuesterLang lang) throws QuesterException {
@@ -330,7 +323,6 @@ public class QuestManager {
 		quest.setLocation(loc);
 		quest.setRange(range);
 		questLocations.put(quest.getID(), loc);
-		saveQuests();
 	}
 	
 	public void removeQuestLocation(String issuer, QuesterLang lang) throws QuesterException {
@@ -339,21 +331,18 @@ public class QuestManager {
 		quest.setLocation(null);
 		quest.setRange(1);
 		questLocations.remove(quest.getID());
-		saveQuests();
 	}
 	
 	public void addQuestWorld(String issuer, String worldName, QuesterLang lang) throws QuesterException {
 		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
 		modifyCheck(quest, lang);
 		quest.addWorld(worldName);
-		saveQuests();
 	}
 	
 	public boolean removeQuestWorld(String issuer, String worldName, QuesterLang lang) throws QuesterException {
 		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
 		modifyCheck(quest, lang);
 		boolean result = quest.removeWorld(worldName);
-		saveQuests();
 		return result;
 	}
 	
@@ -363,7 +352,6 @@ public class QuestManager {
 		for(QuestFlag f : flags) {
 			quest.addFlag(f);
 		}
-		saveQuests();
 	}
 	
 	public void removeQuestFlag(String issuer, QuestFlag[] flags, QuesterLang lang) throws QuesterException {
@@ -372,14 +360,12 @@ public class QuestManager {
 		for(QuestFlag f : flags) {
 			quest.removeFlag(f);
 		}
-		saveQuests();
 	}
 	
 	public void addQuestObjective(String issuer, Objective newObjective, QuesterLang lang) throws QuesterException {
 		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
 		modifyCheck(quest, lang);
 		quest.addObjective(newObjective);
-		saveQuests();
 	}
 	
 	public void removeQuestObjective(String issuer, int id, QuesterLang lang) throws QuesterException {
@@ -387,8 +373,6 @@ public class QuestManager {
 		modifyCheck(quest, lang);
 		if(!quest.removeObjective(id)){
 			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
-		} else {
-			saveQuests();
 		}
 	}
 	
@@ -400,7 +384,6 @@ public class QuestManager {
 			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
 		}
 		objs.get(id).addDescription(desc);
-		saveQuests();
 	}
 	
 	public void removeObjectiveDescription(String issuer, int id, QuesterLang lang) throws QuesterException {
@@ -411,7 +394,6 @@ public class QuestManager {
 			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
 		}
 		objs.get(id).removeDescription();
-		saveQuests();
 	}
 	
 	public void swapQuestObjectives(String issuer, int first, int second, QuesterLang lang) throws QuesterException {
@@ -428,7 +410,6 @@ public class QuestManager {
 		Objective obj = objs.get(first);
 		objs.set(first, objs.get(second));
 		objs.set(second, obj);
-		saveQuests();
 	}
 	
 	public void moveQuestObjective(String issuer, int which, int where, QuesterLang lang) throws QuesterException {
@@ -442,7 +423,6 @@ public class QuestManager {
 			throw new CustomException(lang.ERROR_CMD_ID_OUT_OF_BOUNDS);
 		}
 		Util.moveListUnit(quest.getObjectives(), which, where);
-		saveQuests();
 	}
 	
 	public void addObjectivePrerequisites(String issuer, int id, Set<Integer> prereq, QuesterLang lang) throws QuesterException {
@@ -457,7 +437,6 @@ public class QuestManager {
 				objs.get(id).addPrerequisity(i);
 			}
 		}
-		saveQuests();
 	}
 	
 	public void removeObjectivePrerequisites(String issuer, int id, Set<Integer> prereq, QuesterLang lang) throws QuesterException {
@@ -470,14 +449,12 @@ public class QuestManager {
 		for(int i : prereq) {
 			objs.get(id).removePrerequisity(i);
 		}
-		saveQuests();
 	}
 	
 	public void addQuestCondition(String issuer, Condition newCondition, QuesterLang lang) throws QuesterException {
 		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
 		modifyCheck(quest, lang);
 		quest.addCondition(newCondition);
-		saveQuests();
 	}
 	
 	public void removeQuestCondition(String issuer, int id, QuesterLang lang) throws QuesterException {
@@ -485,8 +462,6 @@ public class QuestManager {
 		modifyCheck(quest, lang);
 		if(!quest.removeCondition(id)){
 			throw new ConditionException(lang.ERROR_CON_NOT_EXIST);
-		} else {
-			saveQuests();
 		}
 	}
 	
@@ -498,7 +473,6 @@ public class QuestManager {
 			throw new ConditionException(lang.ERROR_CON_NOT_EXIST);
 		}
 		cons.get(id).addDescription(desc);
-		saveQuests();
 	}
 	
 	public void removeConditionDescription(String issuer, int id, QuesterLang lang) throws QuesterException {
@@ -509,7 +483,6 @@ public class QuestManager {
 			throw new ConditionException(lang.ERROR_CON_NOT_EXIST);
 		}
 		cons.get(id).removeDescription();
-		saveQuests();
 	}
 	
 	public void addQevent(String issuer, Qevent newQevent, QuesterLang lang) throws QuesterException {
@@ -520,7 +493,6 @@ public class QuestManager {
 			throw new ConditionException(lang.ERROR_OCC_NOT_EXIST);
 		}
 		quest.addQevent(newQevent);
-		saveQuests();
 	}
 	
 	public void removeQevent(String issuer, int id, QuesterLang lang) throws QuesterException {
@@ -529,7 +501,6 @@ public class QuestManager {
 		if(!quest.removeQevent(id)){
 			throw new EventException(lang.ERROR_EVT_NOT_EXIST);
 		}
-		saveQuests();
 	}
 	
 	// QUEST PROGRESS METHODS
@@ -914,12 +885,16 @@ public class QuestManager {
 	}
 	
 	public void saveQuests() {
-		// TODO redo storage and save what is in the hashmap
+		for(Quest q : allQuests.values()) {
+			StorageKey key = questStorage.getKey(q.getName().toLowerCase());
+			q.serialize(key);
+		}
 		questStorage.save();
 	}
 	
 	public void loadQuests() {
 		questStorage.load();
+		Quester.log.info("Deserializing quest " + DataManager.debug + ".");
 		for(StorageKey questKey : questStorage.getKey("").getSubKeys()) {
 			if(questKey.hasSubKeys()) {
 				if(DataManager.debug) {

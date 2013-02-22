@@ -127,7 +127,8 @@ public abstract class Objective extends Element {
 		Class<? extends Objective> c = ElementManager.getInstance().getObjectiveClass(type);
 		if(c != null) {
 			try {
-				Method load = c.getMethod("load", StorageKey.class);
+				Method load = c.getDeclaredMethod("load", StorageKey.class);
+				load.setAccessible(true);
 				obj = (Objective) load.invoke(null, key);
 				if(obj == null) {
 					return null;

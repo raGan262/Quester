@@ -121,7 +121,7 @@ public class ConfigStorage implements Storage {
 		public List<StorageKey> getSubKeys() {
 			Set<String> keySet = null;
 			if(path == "") {
-				ConfigStorage.this.config.getKeys(false);
+				keySet = ConfigStorage.this.config.getKeys(false);
 			}
 			else {
 				ConfigurationSection section = ConfigStorage.this.config.getConfigurationSection(path);

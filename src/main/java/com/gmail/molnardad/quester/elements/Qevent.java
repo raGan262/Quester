@@ -126,7 +126,8 @@ public abstract class Qevent extends Element {
 		Class<? extends Qevent> c = ElementManager.getInstance().getEventClass(type);
 		if(c != null) {
 			try {
-				Method load = c.getMethod("load", StorageKey.class);
+				Method load = c.getDeclaredMethod("load", StorageKey.class);
+				load.setAccessible(true);
 				qev = (Qevent) load.invoke(null, key);
 				if(qev == null) {
 					return null;
