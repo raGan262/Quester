@@ -1,6 +1,5 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 
 import com.gmail.molnardad.quester.commandbase.QCommand;
@@ -8,6 +7,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("TAME")
@@ -57,25 +57,26 @@ public final class TameObjective extends Objective {
 		return new TameObjective(amt, ent);
 	}
 
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		if(amount > 1)
-			section.set("amount", amount);
-		if(entity != null)
-			section.set("entity","" + entity.getTypeId());
+	@Override
+	protected void save(StorageKey key) {
+		if(amount > 1) {
+			key.setInt("amount", amount);
+		}
+		if(entity != null) {
+			key.setString("entity","" + entity.getTypeId());
+		}
 	}
 	
-	public static Objective deser(ConfigurationSection section) {
+	protected static Objective load(StorageKey key) {
 		int amt = 1;
 		EntityType ent = null;
 		try {
-			ent = Util.parseEntity(section.getString("entity"));
+			ent = Util.parseEntity(key.getString("entity"));
 		} catch (Exception e) {}
-		if(section.isInt("amount"))
-			amt = section.getInt("amount");
-		if(amt < 1)
+		amt = key.getInt("amount", 1);
+		if(amt < 1) {
 			amt = 1;
+		}
 		return new TameObjective(amt, ent);
 	}
 	

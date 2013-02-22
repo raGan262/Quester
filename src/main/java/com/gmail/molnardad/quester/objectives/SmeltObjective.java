@@ -3,7 +3,6 @@ package com.gmail.molnardad.quester.objectives;
 import static com.gmail.molnardad.quester.utils.Util.parseItem;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.molnardad.quester.commandbase.QCommand;
@@ -11,6 +10,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("SMELT")
@@ -60,28 +60,27 @@ public final class SmeltObjective extends Objective {
 		return new SmeltObjective(amt, mat, dat);
 	}
 
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		section.set("item", Util.serializeItem(material, data));
-		if(amount > 1)
-			section.set("amount", amount);
+	@Override
+	protected void save(StorageKey key) {
+		key.setString("item", Util.serializeItem(material, data));
+		if(amount > 1) {
+			key.setInt("amount", amount);
+		}
 	}
 	
-	public static Objective deser(ConfigurationSection section) {
+	protected static Objective load(StorageKey key) {
 		Material mat;
 		int dat, amt = 1;
 		try {
-			int[] itm = Util.parseItem(section.getString("item", ""));
+			int[] itm = Util.parseItem(key.getString("item", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
-			} catch (IllegalArgumentException e) {
-				return null;
+		} catch (IllegalArgumentException e) {
+			return null;
 		}
-		if(section.isInt("amount")) {
-			amt = section.getInt("amount");
-			if(amt < 1)
-				amt = 1;
+		amt = key.getInt("amount", 1);
+		if(amt < 1) {
+			amt = 1;
 		}
 		return new SmeltObjective(amt, mat, dat);
 	}

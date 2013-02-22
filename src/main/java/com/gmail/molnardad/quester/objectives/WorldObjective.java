@@ -2,7 +2,6 @@ package com.gmail.molnardad.quester.objectives;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.commandbase.QCommand;
@@ -11,6 +10,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("WORLD")
 public final class WorldObjective extends Objective {
@@ -60,18 +60,17 @@ public final class WorldObjective extends Objective {
 		return new WorldObjective(world.getName());
 	}
 
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		section.set("world", worldName);
+	@Override
+	public void save(StorageKey key) {
+		key.setString("world", worldName);
 	}
 	
-	public static Objective deser(ConfigurationSection section) {
+	public static Objective load(StorageKey key) {
 		String world = null;
-		if(section.isString("world"))
-			world = section.getString("world");
-		if(world == null)
+		world = key.getString("world", null);
+		if(world == null) {
 			return null;
+		}
 		return new WorldObjective(world);
 	}
 	

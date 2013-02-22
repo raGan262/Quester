@@ -6,65 +6,16 @@ import java.util.Set;
 
 import org.apache.commons.lang.SerializationException;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.managers.DataManager;
-import com.gmail.molnardad.quester.objectives.ActionObjective;
-import com.gmail.molnardad.quester.objectives.BossObjective;
-import com.gmail.molnardad.quester.objectives.BreakObjective;
-import com.gmail.molnardad.quester.objectives.CollectObjective;
-import com.gmail.molnardad.quester.objectives.CraftObjective;
-import com.gmail.molnardad.quester.objectives.DeathObjective;
-import com.gmail.molnardad.quester.objectives.DyeObjective;
-import com.gmail.molnardad.quester.objectives.EnchantObjective;
-import com.gmail.molnardad.quester.objectives.ExpObjective;
-import com.gmail.molnardad.quester.objectives.FishObjective;
-import com.gmail.molnardad.quester.objectives.ItemObjective;
-import com.gmail.molnardad.quester.objectives.LocObjective;
-import com.gmail.molnardad.quester.objectives.MilkObjective;
-import com.gmail.molnardad.quester.objectives.MobKillObjective;
-import com.gmail.molnardad.quester.objectives.MoneyObjective;
-import com.gmail.molnardad.quester.objectives.NpcKillObjective;
-import com.gmail.molnardad.quester.objectives.NpcObjective;
-import com.gmail.molnardad.quester.objectives.PlaceObjective;
-import com.gmail.molnardad.quester.objectives.PlayerKillObjective;
-import com.gmail.molnardad.quester.objectives.ShearObjective;
-import com.gmail.molnardad.quester.objectives.SmeltObjective;
-import com.gmail.molnardad.quester.objectives.TameObjective;
-import com.gmail.molnardad.quester.objectives.WorldObjective;
+import com.gmail.molnardad.quester.managers.ElementManager;
 import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 public abstract class Objective extends Element {
 
-	@SuppressWarnings("unchecked")
-	private static Class<? extends Objective>[] classes = new Class[]{
-		BreakObjective.class,
-		CollectObjective.class,
-		CraftObjective.class,
-		DeathObjective.class,
-		EnchantObjective.class,
-		ExpObjective.class,
-		FishObjective.class,
-		ItemObjective.class,
-		LocObjective.class,
-		MilkObjective.class,
-		MobKillObjective.class,
-		MoneyObjective.class,
-		PlaceObjective.class,
-		PlayerKillObjective.class,
-		ShearObjective.class,
-		SmeltObjective.class,
-		TameObjective.class,
-		WorldObjective.class,
-		ActionObjective.class,
-		NpcObjective.class,
-		DyeObjective.class,
-		BossObjective.class,
-		NpcKillObjective.class
-	};
 	private String desc = "";
 	private Set<Integer> prerequisites = new HashSet<Integer>();
 	
@@ -136,12 +87,9 @@ public abstract class Objective extends Element {
 	public final String toString() {
 		return "Objective (type=" + getType() + ")";
 	}
-
-	// TODO serialization
-	
 	protected abstract void save(StorageKey key);
 	
-	public void serialize(StorageKey key) {
+	public final void serialize(StorageKey key) {
 		String type = getType();
 		if(type.isEmpty()) {
 			throw new SerializationException("Unknown type");
@@ -156,64 +104,53 @@ public abstract class Objective extends Element {
 		}
 	}
 	
-	public static Objective deserialize(StorageKey key) {
-		if(section == null) {
-			Quester.log.severe("Objective deserialization error: section null.");
+	public static final Objective deserialize(StorageKey key) {
+		if(!key.hasSubKeys()) {
+			Quester.log.severe("Objective deserialization error: no subkeys");
 			return null;
 		}
 		Objective obj = null;
 		String type = null, des = null;
 		Set<Integer> prereq = new HashSet<Integer>();
 		
-		if(section.isString("type"))
-			type = section.getString("type");
-		else {
+		type = key.getString("type");
+		if(type == null) {
 			Quester.log.severe("Objective type missing.");
 			return null;
 		}
-		if(section.isString("description")) {
-			des = section.getString("description");
-		}
-		if(section.isString("prerequisites")) {
-			try {
-				prereq = Util.deserializePrerequisites(section.getString("prerequisites"));
-			} catch (Exception ignore) {}
-		}
+		des = key.getString("description");
+		try {
+			prereq = Util.deserializePrerequisites(key.getString("prerequisites"));
+		} catch (Exception ignore) {}
 		
-		boolean success = false;
-		for(Class<? extends Objective> c : classes) {
+
+		Class<? extends Objective> c = ElementManager.getInstance().getObjectiveClass(type);
+		if(c != null) {
 			try {
-				if(((String) c.getField("TYPE").get(null)).equalsIgnoreCase(type)) {
-					try {
-						success = true;
-						Method deser = c.getMethod("deser", ConfigurationSection.class);
-						obj = (Objective) deser.invoke(null, section);
-						if(obj == null)
-							return null;
-						if(des != null)
-							obj.addDescription(des);
-						if(!prereq.isEmpty()) {
-							for(int i : prereq) {
-								obj.addPrerequisity(i);
-							}
-						}
-						break;
-					} catch (Exception e) {
-						Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Method deser() missing or broken. " + e.getClass().getName());
-						if(DataManager.debug)
-							e.printStackTrace();
-						return null;
+				Method load = c.getMethod("load", StorageKey.class);
+				obj = (Objective) load.invoke(null, key);
+				if(obj == null) {
+					return null;
+				}
+				if(des != null) {
+					obj.addDescription(des);
+				}
+				if(!prereq.isEmpty()) {
+					for(int i : prereq) {
+						obj.addPrerequisity(i);
 					}
 				}
 			} catch (Exception e) {
-				Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Field 'TYPE' missing or access denied. " + e.getClass().getName());
-				if(DataManager.debug)
+				Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Method load() missing or invalid. " + e.getClass().getName());
+				if(DataManager.debug) {
 					e.printStackTrace();
+				}
 				return null;
 			}
 		}
-		if(!success)
+		else {
 			Quester.log.severe("Unknown objective type: '" + type  + "'");
+		}
 		
 		return obj;
 	}

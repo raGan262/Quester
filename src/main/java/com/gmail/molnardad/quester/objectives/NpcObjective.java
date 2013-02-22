@@ -1,13 +1,11 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.configuration.ConfigurationSection;
-
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
-import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("NPC")
 public final class NpcObjective extends Objective {
@@ -48,22 +46,22 @@ public final class NpcObjective extends Objective {
 		return new NpcObjective(id, ccl);
 	}
 
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		section.set("index", index);
+	@Override
+	protected void save(StorageKey key) {
+		key.setInt("index", index);
 		if(cancel) {
-			section.set("cancel", cancel);
+			key.setBoolean("cancel", cancel);
 		}
 	}
 	
-	public static Objective deser(ConfigurationSection section) throws QuesterException {
+	protected static Objective load(StorageKey key) {
 		int id = -1;
 		boolean ccl = false;
-		id = section.getInt("index", -1);
-		if(id < 0)
+		id = key.getInt("index", -1);
+		if(id < 0) {
 			return null;
-		ccl = section.getBoolean("cancel", false);
+		}
+		ccl = key.getBoolean("cancel", false);
 		return new NpcObjective(id, ccl);
 	}
 	

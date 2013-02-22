@@ -3,13 +3,13 @@ package com.gmail.molnardad.quester.objectives;
 import static com.gmail.molnardad.quester.utils.Util.parseColor;
 
 import org.bukkit.DyeColor;
-import org.bukkit.configuration.ConfigurationSection;
 
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("SHEAR")
@@ -59,23 +59,24 @@ public final class ShearObjective extends Objective {
 		return new ShearObjective(amt, col);
 	}
 
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		if(color != null)
-			section.set("color", Util.serializeColor(color));
-		if(amount > 1)
-			section.set("amount", amount);
+	@Override
+	protected void save(StorageKey key) {
+		if(color != null) {
+			key.setString("color", Util.serializeColor(color));
+		}
+		if(amount > 1) {
+			key.setInt("amount", amount);
+		}
 	}
 	
-	public static Objective deser(ConfigurationSection section) {
+	protected static Objective load(StorageKey key) {
 		int amt = 1;
 		DyeColor col = null;
-		col = Util.parseColor(section.getString("color", "default"));
-		if(section.isInt("amount"))
-			amt = section.getInt("amount");
-		if(amt < 1)
+		col = Util.parseColor(key.getString("color", ""));
+		amt = key.getInt("amount");
+		if(amt < 1) {
 			amt = 1;
+		}
 		return new ShearObjective(amt, col);
 	}
 	

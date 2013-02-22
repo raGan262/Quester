@@ -3,13 +3,13 @@ package com.gmail.molnardad.quester.objectives;
 import static com.gmail.molnardad.quester.utils.Util.parseItem;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("BREAK")
@@ -68,35 +68,34 @@ public final class BreakObjective extends Objective {
 		return new BreakObjective(amt, mat, dat, hnd);
 	}
 
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {		
-		section.set("block", Util.serializeItem(material, data));
-		if(amount > 1)
-			section.set("amount", amount);
-		if(inHand > 0)
-			section.set("inhand", inHand);
+	@Override
+	public void save(StorageKey key) {		
+		key.setString("block", Util.serializeItem(material, data));
+		if(amount > 1) {
+			key.setInt("amount", amount);
+		}
+		if(inHand > 0) {
+			key.setInt("inhand", inHand);
+		}
 	}
 	
-	public static Objective deser(ConfigurationSection section) {
+	public static Objective load(StorageKey key) {
 		Material mat;
-		int dat, amt = 1;
+		int dat, amt;
 		int hnd = -1;
 		try {
-			int[] itm = Util.parseItem(section.getString("block", ""));
+			int[] itm = Util.parseItem(key.getString("block", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
-			} catch (IllegalArgumentException e) {
+		} catch (IllegalArgumentException e) {
 				return null;
 		}
-		if(section.isInt("amount")) {
-			amt = section.getInt("amount");
-			if(amt < 1)
-				return null;
-		} else 
-			return null;
+		amt = key.getInt("amount", 1);
+		if(amt < 1) {
+			amt = 1;
+		}
 		try {
-				hnd = Util.parseItem(section.getString("inhand", ""))[0];
+				hnd = Util.parseItem(key.getString("inhand", ""))[0];
 			} catch (IllegalArgumentException e) {
 		}
 		return new BreakObjective(amt, mat, dat, hnd);

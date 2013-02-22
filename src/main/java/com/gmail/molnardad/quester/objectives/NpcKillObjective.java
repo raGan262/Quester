@@ -1,12 +1,11 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.configuration.ConfigurationSection;
-
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("NPCKILL")
 public final class NpcKillObjective extends Objective {
@@ -55,22 +54,22 @@ public final class NpcKillObjective extends Objective {
 		return new NpcKillObjective(name, amt);
 	}
 
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		section.set("name", name);
+	@Override
+	protected void save(StorageKey key) {
+		key.setString("name", name);
 		if(amount > 1) {
-			section.set("amount", amount);
+			key.setInt("amount", amount);
 		}
 	}
 	
-	public static Objective deser(ConfigurationSection section) {
+	protected static Objective load(StorageKey key) {
 		int amt = 1;
 		String nm = null;
-		amt = section.getInt("amount", 1);
-		if(amt < 1)
-			return null;
-		nm = section.getString("name", null);
+		amt = key.getInt("amount", 1);
+		if(amt < 1) {
+			amt = 1;
+		}
+		nm = key.getString("name", null);
 		return new NpcKillObjective(nm, amt);
 	}
 	

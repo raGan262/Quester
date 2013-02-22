@@ -1,12 +1,11 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.configuration.ConfigurationSection;
-
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("BOSS")
 public final class BossObjective extends Objective {
@@ -60,21 +59,20 @@ public final class BossObjective extends Objective {
 		return new BossObjective(boss, amt);
 	}
 
-	// TODO serialization
-
-	public void serialize(ConfigurationSection section) {
-		section.set("amount", amount);
-		section.set("boss", name);
+	@Override
+	protected void save(StorageKey key) {
+		key.setInt("amount", amount);
+		key.setString("boss", name);
 	}
 	
-	public static Objective deser(ConfigurationSection section) {
+	protected static Objective load(StorageKey key) {
 		int amt = 0;
 		String boss = "";
-		boss = section.getString("boss", "");
-		if(section.isInt("amount"))
-			amt = section.getInt("amount");
-		if(amt < 1 || boss.isEmpty())
+		boss = key.getString("boss", "");
+		amt = key.getInt("amount");
+		if(amt < 1 || boss.isEmpty()) {
 			return null;
+		}
 		return new BossObjective(boss, amt);
 	}
 }

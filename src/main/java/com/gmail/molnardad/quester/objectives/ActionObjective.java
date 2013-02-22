@@ -7,7 +7,6 @@ import static com.gmail.molnardad.quester.utils.Util.parseItem;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 
@@ -16,6 +15,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("ACTION")
@@ -110,44 +110,43 @@ public final class ActionObjective extends Objective {
 		return new ActionObjective(mat, dat, hmat, hdat, click, loc, rng);
 	}
 
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
+	@Override
+	protected void save(StorageKey key) {
 		if(block != null) {
-			section.set("block", Util.serializeItem(block, blockData));
+			key.setString("block", Util.serializeItem(block, blockData));
 		}
 		if(inHand != null) {
-			section.set("hand", Util.serializeItem(inHand, inHandData));
+			key.setString("hand", Util.serializeItem(inHand, inHandData));
 		}
 		if(click > 0 && click < 4) {
-			section.set("click", click);
+			key.setInt("click", click);
 		}
 		if(location != null) {
-			section.set("location", Util.serializeLocString(location));
+			key.setString("location", Util.serializeLocString(location));
 			if(range > 0) {
-				section.set("range", range);
+				key.setInt("range", range);
 			}
 		}
 	}
 	
-	public static Objective deser(ConfigurationSection section) {
+	protected static Objective load(StorageKey key) {
 		Material mat = null, hnd = null;
 		Location loc = null;
 		int dat = -1, hdat = -1, rng = 0, clck = 0;
 		int[] itm;
 		try {
-			itm = Util.parseItem(section.getString("block", ""));
+			itm = Util.parseItem(key.getString("block", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
 		} catch (IllegalArgumentException ignore) {}
 		try {
-			itm = Util.parseItem(section.getString("hand", ""));
+			itm = Util.parseItem(key.getString("hand", ""));
 			hnd = Material.getMaterial(itm[0]);
 			hdat = itm[1];
 		} catch (IllegalArgumentException ignore) {}
-		clck = section.getInt("click", 0);
-		loc = Util.deserializeLocString(section.getString("location", ""));
-		rng = section.getInt("range", 0);
+		clck = key.getInt("click", 0);
+		loc = Util.deserializeLocString(key.getString("location", ""));
+		rng = key.getInt("range", 0);
 		
 		return new ActionObjective(mat, dat, hnd, hdat, clck, loc, rng);
 	}

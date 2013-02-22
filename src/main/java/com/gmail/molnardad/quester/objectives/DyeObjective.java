@@ -3,13 +3,13 @@ package com.gmail.molnardad.quester.objectives;
 import static com.gmail.molnardad.quester.utils.Util.parseColor;
 
 import org.bukkit.DyeColor;
-import org.bukkit.configuration.ConfigurationSection;
 
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("DYE")
@@ -62,24 +62,25 @@ public final class DyeObjective extends Objective {
 		}
 		return new DyeObjective(id, col);
 	}
-	
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		if(amount > 1)
-			section.set("amount", amount);
+
+	@Override
+	protected void save(StorageKey key) {
+		if(amount > 1) {
+			key.setInt("amount", amount);
+		}
 		if(color != null) {
-			section.set("color", Util.serializeColor(color));
+			key.setString("color", Util.serializeColor(color));
 		}
 	}
 	
-	public static Objective deser(ConfigurationSection section) {
+	protected static Objective load(StorageKey key) {
 		int amt = 1;
 		DyeColor col = null;
-		amt = section.getInt("amount", 1);
-		if(amt < 1)
-			return null;
-		col = Util.parseColor(section.getString("color", "default"));
+		amt = key.getInt("amount", 1);
+		if(amt < 1) {
+			amt = 1;
+		}
+		col = Util.parseColor(key.getString("color", ""));
 		return new DyeObjective(amt, col);
 	}
 	

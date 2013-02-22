@@ -3,13 +3,13 @@ package com.gmail.molnardad.quester.objectives;
 import static com.gmail.molnardad.quester.utils.Util.getLoc;
 
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("DEATH")
@@ -65,30 +65,31 @@ public final class DeathObjective extends Objective {
 		return new DeathObjective(amt, loc, rng);
 	}
 
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		if(location != null)
-			section.set("location", Util.serializeLocString(location));
-		if(amount != 1)
-			section.set("amount", amount);
-		if(range != 5)
-			section.set("range", range);
+	@Override
+	protected void save(StorageKey key) {
+		if(location != null) {
+			key.setString("location", Util.serializeLocString(location));
+		}
+		if(amount != 1) {
+			key.setInt("amount", amount);
+		}
+		if(range != 5) {
+			key.setInt("range", range);
+		}
 	}
 	
-	public static Objective deser(ConfigurationSection section) {
+	protected static Objective load(StorageKey key) {
 		Location loc = null;
 		int amt = 1, rng = 5;
-		if(section.isString("location"))
-			loc = Util.deserializeLocString(section.getString("location"));
-		if(section.isInt("amount"))
-			amt = section.getInt("amount");
-		if(amt < 1)
+		loc = Util.deserializeLocString(key.getString("location", ""));
+		amt = key.getInt("amount", 1);
+		if(amt < 1) {
 			amt = 1;
-		if(section.isInt("range"))
-			rng = section.getInt("range");
-		if(rng < 1)
+		}
+		rng = key.getInt("range", 5);
+		if(rng < 1) {
 			rng = 5;
+		}
 		return new DeathObjective(amt, loc, rng);
 	}
 	

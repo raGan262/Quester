@@ -1,12 +1,11 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.configuration.ConfigurationSection;
-
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("FISH")
 public final class FishObjective extends Objective {
@@ -44,18 +43,17 @@ public final class FishObjective extends Objective {
 		return new FishObjective(amt);
 	}
 
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		section.set("amount", amount);
+	@Override
+	protected void save(StorageKey key) {
+		key.setInt("amount", amount);
 	}
 	
-	public static Objective deser(ConfigurationSection section) {
+	protected static Objective load(StorageKey key) {
 		int amt = 0;
-		if(section.isInt("amount"))
-			amt = section.getInt("amount");
-		if(amt < 1)
+		amt = key.getInt("amount", 0);
+		if(amt < 1) {
 			return null;
+		}
 		return new FishObjective(amt);
 	}
 }

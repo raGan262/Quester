@@ -1,12 +1,12 @@
 package com.gmail.molnardad.quester.objectives;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("PLAYERKILL")
 public final class PlayerKillObjective extends Objective {
@@ -55,27 +55,29 @@ public final class PlayerKillObjective extends Objective {
 		return new PlayerKillObjective(amt, name, perm);
 	}
 
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		if(amount > 1)
-			section.set("amount", amount);
-		if(!playerName.isEmpty())
-			section.set("name", playerName);
-		if(perm)
-			section.set("perm", true);
+	@Override
+	protected void save(StorageKey key) {
+		if(amount > 1) {
+			key.setInt("amount", amount);
+		}
+		if(!playerName.isEmpty()) {
+			key.setString("name", playerName);
+		}
+		if(perm) {
+			key.setBoolean("perm", true);
+		}
 	}
 	
-	public static Objective deser(ConfigurationSection section) {
+	protected static Objective load(StorageKey key) {
 		int amt = 1;
 		String name = "";
 		boolean prm = false;
-		name = section.getString("name", "");
-		if(section.isInt("amount"))
-			amt = section.getInt("amount");
-		if(amt < 1)
+		name = key.getString("name", "");
+		amt = key.getInt("amount");
+		if(amt < 1) {
 			amt = 1;
-		prm = section.getBoolean("perm", false);
+		}
+		prm = key.getBoolean("perm", false);
 		return new PlayerKillObjective(amt, name, prm);
 	}
 	

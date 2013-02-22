@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
@@ -16,6 +15,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("ENCHANT")
@@ -28,10 +28,12 @@ public final class EnchantObjective extends Objective {
 	public EnchantObjective(Material mat, int amt, Map<Integer, Integer> enchs) {
 		material = mat;
 		amount = amt;
-		if(enchs != null)
+		if(enchs != null) {
 			this.enchants = enchs;
-		else
+		}
+		else {
 			this.enchants = new HashMap<Integer, Integer>();
+		}
 	}
 
 	@Override
@@ -84,36 +86,30 @@ public final class EnchantObjective extends Objective {
 		return new EnchantObjective(mat, amt, enchs);
 	}
 
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		section.set("enchants", Util.serializeEnchants(enchants));
-		if(material != null)
-			section.set("item", Util.serializeItem(material, -1));
-		if(amount != 1)
-			section.set("amount", amount);
+	@Override
+	protected void save(StorageKey key) {
+		key.setString("enchants", Util.serializeEnchants(enchants));
+		if(material != null) {
+			key.setString("item", Util.serializeItem(material, -1));
+		}
+		if(amount > 1) {
+			key.setInt("amount", amount);
+		}
 	}
 	
-	public static Objective deser(ConfigurationSection section) {
+	protected static Objective load(StorageKey key) {
 		Material mat = null;
 		int amt = 1;
 		Map<Integer, Integer> enchs = null;
 		try {
-			if(section.isString("item")) {
-				try {
-				mat = Material.getMaterial(Util.parseItem(section.getString("item"))[0]);
-				} catch (Exception ignore) {}
-			}
-			
-			if(section.isInt("amount"))
-				amt = section.getInt("amount");
-			if(amt < 1)
+			try {
+				mat = Material.getMaterial(Util.parseItem(key.getString("item"))[0]);
+			} catch (Exception ignore) {}
+			amt = key.getInt("amount", 1);
+			if(amt < 1) {
 				amt = 1;
-			
-			if(section.isString("enchants"))
-				enchs = Util.parseEnchants(section.getString("enchants"));
-			else
-				return null;
+			}
+			enchs = Util.parseEnchants(key.getString("enchants", ""));
 		} catch (Exception e) {
 			return null;
 		}

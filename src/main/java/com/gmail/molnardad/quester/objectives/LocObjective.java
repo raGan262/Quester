@@ -3,13 +3,13 @@ package com.gmail.molnardad.quester.objectives;
 import static com.gmail.molnardad.quester.utils.Util.getLoc;
 
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("LOCATION")
@@ -55,24 +55,25 @@ public final class LocObjective extends Objective {
 		return new LocObjective(loc, rng);
 	}
 
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		section.set("location", Util.serializeLocString(location));
-		if(range != 5)
-			section.set("range", range);
+	@Override
+	protected void save(StorageKey key) {
+		key.setString("location", Util.serializeLocString(location));
+		if(range != 3) {
+			key.setInt("range", range);
+		}
 	}
 	
-	public static Objective deser(ConfigurationSection section) {
+	protected static Objective load(StorageKey key) {
 		Location loc = null;
 		int rng = 3;
-		loc = Util.deserializeLocString(section.getString("location", ""));
-		if(loc == null)
+		loc = Util.deserializeLocString(key.getString("location", ""));
+		if(loc == null) {
 			return null;
-		if(section.isInt("range"))
-			rng = section.getInt("range");
-		if(rng < 1)
+		}
+		rng = key.getInt("range", 3);
+		if(rng < 1) {
 			rng = 3;
+		}
 		return new LocObjective(loc, rng);
 	}
 	
