@@ -241,8 +241,6 @@ public class PlayerProfile {
 		rank = newRank;
 	}
 	
-	// TODO STORAGE METHODS
-	
 	public void serialize(StorageKey key) {
 
 		key.setString("name", name);

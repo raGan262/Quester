@@ -71,14 +71,6 @@ public class Quester extends JavaPlugin {
 			
 			log = this.getLogger();
 			
-			// LOAD ORDER
-			// 1. Data
-			// 2. Languages
-			// 3. Holders
-			// Wait for others to load
-			// 4. Quests
-			// 5. Profiles - dependent on quests (validity check)
-			
 			DataManager.createInstance(this);
 			try {
 				DataManager.loadData();
@@ -101,7 +93,6 @@ public class Quester extends JavaPlugin {
 			registerElements();
 			profiles.loadRanks();
 			holders.loadHolders();
-			// TODO LOADING
 			
 			try {
 			    Metrics metrics = new Metrics(this);
