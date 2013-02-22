@@ -57,7 +57,7 @@ public final class PointCondition extends Condition {
 		key.setInt("amount", amount);
 	}
 
-	protected static PointCondition load(StorageKey key) {
+	protected static Condition load(StorageKey key) {
 		int amt;
 		
 		try {

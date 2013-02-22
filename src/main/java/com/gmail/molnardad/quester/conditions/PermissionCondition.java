@@ -53,7 +53,7 @@ public final class PermissionCondition extends Condition {
 		key.setString("permission", perm);
 	}
 
-	protected static PermissionCondition load(StorageKey key) {
+	protected static Condition load(StorageKey key) {
 		String perm;
 		
 		if(key.getString("permission") != null)

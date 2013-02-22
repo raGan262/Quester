@@ -73,7 +73,7 @@ public final class QuestNotCondition extends Condition {
 		}
 	}
 
-	protected static QuestNotCondition load(StorageKey key) {
+	protected static Condition load(StorageKey key) {
 		String qst;
 		int time;
 		

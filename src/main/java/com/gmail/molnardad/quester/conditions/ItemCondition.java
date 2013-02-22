@@ -97,7 +97,7 @@ public final class ItemCondition extends Condition {
 		key.setInt("amount", amount);
 	}
 
-	protected static ItemCondition load(StorageKey key) {
+	protected static Condition load(StorageKey key) {
 		int amt = 1, dat;
 		Material mat;
 		try {

@@ -65,7 +65,7 @@ public final class MoneyCondition extends Condition {
 		key.setDouble("amount", amount);
 	}
 
-	protected static MoneyCondition load(StorageKey key) {
+	protected static Condition load(StorageKey key) {
 		double amt;
 		
 		try {
