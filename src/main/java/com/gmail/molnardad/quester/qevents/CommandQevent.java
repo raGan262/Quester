@@ -38,11 +38,11 @@ public final class CommandQevent extends Qevent {
 	}
 
 	@Override
-	public void save(StorageKey key) {
+	protected void save(StorageKey key) {
 		key.setString("command", command);
 	}
 	
-	public static CommandQevent load(StorageKey key) {
+	protected static CommandQevent load(StorageKey key) {
 		String cmd;
 		
 		cmd = key.getString("command");

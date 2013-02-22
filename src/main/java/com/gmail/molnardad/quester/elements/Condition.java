@@ -64,7 +64,7 @@ public abstract class Condition extends Element {
 		}
 	}
 	
-	public static Condition deserialize(StorageKey key) {
+	public static final Condition deserialize(StorageKey key) {
 		if(!key.hasSubKeys()) {
 			Quester.log.severe("Condition deserialization error: no subkeys");
 			return null;

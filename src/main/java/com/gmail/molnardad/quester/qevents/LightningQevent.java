@@ -61,7 +61,7 @@ public final class LightningQevent extends Qevent {
 	}
 
 	@Override
-	public void save(StorageKey key) {
+	protected void save(StorageKey key) {
 		if(damage) {
 			key.setBoolean("damage", damage);
 		}
@@ -71,7 +71,7 @@ public final class LightningQevent extends Qevent {
 		}
 	}
 	
-	public static LightningQevent load(StorageKey key) {
+	protected static LightningQevent load(StorageKey key) {
 		int rng = 0;
 		boolean dmg = false;
 		Location loc = null;

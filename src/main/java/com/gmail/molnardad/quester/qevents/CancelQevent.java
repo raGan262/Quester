@@ -38,10 +38,10 @@ public final class CancelQevent extends Qevent {
 	}
 
 	@Override
-	public void save(StorageKey key) {
+	protected void save(StorageKey key) {
 	}
 	
-	public static CancelQevent load(StorageKey key) {	
+	protected static CancelQevent load(StorageKey key) {	
 		return new CancelQevent();
 	}
 }

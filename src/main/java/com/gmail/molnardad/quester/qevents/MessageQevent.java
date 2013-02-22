@@ -41,11 +41,11 @@ public final class MessageQevent extends Qevent {
 	}
 
 	@Override
-	public void save(StorageKey key) {
+	protected void save(StorageKey key) {
 		key.setString("message", rawmessage);
 	}
 	
-	public static MessageQevent load(ConfigurationSection section) {
+	protected static MessageQevent load(ConfigurationSection section) {
 		String msg;
 		
 		msg = section.getString("message");

@@ -61,7 +61,7 @@ public final class ExplosionQevent extends Qevent {
 	}
 
 	@Override
-	public void save(StorageKey key) {
+	protected void save(StorageKey key) {
 		if(damage) {
 			key.setBoolean("damage", damage);
 		}
@@ -71,7 +71,7 @@ public final class ExplosionQevent extends Qevent {
 		}
 	}
 	
-	public static ExplosionQevent load(StorageKey key) {
+	protected static ExplosionQevent load(StorageKey key) {
 		int rng = 0;
 		boolean dmg = false;
 		Location loc = null;

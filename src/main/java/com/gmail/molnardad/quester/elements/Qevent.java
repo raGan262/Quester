@@ -108,7 +108,7 @@ public abstract class Qevent extends Element {
 		}
 	}
 	
-	public static Qevent deserialize(StorageKey key) {
+	public static final Qevent deserialize(StorageKey key) {
 		if(!key.hasSubKeys()) {
 			Quester.log.severe("Qevent deserialization error: no sybkeys.");
 			return null;

@@ -105,7 +105,7 @@ public final class DenizenScriptQevent extends Qevent {
 	}
 
 	@Override
-	public void save(StorageKey key) {
+	protected void save(StorageKey key) {
 		key.setString("script", script);
 		if(npc >= 0) {
 			key.setInt("npc", npc);
@@ -118,7 +118,7 @@ public final class DenizenScriptQevent extends Qevent {
 		}
 	}
 	
-	public static DenizenScriptQevent load(StorageKey key) {
+	protected static DenizenScriptQevent load(StorageKey key) {
 		String scrpt;
 		int npc;
 		boolean pcont, focNpc;

@@ -73,7 +73,7 @@ public final class SpawnQevent extends Qevent {
 	}
 
 	@Override
-	public void save(StorageKey key) {
+	protected void save(StorageKey key) {
 		if(amount != 1) {
 			key.setInt("amount", amount);
 		}
@@ -84,7 +84,7 @@ public final class SpawnQevent extends Qevent {
 		}
 	}
 	
-	public static SpawnQevent load(StorageKey key) {
+	protected static SpawnQevent load(StorageKey key) {
 		int rng = 0, amt = 1;
 		EntityType ent = null;
 		Location loc = null;

@@ -52,11 +52,11 @@ public final class MoneyQevent extends Qevent {
 	}
 
 	@Override
-	public void save(StorageKey key) {
+	protected void save(StorageKey key) {
 		key.setDouble("amount", amount);
 	}
 	
-	public static MoneyQevent load(StorageKey key) {
+	protected static MoneyQevent load(StorageKey key) {
 		double amt;
 		
 		amt = key.getDouble("amount", 0.0D);

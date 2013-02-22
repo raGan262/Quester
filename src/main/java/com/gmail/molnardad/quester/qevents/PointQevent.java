@@ -42,11 +42,11 @@ public final class PointQevent extends Qevent {
 	}
 	
 	@Override
-	public void save(StorageKey key) {
+	protected void save(StorageKey key) {
 		key.setInt("amount", amount);
 	}
 	
-	public static PointQevent load(StorageKey key) {
+	protected static PointQevent load(StorageKey key) {
 		int amt;
 		
 		amt = key.getInt("amount", 0);

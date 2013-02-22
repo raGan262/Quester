@@ -40,11 +40,11 @@ public final class ExperienceQevent extends Qevent {
 	}
 	
 	@Override
-	public void save(StorageKey key) {
+	protected void save(StorageKey key) {
 		key.setInt("amount", amount);
 	}
 	
-	public static ExperienceQevent deser(ConfigurationSection section) {
+	protected static ExperienceQevent load(ConfigurationSection section) {
 		int amt;
 		
 		if(section.isInt("amount"))

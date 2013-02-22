@@ -52,11 +52,11 @@ public final class ObjectiveCompleteQevent extends Qevent {
 	}
 
 	@Override
-	public void save(StorageKey key) {
+	protected void save(StorageKey key) {
 		key.setInt("objective", objective);
 	}
 	
-	public static ObjectiveCompleteQevent load(StorageKey key) {
+	protected static ObjectiveCompleteQevent load(StorageKey key) {
 		int obj;
 		
 		obj = key.getInt("objective", -1);

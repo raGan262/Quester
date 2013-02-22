@@ -43,11 +43,11 @@ public final class ToggleQevent extends Qevent {
 	}
 
 	@Override
-	public void save(StorageKey key) {
+	protected void save(StorageKey key) {
 		key.setInt("quest", quest);
 	}
 	
-	public static ToggleQevent load(StorageKey key) {
+	protected static ToggleQevent load(StorageKey key) {
 		int qst;
 		
 		qst = key.getInt("quest", -1);

@@ -229,8 +229,8 @@ public class ElementManager {
 			throw new ElementException("Condition of the same type already registered.");
 		}
 		
-		if(!Modifier.isStatic(fromCommand.getModifiers())) {
-			throw new NoSuchMethodException("Method is not static.");
+		if(!Modifier.isStatic(fromCommand.getModifiers()) || !Modifier.isProtected(fromCommand.getModifiers())) {
+			throw new NoSuchMethodException("Incorrect method modifiers, expected protected static.");
 		}
 		if(fromCommand.getReturnType() != Condition.class) {
 			throw new NoSuchMethodException("Method does not return Condition.");
@@ -251,8 +251,8 @@ public class ElementManager {
 			throw new ElementException("Event of the same type already registered.");
 		}
 
-		if(!Modifier.isStatic(fromCommand.getModifiers())) {
-			throw new NoSuchMethodException("Method is not static.");
+		if(!Modifier.isStatic(fromCommand.getModifiers()) || !Modifier.isProtected(fromCommand.getModifiers())) {
+			throw new NoSuchMethodException("Incorrect method modifiers, expected protected static.");
 		}
 		if(fromCommand.getReturnType() != Qevent.class) {
 			throw new NoSuchMethodException("Method does not return Qevent.");
@@ -273,8 +273,8 @@ public class ElementManager {
 			throw new ElementException("Objective of the same type already registered.");
 		}
 		
-		if(!Modifier.isStatic(fromCommand.getModifiers())) {
-			throw new NoSuchMethodException("Method is not static.");
+		if(!Modifier.isStatic(fromCommand.getModifiers()) || !Modifier.isProtected(fromCommand.getModifiers())) {
+			throw new NoSuchMethodException("Incorrect method modifiers, expected protected static.");
 		}
 		if(fromCommand.getReturnType() != Objective.class) {
 			throw new NoSuchMethodException("Method does not return Objective.");

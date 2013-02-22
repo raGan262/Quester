@@ -47,12 +47,12 @@ public final class TeleportQevent extends Qevent {
 	}
 
 	@Override
-	public void save(StorageKey key) {
+	protected void save(StorageKey key) {
 		key.setString("location", Util.serializeLocString(location));
 		
 	}
 	
-	public static TeleportQevent load(StorageKey key) {
+	protected static TeleportQevent load(StorageKey key) {
 		Location loc = null;
 		try {
 			loc = Util.deserializeLocString(key.getString("location"));

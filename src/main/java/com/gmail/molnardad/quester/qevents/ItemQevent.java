@@ -123,7 +123,7 @@ public final class ItemQevent extends Qevent {
 	}
 	
 	@Override
-	public void save(StorageKey key) {
+	protected void save(StorageKey key) {
 		key.setString("item", Util.serializeItem(material, data));
 		if(!enchants.isEmpty()) {
 			key.setString("enchants", Util.serializeEnchants(enchants));
@@ -133,7 +133,7 @@ public final class ItemQevent extends Qevent {
 		}
 	}
 	
-	public static ItemQevent load(StorageKey key) {
+	protected static ItemQevent load(StorageKey key) {
 		Material mat = null;
 		int dat = 0, amt = 1;
 		Map<Integer, Integer> enchs = null;

@@ -61,11 +61,11 @@ public final class MoneyCondition extends Condition {
 		}
 	}
 	
-	public void save(StorageKey key) {
+	protected void save(StorageKey key) {
 		key.setDouble("amount", amount);
 	}
 
-	public static MoneyCondition load(StorageKey key) {
+	protected static MoneyCondition load(StorageKey key) {
 		double amt;
 		
 		try {

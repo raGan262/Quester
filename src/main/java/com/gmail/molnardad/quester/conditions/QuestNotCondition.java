@@ -66,14 +66,14 @@ public final class QuestNotCondition extends Condition {
 		return new QuestNotCondition(qst, t);
 	}
 	
-	public void save(StorageKey key) {
+	protected void save(StorageKey key) {
 		key.setString("quest", quest);
 		if(time != 0) {
 			key.setInt("time", time);
 		}
 	}
 
-	public static QuestNotCondition load(StorageKey key) {
+	protected static QuestNotCondition load(StorageKey key) {
 		String qst;
 		int time;
 		

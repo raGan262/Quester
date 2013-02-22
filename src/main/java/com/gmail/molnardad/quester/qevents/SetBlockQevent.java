@@ -53,13 +53,13 @@ public final class SetBlockQevent extends Qevent {
 	}
 
 	@Override
-	public void save(StorageKey key) {
+	protected void save(StorageKey key) {
 		key.setString("block", Util.serializeItem(material, data));
 		key.setString("location", Util.serializeLocString(location));
 		
 	}
 	
-	public static SetBlockQevent load(StorageKey key) {
+	protected static SetBlockQevent load(StorageKey key) {
 		int mat = 0, dat = 0;
 		Location loc = null;
 		try {

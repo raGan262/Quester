@@ -49,11 +49,11 @@ public final class PermissionCondition extends Condition {
 		return new PermissionCondition(perm);
 	}
 
-	public void save(StorageKey key) {
+	protected void save(StorageKey key) {
 		key.setString("permission", perm);
 	}
 
-	public static PermissionCondition load(StorageKey key) {
+	protected static PermissionCondition load(StorageKey key) {
 		String perm;
 		
 		if(key.getString("permission") != null)
