@@ -172,7 +172,7 @@ public class ModificationCommands {
 	public void event(QCommandContext context, CommandSender sender) throws QCommandException {
 	}
 
-	@QCommandLabels({"objective", "ibj"})
+	@QCommandLabels({"objective", "obj"})
 	@QCommand(
 			desc = "objective manipulation",
 			permission = DataManager.PERM_MODIFY)
