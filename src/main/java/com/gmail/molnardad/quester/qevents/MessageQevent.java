@@ -45,7 +45,7 @@ public final class MessageQevent extends Qevent {
 		key.setString("message", rawmessage);
 	}
 	
-	protected static MessageQevent load(ConfigurationSection section) {
+	protected static Qevent load(ConfigurationSection section) {
 		String msg;
 		
 		msg = section.getString("message");

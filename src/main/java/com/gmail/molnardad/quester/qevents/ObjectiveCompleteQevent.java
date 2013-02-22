@@ -56,7 +56,7 @@ public final class ObjectiveCompleteQevent extends Qevent {
 		key.setInt("objective", objective);
 	}
 	
-	protected static ObjectiveCompleteQevent load(StorageKey key) {
+	protected static Qevent load(StorageKey key) {
 		int obj;
 		
 		obj = key.getInt("objective", -1);

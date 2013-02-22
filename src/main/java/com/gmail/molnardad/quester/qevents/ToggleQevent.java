@@ -47,7 +47,7 @@ public final class ToggleQevent extends Qevent {
 		key.setInt("quest", quest);
 	}
 	
-	protected static ToggleQevent load(StorageKey key) {
+	protected static Qevent load(StorageKey key) {
 		int qst;
 		
 		qst = key.getInt("quest", -1);

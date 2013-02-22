@@ -71,7 +71,7 @@ public final class ExplosionQevent extends Qevent {
 		}
 	}
 	
-	protected static ExplosionQevent load(StorageKey key) {
+	protected static Qevent load(StorageKey key) {
 		int rng = 0;
 		boolean dmg = false;
 		Location loc = null;

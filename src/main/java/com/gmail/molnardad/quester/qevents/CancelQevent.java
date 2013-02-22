@@ -41,7 +41,7 @@ public final class CancelQevent extends Qevent {
 	protected void save(StorageKey key) {
 	}
 	
-	protected static CancelQevent load(StorageKey key) {	
+	protected static Qevent load(StorageKey key) {	
 		return new CancelQevent();
 	}
 }

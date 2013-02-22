@@ -47,7 +47,7 @@ public class EffectQevent extends Qevent {
 		key.setString("effect", Util.serializeEffect(effect));
 	}
 	
-	protected static EffectQevent load(StorageKey key) {
+	protected static Qevent load(StorageKey key) {
 		PotionEffect eff;
 		
 		if(key.getString("effect") != null)

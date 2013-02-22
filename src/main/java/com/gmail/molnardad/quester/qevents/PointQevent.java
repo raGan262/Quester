@@ -46,7 +46,7 @@ public final class PointQevent extends Qevent {
 		key.setInt("amount", amount);
 	}
 	
-	protected static PointQevent load(StorageKey key) {
+	protected static Qevent load(StorageKey key) {
 		int amt;
 		
 		amt = key.getInt("amount", 0);

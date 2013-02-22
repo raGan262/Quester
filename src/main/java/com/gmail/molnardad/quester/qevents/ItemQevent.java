@@ -133,7 +133,7 @@ public final class ItemQevent extends Qevent {
 		}
 	}
 	
-	protected static ItemQevent load(StorageKey key) {
+	protected static Qevent load(StorageKey key) {
 		Material mat = null;
 		int dat = 0, amt = 1;
 		Map<Integer, Integer> enchs = null;

@@ -44,7 +44,7 @@ public final class ExperienceQevent extends Qevent {
 		key.setInt("amount", amount);
 	}
 	
-	protected static ExperienceQevent load(ConfigurationSection section) {
+	protected static Qevent load(ConfigurationSection section) {
 		int amt;
 		
 		if(section.isInt("amount"))

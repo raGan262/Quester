@@ -59,7 +59,7 @@ public final class SetBlockQevent extends Qevent {
 		
 	}
 	
-	protected static SetBlockQevent load(StorageKey key) {
+	protected static Qevent load(StorageKey key) {
 		int mat = 0, dat = 0;
 		Location loc = null;
 		try {

@@ -56,7 +56,7 @@ public final class MoneyQevent extends Qevent {
 		key.setDouble("amount", amount);
 	}
 	
-	protected static MoneyQevent load(StorageKey key) {
+	protected static Qevent load(StorageKey key) {
 		double amt;
 		
 		amt = key.getDouble("amount", 0.0D);

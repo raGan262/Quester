@@ -42,7 +42,7 @@ public final class CommandQevent extends Qevent {
 		key.setString("command", command);
 	}
 	
-	protected static CommandQevent load(StorageKey key) {
+	protected static Qevent load(StorageKey key) {
 		String cmd;
 		
 		cmd = key.getString("command");

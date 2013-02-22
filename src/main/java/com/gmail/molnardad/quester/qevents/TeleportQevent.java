@@ -52,7 +52,7 @@ public final class TeleportQevent extends Qevent {
 		
 	}
 	
-	protected static TeleportQevent load(StorageKey key) {
+	protected static Qevent load(StorageKey key) {
 		Location loc = null;
 		try {
 			loc = Util.deserializeLocString(key.getString("location"));

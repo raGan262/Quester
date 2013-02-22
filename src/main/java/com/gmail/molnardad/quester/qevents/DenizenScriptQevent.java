@@ -118,7 +118,7 @@ public final class DenizenScriptQevent extends Qevent {
 		}
 	}
 	
-	protected static DenizenScriptQevent load(StorageKey key) {
+	protected static Qevent load(StorageKey key) {
 		String scrpt;
 		int npc;
 		boolean pcont, focNpc;
