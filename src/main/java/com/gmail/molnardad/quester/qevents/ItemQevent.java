@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -19,6 +18,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("ITEM")
@@ -121,37 +121,38 @@ public final class ItemQevent extends Qevent {
 		
 		return new ItemQevent(mat, dat, amt, enchs);
 	}
-
-	// TODO serialization
-	public void serialize(ConfigurationSection section) {
-		section.set("item", Util.serializeItem(material, data));
-		if(!enchants.isEmpty())
-			section.set("enchants", Util.serializeEnchants(enchants));
-		if(amount != 1)
-			section.set("amount", amount);
+	
+	@Override
+	public void save(StorageKey key) {
+		key.setString("item", Util.serializeItem(material, data));
+		if(!enchants.isEmpty()) {
+			key.setString("enchants", Util.serializeEnchants(enchants));
+		}
+		if(amount != 1) {
+			key.setInt("amount", amount);
+		}
 	}
 	
-	public static ItemQevent deser(ConfigurationSection section) {
+	public static ItemQevent load(StorageKey key) {
 		Material mat = null;
 		int dat = 0, amt = 1;
 		Map<Integer, Integer> enchs = null;
 		try {
-			int[] itm = Util.parseItem(section.getString("item"));
+			int[] itm = Util.parseItem(key.getString("item"));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
-			if(dat < 0)
+			if(dat < 0) {
 				dat = 0;
-			if(section.isInt("amount"))
-				amt = section.getInt("amount");
-			if(amt < 1)
+			}
+			amt = key.getInt("amount", 1);
+			if(amt < 1) {
 				amt = 1;
-			
-			if(section.isString("enchants"))
-				try {
-					enchs = Util.parseEnchants(section.getString("enchants"));
-				} catch (IllegalArgumentException e) {
-					enchs = null;
-				}
+			}
+			try {
+				enchs = Util.parseEnchants(key.getString("enchants"));
+			} catch (IllegalArgumentException e) {
+				enchs = null;
+			}
 		} catch (Exception e) {
 			return null;
 		}

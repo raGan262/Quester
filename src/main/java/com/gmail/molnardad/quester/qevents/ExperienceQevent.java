@@ -8,6 +8,7 @@ import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.ExpManager;
 
 @QElement("EXP")
@@ -37,11 +38,10 @@ public final class ExperienceQevent extends Qevent {
 	public static Qevent fromCommand(QCommandContext context) {
 		return new ExperienceQevent(context.getInt(0));
 	}
-
-	// TODO serialization
 	
-	public void serialize(ConfigurationSection section) {
-		section.set("amount", amount);
+	@Override
+	public void save(StorageKey key) {
+		key.setInt("amount", amount);
 	}
 	
 	public static ExperienceQevent deser(ConfigurationSection section) {

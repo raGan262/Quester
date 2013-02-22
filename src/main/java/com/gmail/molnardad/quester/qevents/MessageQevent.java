@@ -9,6 +9,7 @@ import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
+import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("MSG")
 public final class MessageQevent extends Qevent {
@@ -39,19 +40,18 @@ public final class MessageQevent extends Qevent {
 		return new MessageQevent(context.getString(0));
 	}
 
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		section.set("message", rawmessage);
+	@Override
+	public void save(StorageKey key) {
+		key.setString("message", rawmessage);
 	}
 	
-	public static MessageQevent deser(ConfigurationSection section) {
+	public static MessageQevent load(ConfigurationSection section) {
 		String msg;
 		
-		if(section.isString("message"))
-			msg = section.getString("message");
-		else
+		msg = section.getString("message");
+		if(msg == null) {
 			return null;
+		}
 		
 		return new MessageQevent(msg);
 	}

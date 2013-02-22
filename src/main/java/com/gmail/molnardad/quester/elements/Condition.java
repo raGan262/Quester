@@ -52,7 +52,7 @@ public abstract class Condition extends Element {
 	
 	protected abstract void save(StorageKey key);
 	
-	public void serialize(StorageKey key) throws SerializationException {
+	public final void serialize(StorageKey key) throws SerializationException {
 		String type = getType();
 		if(type.isEmpty()) {
 			throw new SerializationException("Unknown type");

@@ -3,7 +3,6 @@ package com.gmail.molnardad.quester.qevents;
 import static com.gmail.molnardad.quester.utils.Util.parseEntity;
 
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -13,6 +12,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("SPAWN")
@@ -72,36 +72,38 @@ public final class SpawnQevent extends Qevent {
 		return new SpawnQevent(loc, rng, ent, amt);
 	}
 
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		if(amount != 1)
-			section.set("amount", amount);
-		section.set("entity", entity.getTypeId());
-		section.set("location", Util.serializeLocString(location));
-		if(range != 0)
-			section.set("range", range);
+	@Override
+	public void save(StorageKey key) {
+		if(amount != 1) {
+			key.setInt("amount", amount);
+		}
+		key.setInt("entity", entity.getTypeId());
+		key.setString("location", Util.serializeLocString(location));
+		if(range != 0) {
+			key.setInt("range", range);
+		}
 	}
 	
-	public static SpawnQevent deser(ConfigurationSection section) {
+	public static SpawnQevent load(StorageKey key) {
 		int rng = 0, amt = 1;
 		EntityType ent = null;
 		Location loc = null;
 		try {
-			if(section.isString("location")) {
-				loc = Util.deserializeLocString(section.getString("location"));
+			loc = Util.deserializeLocString(key.getString("location", ""));
+			rng = key.getInt("range", 0);
+			if(rng < 0) {
+				rng = 0;
 			}
-			if(section.isInt("range")) {
-				rng = section.getInt("range");
-				if(rng < 0)
-					rng = 0;
+			amt = key.getInt("amount", 1);
+			if(amt < 1) {
+				amt = 1;
 			}
-			amt = section.getInt("amount", 1);
 			try {
-				ent = Util.parseEntity(section.getString("entity"));
+				ent = Util.parseEntity(key.getString("entity", ""));
 			} catch (Exception ignore) {}
-			if(ent == null)
+			if(ent == null) {
 				return null;
+			}
 		} catch (Exception e) {
 			return null;
 		}

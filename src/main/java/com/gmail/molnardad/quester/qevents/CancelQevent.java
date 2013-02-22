@@ -1,7 +1,6 @@
 package com.gmail.molnardad.quester.qevents;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
@@ -10,10 +9,12 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("CANCEL")
 public final class CancelQevent extends Qevent {
 
+	// TODO option to choose which quest to cancel
 	public CancelQevent() {}
 
 	@Override
@@ -35,13 +36,12 @@ public final class CancelQevent extends Qevent {
 	public static Qevent fromCommand(QCommandContext context) {
 		return new CancelQevent();
 	}
-	
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
+
+	@Override
+	public void save(StorageKey key) {
 	}
 	
-	public static Qevent deser(ConfigurationSection section) {	
+	public static CancelQevent load(StorageKey key) {	
 		return new CancelQevent();
 	}
 }

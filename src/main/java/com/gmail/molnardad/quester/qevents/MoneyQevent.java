@@ -2,7 +2,6 @@ package com.gmail.molnardad.quester.qevents;
 
 import net.milkbowl.vault.economy.EconomyResponse;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
@@ -10,6 +9,7 @@ import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
+import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("MONEY")
 public final class MoneyQevent extends Qevent {
@@ -51,19 +51,18 @@ public final class MoneyQevent extends Qevent {
 		return new MoneyQevent(context.getDouble(0));
 	}
 
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		section.set("amount", amount);
+	@Override
+	public void save(StorageKey key) {
+		key.setDouble("amount", amount);
 	}
 	
-	public static MoneyQevent deser(ConfigurationSection section) {
+	public static MoneyQevent load(StorageKey key) {
 		double amt;
 		
-		if(section.isInt("amount") || section.isDouble("amount"))
-			amt = section.getDouble("amount");
-		else
+		amt = key.getDouble("amount", 0.0D);
+		if(amt == 0) {
 			return null;
+		}
 		
 		return new MoneyQevent(amt);
 	}

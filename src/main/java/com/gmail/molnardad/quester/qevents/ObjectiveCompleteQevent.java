@@ -3,7 +3,6 @@ package com.gmail.molnardad.quester.qevents;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
@@ -13,6 +12,7 @@ import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.ObjectiveException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("OBJCOM")
 public final class ObjectiveCompleteQevent extends Qevent {
@@ -51,19 +51,18 @@ public final class ObjectiveCompleteQevent extends Qevent {
 		return new ObjectiveCompleteQevent(context.getInt(0));
 	}
 
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		section.set("objective", objective);
+	@Override
+	public void save(StorageKey key) {
+		key.setInt("objective", objective);
 	}
 	
-	public static ObjectiveCompleteQevent deser(ConfigurationSection section) {
+	public static ObjectiveCompleteQevent load(StorageKey key) {
 		int obj;
 		
-		if(section.isInt("objective"))
-			obj = section.getInt("objective");
-		else
+		obj = key.getInt("objective", -1);
+		if(obj < 0) {
 			return null;
+		}
 		
 		return new ObjectiveCompleteQevent(obj);
 	}

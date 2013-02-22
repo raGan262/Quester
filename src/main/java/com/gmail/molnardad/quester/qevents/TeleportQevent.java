@@ -2,7 +2,6 @@ package com.gmail.molnardad.quester.qevents;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
@@ -11,6 +10,7 @@ import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("TELE")
@@ -46,20 +46,19 @@ public final class TeleportQevent extends Qevent {
 		return new TeleportQevent(Util.getLoc(context.getPlayer(), context.getString(0), context.getSenderLang()));
 	}
 
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		section.set("location", Util.serializeLocString(location));
+	@Override
+	public void save(StorageKey key) {
+		key.setString("location", Util.serializeLocString(location));
 		
 	}
 	
-	public static TeleportQevent deser(ConfigurationSection section) {
+	public static TeleportQevent load(StorageKey key) {
 		Location loc = null;
 		try {
-			if(section.isString("location"))
-				loc = Util.deserializeLocString(section.getString("location"));
-			if(loc == null)
+			loc = Util.deserializeLocString(key.getString("location"));
+			if(loc == null) {
 				return null;
+			}
 		} catch (Exception e) {
 			return null;
 		}

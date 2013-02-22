@@ -1,7 +1,6 @@
 package com.gmail.molnardad.quester.qevents;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
@@ -10,6 +9,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("QUEST")
 public final class QuestQevent extends Qevent {
@@ -42,19 +42,18 @@ public final class QuestQevent extends Qevent {
 		return new QuestQevent(context.getInt(0));
 	}
 
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		section.set("quest", quest);
+	@Override
+	public void save(StorageKey key) {
+		key.setInt("quest", quest);
 	}
 	
-	public static QuestQevent deser(ConfigurationSection section) {
+	public static QuestQevent load(StorageKey key) {
 		int qst;
 		
-		if(section.isInt("quest"))
-			qst = section.getInt("quest");
-		else
+		qst = key.getInt("quest", -1);
+		if(qst < 0) {
 			return null;
+		}
 		
 		return new QuestQevent(qst);
 	}

@@ -4,51 +4,16 @@ import java.lang.reflect.Method;
 
 import org.apache.commons.lang.SerializationException;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.managers.DataManager;
-import com.gmail.molnardad.quester.qevents.CancelQevent;
-import com.gmail.molnardad.quester.qevents.CommandQevent;
-import com.gmail.molnardad.quester.qevents.EffectQevent;
-import com.gmail.molnardad.quester.qevents.ExperienceQevent;
-import com.gmail.molnardad.quester.qevents.ExplosionQevent;
-import com.gmail.molnardad.quester.qevents.ItemQevent;
-import com.gmail.molnardad.quester.qevents.LightningQevent;
-import com.gmail.molnardad.quester.qevents.MessageQevent;
-import com.gmail.molnardad.quester.qevents.MoneyQevent;
-import com.gmail.molnardad.quester.qevents.ObjectiveCompleteQevent;
-import com.gmail.molnardad.quester.qevents.PointQevent;
-import com.gmail.molnardad.quester.qevents.QuestQevent;
-import com.gmail.molnardad.quester.qevents.SetBlockQevent;
-import com.gmail.molnardad.quester.qevents.SpawnQevent;
-import com.gmail.molnardad.quester.qevents.TeleportQevent;
-import com.gmail.molnardad.quester.qevents.ToggleQevent;
+import com.gmail.molnardad.quester.managers.ElementManager;
 import com.gmail.molnardad.quester.storage.StorageKey;
 
 public abstract class Qevent extends Element {
 
-	@SuppressWarnings("unchecked")
-	private static Class<? extends Qevent>[] classes = new Class[]{
-															CancelQevent.class,
-															CommandQevent.class,
-															ExplosionQevent.class,
-															LightningQevent.class,
-															MessageQevent.class,
-															ObjectiveCompleteQevent.class,
-															QuestQevent.class,
-															SetBlockQevent.class,
-															SpawnQevent.class,
-															TeleportQevent.class,
-															ToggleQevent.class,
-															EffectQevent.class,
-															ExperienceQevent.class,
-															MoneyQevent.class,
-															PointQevent.class,
-															ItemQevent.class
-														};
 	private long delay = 0;
 	private int occasion = -10;
 
@@ -124,12 +89,10 @@ public abstract class Qevent extends Element {
 			}
 		}
 	}
-	
-	// TODO serialization
 
 	protected abstract void save(StorageKey key);
 	
-	public void serialize(StorageKey key) {
+	public final void serialize(StorageKey key) {
 		String type = getType();
 		if(type.isEmpty()) {
 			throw new SerializationException("Unknown type");
@@ -146,52 +109,40 @@ public abstract class Qevent extends Element {
 	}
 	
 	public static Qevent deserialize(StorageKey key) {
-		if(section == null) {
-			Quester.log.severe("Qevent deserialization error: section null.");
+		if(!key.hasSubKeys()) {
+			Quester.log.severe("Qevent deserialization error: no sybkeys.");
 			return null;
 		}
 		Qevent qev = null;
 		int occ = -10, del = 0;
-		String type;
-		
-		if(section.isInt("occasion"))
-			occ = section.getInt("occasion");
-		if(section.isInt("delay"))
-			del = section.getInt("delay");
-		if(section.isString("type"))
-			type = section.getString("type");
-		else {
+		String type = null;
+		occ = key.getInt("occasion", -10);
+		del = key.getInt("delay", 0);
+		type = key.getString("type");
+		if(type == null) {
 			Quester.log.severe("Event type missing.");
 			return null;
 		}
-		boolean success = false;
-		for(Class<? extends Qevent> c : classes) {
+		Class<? extends Qevent> c = ElementManager.getInstance().getEventClass(type);
+		if(c != null) {
 			try {
-				if(((String) c.getField("TYPE").get(null)).equalsIgnoreCase(type)) {
-					try {
-						Method deser = c.getMethod("deser", int.class, int.class, ConfigurationSection.class);
-						qev = (Qevent) deser.invoke(null, occ, del, section);
-						if(qev == null)
-							return null;
-						success = true;
-						break;
-					} catch (Exception e) {
-						Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Method deser() missing or broken. " + e.getClass().getName());
-						if(DataManager.debug)
-							e.printStackTrace();
-						return null;
-					}
+				Method load = c.getMethod("load", StorageKey.class);
+				qev = (Qevent) load.invoke(null, key);
+				if(qev == null) {
+					return null;
 				}
+				qev.setOccasion(occ, del);
 			} catch (Exception e) {
-				Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Field 'TYPE' missing or access denied. " + e.getClass().getName());
-				if(DataManager.debug)
+				Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Method load() missing or invalid. " + e.getClass().getName());
+				if(DataManager.debug) {
 					e.printStackTrace();
+				}
 				return null;
 			}
 		}
-		if(!success)
+		else {
 			Quester.log.severe("Unknown event type: '" + type  + "'");
-		
+		}
 		return qev;
 	}
 }

@@ -1,7 +1,6 @@
 package com.gmail.molnardad.quester.qevents;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
@@ -9,6 +8,7 @@ import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("CMD")
@@ -37,18 +37,18 @@ public final class CommandQevent extends Qevent {
 		return new CommandQevent(Util.implode(context.getArgs()));
 	}
 
-	// TODO serialization
-	public void serialize(ConfigurationSection section) {
-		section.set("command", command);
+	@Override
+	public void save(StorageKey key) {
+		key.setString("command", command);
 	}
 	
-	public static CommandQevent deser(ConfigurationSection section) {
+	public static CommandQevent load(StorageKey key) {
 		String cmd;
 		
-		if(section.isString("command"))
-			cmd = section.getString("command");
-		else
+		cmd = key.getString("command");
+		if(cmd == null) {
 			return null;
+		}
 		
 		return new CommandQevent(cmd);
 	}

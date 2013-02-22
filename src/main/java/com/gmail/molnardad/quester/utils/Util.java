@@ -563,8 +563,9 @@ public class Util {
 				pitch = Float.parseFloat(split[5]);
 			loc = new Location(world, x, y, z, yaw, pitch);
 		} catch (Exception e) {
-			if(DataManager.debug)
+			if(DataManager.debug) {
 				Quester.log.severe("Error when deserializing location.");
+			}
 		}
 		
 		return loc;

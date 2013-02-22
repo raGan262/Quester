@@ -1,7 +1,6 @@
 package com.gmail.molnardad.quester.qevents;
 
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
@@ -9,6 +8,7 @@ import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("EXPLOSION")
@@ -60,32 +60,28 @@ public final class ExplosionQevent extends Qevent {
 		return new ExplosionQevent(loc, range, context.hasFlag('d'));
 	}
 
-	// TODO serialization
-	
-	public void serialize(ConfigurationSection section) {
-		if(damage)
-			section.set("damage", damage);
-		section.set("location", Util.serializeLocString(location));
-		if(range != 0)
-			section.set("range", range);
+	@Override
+	public void save(StorageKey key) {
+		if(damage) {
+			key.setBoolean("damage", damage);
+		}
+		key.setString("location", Util.serializeLocString(location));
+		if(range != 0) {
+			key.setInt("range", range);
+		}
 	}
 	
-	public static ExplosionQevent deser(ConfigurationSection section) {
+	public static ExplosionQevent load(StorageKey key) {
 		int rng = 0;
 		boolean dmg = false;
 		Location loc = null;
 		try {
-			if(section.isString("location")) {
-				loc = Util.deserializeLocString(section.getString("location"));
+			loc = Util.deserializeLocString(key.getString("location"));
+			rng = key.getInt("range", 0);
+			if(rng < 0) {
+				rng = 0;
 			}
-			if(section.isInt("range")) {
-				rng = section.getInt("range");
-				if(rng < 0)
-					rng = 0;
-			}
-			if(section.isBoolean("damage"))
-				dmg = section.getBoolean("damage");
-			
+			dmg = key.getBoolean("damage", false);
 		} catch (Exception e) {
 			return null;
 		}

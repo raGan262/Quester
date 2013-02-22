@@ -1,6 +1,5 @@
 package com.gmail.molnardad.quester.qevents;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.PlayerProfile;
@@ -10,6 +9,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.managers.ProfileManager;
+import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("POINT")
 public final class PointQevent extends Qevent {
@@ -40,20 +40,19 @@ public final class PointQevent extends Qevent {
 	public static Qevent fromCommand(QCommandContext context) {
 		return new PointQevent(context.getInt(0));
 	}
-
-	// TODO serialization
 	
-	public void serialize(ConfigurationSection section) {
-		section.set("amount", amount);
+	@Override
+	public void save(StorageKey key) {
+		key.setInt("amount", amount);
 	}
 	
-	public static PointQevent deser(ConfigurationSection section) {
+	public static PointQevent load(StorageKey key) {
 		int amt;
 		
-		if(section.isInt("amount"))
-			amt = section.getInt("amount");
-		else
+		amt = key.getInt("amount", 0);
+		if(amt == 0) {
 			return null;
+		}
 		
 		return new PointQevent(amt);
 	}
