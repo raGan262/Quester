@@ -69,7 +69,7 @@ public final class BreakObjective extends Objective {
 	}
 
 	@Override
-	public void save(StorageKey key) {		
+	protected void save(StorageKey key) {		
 		key.setString("block", Util.serializeItem(material, data));
 		if(amount > 1) {
 			key.setInt("amount", amount);
@@ -79,7 +79,7 @@ public final class BreakObjective extends Objective {
 		}
 	}
 	
-	public static Objective load(StorageKey key) {
+	protected static Objective load(StorageKey key) {
 		Material mat;
 		int dat, amt;
 		int hnd = -1;

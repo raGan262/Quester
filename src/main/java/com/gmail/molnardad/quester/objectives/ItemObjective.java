@@ -104,7 +104,7 @@ public final class ItemObjective extends Objective {
 			enchs = parseEnchants(context.getString(2));
 		}
 		
-		return new ItemObjective(mat, dat, amt, enchs);
+		return new ItemObjective(mat, amt, dat, enchs);
 	}
 
 	@Override

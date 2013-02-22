@@ -61,11 +61,11 @@ public final class WorldObjective extends Objective {
 	}
 
 	@Override
-	public void save(StorageKey key) {
+	protected void save(StorageKey key) {
 		key.setString("world", worldName);
 	}
 	
-	public static Objective load(StorageKey key) {
+	protected static Objective load(StorageKey key) {
 		String world = null;
 		world = key.getString("world", null);
 		if(world == null) {

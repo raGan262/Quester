@@ -6,6 +6,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
@@ -13,6 +14,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QUsageException;
 import com.gmail.molnardad.quester.elements.*;
 import com.gmail.molnardad.quester.exceptions.ElementException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class ElementManager {
@@ -200,13 +202,27 @@ public class ElementManager {
 			throw new ElementException("Annotation not present.");
 		}
 		try {
+			Method load = clss.getDeclaredMethod("load", StorageKey.class); 
+			Quester.log.info("Zbehne.");
+			if(!Modifier.isStatic(load.getModifiers()) || !Modifier.isProtected(load.getModifiers())) {
+				throw new ElementException("Incorrect load method modifiers, expected protected static.");
+			}
 			if(clss.getSuperclass() == Condition.class) {
+				if(load.getReturnType() != Condition.class) {
+					throw new ElementException("Load method does not return Condition.");
+				}
 				registerCondition((Class<? extends Condition>) clss);
 			}
 			else if(clss.getSuperclass() == Qevent.class) {
+				if(load.getReturnType() != Qevent.class) {
+					throw new ElementException("Load method does not return Event.");
+				}
 				registerEvent((Class<? extends Qevent>) clss);
 			}
 			else if(clss.getSuperclass() == Objective.class) {
+				if(load.getReturnType() != Objective.class) {
+					throw new ElementException("Load method does not return Objective.");
+				}
 				registerObjective((Class<? extends Objective>) clss);
 			}
 			else {
@@ -214,7 +230,7 @@ public class ElementManager {
 			}
 		}
 		catch (NoSuchMethodException e) {
-			throw new ElementException("Missing or incorrect fromCommand method.");
+			throw new ElementException("Missing fromCommand or load method.");
 		}
 		catch (SecurityException e) {
 			throw new ElementException("Element can't be accessed.");
@@ -222,18 +238,18 @@ public class ElementManager {
 	}
 	
 	private void registerCondition(Class<? extends Condition> clss) throws NoSuchMethodException, SecurityException, ElementException {
-		Method fromCommand = clss.getMethod("fromCommand", QCommandContext.class); 
+		Method fromCommand = clss.getDeclaredMethod("fromCommand", QCommandContext.class); 
 		
 		String type = clss.getAnnotation(QElement.class).value().toUpperCase();
 		if(conditions.containsKey(type)) {
 			throw new ElementException("Condition of the same type already registered.");
 		}
 		
-		if(!Modifier.isStatic(fromCommand.getModifiers()) || !Modifier.isProtected(fromCommand.getModifiers())) {
-			throw new NoSuchMethodException("Incorrect method modifiers, expected protected static.");
+		if(!Modifier.isStatic(fromCommand.getModifiers())) {
+			throw new ElementException("Incorrect fromCommand method modifiers, expected static.");
 		}
 		if(fromCommand.getReturnType() != Condition.class) {
-			throw new NoSuchMethodException("Method does not return Condition.");
+			throw new ElementException("fromCommand method does not return Condition.");
 		}
 		ElementInfo<Condition> ei = new ElementInfo<Condition>();
 		ei.clss = clss;
@@ -244,18 +260,18 @@ public class ElementManager {
 	}
 	
 	private void registerEvent(Class<? extends Qevent> clss) throws NoSuchMethodException, SecurityException, ElementException { 
-		Method fromCommand = clss.getMethod("fromCommand", QCommandContext.class);
+		Method fromCommand = clss.getDeclaredMethod("fromCommand", QCommandContext.class);
 		
 		String type = clss.getAnnotation(QElement.class).value().toUpperCase();
 		if(events.containsKey(type)) {
 			throw new ElementException("Event of the same type already registered.");
 		}
 
-		if(!Modifier.isStatic(fromCommand.getModifiers()) || !Modifier.isProtected(fromCommand.getModifiers())) {
-			throw new NoSuchMethodException("Incorrect method modifiers, expected protected static.");
+		if(!Modifier.isStatic(fromCommand.getModifiers())) {
+			throw new ElementException("Incorrect fromCommand method modifiers, expected static.");
 		}
 		if(fromCommand.getReturnType() != Qevent.class) {
-			throw new NoSuchMethodException("Method does not return Qevent.");
+			throw new ElementException("fromCommand method does not return Qevent.");
 		}
 		ElementInfo<Qevent> ei = new ElementInfo<Qevent>();
 		ei.clss = clss;
@@ -266,18 +282,18 @@ public class ElementManager {
 	}
 
 	private void registerObjective(Class<? extends Objective> clss) throws NoSuchMethodException, SecurityException, ElementException {
-		Method fromCommand = clss.getMethod("fromCommand", QCommandContext.class);
+		Method fromCommand = clss.getDeclaredMethod("fromCommand", QCommandContext.class);
 		
 		String type = clss.getAnnotation(QElement.class).value().toUpperCase();
 		if(objectives.containsKey(type)) {
 			throw new ElementException("Objective of the same type already registered.");
 		}
 		
-		if(!Modifier.isStatic(fromCommand.getModifiers()) || !Modifier.isProtected(fromCommand.getModifiers())) {
-			throw new NoSuchMethodException("Incorrect method modifiers, expected protected static.");
+		if(!Modifier.isStatic(fromCommand.getModifiers())) {
+			throw new ElementException("Incorrect fromCommand method modifiers, expected static.");
 		}
 		if(fromCommand.getReturnType() != Objective.class) {
-			throw new NoSuchMethodException("Method does not return Objective.");
+			throw new ElementException("fromCommand method does not return Objective.");
 		}
 		ElementInfo<Objective> ei = new ElementInfo<Objective>();
 		ei.clss = clss;

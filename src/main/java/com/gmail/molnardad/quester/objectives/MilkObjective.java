@@ -44,11 +44,11 @@ public final class MilkObjective extends Objective {
 	}
 
 	@Override
-	public void save(StorageKey key) {
+	protected void save(StorageKey key) {
 		key.setInt("amount", amount);
 	}
 	
-	public static Objective load(StorageKey key) {
+	protected static Objective load(StorageKey key) {
 		int amt = 0;
 		amt = key.getInt("amount", 0);
 		if(amt < 1) {

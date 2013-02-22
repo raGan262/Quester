@@ -46,12 +46,15 @@ public class QuestManager {
 	
 	public QuestManager(Quester plugin) {
 		this.langMan = plugin.getLanguageManager();
-		profMan = plugin.getProfileManager();
 		this.plugin = plugin;
 		File file = new File(plugin.getDataFolder(), "quests.yml");
 		questStorage = new ConfigStorage(file, Quester.log, null);
 	}
 
+	public void setProfileManager(ProfileManager profMan) {
+		this.profMan = profMan;
+	}
+	
 	// QUEST ID MANIPULATION
 	
 	public int getLastQuestID(){

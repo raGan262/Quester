@@ -69,7 +69,7 @@ public final class PlaceObjective extends Objective {
 		}
 	}
 	
-	protected static Objective deser(StorageKey key) {
+	protected static Objective load(StorageKey key) {
 		Material mat;
 		int dat, amt = 1;
 		try {

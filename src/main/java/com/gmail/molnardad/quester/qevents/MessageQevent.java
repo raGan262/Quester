@@ -1,7 +1,6 @@
 package com.gmail.molnardad.quester.qevents;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
@@ -45,10 +44,10 @@ public final class MessageQevent extends Qevent {
 		key.setString("message", rawmessage);
 	}
 	
-	protected static Qevent load(ConfigurationSection section) {
+	protected static Qevent load(StorageKey key) {
 		String msg;
 		
-		msg = section.getString("message");
+		msg = key.getString("message");
 		if(msg == null) {
 			return null;
 		}

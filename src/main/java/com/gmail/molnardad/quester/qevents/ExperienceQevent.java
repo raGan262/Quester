@@ -1,6 +1,5 @@
 package com.gmail.molnardad.quester.qevents;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
@@ -44,13 +43,12 @@ public final class ExperienceQevent extends Qevent {
 		key.setInt("amount", amount);
 	}
 	
-	protected static Qevent load(ConfigurationSection section) {
+	protected static Qevent load(StorageKey key) {
 		int amt;
-		
-		if(section.isInt("amount"))
-			amt = section.getInt("amount");
-		else
+		amt = key.getInt("amount", 0);
+		if(amt < 1) {
 			return null;
+		}
 		
 		return new ExperienceQevent(amt);
 	}
