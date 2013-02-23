@@ -31,7 +31,12 @@ public final class ItemQevent extends Qevent {
 	
 	public ItemQevent(Material mat, int dat, int amt, Map<Integer, Integer> enchs) {
 		this.material = mat;
-		this.data = (short) dat;
+		if(dat < 0) {
+			this.data = 0;
+		}
+		else {
+			this.data = (short) dat;
+		}
 		this.amount = amt;
 		if(enchs != null)
 			this.enchants = enchs;
@@ -138,7 +143,7 @@ public final class ItemQevent extends Qevent {
 		int dat = 0, amt = 1;
 		Map<Integer, Integer> enchs = null;
 		try {
-			int[] itm = Util.parseItem(key.getString("item"));
+			int[] itm = Util.parseItem(key.getString("item", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
 			if(dat < 0) {
@@ -149,7 +154,7 @@ public final class ItemQevent extends Qevent {
 				amt = 1;
 			}
 			try {
-				enchs = Util.parseEnchants(key.getString("enchants"));
+				enchs = Util.parseEnchants(key.getString("enchants", ""));
 			} catch (IllegalArgumentException e) {
 				enchs = null;
 			}
