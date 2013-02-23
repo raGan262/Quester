@@ -109,6 +109,12 @@
                   <include>org.mcstats.bukkit:metrics</include>
                 </includes>
               </artifactSet>
+              <relocations>
+                <relocation>
+                  <pattern>org.mcstats</pattern>
+                  <shadedPattern>com.gmail.molnardad.mcstats</shadedPattern>
+                </relocation>
+              </relocations>
             </configuration>
           </execution>
         </executions>
