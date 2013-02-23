@@ -46,7 +46,7 @@ public final class LocObjective extends Objective {
 	public static Objective fromCommand(QCommandContext context) throws QCommandException {
 		int rng = 3;			
 		Location loc = getLoc(context.getPlayer(), context.getString(0));
-		if(context.length() > 4){
+		if(context.length() > 1){
 			rng = context.getInt(1);
 			if(rng < 1) {
 				throw new QCommandException(context.getSenderLang().ERROR_CMD_RANGE_INVALID);
