@@ -1,7 +1,5 @@
 package com.gmail.molnardad.quester.commands;
 
-import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -39,7 +37,7 @@ public class QeventCommands {
 		try {
 			occasion = Util.deserializeOccasion(context.getString(0), context.getSenderLang());
 		}
-		catch (InvalidArgumentsException e) {
+		catch (IllegalArgumentException e) {
 			throw new QCommandException(e.getMessage());
 		}
 		String type = context.getString(1);
