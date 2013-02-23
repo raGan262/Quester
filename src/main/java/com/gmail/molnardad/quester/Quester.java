@@ -93,7 +93,9 @@ public class Quester extends JavaPlugin {
 
 			this.loadLocal();
 			registerElements();
-			profiles.loadRanks();
+			if(DataManager.useRank) {
+				profiles.loadRanks();
+			}
 			holders.loadHolders();
 			
 			try {

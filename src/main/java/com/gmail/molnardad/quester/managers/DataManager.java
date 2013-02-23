@@ -15,6 +15,7 @@ public class DataManager {
 	public static boolean verbose = true;
 	public static int saveInterval = 15;
 	public static boolean debug = false;
+	public static boolean useRank = true;
 	
 	// OBJECTIVE SECTION
 	public static boolean ordOnlyCurrent = true;
@@ -118,6 +119,11 @@ public class DataManager {
 		path = "general.debug-info";
 		DataManager.debug = mainKey.getBoolean(path);
 		mainKey.setBoolean(path, DataManager.debug);
+
+		// DEBUG INFO
+		path = "general.use-rank";
+		DataManager.useRank = mainKey.getBoolean(path);
+		mainKey.setBoolean(path, DataManager.useRank);
 		
 		// SHOW ONLY CURRENT
 		path = "objectives.show-only-current";

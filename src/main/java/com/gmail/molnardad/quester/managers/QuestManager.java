@@ -697,7 +697,14 @@ public class QuestManager {
 	// MESSENGER METHODS
 	
 	public void showQuest(CommandSender sender, String questName, QuesterLang lang) throws QuesterException {
-		Quest qst = getQuest(questName);
+		Quest qst = null;
+		if(questName.isEmpty()) {
+			qst = getPlayerQuest(sender.getName());
+		}
+		else {
+			qst = getQuest(questName);
+		}
+		
 		if(qst == null)
 			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
 		if(!qst.hasFlag(QuestFlag.ACTIVE) || qst.hasFlag(QuestFlag.HIDDEN)) {
@@ -794,12 +801,21 @@ public class QuestManager {
 		Player player = null;
 		if(sender instanceof Player)
 			player = (Player) sender;
-		ChatColor color = ChatColor.BLUE;
+		ChatColor color = ChatColor.RED;
+		PlayerProfile prof = profMan.getProfile(player.getName());
 		for(Quest q: getQuests()){
 			if(q.hasFlag(QuestFlag.ACTIVE) && !q.hasFlag(QuestFlag.HIDDEN)) {
 				if(player != null)
 					try {
-						color = areConditionsMet(player, q.getName(), lang) ? ChatColor.BLUE : ChatColor.YELLOW;
+						if(prof.hasQuest(q.getName())) {
+							color = ChatColor.YELLOW;
+						}
+						else if(prof.isCompleted(q.getName()) && !q.hasFlag(QuestFlag.REPEATABLE)) {
+							color = ChatColor.GREEN;
+						}
+						else if(areConditionsMet(player, q.getName(), lang)) {
+							color = ChatColor.BLUE;
+						}
 					} catch (Exception e){}
 				sender.sendMessage(ChatColor.GOLD + "* " + color + q.getName());
 			}
