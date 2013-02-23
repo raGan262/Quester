@@ -17,6 +17,7 @@ import com.gmail.molnardad.quester.utils.Util;
 public abstract class Objective extends Element {
 
 	private String desc = "";
+	private boolean hidden = false;
 	private Set<Integer> prerequisites = new HashSet<Integer>();
 	
 	public Set<Integer> getPrerequisites() {
@@ -48,6 +49,14 @@ public abstract class Objective extends Element {
 	
 	public void removeDescription() {
 		this.desc = "";
+	}
+	
+	public void setHidden(boolean value) {
+		this.hidden = value;
+	}
+	
+	public boolean isHidden() {
+		return this.hidden;
 	}
 	
 	public final boolean isComplete(int progress) {
@@ -102,6 +111,9 @@ public abstract class Objective extends Element {
 		if(!prerequisites.isEmpty()) {
 			key.setString("prerequisites", Util.serializePrerequisites(prerequisites));
 		}
+		if(hidden) {
+			key.setBoolean("hidden", hidden);
+		}
 	}
 	
 	public static final Objective deserialize(StorageKey key) {
@@ -111,6 +123,7 @@ public abstract class Objective extends Element {
 		}
 		Objective obj = null;
 		String type = null, des = null;
+		boolean hid = false;
 		Set<Integer> prereq = new HashSet<Integer>();
 		
 		type = key.getString("type");
@@ -118,7 +131,8 @@ public abstract class Objective extends Element {
 			Quester.log.severe("Objective type missing.");
 			return null;
 		}
-		des = key.getString("description");
+		des = key.getString("description", null);
+		hid = key.getBoolean("hidden", false);
 		try {
 			prereq = Util.deserializePrerequisites(key.getString("prerequisites"));
 		} catch (Exception ignore) {}
@@ -135,6 +149,9 @@ public abstract class Objective extends Element {
 				}
 				if(des != null) {
 					obj.addDescription(des);
+				}
+				if(hid) {
+					obj.setHidden(true);
 				}
 				if(!prereq.isEmpty()) {
 					for(int i : prereq) {

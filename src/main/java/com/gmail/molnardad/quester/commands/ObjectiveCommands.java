@@ -44,6 +44,9 @@ public class ObjectiveCommands {
 		if(obj == null) {
 			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
 		}
+		if(context.hasFlag('h')) {
+			obj.setHidden(true);
+		}
 		qMan.addQuestObjective(sender.getName(), obj, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + lang.OBJ_ADD.replaceAll("%type", type.toUpperCase()));
 	}

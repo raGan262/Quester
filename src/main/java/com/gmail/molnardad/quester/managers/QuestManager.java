@@ -857,7 +857,7 @@ public class QuestManager {
 					player.sendMessage(ChatColor.GREEN + " - " + lang.INFO_PROGRESS_COMPLETED);
 				} else {
 					boolean active = isObjectiveActive(player, i);
-					if(active || !DataManager.ordOnlyCurrent) {
+					if(!objs.get(i).isHidden() && (active || !DataManager.ordOnlyCurrent)) {
 						ChatColor col = active ? ChatColor.YELLOW : ChatColor.RED;
 						player.sendMessage(col + " - " + objs.get(i).inShow(progress.get(i)));
 					}
