@@ -91,7 +91,7 @@ public final class ItemQevent extends Qevent {
         		given = Math.min(toGive, maxSize);
 	        	item = new ItemStack(material, given, data);
 	        	for(Integer j : enchants.keySet()) {
-        			item.addEnchantment(Enchantment.getById(j), enchants.get(j));
+        			item.addUnsafeEnchantment(Enchantment.getById(j), enchants.get(j));
         		}
 	        	player.getWorld().dropItem(player.getLocation(), item);
 	        	toGive -= given;
