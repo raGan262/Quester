@@ -60,7 +60,7 @@ public abstract class Objective extends Element {
 	}
 	
 	public final boolean isComplete(int progress) {
-		return progress > getTargetAmount();
+		return progress >= getTargetAmount();
 	}
 	
 	public abstract int getTargetAmount();
