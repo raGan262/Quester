@@ -456,10 +456,11 @@ public class Util {
 		return serializePrerequisites(prereq, ";");
 	}
 	
-	public static int[] deserializeOccasion(String arg) throws InvalidArgumentsException{
+	public static int[] deserializeOccasion(String arg, QuesterLang lang) throws InvalidArgumentsException{
 		int[] arr = new int[2];
 		arr[1] = 0;
 		String[] s = arg.split(":");
+		// TODO dynamic language use
 		if(s.length > 2 || s.length < 1) {
 			throw new InvalidArgumentsException("Incorrect occasion format.");
 		}

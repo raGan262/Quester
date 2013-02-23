@@ -1,5 +1,7 @@
 package com.gmail.molnardad.quester.commands;
 
+import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -14,6 +16,7 @@ import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.managers.ElementManager;
 import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.strings.QuesterLang;
+import com.gmail.molnardad.quester.utils.Util;
 
 public class QeventCommands {
 	
@@ -28,21 +31,29 @@ public class QeventCommands {
 	@QCommandLabels({"add", "a"})
 	@QCommand(
 			desc = "adds an event",
-			min = 1,
-			usage = "<event type> [args]")
+			min = 2,
+			usage = "{<occasion>} <event type> [args]")
 	public void add(QCommandContext context, CommandSender sender) throws QCommandException, QuesterException {
 		QuesterLang lang = context.getSenderLang();
-		String type = context.getString(0);
+		int[] occasion;
+		try {
+			occasion = Util.deserializeOccasion(context.getString(0), context.getSenderLang());
+		}
+		catch (InvalidArgumentsException e) {
+			throw new QCommandException(e.getMessage());
+		}
+		String type = context.getString(1);
 		if(!eMan.isEvent(type)) {
 			sender.sendMessage(ChatColor.RED + lang.ERROR_EVT_NOT_EXIST);
 			sender.sendMessage(ChatColor.RED + lang.EVT_LIST + ": "
 					+ ChatColor.WHITE + eMan.getEventList());
 			return;
 		}
-		Qevent evt = eMan.getEventFromCommand(type, context.getSubContext());
+		Qevent evt = eMan.getEventFromCommand(type, context.getSubContext(2));
 		if(evt == null) {
 			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
 		}
+		evt.setOccasion(occasion[0], occasion[1]);
 		qMan.addQevent(sender.getName(), evt, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + lang.EVT_ADD.replaceAll("%type", type.toUpperCase()));
 	}

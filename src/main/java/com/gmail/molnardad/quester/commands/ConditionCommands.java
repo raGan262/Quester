@@ -40,7 +40,7 @@ public class ConditionCommands {
 					+ ChatColor.WHITE + eMan.getConditionList());
 			return;
 		}
-		Condition con = eMan.getConditionFromCommand(type, context.getSubContext());
+		Condition con = eMan.getConditionFromCommand(type, context.getSubContext(1));
 		if(con == null) {
 			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
 		}

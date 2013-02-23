@@ -90,15 +90,17 @@ public class QCommandContext {
 		this.args = copied.toArray(new String[copied.size()]);
 	}
 	
-	public QCommandContext getSubContext() {
-		if(args.length > 0) {
+	public QCommandContext getSubContext(int level) {
+		if(args.length > level - 1) {
 			int parLength = this.parentArgs.length;
-			int argLength = this.args.length - 1;
-			String[] parentArgs = new String[parLength + 1];
+			int argLength = this.args.length - level;
+			String[] parentArgs = new String[parLength+level];
 			String[] args = new String[argLength];
 			System.arraycopy(this.parentArgs, 0, parentArgs, 0, parLength);
-			parentArgs[parLength] = this.args[0];
-			System.arraycopy(this.args, 1, args, 0, argLength);
+			for(int i=0; i<level; i++) {
+				parentArgs[parLength+i] = this.args[i];	
+			}
+			System.arraycopy(this.args, level, args, 0, argLength);
 			
 			return new QCommandContext(args, parentArgs, sender, comMan, flags, lang);
 		}
