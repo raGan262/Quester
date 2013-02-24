@@ -40,7 +40,7 @@ public class ObjectiveCommands {
 					+ ChatColor.WHITE + eMan.getObjectiveList());
 			return;
 		}
-		Objective obj = eMan.getObjectiveFromCommand(type, context.getSubContext(2));
+		Objective obj = eMan.getObjectiveFromCommand(type, context.getSubContext(1));
 		if(obj == null) {
 			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
 		}
