@@ -18,7 +18,7 @@ import com.gmail.molnardad.quester.objectives.Objective;
 
 public class ActionListener implements Listener {
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onAction(PlayerInteractEvent event) {
 	    QuestManager qm = Quester.qMan;
 	    Player player = event.getPlayer();
