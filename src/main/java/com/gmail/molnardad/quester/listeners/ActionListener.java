@@ -24,7 +24,7 @@ public class ActionListener implements Listener {
 		this.qm = plugin.getQuestManager();
 	}
 	
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onAction(PlayerInteractEvent event) {
 	    Player player = event.getPlayer();
     	Quest quest = qm.getPlayerQuest(player.getName());
