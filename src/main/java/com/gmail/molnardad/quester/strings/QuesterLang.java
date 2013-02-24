@@ -84,7 +84,7 @@ public class QuesterLang {
 	public String HELP_HOL_SELECT = "selects holder";
 	
 	public String USAGE_LABEL = "Usage: ";
-	public String USAGE_SHOW = "\"<quest name>\"";
+	public String USAGE_SHOW = "\"[quest name]\"";
 	public String USAGE_INFO = "[quest_ID]";
 	public String USAGE_START = "\"[quest name]\"";
 	public String USAGE_CANCEL = "[quest_ID]";

@@ -30,10 +30,14 @@ public class UserCommands {
 	@QCommand(
 			desc = "shows info about the quest",
 			max = 1,
-			usage = "\"<quest name>\"",
+			usage = "\"[quest name]\"",
 			permission = DataManager.PERM_USE_SHOW)
 	public void show(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.showQuest(sender, context.getString(0), context.getSenderLang());
+		String quest = "";
+		if(context.length() > 0) {
+			quest = context.getString(0);
+		}
+		qMan.showQuest(sender, quest, context.getSenderLang());
 	}
 	
 	@QCommandLabels({"list"})
