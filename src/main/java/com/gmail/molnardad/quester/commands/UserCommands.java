@@ -30,7 +30,6 @@ public class UserCommands {
 	@QCommand(
 			desc = "shows info about the quest",
 			max = 1,
-			min = 1,
 			usage = "\"<quest name>\"",
 			permission = DataManager.PERM_USE_SHOW)
 	public void show(QCommandContext context, CommandSender sender) throws QuesterException {

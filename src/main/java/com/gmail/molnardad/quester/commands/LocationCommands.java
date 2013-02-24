@@ -29,11 +29,11 @@ public class LocationCommands {
 			usage = "{<location>} <range>")
 	public void set(QCommandContext context, CommandSender sender) throws QuesterException, QCommandException {
 		try {
-		int range = context.getInt(0);
+		int range = context.getInt(1);
 		if(range < 1) {
 			throw new NumberFormatException();
 		}
-		qMan.setQuestLocation(sender.getName(), getLoc(sender, context.getString(1)), range, context.getSenderLang());
+		qMan.setQuestLocation(sender.getName(), getLoc(sender, context.getString(0)), range, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_LOC_SET);
 		}
 		catch (NumberFormatException e) {
