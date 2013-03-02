@@ -733,7 +733,7 @@ public class QuestManager {
 			List<Objective> objs = qst.getObjectives();
 			sender.sendMessage(ChatColor.BLUE + lang.INFO_OBJECTIVES + ":");
 			for(int i = 0; i < objs.size(); i++) {
-				if(objs.get(i).getPrerequisites().isEmpty() || !DataManager.ordOnlyCurrent) {
+				if(!objs.get(i).isHidden() && (objs.get(i).getPrerequisites().isEmpty() || !DataManager.ordOnlyCurrent)) {
 					sender.sendMessage(ChatColor.WHITE + " - " + objs.get(i).inShow(0));
 				}
 			}
@@ -786,7 +786,8 @@ public class QuestManager {
 		sender.sendMessage(ChatColor.BLUE + lang.INFO_OBJECTIVES + ":");
 		i = 0;
 		for(Objective o: qst.getObjectives()){
-			sender.sendMessage(" [" + i + "] " + o.inInfo());
+			String color = o.isHidden() ? ChatColor.YELLOW+"" : "";
+			sender.sendMessage(color + " [" + i + "] " + o.inInfo());
 			if(qmap.get(i) != null) {
 				for(int j : qmap.get(i).keySet()) {
 					sender.sendMessage("  <" + j + "> " + qmap.get(i).get(j).inInfo());
