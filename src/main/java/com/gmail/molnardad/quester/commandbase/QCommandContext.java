@@ -47,7 +47,7 @@ public class QCommandContext {
 			} 
 			else if (args[i].charAt(0) == '\'' || args[i].charAt(0) == '"') {
 				char quote = args[i].charAt(0);
-				if(args[i].charAt(args[i].length() - 1) == quote) {
+				if(args[i].charAt(args[i].length() - 1) == quote && args[i].length() > 1) {
 					args[i] = args[i].substring(1, args[i].length() - 1);
 					continue;
 				}
