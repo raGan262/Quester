@@ -89,7 +89,7 @@ public class Quester extends JavaPlugin {
 			profiles = new ProfileManager(this);
 			quests.setProfileManager(profiles); // loading conflicts...
 			holders = new QuestHolderManager(this);
-			commands = new CommandManager(this);
+			commands = new CommandManager(langs, log, DataManager.displayedCmd, this);
 
 			this.loadLocal();
 			registerElements();

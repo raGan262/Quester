@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import org.bukkit.command.CommandSender;
 
-import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.QCommandLabels;
@@ -24,18 +23,26 @@ import com.gmail.molnardad.quester.utils.Util;
 public class CommandManager {
 
 	Logger logger = null;
-	Quester plugin = null;
 	LanguageManager langMan = null;
+	
+	String displayedCommand = "";
+	Object[] arguments = null;
+	Class<?>[] classes = null;
 	
 	private Map<Method, Map<String, Method>> labels = new HashMap<Method, Map<String, Method>>();
 	private Map<Method, Map<String, Method>> aliases = new HashMap<Method, Map<String, Method>>();
 	private Map<Method, Object> instances = new HashMap<Method, Object>();
 	private Map<Method, QCommand> annotations = new HashMap<Method, QCommand>();
 	
-	public CommandManager(Quester plugin) {
-		this.logger = Quester.log;
-		this.plugin = plugin;
-		this.langMan = plugin.getLanguageManager();
+	public CommandManager(LanguageManager langMan, Logger logger, String displayedCommand, Object... arguments) {
+		this.logger = logger;
+		this.langMan = langMan;
+		this.displayedCommand = displayedCommand;
+		this.arguments = arguments;
+		classes = new Class<?>[arguments.length];
+		for(int i=0; i<arguments.length; i++) {
+			classes[i] = arguments[i].getClass();
+		}
 	}
 	
 	public void register(Class<?> clss) {
@@ -176,7 +183,7 @@ public class CommandManager {
 		
 		StringBuilder usage = new StringBuilder();
 		
-		usage.append(DataManager.displayedCmd);
+		usage.append(displayedCommand);
 		
 		if(method != null) {
 			for(int i = 0; i <= level; i++) {
@@ -210,7 +217,7 @@ public class CommandManager {
 	
 	public String getUsage(String[] args) {
 		StringBuilder usage = new StringBuilder();
-		usage.append(DataManager.displayedCmd);
+		usage.append(displayedCommand);
 		
 		Method method = null;
 		Method oldMethod = null;
@@ -253,9 +260,9 @@ public class CommandManager {
 	private Object construct(Class<?> clss) {
 		Exception ex = null;
 		try {
-			Constructor<?> constr = clss.getConstructor(Quester.class);
+			Constructor<?> constr = clss.getConstructor(classes);
 			constr.setAccessible(true);
-			return constr.newInstance(plugin);
+			return constr.newInstance(arguments);
 		} catch (NoSuchMethodException e) {
 			ex = e;
 		} catch (SecurityException e) {
