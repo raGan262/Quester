@@ -25,6 +25,9 @@ public class QuestHolder {
 	}
 	
 	public boolean canInteract(String interacter) {
+		if(interactions.get(interacter) == null) {
+			return true;
+		}
 		return System.currentTimeMillis() - interactions.get(interacter) < 500;
 	}
 	
