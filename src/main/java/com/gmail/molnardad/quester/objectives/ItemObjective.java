@@ -27,8 +27,9 @@ public final class ItemObjective extends Objective {
 	private final short data;
 	private final int amount;
 	private final Map<Integer, Integer> enchants;
+	private final boolean questItem;
 	
-	public ItemObjective(Material mat, int amt, int dat, Map<Integer, Integer> enchs) {
+	public ItemObjective(Material mat, int amt, int dat, Map<Integer, Integer> enchs, boolean questItem) {
 		material = mat;
 		amount = amt;
 		data = (short)dat;
@@ -36,6 +37,7 @@ public final class ItemObjective extends Objective {
 			this.enchants = enchs;
 		else
 			this.enchants = new HashMap<Integer, Integer>();
+		this.questItem = questItem;
 	}
 	
 	@Override
@@ -61,7 +63,7 @@ public final class ItemObjective extends Objective {
 	@Override
 	protected String info() {
 		String dataStr = (data < 0 ? "" : ":" + data);
-		String itm = material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount;
+		String itm = material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount + "; QST: " + questItem;
 		String enchs = enchants.isEmpty() ? "" : "\n -- ENCH:";
 		for(Integer e : enchants.keySet()) {
 			enchs = enchs + " " + Enchantment.getById(e).getName() + ":" + enchants.get(e);
@@ -82,7 +84,7 @@ public final class ItemObjective extends Objective {
 	@QCommand(
 			min = 1,
 			max = 3,
-			usage = "{<item>} [amount] {[enchants]}")
+			usage = "{<item>} [amount] {[enchants]} (-q)")
 	public static Objective fromCommand(QCommandContext context) {
 		Material mat = null;
 		int dat;
@@ -104,7 +106,7 @@ public final class ItemObjective extends Objective {
 			enchs = parseEnchants(context.getString(2));
 		}
 		
-		return new ItemObjective(mat, amt, dat, enchs);
+		return new ItemObjective(mat, amt, dat, enchs, context.hasFlag('q'));
 	}
 
 	@Override
@@ -116,12 +118,16 @@ public final class ItemObjective extends Objective {
 		if(amount != 1) {
 			key.setInt("amount", amount);
 		}
+		if(questItem) {
+			key.setBoolean("questitem", questItem);
+		}
 	}
 	
 	protected static Objective load(StorageKey key) {
 		Material mat = null;
 		int dat = -1, amt = 1;
 		Map<Integer, Integer> enchs = null;
+		boolean qi = false;
 		try {
 			int[] itm = Util.parseItem(key.getString("item", ""));
 			mat = Material.getMaterial(itm[0]);
@@ -136,11 +142,12 @@ public final class ItemObjective extends Objective {
 			} catch (IllegalArgumentException e) {
 				enchs = null;
 			}
+			qi = key.getBoolean("questitem", false);
 		} catch (Exception e) {
 			return null;
 		}
 		
-		return new ItemObjective(mat, amt, dat, enchs);
+		return new ItemObjective(mat, amt, dat, enchs, qi);
 	}
 	
 	//Custom methods
