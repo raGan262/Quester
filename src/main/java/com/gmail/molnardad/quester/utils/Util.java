@@ -459,9 +459,8 @@ public class Util {
 		arr[0] = -4;
 		arr[1] = 0;
 		String[] s = arg.split(":");
-		// TODO dynamic language use
 		if(s.length > 2 || s.length < 1) {
-			throw new IllegalArgumentException("Incorrect occasion format.");
+			throw new IllegalArgumentException(lang.ERROR_CMD_OCC_INCORRECT_FORM);
 		}
 		try {
 			arr[0] = Integer.parseInt(s[0]);
@@ -471,7 +470,7 @@ public class Util {
 			arr[1] = Integer.parseInt(s[1]);
 		}
 		if(arr[0] < -3 || arr[1] < 0)
-			throw new IllegalArgumentException("Incorrect occasion.");
+			throw new IllegalArgumentException(lang.ERROR_CMD_OCC_INCORRECT);
 		return arr;
 	} 
 	
