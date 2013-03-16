@@ -456,13 +456,17 @@ public class Util {
 	
 	public static int[] deserializeOccasion(String arg, QuesterLang lang) throws IllegalArgumentException{
 		int[] arr = new int[2];
+		arr[0] = -4;
 		arr[1] = 0;
 		String[] s = arg.split(":");
 		// TODO dynamic language use
 		if(s.length > 2 || s.length < 1) {
 			throw new IllegalArgumentException("Incorrect occasion format.");
 		}
-		arr[0] = Integer.parseInt(s[0]);
+		try {
+			arr[0] = Integer.parseInt(s[0]);
+		}
+		catch (NumberFormatException ignore) {}
 		if(s.length > 1) {
 			arr[1] = Integer.parseInt(s[1]);
 		}

@@ -25,7 +25,7 @@ public class QCommandContext {
 	
 	private QCommandContext(String[] args, String[] parentArgs, CommandSender sender, CommandManager cMan, Set<Character> flags, QuesterLang lang) {
 		this.args = args;
-		this.parentArgs = args;
+		this.parentArgs = parentArgs;
 		this.comMan = cMan;
 		this.sender = sender;
 		this.flags = flags;
@@ -176,6 +176,10 @@ public class QCommandContext {
 	
 	public String[] getParentArgs() {
 		return parentArgs;
+	}
+	
+	public String getParentArg(int i) {
+		return parentArgs[i];
 	}
 	
 	public String[] getAllArgs() {
