@@ -25,10 +25,11 @@ public class ModifierCommands {
 	private QuestFlag[] getModifiers(String[] args) {
 		Set<QuestFlag> modifiers = new HashSet<QuestFlag>();
 		
-		for(int i=2; i<args.length; i++) {
+		for(int i=0; i<args.length; i++) {
 			QuestFlag flag = QuestFlag.getByName(args[i]);
-			if(flag != null && flag != QuestFlag.ACTIVE)
+			if(flag != null && flag != QuestFlag.ACTIVE) {
 				modifiers.add(flag);
+			}
 		}
 		
 		return modifiers.toArray(new QuestFlag[0]);
