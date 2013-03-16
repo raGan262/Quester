@@ -138,20 +138,19 @@ public class ElementManager {
 	private Element getFromCommand(ElementInfo<? extends Element> ei, QCommandContext context) throws QCommandException, QuesterException {
 		Object obj = null; 
 		try {
-			// TODO dynamic language use
+			String parent;
 			if(context.length() < ei.command.min()) {
-				throw new QUsageException("Not enough argmunents.", ei.usage);
+				parent = DataManager.displayedCmd+' '+context.getParentArg(0)+' '+context.getParentArg(1)+' ';
+				throw new QUsageException(context.getSenderLang().ERROR_CMD_ARGS_NOT_ENOUGH, parent + ei.usage);
 			}
 			if(!(ei.command.max() < 0) && context.length() > ei.command.max()) {
-				throw new QUsageException("Too many argmunents.", ei.usage);
+				parent = DataManager.displayedCmd+' '+context.getParentArg(0)+' '+context.getParentArg(1)+' ';
+				throw new QUsageException(context.getSenderLang().ERROR_CMD_ARGS_TOO_MANY, ei.usage);
 			}
 			
 			obj = ei.method.invoke(null, context);
 		}
 		catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		}
 		catch (InvocationTargetException e) {
@@ -253,7 +252,7 @@ public class ElementManager {
 		ei.clss = clss;
 		ei.command = fromCommand.getAnnotation(QCommand.class);
 		ei.method = fromCommand;
-		ei.usage = ei.command.usage();
+		ei.usage = type.toLowerCase() + ' ' + ei.command.usage();
 		conditions.put(type, ei);
 	}
 	
@@ -275,7 +274,7 @@ public class ElementManager {
 		ei.clss = clss;
 		ei.command = fromCommand.getAnnotation(QCommand.class);
 		ei.method = fromCommand;
-		ei.usage = ei.command.usage();
+		ei.usage = "{<occasion>} " + type.toLowerCase() + ' ' + ei.command.usage();
 		events.put(type, ei);
 	}
 
@@ -297,7 +296,7 @@ public class ElementManager {
 		ei.clss = clss;
 		ei.command = fromCommand.getAnnotation(QCommand.class);
 		ei.method = fromCommand;
-		ei.usage = ei.command.usage();
+		ei.usage = type.toLowerCase() + ' ' + ei.command.usage();
 		objectives.put(type, ei);
 	}
 }

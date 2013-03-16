@@ -307,6 +307,8 @@ public class QuesterLang {
 	public String ERROR_CMD_ENTITY_UNKNOWN = "Unknown entity.";
 	public String ERROR_CMD_COLOR_UNKNOWN = "Unknown color.";
 	public String ERROR_CMD_ARGUMENTS_UNKNOWN = "Unknown arguments.";
+	public String ERROR_CMD_ARGS_NOT_ENOUGH = "Not enough arguments.";
+	public String ERROR_CMD_ARGS_TOO_MANY = "Too many arguments.";
 	public String ERROR_CMD_ID_OUT_OF_BOUNDS = "Index does not exist.";
 	
 	public String ERROR_Q_EXIST = "Quest already exists.";
