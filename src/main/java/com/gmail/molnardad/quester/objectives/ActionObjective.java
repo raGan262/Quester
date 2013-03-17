@@ -89,16 +89,20 @@ public final class ActionObjective extends Objective {
 		int[] itm;
 		click = parseAction(context.getString(0));
 		if(context.length() > 1) {
-			itm = parseItem(context.getString(1));
-			if(itm[0] > 255) {
-				throw new QCommandException(context.getSenderLang().ERROR_CMD_BLOCK_UNKNOWN);
+			if(!context.getString(1).equalsIgnoreCase("ANY")) {
+				itm = parseItem(context.getString(1));
+				if(itm[0] > 255) {
+					throw new QCommandException(context.getSenderLang().ERROR_CMD_BLOCK_UNKNOWN);
+				}
+				mat = Material.getMaterial(itm[0]);
+				dat = itm[1];
 			}
-			mat = Material.getMaterial(itm[0]);
-			dat = itm[1];
 			if(context.length() > 2) {
-				itm = parseItem(context.getString(2));
-				hmat = Material.getMaterial(itm[0]);
-				hdat = itm[1];
+				if(!context.getString(2).equalsIgnoreCase("ANY")) {
+					itm = parseItem(context.getString(2));
+					hmat = Material.getMaterial(itm[0]);
+					hdat = itm[1];
+				}
 				if(context.length() > 3) {
 					loc = getLoc(context.getPlayer(), context.getString(3));
 					if(context.length() > 4) {
