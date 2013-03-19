@@ -7,6 +7,7 @@ import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.QCommandLabels;
+import com.gmail.molnardad.quester.commandbase.QNestedCommand;
 import com.gmail.molnardad.quester.managers.DataManager;
 import com.gmail.molnardad.quester.managers.ProfileManager;
 import com.gmail.molnardad.quester.managers.QuestManager;
@@ -96,5 +97,13 @@ public class AdminCommands {
 		sender.sendMessage(Quester.LABEL + ChatColor.GOLD + "version " + plugin.getDescription().getVersion());
 		sender.sendMessage(Quester.LABEL + plugin.getDescription().getWebsite());
 		sender.sendMessage(Quester.LABEL + ChatColor.GRAY + "made by " + plugin.getDescription().getAuthors().get(0));
+	}
+	
+	@QCommandLabels({"player"})
+	@QCommand(
+			section = "QAdmin",
+			desc = "player profile modification commands")
+	@QNestedCommand(PlayerCommands.class)
+	public void player(QCommandContext context, CommandSender sender) {
 	}
 }
