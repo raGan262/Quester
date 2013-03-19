@@ -39,11 +39,11 @@ public abstract class Qevent extends Element {
 	}
 	
 	public String inInfo() {
-		return info() + delayString();
+		return getType() + ": " + info() + delayString();
 	}
 	
 	public final String toString() {
-		return "Condition (type=" + getType() + ")";
+		return "Event (type=" + getType() + ")";
 	}
 	
 	public final static String parseOccasion(int occ) {
