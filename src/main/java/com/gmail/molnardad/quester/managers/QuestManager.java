@@ -677,8 +677,9 @@ public class QuestManager {
 		Objective obj = q.getObjectives().get(id);
 		prof.getProgress().set(id, newValue);
 		if(obj.getTargetAmount() <= newValue) {
-			if(DataManager.progMsgObj)
+			if(DataManager.progMsgObj && !obj.isHidden()) {
 				player.sendMessage(Quester.LABEL + lang.MSG_OBJ_COMPLETED);
+			}
 			for(Qevent qv : q.getQevents()) {
 				if(qv.getOccasion() == id) {
 					qv.execute(player, plugin);
