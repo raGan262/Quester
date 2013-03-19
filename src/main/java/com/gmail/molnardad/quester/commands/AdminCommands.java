@@ -25,6 +25,7 @@ public class AdminCommands {
 	
 	@QCommandLabels({"save"})
 	@QCommand(
+			section = "QAdmin",
 			desc = "saves quests and profiles",
 			max = 0,
 			permission = DataManager.PERM_ADMIN)
@@ -37,6 +38,7 @@ public class AdminCommands {
 	
 	@QCommandLabels({"startsave"})
 	@QCommand(
+			section = "QAdmin",
 			desc = "starts scheduled profile saving",
 			max = 0,
 			permission = DataManager.PERM_ADMIN)
@@ -55,6 +57,7 @@ public class AdminCommands {
 
 	@QCommandLabels({"stopsave"})
 	@QCommand(
+			section = "QAdmin",
 			desc = "stops scheduled profile saving",
 			max = 0,
 			permission = DataManager.PERM_ADMIN)
@@ -72,6 +75,7 @@ public class AdminCommands {
 
 	@QCommandLabels({"reload"})
 	@QCommand(
+			section = "QAdmin",
 			desc = "reloads config and local file",
 			max = 0,
 			permission = DataManager.PERM_ADMIN)
@@ -84,6 +88,7 @@ public class AdminCommands {
 
 	@QCommandLabels({"version", "ver"})
 	@QCommand(
+			section = "QAdmin",
 			desc = "version info",
 			max = 0,
 			permission = DataManager.PERM_ADMIN)

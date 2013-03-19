@@ -28,6 +28,7 @@ public class ConditionCommands {
 	
 	@QCommandLabels({"add", "a"})
 	@QCommand(
+			section = "QMod",
 			desc = "adds a condition",
 			min = 1,
 			usage = "<condition type> [args]")
@@ -50,6 +51,7 @@ public class ConditionCommands {
 	
 	@QCommandLabels({"remove", "r"})
 	@QCommand(
+			section = "QMod",
 			desc = "removes condition",
 			min = 1,
 			max = 1,
@@ -61,6 +63,7 @@ public class ConditionCommands {
 	
 	@QCommandLabels({"desc"})
 	@QCommand(
+			section = "QMod",
 			desc = "condition description manipulation")
 	@QNestedCommand(ConditionDescCommands.class)
 	public void desc(QCommandContext context, CommandSender sender) throws QuesterException {
@@ -68,6 +71,7 @@ public class ConditionCommands {
 	
 	@QCommandLabels({"list", "l"})
 	@QCommand(
+			section = "QMod",
 			max = 0,
 			desc = "condition list")
 	public void list(QCommandContext context, CommandSender sender) throws QuesterException {

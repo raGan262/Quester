@@ -20,6 +20,7 @@ public class ObjectiveDescCommands {
 	
 	@QCommandLabels({"add", "a"})
 	@QCommand(
+			section = "QMod",
 			desc = "adds to objective description",
 			min = 2,
 			max = 2,
@@ -32,6 +33,7 @@ public class ObjectiveDescCommands {
 	
 	@QCommandLabels({"remove", "r"})
 	@QCommand(
+			section = "QMod",
 			desc = "removes objective description",
 			min = 1,
 			max = 1,

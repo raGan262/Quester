@@ -26,6 +26,7 @@ public class ModificationCommands {
 	
 	@QCommandLabels({"info"})
 	@QCommand(
+			section = "QMod",
 			desc = "shows detailed info about the quest",
 			max = 1,
 			usage = "[quest_ID]",
@@ -41,6 +42,7 @@ public class ModificationCommands {
 	
 	@QCommandLabels({"create", "c"})
 	@QCommand(
+			section = "QMod",
 			desc = "creates a quest",
 			min = 1,
 			max = 1,
@@ -56,6 +58,7 @@ public class ModificationCommands {
 
 	@QCommandLabels({"remove", "r"})
 	@QCommand(
+			section = "QMod",
 			desc = "removes the quest",
 			min = 1,
 			max = 1,
@@ -71,6 +74,7 @@ public class ModificationCommands {
 
 	@QCommandLabels({"name"})
 	@QCommand(
+			section = "QMod",
 			desc = "renames the quest",
 			min = 1,
 			max = 1,
@@ -83,6 +87,7 @@ public class ModificationCommands {
 
 	@QCommandLabels({"toggle"})
 	@QCommand(
+			section = "QMod",
 			desc = "toggles the state of the quest",
 			max = 1,
 			usage = "[quest ID]",
@@ -104,6 +109,7 @@ public class ModificationCommands {
 
 	@QCommandLabels({"select", "sel"})
 	@QCommand(
+			section = "QMod",
 			desc = "selects the quest",
 			min = 1,
 			max = 1,
@@ -118,6 +124,7 @@ public class ModificationCommands {
 	
 	@QCommandLabels({"desc"})
 	@QCommand(
+			section = "QMod",
 			desc = "quest description manipulation",
 			permission = DataManager.PERM_MODIFY)
 	@QNestedCommand(DescCommands.class)
@@ -126,6 +133,7 @@ public class ModificationCommands {
 	
 	@QCommandLabels({"location", "loc"})
 	@QCommand(
+			section = "QMod",
 			desc = "quest location manipulation",
 			permission = DataManager.PERM_MODIFY)
 	@QNestedCommand(LocationCommands.class)
@@ -134,6 +142,7 @@ public class ModificationCommands {
 
 	@QCommandLabels({"modifier", "mod"})
 	@QCommand(
+			section = "QMod",
 			desc = "quest modifier manipulation",
 			permission = DataManager.PERM_MODIFY)
 	@QNestedCommand(ModifierCommands.class)
@@ -142,6 +151,7 @@ public class ModificationCommands {
 
 	@QCommandLabels({"world"})
 	@QCommand(
+			section = "QMod",
 			desc = "world restriction manipulation",
 			permission = DataManager.PERM_MODIFY)
 	@QNestedCommand(WorldCommands.class)
@@ -150,6 +160,7 @@ public class ModificationCommands {
 
 	@QCommandLabels({"holder", "hol"})
 	@QCommand(
+			section = "QMod",
 			desc = "quest holder manipulation",
 			permission = DataManager.PERM_MODIFY)
 	@QNestedCommand(HolderCommands.class)
@@ -158,6 +169,7 @@ public class ModificationCommands {
 
 	@QCommandLabels({"condition", "con"})
 	@QCommand(
+			section = "QMod",
 			desc = "condition manipulation",
 			permission = DataManager.PERM_MODIFY)
 	@QNestedCommand(ConditionCommands.class)
@@ -166,6 +178,7 @@ public class ModificationCommands {
 
 	@QCommandLabels({"event", "evt"})
 	@QCommand(
+			section = "QMod",
 			desc = "event manipulation",
 			permission = DataManager.PERM_MODIFY)
 	@QNestedCommand(QeventCommands.class)
@@ -174,6 +187,7 @@ public class ModificationCommands {
 
 	@QCommandLabels({"objective", "obj"})
 	@QCommand(
+			section = "QMod",
 			desc = "objective manipulation",
 			permission = DataManager.PERM_MODIFY)
 	@QNestedCommand(ObjectiveCommands.class)

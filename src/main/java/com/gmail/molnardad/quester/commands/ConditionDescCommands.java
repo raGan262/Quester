@@ -20,6 +20,7 @@ public class ConditionDescCommands {
 	
 	@QCommandLabels({"add", "a"})
 	@QCommand(
+			section = "QMod",
 			desc = "adds condition description",
 			min = 2,
 			max = 2,
@@ -32,6 +33,7 @@ public class ConditionDescCommands {
 	
 	@QCommandLabels({"remove", "r"})
 	@QCommand(
+			section = "QMod",
 			desc = "adds to condition description",
 			min = 1,
 			max = 1,

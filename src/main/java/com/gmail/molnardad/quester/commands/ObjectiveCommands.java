@@ -28,6 +28,7 @@ public class ObjectiveCommands {
 	
 	@QCommandLabels({"add", "a"})
 	@QCommand(
+			section = "QMod",
 			desc = "adds an objective",
 			min = 1,
 			usage = "<objective type> [args]")
@@ -53,6 +54,7 @@ public class ObjectiveCommands {
 	
 	@QCommandLabels({"remove", "r"})
 	@QCommand(
+			section = "QMod",
 			desc = "removes objective",
 			min = 1,
 			max = 1,
@@ -64,6 +66,7 @@ public class ObjectiveCommands {
 	
 	@QCommandLabels({"list", "l"})
 	@QCommand(
+			section = "QMod",
 			max = 0,
 			desc = "objective list")
 	public void list(QCommandContext context, CommandSender sender) throws QuesterException {
@@ -73,6 +76,7 @@ public class ObjectiveCommands {
 	
 	@QCommandLabels({"swap"})
 	@QCommand(
+			section = "QMod",
 			min = 2,
 			max = 2,
 			desc = "swaps two objectives",
@@ -85,6 +89,7 @@ public class ObjectiveCommands {
 	
 	@QCommandLabels({"move"})
 	@QCommand(
+			section = "QMod",
 			min = 2,
 			max = 2,
 			desc = "moves an objective",
@@ -97,6 +102,7 @@ public class ObjectiveCommands {
 	
 	@QCommandLabels({"desc"})
 	@QCommand(
+			section = "QMod",
 			desc = "objective description manipulation")
 	@QNestedCommand(ObjectiveDescCommands.class)
 	public void desc(QCommandContext context, CommandSender sender) throws QuesterException {
@@ -104,6 +110,7 @@ public class ObjectiveCommands {
 	
 	@QCommandLabels({"prereq"})
 	@QCommand(
+			section = "QMod",
 			desc = "objective prerequisites manipulation")
 	@QNestedCommand(ObjectivePrereqCommands.class)
 	public void prereq(QCommandContext context, CommandSender sender) throws QuesterException {

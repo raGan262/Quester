@@ -23,6 +23,7 @@ public class WorldCommands {
 	
 	@QCommandLabels({"add", "a"})
 	@QCommand(
+			section = "QMod",
 			desc = "adds quest world",
 			min = 1,
 			max = 1,
@@ -48,6 +49,7 @@ public class WorldCommands {
 	
 	@QCommandLabels({"remove", "r"})
 	@QCommand(
+			section = "QMod",
 			desc = "removes quest world",
 			min = 1,
 			max = 1,

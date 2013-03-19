@@ -23,6 +23,7 @@ public class HolderCommands {
 	
 	@QCommandLabels({"create", "c"})
 	@QCommand(
+			section = "QMod",
 			desc = "creates a holder",
 			min = 1,
 			max = 1,
@@ -35,6 +36,7 @@ public class HolderCommands {
 	
 	@QCommandLabels({"delete", "d"})
 	@QCommand(
+			section = "QMod",
 			desc = "deletes a holder",
 			min = 1,
 			max = 1,
@@ -46,6 +48,7 @@ public class HolderCommands {
 	
 	@QCommandLabels({"add", "a"})
 	@QCommand(
+			section = "QMod",
 			desc = "adds quest to holder",
 			min = 1,
 			max = 1,
@@ -57,6 +60,7 @@ public class HolderCommands {
 	
 	@QCommandLabels({"remove", "r"})
 	@QCommand(
+			section = "QMod",
 			desc = "removes quest from holder",
 			min = 1,
 			max = 1,
@@ -68,6 +72,7 @@ public class HolderCommands {
 	
 	@QCommandLabels({"move", "m"})
 	@QCommand(
+			section = "QMod",
 			desc = "moves quest in holder",
 			min = 2,
 			max = 2,
@@ -79,6 +84,7 @@ public class HolderCommands {
 	
 	@QCommandLabels({"list", "l"})
 	@QCommand(
+			section = "QMod",
 			desc = "lists quest holders",
 			max = 0)
 	public void list(QCommandContext context, CommandSender sender) throws QuesterException {
@@ -87,6 +93,7 @@ public class HolderCommands {
 	
 	@QCommandLabels({"info", "i"})
 	@QCommand(
+			section = "QMod",
 			desc = "shows info about holder",
 			min = 0,
 			max = 1,
@@ -101,6 +108,7 @@ public class HolderCommands {
 	
 	@QCommandLabels({"select", "sel"})
 	@QCommand(
+			section = "QMod",
 			desc = "selects holder",
 			min = 1,
 			max = 1,

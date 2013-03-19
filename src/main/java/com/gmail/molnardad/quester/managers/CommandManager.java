@@ -4,10 +4,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import com.gmail.molnardad.quester.commandbase.QCommand;
@@ -26,6 +29,7 @@ public class CommandManager {
 	LanguageManager langMan = null;
 	
 	String displayedCommand = "";
+	String helpCommand = "help";
 	Object[] arguments = null;
 	Class<?>[] classes = null;
 	
@@ -42,6 +46,12 @@ public class CommandManager {
 		classes = new Class<?>[arguments.length];
 		for(int i=0; i<arguments.length; i++) {
 			classes[i] = arguments[i].getClass();
+		}
+	}
+	
+	public void setHelpCommand(String helpCommand) {
+		if(helpCommand != null) {
+			this.helpCommand = helpCommand;
 		}
 	}
 	
@@ -179,6 +189,69 @@ public class CommandManager {
 		}
 	}
 	
+	public Map<String, List<String>> getHelp(String[] args, CommandSender sender) {
+		Map<String, List<String>> result = new HashMap<String, List<String>>();
+		Method m = null;
+		for(String s : args) { 
+			if(labels.get(m).containsKey(s)) {
+				m = labels.get(m).get(s);
+			}
+			else if(aliases.get(m).containsKey(s)) {
+				m = aliases.get(m).get(s);
+			}
+			else {
+				throw new IllegalArgumentException(s);
+			}
+		}
+		QCommand anno = null;
+		Map<String, Method> lbls = labels.get(m);
+		if(lbls != null) {
+			for(String s : lbls.keySet()) {
+				Method innerMethod = lbls.get(s);
+				anno = annotations.get(innerMethod);
+				if(anno != null && Util.permCheck(sender, anno.permission(), false, null)) {
+					if(result.get(anno.section()) == null) {
+						result.put(anno.section(), new ArrayList<String>());
+					}
+					StringBuilder cmd = new StringBuilder();
+					String usage = anno.usage();
+					cmd.append(displayedCommand);
+					if(args.length > 0) {
+						cmd.append(' ').append(Util.implode(args));
+					}
+					cmd.append(' ').append(s);
+					if(!usage.isEmpty()) {
+						cmd.append(' ').append(ChatColor.GOLD).append(usage);
+					}
+					cmd.append(ChatColor.GRAY).append(" - ").append(anno.desc());
+					result.get(anno.section()).add(cmd.toString());
+				}
+			}
+		}
+		else {
+			if(m != null) {
+				anno = annotations.get(m);
+				if(anno != null && Util.permCheck(sender, anno.permission(), false, null)) {
+					if(result.get(anno.section()) == null) {
+						result.put(anno.section(), new ArrayList<String>());
+					}
+					StringBuilder cmd = new StringBuilder();
+					String usage = anno.usage();
+					cmd.append(displayedCommand);
+					if(args.length > 0) {
+						cmd.append(' ').append(Util.implode(args));
+					}
+					if(!usage.isEmpty()) {
+						cmd.append(' ').append(ChatColor.GOLD).append(usage);
+					}
+					cmd.append(ChatColor.GRAY).append(" - ").append(anno.desc());
+					result.get(anno.section()).add(cmd.toString());
+				}
+			}
+		}
+		return result;
+	}
+	
 	public String getUsage(String[] args, int level, Method method) {
 		
 		StringBuilder usage = new StringBuilder();
@@ -209,7 +282,7 @@ public class CommandManager {
 			}
 		}
 		else {
-			usage.append(" help");
+			usage.append(' ').append(helpCommand);
 		}
 		
 		return usage.toString();

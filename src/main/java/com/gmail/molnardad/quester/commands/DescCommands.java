@@ -20,6 +20,7 @@ public class DescCommands {
 	
 	@QCommandLabels({"set", "s"})
 	@QCommand(
+			section = "QMod",
 			desc = "sets quest description",
 			min = 0,
 			max = 1,
@@ -35,6 +36,7 @@ public class DescCommands {
 	
 	@QCommandLabels({"add", "a"})
 	@QCommand(
+			section = "QMod",
 			desc = "adds to quest description",
 			min = 1,
 			max = 1,

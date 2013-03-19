@@ -1,5 +1,8 @@
 package com.gmail.molnardad.quester.commands;
 
+import java.util.List;
+import java.util.Map;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,14 +23,33 @@ public class UserCommands {
 
 	private QuestManager qMan = null;
 	private ProfileManager profMan = null;
+	private Quester plugin = null;
 	
 	public UserCommands(Quester plugin) {
 		qMan = plugin.getQuestManager();
 		profMan = plugin.getProfileManager();
+		this.plugin = plugin;
+	}
+	
+	@QCommandLabels({"help"})
+	@QCommand(
+			section = "QUser",
+			desc = "displays help",
+			usage = "[arg1] [arg2]...",
+			permission = DataManager.PERM_USE_SHOW)
+	public void help(QCommandContext context, CommandSender sender) throws QuesterException {
+		Map<String, List<String>> cmds = plugin.getCommandManager().getHelp(context.getArgs(), sender);
+		for(String s : cmds.keySet()) {
+			sender.sendMessage("---------- Section " + s + " ----------");
+			for(String ss : cmds.get(s)) {
+				sender.sendMessage(ss);
+			}
+		}
 	}
 	
 	@QCommandLabels({"show"})
 	@QCommand(
+			section = "QUser",
 			desc = "shows info about the quest",
 			max = 1,
 			usage = "\"[quest name]\"",
@@ -42,6 +64,7 @@ public class UserCommands {
 	
 	@QCommandLabels({"list"})
 	@QCommand(
+			section = "QUser",
 			desc = "displays quest list",
 			max = 0,
 			permission = DataManager.PERM_USE_LIST)
@@ -56,6 +79,7 @@ public class UserCommands {
 	
 	@QCommandLabels({"profile"})
 	@QCommand(
+			section = "QUser",
 			desc = "shows player's profile",
 			max = 1,
 			usage = "[player]",
@@ -71,6 +95,7 @@ public class UserCommands {
 	
 	@QCommandLabels({"start"})
 	@QCommand(
+			section = "QUser",
 			desc = "starts the quest",
 			max = 1,
 			usage = "\"[quest name]\"")
@@ -97,6 +122,7 @@ public class UserCommands {
 	
 	@QCommandLabels({"done"})
 	@QCommand(
+			section = "QUser",
 			desc = "completes current objective",
 			max = 0,
 			permission = DataManager.PERM_USE_DONE)
@@ -110,6 +136,7 @@ public class UserCommands {
 
 	@QCommandLabels({"cancel"})
 	@QCommand(
+			section = "QUser",
 			desc = "completes current objective",
 			max = 1,
 			usage = "[quest ID]",
@@ -128,6 +155,7 @@ public class UserCommands {
 	
 	@QCommandLabels({"switch"})
 	@QCommand(
+			section = "QUser",
 			desc = "switches current quest",
 			max = 1,
 			min = 1,
@@ -145,6 +173,7 @@ public class UserCommands {
 
 	@QCommandLabels({"progress", "prog"})
 	@QCommand(
+			section = "QUser",
 			desc = "shows quest progress",
 			max = 1,
 			usage = "[index]",
@@ -163,7 +192,8 @@ public class UserCommands {
 	
 	@QCommandLabels({"quests"})
 	@QCommand(
-			desc = "shows player's profile",
+			section = "QUser",
+			desc = "shows player's quests",
 			max = 1,
 			usage = "[player]",
 			permission = DataManager.PERM_USE_QUESTS)

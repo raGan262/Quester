@@ -24,6 +24,7 @@ public class ObjectivePrereqCommands {
 	
 	@QCommandLabels({"add", "a"})
 	@QCommand(
+			section = "QMod",
 			desc = "adds objective prerequisites",
 			min = 1,
 			usage = "<objective ID> <prerequisite1>...")
@@ -36,6 +37,7 @@ public class ObjectivePrereqCommands {
 	
 	@QCommandLabels({"remove", "r"})
 	@QCommand(
+			section = "QMod",
 			desc = "removes objective prerequisites",
 			min = 1,
 			usage = "<objective ID> <prerequisite1>...")

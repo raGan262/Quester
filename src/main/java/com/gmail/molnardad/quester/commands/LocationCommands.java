@@ -23,6 +23,7 @@ public class LocationCommands {
 	
 	@QCommandLabels({"set", "s"})
 	@QCommand(
+			section = "QMod",
 			desc = "sets quest location",
 			min = 2,
 			max = 2,
@@ -46,6 +47,7 @@ public class LocationCommands {
 	
 	@QCommandLabels({"remove", "r"})
 	@QCommand(
+			section = "QMod",
 			desc = "removes quest location",
 			max = 0)
 	public void remove(QCommandContext context, CommandSender sender) throws QuesterException {

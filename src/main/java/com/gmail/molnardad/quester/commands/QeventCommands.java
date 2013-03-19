@@ -28,6 +28,7 @@ public class QeventCommands {
 	
 	@QCommandLabels({"add", "a"})
 	@QCommand(
+			section = "QMod",
 			desc = "adds an event",
 			min = 2,
 			usage = "{<occasion>} <event type> [args]")
@@ -58,6 +59,7 @@ public class QeventCommands {
 	
 	@QCommandLabels({"remove", "r"})
 	@QCommand(
+			section = "QMod",
 			desc = "removes event",
 			min = 1,
 			max = 1,
@@ -69,6 +71,7 @@ public class QeventCommands {
 	
 	@QCommandLabels({"list", "l"})
 	@QCommand(
+			section = "QMod",
 			max = 0,
 			desc = "event list")
 	public void list(QCommandContext context, CommandSender sender) throws QuesterException {

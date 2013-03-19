@@ -37,6 +37,7 @@ public class ModifierCommands {
 	
 	@QCommandLabels({"add", "a"})
 	@QCommand(
+			section = "QMod",
 			desc = "adds quest modifier",
 			min = 1,
 			usage = "<modifier1> ...")
@@ -54,6 +55,7 @@ public class ModifierCommands {
 	
 	@QCommandLabels({"remove", "r"})
 	@QCommand(
+			section = "QMod",
 			desc = "sets quest modifier",
 			min = 1,
 			usage = "<modifier1> ...")
