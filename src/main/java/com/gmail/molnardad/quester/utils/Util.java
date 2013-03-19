@@ -156,10 +156,6 @@ public class Util {
 		return result.toString();
 	}
 	
-	public static boolean permCheck(Player player, String perm, boolean message, QuesterLang lang) {
-		return permCheck((CommandSender) player, perm, message, lang);
-	}
-	
 	public static boolean permCheck(CommandSender sender, String perm, boolean message, QuesterLang lang) {
 		if(sender.isOp() || sender.hasPermission(perm) || sender.hasPermission(DataManager.PERM_ADMIN)) {
 			return true;
