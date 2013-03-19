@@ -1,7 +1,12 @@
 package com.gmail.molnardad.quester.qevents;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
+import net.aufdemrand.denizen.scripts.ScriptRegistry;
+import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.citizensnpcs.api.CitizensAPI;
 
 import org.bukkit.Bukkit;
@@ -10,10 +15,10 @@ import org.bukkit.entity.Player;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.CustomException;
-import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("DSCRIPT")
@@ -21,21 +26,27 @@ public final class DenizenScriptQevent extends Qevent {
 
 	private final String script;
 	private final int npc;
-	private final boolean playerContext;
-	private final boolean focusNPC;
+	private final Map<String,String> context;
 	
-	public DenizenScriptQevent(String script, int npc, boolean playerContext, boolean focusNPC) {
+	public DenizenScriptQevent(String script, int npc, Map<String, String> context) {
 		this.script = script;
 		this.npc = npc;
-		this.playerContext = playerContext;
-		this.focusNPC = focusNPC;
+		this.context = context;
 	}
 	
 	@Override
 	public String info() {
 		String npcStr = (npc >= 0) ? npc+"" : "none";
-		String focStr = focusNPC ? "NPC" : "PLAYER";
-		return script + "; NPC: " + npcStr + "; PLAYER: " + playerContext + "; FOCUS: " + focStr;
+		StringBuilder csb = new StringBuilder();
+		if(context != null) {
+			for(String ck : context.keySet()) {
+				csb.append(", ").append(ck).append(':').append(context.get(ck));
+			}
+		}
+		else {
+			csb.append("none");
+		}
+		return script + "; NPC: " + npcStr + "; CONT: " + csb.toString();
 	}
 
 	@Override
@@ -46,62 +57,49 @@ public final class DenizenScriptQevent extends Qevent {
 				if(den == null) {
 					throw new CustomException("Denizen plugin not found.");
 				}
-				if(!playerContext && (npc < 0)) {
-					throw new CustomException("Not enough information to run script. (should not happen, bug)");
-				}
 				else {
-					boolean success = false;
-					DenizenNPC denNpc = null;
+					dNPC denNpc = null;
 					try {
 						denNpc = den.getNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(npc));
 					} 
 					catch (Exception ignore) {}
-					if(playerContext) {
-						if(npc >= 0) {
-							if(denNpc == null) {
-								throw new CustomException("Couldn't resolve DENIZEN npc.");
-							}
-							if(focusNPC) {
-								success = den.getScriptEngine().getScriptBuilder().runTaskScript(denNpc, player, script);
-							}
-							else {
-								success = den.getScriptEngine().getScriptBuilder().runTaskScript(player, denNpc, script);
-							}
-						}
-						else {
-							success = den.getScriptEngine().getScriptBuilder().runTaskScript(player, script);
-						}
+					TaskScriptContainer taskScript = ScriptRegistry.getScriptContainerAs(script, TaskScriptContainer.class);
+					if(npc >= 0 && denNpc == null) {
+						throw new CustomException("Couldn't resolve DENIZEN npc.");
 					}
-					else {
-						if(denNpc == null) {
-							throw new CustomException("Couldn't resolve DENIZEN npc.");
-						}
-						success = den.getScriptEngine().getScriptBuilder().runTaskScript(denNpc, script);
-					}
-					if(!success) {
-						throw new CustomException("Script not found or brokens.");
+					if(taskScript.runTaskScript(player, denNpc, context) == null) {
+						throw new CustomException("Something went wrong.");
 					}
 				}
 			}
 		} 
-		catch (QuesterException e) {
+		catch (Exception e) {
 			Quester.log.warning("Failed to run DSCRIPT event. Info: " + e.getMessage());
 		}
 	}
 
 	@QCommand(
 			min = 1,
-			max = 2,
-			usage = "<script> [npc ID] (-cn)")
-	public static Qevent fromCommand(QCommandContext context) {
+			usage = "<script> [npc ID] [context key:value]...")
+	public static Qevent fromCommand(QCommandContext context) throws QCommandException {
 		String script = context.getString(0);
 		int npc = -1;
+		Map<String, String> cont = null;
 		if(context.length() > 1) {
 			npc = context.getInt(1);
+			if(context.length() > 2) {
+				String[] ss;
+				for(int i=2; i<context.length(); i++) {
+					cont = new HashMap<String, String>();
+					ss = context.getString(i).split(":");
+					if(ss.length != 2) {
+						throw new QCommandException(context.getSenderLang().ERROR_CMD_ARG_CANT_PARSE.replaceAll("%arg", context.getString(i)));
+					}
+					cont.put(ss[0], ss[1]);
+				}
+			}
 		}
-		boolean playerContext = !context.hasFlag('c');
-		boolean focusNPC = context.hasFlag('n');
-		return new DenizenScriptQevent(script, npc, playerContext, focusNPC);
+		return new DenizenScriptQevent(script, npc, cont);
 	}
 
 	@Override
@@ -110,26 +108,36 @@ public final class DenizenScriptQevent extends Qevent {
 		if(npc >= 0) {
 			key.setInt("npc", npc);
 		}
-		if(!playerContext) {
-			key.setBoolean("playercontext", playerContext);
-		}
-		if(focusNPC) {
-			key.setBoolean("focusnpc", focusNPC);
+		if(context != null) {
+			StorageKey subKey = key.getSubKey("context");
+			for(String s : context.keySet()) {
+				subKey.setString(s, context.get(s));
+			}
 		}
 	}
 	
 	protected static Qevent load(StorageKey key) {
 		String scrpt;
 		int npc;
-		boolean pcont, focNpc;
-		pcont = key.getBoolean("playercontext", true);
-		focNpc = key.getBoolean("focusnpc", false);
+		Map<String, String> context = null;
 		npc = key.getInt("npc", -1);
 		scrpt = key.getString("script");
-		if(scrpt == null || (!pcont && (npc < 0))) {
+		if(scrpt == null) {
 			return null;
 		}
-		
-		return new DenizenScriptQevent(scrpt, npc, pcont, focNpc);
+		if(key.getSubKey("context").hasSubKeys()) {
+			context = new HashMap<String, String>();
+			String s = null;
+			for(StorageKey k : key.getSubKey("context").getSubKeys()) {
+				s = k.getString("", null);
+				if(s != null) {
+					context.put(k.getName(), s);
+				}
+			}
+			if(context.isEmpty()) {
+				context = null;
+			}
+		}
+		return new DenizenScriptQevent(scrpt, npc, context);
 	}
 }
