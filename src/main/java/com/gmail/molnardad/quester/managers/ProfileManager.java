@@ -224,6 +224,10 @@ public class ProfileManager {
 	}
 	
 	public void saveProfiles(){
+		StorageKey pKey = profileStorage.getKey("");
+		for(String p : profiles.keySet()) {
+			profiles.get(p).serialize(pKey.getSubKey(p));
+		}
 		profileStorage.save();
 	}
 }
