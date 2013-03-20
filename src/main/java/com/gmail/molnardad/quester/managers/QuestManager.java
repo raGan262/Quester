@@ -706,8 +706,9 @@ public class QuestManager {
 			qst = getQuest(questName);
 		}
 		
-		if(qst == null)
+		if(qst == null) {
 			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
+		}
 		if(!qst.hasFlag(QuestFlag.ACTIVE) || qst.hasFlag(QuestFlag.HIDDEN)) {
 			if(!Util.permCheck(sender, DataManager.PERM_MODIFY, false, null)) {
 				throw new QuestException(lang.ERROR_Q_NOT_EXIST);
@@ -719,7 +720,7 @@ public class QuestManager {
 		}
 		sender.sendMessage(ChatColor.BLUE + lang.INFO_NAME + ": " + ChatColor.GOLD + qst.getName());
 		sender.sendMessage(ChatColor.BLUE + lang.INFO_DESCRIPTION + ": " + ChatColor.WHITE + qst.getDescription(sender.getName()));
-		List<Condition> cons = getQuest(questName).getConditions();
+		List<Condition> cons = qst.getConditions();
 		if(!cons.isEmpty()) {
 			sender.sendMessage(ChatColor.BLUE + lang.INFO_CONDITIONS + ":");
 		}
