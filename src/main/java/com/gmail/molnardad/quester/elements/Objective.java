@@ -83,7 +83,8 @@ public abstract class Objective extends Element {
 		if(!desc.isEmpty()) {
 			String partiallyParsed = desc
 					.replaceAll("%r", String.valueOf(getTargetAmount() - progress))
-					.replaceAll("%t", String.valueOf(getTargetAmount()));
+					.replaceAll("%t", String.valueOf(getTargetAmount()))
+					.replaceAll("%a", String.valueOf(progress));
 			return ChatColor.translateAlternateColorCodes('&', parseDescription(partiallyParsed));
 		}
 		return show(progress);
