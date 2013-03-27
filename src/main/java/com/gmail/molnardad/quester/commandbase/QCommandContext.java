@@ -39,7 +39,7 @@ public class QCommandContext {
 		this.lang = lang;
 		this.flags = new HashSet<Character>();
 		
-		int i = 1;
+		int i = 0;
 		for(;i < args.length; i++) {
 			args[i] = args[i].trim();
 			if (args[i].length() == 0) {
