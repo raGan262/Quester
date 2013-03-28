@@ -665,7 +665,7 @@ public class QuestManager {
 		incProgress(player, id, 1, checkAll);
 	}
 	
-	public void incProgress( Player player, int id, int amount) {
+	public void incProgress(Player player, int id, int amount) {
 		incProgress(player, id, amount, true);
 	}
 	
@@ -676,6 +676,7 @@ public class QuestManager {
 		Quest q = getQuest(prof.getQuest());
 		Objective obj = q.getObjectives().get(id);
 		prof.getProgress().set(id, newValue);
+		// TODO add progress update message
 		if(obj.getTargetAmount() <= newValue) {
 			if(DataManager.progMsgObj && !obj.isHidden()) {
 				player.sendMessage(Quester.LABEL + lang.MSG_OBJ_COMPLETED);
@@ -856,7 +857,7 @@ public class QuestManager {
 			player.sendMessage(lang.INFO_PROGRESS.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 			List<Objective> objs = quest.getObjectives();
 			for(int i = 0; i < objs.size(); i++) {
-				if(objs.get(i).isComplete(progress.get(i))) {
+				if(objs.get(i).isComplete(progress.get(i)) && !objs.get(i).isHidden()) {
 					player.sendMessage(ChatColor.GREEN + " - " + lang.INFO_PROGRESS_COMPLETED);
 				} else {
 					boolean active = isObjectiveActive(player, i);
