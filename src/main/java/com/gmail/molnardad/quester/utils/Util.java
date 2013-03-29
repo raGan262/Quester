@@ -570,31 +570,6 @@ public class Util {
 		return loc;
 	}
 	
-	@Deprecated
-	public static Location deserializeLocation(Map<String, Object> map) {
-		double x, y, z;
-		double yaw = 0;
-		double pitch = 0;
-		World world = null;
-		Location loc = null;
-		
-		try {
-			x = (Double) map.get("x");
-			y = (Double) map.get("y");
-			z = (Double) map.get("z");
-			world = Bukkit.getWorld((String) map.get("world"));
-			if(world == null)
-				throw new IllegalArgumentException();
-			if(map.get("yaw") != null)
-				yaw = (Double) map.get("yaw");
-			if(map.get("pitch") != null)
-				pitch = (Double) map.get("pitch");
-			loc = new Location(world, x, y, z, (float) yaw, (float) pitch);
-		} catch (Exception e) {}
-		
-		return loc;
-	}
-	
 	// MOVE LOCATION
 	
 	public static Location move(Location loc, double d) {

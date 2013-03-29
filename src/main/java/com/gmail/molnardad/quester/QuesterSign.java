@@ -1,10 +1,8 @@
 package com.gmail.molnardad.quester;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Location;
 
+import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class QuesterSign {
@@ -28,32 +26,23 @@ public class QuesterSign {
 		holder = ID;
 	} 
 	
-	public Map<String, Object> serialize() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		
-		map.put("location", Util.serializeLocString(location));
-		if(holder != -1)
-			map.put("holder", holder);
-		
-		return map;
+	public void serialize(StorageKey key) {
+		key.setString("location", Util.serializeLocString(location));
+		key.setInt("holder", holder);
 	}
 	
-	public static QuesterSign deserialize(Map<String, Object> map) {
+	public static QuesterSign deserialize(StorageKey key) {
 		Location loc;
 		QuesterSign sign = null;
 		
 		try{
-			loc = Util.deserializeLocString((String) map.get("location"));
-			if(loc == null)
+			loc = Util.deserializeLocString(key.getString("location", ""));
+			if(loc == null) {
 				return null;
-			sign = new QuesterSign(loc);
-			
-			if(map.get("holder") != null) {
-				int qh = (Integer) map.get("holder");
-				sign.setHolderID(qh);
 			}
-		} catch (Exception e) {
-		}
+			sign = new QuesterSign(loc);
+			sign.setHolderID(key.getInt("holder" , -1));
+		} catch (Exception ignore) {}
 			
 		return sign;
 	}

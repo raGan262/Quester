@@ -84,17 +84,19 @@ public class QuestHolder {
 	}
 	
 	public void serialize(StorageKey key) {
-		String str = "";
-		boolean first = true;
-		for(int i : heldQuests) {
-			if(first) {
-				str += String.valueOf(i);
-				first = false;
-			} else 
-				str += "," + i;
+		if(!heldQuests.isEmpty()) {
+			String str = "";
+			boolean first = true;
+			for(int i : heldQuests) {
+				if(first) {
+					str += String.valueOf(i);
+					first = false;
+				} else 
+					str += "," + i;
+			}
+			key.setString("quests", str);
 		}
 		key.setString("name", name);
-		key.setString("quests", str);
 	}
 	
 	public static QuestHolder deserialize(StorageKey key) {

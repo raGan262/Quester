@@ -243,6 +243,23 @@ public class QuestHolderManager {
 		}
 		return true;
 	}
+
+	public void saveHolders() {
+		StorageKey pKey = holderStorage.getKey("");
+		pKey.removeKey("holders");
+		pKey.removeKey("signs");
+		StorageKey holKey = pKey.getSubKey("holders");
+		for(int i : holderIds.keySet()) {
+			holderIds.get(i).serialize(holKey.getSubKey(String.valueOf(i)));
+		}
+		StorageKey signKey = pKey.getSubKey("signs");
+		int i = 0;
+		for(QuesterSign sign : signs.values()) {
+			sign.serialize(signKey.getSubKey(String.valueOf(i)));
+			i++;
+		}
+		holderStorage.save();
+	}
 	
 	public void loadHolders() {
 		// HOLDERS
@@ -272,20 +289,13 @@ public class QuestHolderManager {
 		
 		// SIGNS
 		StorageKey signKey = holderStorage.getKey("signs");
-		Object object = signKey.getRaw("");
-		if(object != null) {
-			if(object instanceof List) {
-				@SuppressWarnings("unchecked")
-				List<Map<String, Object>> list = (List<Map<String, Object>>) object;
-				for(Map<String, Object> map : list) {
-					QuesterSign sign = QuesterSign.deserialize(map);
-					if(sign == null)
-						continue;
-					signs.put(sign.getLocation(), sign);
-				}
-			} else {
-				Quester.log.info("Invalid sign list in holders.yml.");
+		for(StorageKey k : signKey.getSubKeys()) {
+			QuesterSign sign = QuesterSign.deserialize(k);
+			if(sign == null) {
+				Quester.log.info("Failed to deserialize sign under key '" + k.getName() + "'");
+				continue;
 			}
+			signs.put(sign.getLocation(), sign);
 		}
 		
 		saveHolders();
@@ -294,65 +304,4 @@ public class QuestHolderManager {
 			Quester.log.info(signs.size() + " signs loaded.");
 		}
 	}
-
-	public void saveHolders() {
-		holderStorage.save();
-	}
-	
-//	@SuppressWarnings("unchecked")
-//	public void loadHolders() {
-//		try {
-//
-//			YamlConfiguration config = plugin.holderConfig.getConfig();
-//			
-//			// HOLDERS
-//			ConfigurationSection holders = config.getConfigurationSection("holders");
-//			QuestHolder qh;
-//			if(holders != null) {
-//				for(String key : holders.getKeys(false)) {
-//					try {
-//						int id = Integer.parseInt(key);
-//						qh = QuestHolder.deserialize(holders.getConfigurationSection(key), plugin);
-//						if(qh == null){
-//							throw new InvalidKeyException();
-//						}
-//						if(holderIds.get(id) != null)
-//							Quester.log.info("Duplicate holder index: '" + key + "'");
-//						holderIds.put(id, qh);
-//					} catch (NumberFormatException e) {
-//						Quester.log.info("Not numeric holder index: '" + key + "'");
-//					} catch (Exception e) {
-//						Quester.log.info("Invalid holder: '" + key + "'");
-//					}
-//				}
-//			}
-//			adjustHolderID();
-//			
-//			// SIGNS
-//			Object object = config.get("signs");
-//			if(object != null) {
-//				if(object instanceof List) {
-//					List<Map<String, Object>> list = (List<Map<String, Object>>) object;
-//					for(Map<String, Object> map : list) {
-//						QuesterSign sign = QuesterSign.deserialize(map);
-//						if(sign == null)
-//							continue;
-//						String s = sign.getLocation().getWorld().getName() + sign.getLocation().getBlockX() + sign.getLocation().getBlockY() + sign.getLocation().getBlockZ();
-//						signs.put(s, sign);
-//					}
-//				} else {
-//					Quester.log.info("Invalid sign list in holders.yml.");
-//				}
-//			}
-//			
-//			saveHolders();
-//			if(verbose) {
-//				Quester.log.info(holderIds.size() + " holders loaded.");
-//				Quester.log.info(signs.size() + " signs loaded.");
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		
-//	}
 }

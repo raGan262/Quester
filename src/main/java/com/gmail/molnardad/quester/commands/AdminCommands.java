@@ -10,6 +10,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.commandbase.QNestedCommand;
 import com.gmail.molnardad.quester.managers.DataManager;
 import com.gmail.molnardad.quester.managers.ProfileManager;
+import com.gmail.molnardad.quester.managers.QuestHolderManager;
 import com.gmail.molnardad.quester.managers.QuestManager;
 
 public class AdminCommands {
@@ -17,11 +18,13 @@ public class AdminCommands {
 	private Quester plugin = null;
 	private ProfileManager profMan = null;
 	private QuestManager qMan = null;
+	private QuestHolderManager holMan = null;
 	
 	public AdminCommands(Quester plugin) {
 		this.plugin = plugin;
 		this.profMan = plugin.getProfileManager();
 		this.qMan = plugin.getQuestManager();
+		this.holMan = plugin.getHolderManager();
 	}
 	
 	@QCommandLabels({"save"})
@@ -33,6 +36,7 @@ public class AdminCommands {
 	public void save(QCommandContext context, CommandSender sender) {
 		profMan.saveProfiles();
 		qMan.saveQuests();
+		holMan.saveHolders();
 		// TODO change message to match this
 		sender.sendMessage(context.getSenderLang().MSG_PROFILES_SAVE);
 	}
