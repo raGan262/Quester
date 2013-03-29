@@ -67,6 +67,7 @@ public class Citizens2Listener implements Listener {
 			}
 			if(!qh.canInteract(player.getName())) {
 				player.sendMessage(ChatColor.RED + lang.ERROR_HOL_INTERACT);
+				return;
 			}
 			try {
 				holMan.selectNext(player.getName(), qh, lang);
@@ -114,7 +115,7 @@ public class Citizens2Listener implements Listener {
 				player.sendMessage(ChatColor.RED + lang.ERROR_HOL_NOT_ASSIGNED);
 				return;
 			}
-			int selected = qh.getSelected(player.getName());
+			int selected = qh.getSelectedId(player.getName());
 			List<Integer> qsts = qh.getQuests();
 			
 			Quest currentQuest = qm.getPlayerQuest(player.getName());
@@ -142,7 +143,7 @@ public class Citizens2Listener implements Listener {
 			// player doesn't have quest
 			if(qm.isQuestActive(selected)) {
 				try {
-					qm.startQuest(player, qm.getQuestName(selected), false, lang);
+					qm.startQuest(player, qm.getQuest(selected), false, lang);
 				} catch (QuesterException e) {
 					player.sendMessage(e.getMessage());
 				}

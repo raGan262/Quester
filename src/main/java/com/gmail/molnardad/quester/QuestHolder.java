@@ -28,7 +28,7 @@ public class QuestHolder {
 		if(interactions.get(interacter) == null) {
 			return true;
 		}
-		return System.currentTimeMillis() - interactions.get(interacter) < 500;
+		return System.currentTimeMillis() - interactions.get(interacter) > 500;
 	}
 	
 	public void setSelected(String name, int id) {
@@ -40,6 +40,14 @@ public class QuestHolder {
 			selected.put(name, -1);
 		}
 		return selected.get(name);
+	}
+	
+	public int getSelectedId(String name) {
+		try {
+			return heldQuests.get(selected.get(name));
+		}
+		catch (Exception ignore) {}
+		return -1;
 	}
 	
 	protected void setname(String newName) {
