@@ -52,7 +52,7 @@ public class EffectQevent extends Qevent {
 		
 		if(key.getString("effect") != null)
 			try {
-				eff = Util.parseEffect(key.getString("effect"));
+				eff = Util.parseEffect(key.getString("effect", ""));
 			} catch (IllegalArgumentException e) {
 				Quester.log.severe("Error deserializing effect event: " + ChatColor.stripColor(e.getMessage()));
 				return null;
