@@ -129,7 +129,7 @@ public class SignListeners implements Listener {
 					player.sendMessage(ChatColor.RED + lang.ERROR_HOL_NOT_ASSIGNED);
 					return;
 				}
-				int selected = qh.getSelected(player.getName());
+				int selected = qh.getSelectedId(player.getName());
 				List<Integer> qsts = qh.getQuests();
 				
 				Quest currentQuest = qm.getPlayerQuest(player.getName());
