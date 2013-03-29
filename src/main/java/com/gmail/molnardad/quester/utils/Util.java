@@ -283,7 +283,7 @@ public class Util {
 	public static String serializeEffect(PotionEffect eff) {
 		if(eff == null)
 			return null;
-		return eff.getType().getId() + ":" + eff.getDuration() + ":" + eff.getAmplifier();
+		return eff.getType().getId() + ";" + eff.getDuration()/20.0 + ";" + eff.getAmplifier();
 	}
 	
 	public static PotionEffect parseEffect(String arg) throws IllegalArgumentException {
@@ -293,23 +293,24 @@ public class Util {
 	public static PotionEffect parseEffect(String arg, QuesterLang lang) throws IllegalArgumentException {
 		
 		PotionEffectType type = null;
-		int dur = 0, amp = 0;
-		String[] s = arg.split(":");
+		double dur = 0; 
+		int amp = 0;
+		String[] s = arg.split(";");
 		if(s.length > 3 || s.length < 2) {
-			throw new IllegalArgumentException(lang.ERROR_CMD_EFFECT_UNKNOWN);
+			throw new IllegalArgumentException(lang.ERROR_CMD_EFFECT_UNKNOWN + "1");
 		}
 		type = PotionEffectType.getByName(s[0]);
 		if(type == null) {
 			try {
 				type = PotionEffectType.getById(Integer.parseInt(s[0]));
 			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException(lang.ERROR_CMD_EFFECT_UNKNOWN);
+				throw new IllegalArgumentException(lang.ERROR_CMD_EFFECT_UNKNOWN + "2");
 			}
 			if(type == null)
-				throw new IllegalArgumentException(lang.ERROR_CMD_EFFECT_UNKNOWN);
+				throw new IllegalArgumentException(lang.ERROR_CMD_EFFECT_UNKNOWN + "3");
 		}
 		try {
-			dur = Integer.parseInt(s[1]);
+			dur = Double.parseDouble(s[1]);
 			if(dur < 1)
 				throw new NumberFormatException();
 			dur *= 20;
@@ -325,7 +326,7 @@ public class Util {
 		} catch (NumberFormatException e) {
 			throw new IllegalArgumentException(lang.ERROR_CMD_EFFECT_AMPLIFIER);
 		}
-		return new PotionEffect(type, dur, amp);
+		return new PotionEffect(type, (int)dur, amp);
 	}
 	
 	public static String enchantName(int id, int lvl) {
