@@ -188,6 +188,9 @@ public class Quester extends JavaPlugin {
 				catch (NumberFormatException e) {
 					sender.sendMessage(ChatColor.RED + "Number expected, but " + e.getMessage().replaceFirst(".+ \"", "\"") + " found. ");
 				}
+				catch (IllegalArgumentException e) {
+					sender.sendMessage(ChatColor.RED + "Invalid argument: '" + e.getMessage() + "'");
+				}
 				return true;
 			}
 			return false;
