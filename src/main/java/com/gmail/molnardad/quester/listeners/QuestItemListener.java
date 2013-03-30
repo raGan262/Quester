@@ -9,6 +9,7 @@ import java.util.Map;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -64,6 +65,13 @@ public class QuestItemListener implements Listener {
 			Inventory inv = event.getPlayer().getInventory();
 			inv.addItem(itemList);
 			items.remove(event.getPlayer().getName());
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onPlace(BlockPlaceEvent event) {
+		if(Util.isQuestItem(event.getItemInHand())) {
+			event.setCancelled(true);
 		}
 	}
 }
