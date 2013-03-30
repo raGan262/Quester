@@ -144,7 +144,7 @@ public class QuestHolderManager {
 		}
 		for(int q : heldQuests) {
 			if(qMan.isQuestActive(q)) {
-				if(one > 0) {
+				if(one >= 0) {
 					return -1;
 				}
 				else {
