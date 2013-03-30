@@ -32,6 +32,9 @@ public class DeathListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onDeath(PlayerDeathEvent event) {
 	    Player player = event.getEntity();
+	    if(!Util.isPlayer(player)) {
+	    	return;
+	    }
 	    // DEATH OBJECTIVE
     	Quest quest = qm.getPlayerQuest(player.getName());
 	    if(quest != null) {

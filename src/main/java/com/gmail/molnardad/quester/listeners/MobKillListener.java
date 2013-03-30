@@ -14,6 +14,7 @@ import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.MobKillObjective;
+import com.gmail.molnardad.quester.utils.Util;
 
 public class MobKillListener implements Listener {
 
@@ -27,6 +28,9 @@ public class MobKillListener implements Listener {
 	public void onDeath(EntityDeathEvent event) {
 		if(event.getEntity().getKiller() != null) {
 			Player player = event.getEntity().getKiller();
+			if(!Util.isPlayer(player)) {
+				return;
+			}
 	    	Quest quest = qm.getPlayerQuest(player.getName());
 		    if(quest != null) {
 		    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
