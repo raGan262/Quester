@@ -26,7 +26,7 @@ public class ModificationCommands {
 	
 	@QCommandLabels({"info"})
 	@QCommand(
-			section = "QMod",
+			section = "Mod",
 			desc = "shows detailed info about the quest",
 			max = 1,
 			usage = "[quest_ID]",
@@ -42,7 +42,7 @@ public class ModificationCommands {
 	
 	@QCommandLabels({"create", "c"})
 	@QCommand(
-			section = "QMod",
+			section = "Mod",
 			desc = "creates a quest",
 			min = 1,
 			max = 1,
@@ -58,7 +58,7 @@ public class ModificationCommands {
 
 	@QCommandLabels({"remove", "r"})
 	@QCommand(
-			section = "QMod",
+			section = "Mod",
 			desc = "removes the quest",
 			min = 1,
 			max = 1,
@@ -87,7 +87,7 @@ public class ModificationCommands {
 
 	@QCommandLabels({"toggle"})
 	@QCommand(
-			section = "QMod",
+			section = "Mod",
 			desc = "toggles the state of the quest",
 			max = 1,
 			usage = "[quest ID]",
@@ -109,7 +109,7 @@ public class ModificationCommands {
 
 	@QCommandLabels({"select", "sel"})
 	@QCommand(
-			section = "QMod",
+			section = "Mod",
 			desc = "selects the quest",
 			min = 1,
 			max = 1,
@@ -160,7 +160,7 @@ public class ModificationCommands {
 
 	@QCommandLabels({"holder", "hol"})
 	@QCommand(
-			section = "QMod",
+			section = "Mod",
 			desc = "quest holder manipulation",
 			permission = DataManager.PERM_MODIFY)
 	@QNestedCommand(HolderCommands.class)

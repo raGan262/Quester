@@ -17,6 +17,7 @@ import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.managers.DataManager;
 import com.gmail.molnardad.quester.managers.ProfileManager;
 import com.gmail.molnardad.quester.managers.QuestManager;
+import com.gmail.molnardad.quester.strings.QuesterLang;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class UserCommands {
@@ -33,23 +34,77 @@ public class UserCommands {
 	
 	@QCommandLabels({"help"})
 	@QCommand(
-			section = "QUser",
+			section = "User",
 			desc = "displays help",
 			usage = "[arg1] [arg2]...",
 			permission = DataManager.PERM_USE_SHOW)
 	public void help(QCommandContext context, CommandSender sender) throws QuesterException {
 		Map<String, List<String>> cmds = plugin.getCommandManager().getHelp(context.getArgs(), sender);
-		for(String s : cmds.keySet()) {
-			sender.sendMessage("---------- Section " + s + " ----------");
-			for(String ss : cmds.get(s)) {
-				sender.sendMessage(ss);
+		QuesterLang lang = context.getSenderLang();
+		StringBuilder sb;
+		String key = "User";
+		if(cmds.containsKey(key)) {
+			sb = new StringBuilder();
+			sb.append(Util.line(ChatColor.BLUE, lang.HELP_SECTION_USE, ChatColor.GOLD)).append(ChatColor.RESET).append('\n');
+			for(String ss : cmds.get(key)) {
+				sb.append(ss).append(ChatColor.RESET).append('\n');
 			}
+			cmds.remove(key);
+			sender.sendMessage(sb.toString());
+		}
+		key = "Mod";
+		if(cmds.containsKey(key)) {
+			sb = new StringBuilder();
+			sb.append(Util.line(ChatColor.BLUE, lang.HELP_SECTION_MODIFY, ChatColor.GOLD)).append(ChatColor.RESET).append('\n');
+			for(String ss : cmds.get(key)) {
+				sb.append(ss).append(ChatColor.RESET).append('\n');
+			}
+			cmds.remove(key);
+			sender.sendMessage(sb.toString());
+		}
+		key = "QMod";
+		if(cmds.containsKey(key)) {
+			sb = new StringBuilder();
+			sb.append(Util.line(ChatColor.DARK_GRAY, lang.HELP_SECTION_MODIFY_SELECTED)).append(ChatColor.RESET).append('\n');
+			for(String ss : cmds.get(key)) {
+				sb.append(ss).append(ChatColor.RESET).append('\n');
+			}
+			cmds.remove(key);
+			sender.sendMessage(sb.toString());
+		}
+		key = "HMod";
+		if(cmds.containsKey(key)) {
+			sb = new StringBuilder();
+			sb.append(Util.line(ChatColor.DARK_GRAY, lang.HELP_SECTION_MODIFY_HOLDER_SELECTED)).append(ChatColor.RESET).append('\n');
+			for(String ss : cmds.get(key)) {
+				sb.append(ss).append(ChatColor.RESET).append('\n');
+			}
+			cmds.remove(key);
+			sender.sendMessage(sb.toString());
+		}
+		key = "Admin";
+		if(cmds.containsKey(key)) {
+			sb = new StringBuilder();
+			sb.append(Util.line(ChatColor.BLUE, lang.HELP_SECTION_ADMIN, ChatColor.GOLD)).append(ChatColor.RESET).append('\n');
+			for(String ss : cmds.get(key)) {
+				sb.append(ss).append(ChatColor.RESET).append('\n');
+			}
+			cmds.remove(key);
+			sender.sendMessage(sb.toString());
+		}
+		for(String s : cmds.keySet()) {
+			sb = new StringBuilder();
+			sb.append(Util.line(ChatColor.BLUE, lang.HELP_SECTION_OTHER, ChatColor.GOLD)).append(ChatColor.RESET).append('\n');
+			for(String ss : cmds.get(s)) {
+				sb.append(ss).append(ChatColor.RESET).append('\n');
+			}
+			sender.sendMessage(sb.toString());
 		}
 	}
 	
 	@QCommandLabels({"show"})
 	@QCommand(
-			section = "QUser",
+			section = "User",
 			desc = "shows info about the quest",
 			max = 1,
 			usage = "\"[quest name]\"",
@@ -64,7 +119,7 @@ public class UserCommands {
 	
 	@QCommandLabels({"list"})
 	@QCommand(
-			section = "QUser",
+			section = "User",
 			desc = "displays quest list",
 			max = 0,
 			permission = DataManager.PERM_USE_LIST)
@@ -79,7 +134,7 @@ public class UserCommands {
 	
 	@QCommandLabels({"profile"})
 	@QCommand(
-			section = "QUser",
+			section = "User",
 			desc = "shows player's profile",
 			max = 1,
 			usage = "[player]",
@@ -95,7 +150,7 @@ public class UserCommands {
 	
 	@QCommandLabels({"start"})
 	@QCommand(
-			section = "QUser",
+			section = "User",
 			desc = "starts the quest",
 			max = 1,
 			usage = "\"[quest name]\"")
@@ -122,7 +177,7 @@ public class UserCommands {
 	
 	@QCommandLabels({"done"})
 	@QCommand(
-			section = "QUser",
+			section = "User",
 			desc = "completes current objective",
 			max = 0,
 			permission = DataManager.PERM_USE_DONE)
@@ -136,7 +191,7 @@ public class UserCommands {
 
 	@QCommandLabels({"cancel"})
 	@QCommand(
-			section = "QUser",
+			section = "User",
 			desc = "completes current objective",
 			max = 1,
 			usage = "[quest ID]",
@@ -155,7 +210,7 @@ public class UserCommands {
 	
 	@QCommandLabels({"switch"})
 	@QCommand(
-			section = "QUser",
+			section = "User",
 			desc = "switches current quest",
 			max = 1,
 			min = 1,
@@ -173,7 +228,7 @@ public class UserCommands {
 
 	@QCommandLabels({"progress", "prog"})
 	@QCommand(
-			section = "QUser",
+			section = "User",
 			desc = "shows quest progress",
 			max = 1,
 			usage = "[index]",
@@ -192,7 +247,7 @@ public class UserCommands {
 	
 	@QCommandLabels({"quests"})
 	@QCommand(
-			section = "QUser",
+			section = "User",
 			desc = "shows player's quests",
 			max = 1,
 			usage = "[player]",

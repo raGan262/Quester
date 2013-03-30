@@ -29,7 +29,7 @@ public class AdminCommands {
 	
 	@QCommandLabels({"save"})
 	@QCommand(
-			section = "QAdmin",
+			section = "Admin",
 			desc = "saves quests and profiles",
 			max = 0,
 			permission = DataManager.PERM_ADMIN)
@@ -43,7 +43,7 @@ public class AdminCommands {
 	
 	@QCommandLabels({"startsave"})
 	@QCommand(
-			section = "QAdmin",
+			section = "Admin",
 			desc = "starts scheduled profile saving",
 			max = 0,
 			permission = DataManager.PERM_ADMIN)
@@ -62,7 +62,7 @@ public class AdminCommands {
 
 	@QCommandLabels({"stopsave"})
 	@QCommand(
-			section = "QAdmin",
+			section = "Admin",
 			desc = "stops scheduled profile saving",
 			max = 0,
 			permission = DataManager.PERM_ADMIN)
@@ -80,7 +80,7 @@ public class AdminCommands {
 
 	@QCommandLabels({"reload"})
 	@QCommand(
-			section = "QAdmin",
+			section = "Admin",
 			desc = "reloads config and local file",
 			max = 0,
 			permission = DataManager.PERM_ADMIN)
@@ -93,7 +93,7 @@ public class AdminCommands {
 
 	@QCommandLabels({"version", "ver"})
 	@QCommand(
-			section = "QAdmin",
+			section = "Admin",
 			desc = "version info",
 			max = 0,
 			permission = DataManager.PERM_ADMIN)
@@ -105,7 +105,7 @@ public class AdminCommands {
 	
 	@QCommandLabels({"player"})
 	@QCommand(
-			section = "QAdmin",
+			section = "Admin",
 			desc = "player profile modification commands")
 	@QNestedCommand(PlayerCommands.class)
 	public void player(QCommandContext context, CommandSender sender) {
