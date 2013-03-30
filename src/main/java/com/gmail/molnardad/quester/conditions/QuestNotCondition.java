@@ -16,10 +16,17 @@ public final class QuestNotCondition extends Condition {
 
 	private final String quest;
 	private final int time;
+	private final boolean running;
 	
-	public QuestNotCondition(String quest, int time) {
+	public QuestNotCondition(String quest, int time, boolean running) {
 		this.quest = quest;
-		this.time = time;
+		if(running) {
+			this.time = 0;
+		}
+		else {
+			this.time = time;
+		}
+		this.running = running;
 	}
 	
 	@Override
@@ -30,6 +37,9 @@ public final class QuestNotCondition extends Condition {
 	@Override
 	public boolean isMet(Player player, Quester plugin) {
 		PlayerProfile profile = plugin.getProfileManager().getProfile(player.getName());
+		if(running) {
+			return !profile.hasQuest(quest);
+		}
 		if (!profile.isCompleted(quest)) {
 			return true;
 		}
@@ -45,31 +55,37 @@ public final class QuestNotCondition extends Condition {
 	
 	@Override
 	public String show() {
-		return "Must not have done quest '" + quest + "'";
+		String status = running ? "not be doing" : "not have done";
+		return "Must " + status + " quest '" + quest + "'.";
 	}
 	
 	@Override
 	public String info() {
-		return quest + "; TIME: " + time;
+		String tm = (time > 0) ? "; TIME: " + time : "";
+		String run = running ? "; (-r)" : "";
+		return quest + tm + run;
 	}
 	
 	@QCommand(
 			min = 1,
 			max = 2,
-			usage = "<quest name> [time in seconds]")
+			usage = "<quest name> [time in seconds] (-r)")
 	public static Condition fromCommand(QCommandContext context) throws QCommandException {
 		String qst = context.getString(0);
 		int t = 0;
 		if(context.length() > 1) {
 			t = context.getInt(1, 0);
 		}
-		return new QuestNotCondition(qst, t);
+		return new QuestNotCondition(qst, t, context.hasFlag('r'));
 	}
 	
 	protected void save(StorageKey key) {
 		key.setString("quest", quest);
 		if(time != 0) {
 			key.setInt("time", time);
+		}
+		if(running) {
+			key.setBoolean("running", running);
 		}
 	}
 
@@ -86,6 +102,6 @@ public final class QuestNotCondition extends Condition {
 		
 		time = key.getInt("time");
 		
-		return new QuestNotCondition(qst, time);
+		return new QuestNotCondition(qst, time, key.getBoolean("running", false));
 	}
 }
