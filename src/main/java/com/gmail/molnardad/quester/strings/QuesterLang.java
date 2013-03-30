@@ -141,6 +141,8 @@ public class QuesterLang {
 	public String ERROR_CMD_LOC_NOBLOCK = "No block targeted.";
 	public String ERROR_CMD_COORDS_INVALID = "Invalid coordinates.";
 	public String ERROR_CMD_ENTITY_UNKNOWN = "Unknown entity.";
+	public String ERROR_CMD_SOUND_UNKNOWN = "Unknown sound.";
+	public String ERROR_CMD_VOL_PIT = "Volume and pitch must be greater than 0.";
 	public String ERROR_CMD_COLOR_UNKNOWN = "Unknown color.";
 	public String ERROR_CMD_ARG_CANT_PARSE = "Could not parse argument '%arg'.";
 	public String ERROR_CMD_ARGS_UNKNOWN = "Unknown arguments.";

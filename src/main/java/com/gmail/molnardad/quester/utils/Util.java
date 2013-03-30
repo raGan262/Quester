@@ -12,6 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
@@ -412,6 +413,15 @@ public class Util {
 			}
 		}
 		return ent;
+	}
+	
+	public static Sound parseSound(String arg) {
+		Sound sound = null;
+		try {
+			sound = Sound.valueOf(arg.toUpperCase());
+		}
+		catch (Exception ignore) {}
+		return sound;
 	}
 	
 	public static Set<Integer> parsePrerequisites(String[] args, int from) {

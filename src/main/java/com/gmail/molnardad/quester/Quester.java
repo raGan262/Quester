@@ -366,6 +366,7 @@ public class Quester extends JavaPlugin {
 					MoneyQevent.class,
 					PointQevent.class,
 					ItemQevent.class,
+					SoundQevent.class,
 					
 					// objectives
 					BreakObjective.class,
