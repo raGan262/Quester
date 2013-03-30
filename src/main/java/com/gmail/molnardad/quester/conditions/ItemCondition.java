@@ -19,11 +19,15 @@ public final class ItemCondition extends Condition {
 	private final Material material;
 	private final short data;
 	private final int amount;
+	private final boolean inverted;
+	private final boolean questItem;
 	
-	private ItemCondition(Material mat, int amt, int dat) {
+	private ItemCondition(Material mat, int amt, int dat, boolean invert, boolean quest) {
 		this.material = mat;
 		this.amount = amt;
 		this.data = (short) dat;
+		this.inverted = invert;
+		this.questItem = quest;
 	}
 
 	@Override
@@ -34,6 +38,9 @@ public final class ItemCondition extends Condition {
         for (ItemStack i : contents) {
         	if(i == null)
         		continue;
+        	if(Util.isQuestItem(i) != questItem) {
+        		continue;
+        	}
             if (i.getTypeId() == material.getId()) {
             	if(i.getDurability() == data || data < 0) {
                     amt += i.getAmount();
@@ -43,7 +50,7 @@ public final class ItemCondition extends Condition {
             }
         }
        
-        return (amt >= amount);
+        return (amt >= amount) != inverted;
 	}
 	
 
@@ -55,22 +62,28 @@ public final class ItemCondition extends Condition {
 	
 	@Override
 	protected String show() {
-		String datStr = data < 0 ? " (any) " : " (data " + data + ") ";
+		String status = inverted ? "Must not have " : "Must have ";
+		String datStr = data < 0 ? " (any)" : " (data " + data + ")";
+		String spec = questItem ? " special" : "";
 		String pcs = amount == 1 ? " piece of " : " pieces of ";
 		String mat = material.getId() == 351 ? "dye" : material.name().toLowerCase();
-		return "Must have " + amount + pcs + mat + datStr + ".";
+		return status + amount + spec + pcs + mat + datStr + ".";
 	}
 
 	@Override
 	protected String info() {
+		String flags = "";
+		if(questItem || inverted) {
+			flags += "; (-" + (questItem ? "q":"") + (inverted ? "i":"") + ")";
+		}
 		String dataStr = (data < 0 ? "ANY" : String.valueOf(data));
-		return material.name() + "[" + material.getId() + "]; DMG: " + dataStr + "; AMT: " + amount;
+		return material.name() + "[" + material.getId() + "]; DMG: " + dataStr + "; AMT: " + amount + flags;
 	}
 	
 	@QCommand(
 			min = 1,
 			max = 2,
-			usage = "{<item>} <amount>")
+			usage = "{<item>} <amount> (-qi)")
 	public static Condition fromCommand(QCommandContext context) throws QCommandException {
 		int[] itm = Util.parseItem(context.getString(0));
 		Material mat = Material.getMaterial(itm[0]);
@@ -88,29 +101,37 @@ public final class ItemCondition extends Condition {
 		catch (IllegalArgumentException e) {
 			throw new QCommandException(e.getMessage());
 		}
-		return new ItemCondition(mat, amt, dat);
+		return new ItemCondition(mat, amt, dat, context.hasFlag('i'), context.hasFlag('q'));
 	}
 	
 	@Override
 	protected void save(StorageKey key) {
 		key.setString("item", Util.serializeItem(material.getId(), data));
 		key.setInt("amount", amount);
+		if(inverted) {
+			key.setBoolean("inverted", inverted);
+		}
+		if(questItem) {
+			key.setBoolean("questitem", questItem);
+		}
 	}
 
 	protected static Condition load(StorageKey key) {
 		int amt = 1, dat;
 		Material mat;
+		boolean invert = key.getBoolean("inverted", false);
+		boolean quest = key.getBoolean("questitem", false);
 		try {
 			int[] itm = Util.parseItem(key.getString("item"));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
-			key.getInt("amount", 1);
+			amt = key.getInt("amount", 1);
 			if(amt < 1) {
 				amt = 1;
 			}
 		} catch (Exception e) {
 			return null;
 		}
-		return new ItemCondition(mat, amt, dat);
+		return new ItemCondition(mat, amt, dat, invert, quest);
 	}
 }
