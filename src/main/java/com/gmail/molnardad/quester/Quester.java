@@ -347,6 +347,7 @@ public class Quester extends JavaPlugin {
 					QuestCondition.class,
 					QuestNotCondition.class,
 					TimeCondition.class,
+					SlotCondition.class,
 					
 					// events
 					CancelQevent.class,
