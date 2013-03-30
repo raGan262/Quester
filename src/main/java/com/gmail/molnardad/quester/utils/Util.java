@@ -18,6 +18,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -509,6 +510,15 @@ public class Util {
 		}
 		else {
 			return "";
+		}
+	}
+	
+	public static boolean isQuestItem(ItemStack item) {
+		try {
+			return ChatColor.stripColor(item.getItemMeta().getLore().get(0)).equalsIgnoreCase("Quest Item");
+		}
+		catch (Exception e) {
+			return false;
 		}
 	}
 	

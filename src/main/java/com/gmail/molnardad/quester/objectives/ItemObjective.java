@@ -157,6 +157,9 @@ public final class ItemObjective extends Objective {
 		ItemStack[] contents = inv.getContents();
 		for (int i = 0; i <contents.length; i++) {
 	        if (contents[i] != null) {
+	        	if(questItem != Util.isQuestItem(contents[i])) {
+	        		continue;
+	        	}
 	        	boolean enchsOK = true;
 	        	for(Integer e : enchants.keySet()) {
 	        		if(enchants.get(e) != contents[i].getEnchantmentLevel(Enchantment.getById(e))) {
