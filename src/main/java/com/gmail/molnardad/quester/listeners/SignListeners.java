@@ -94,6 +94,7 @@ public class SignListeners implements Listener {
 				if(!qh.canInteract(player.getName())) {
 					player.sendMessage(ChatColor.RED + lang.ERROR_HOL_INTERACT);
 				}
+				qh.interact(player.getName());
 				try {
 					holMan.selectNext(player.getName(), qh, lang);
 				} catch (HolderException e) {
@@ -129,7 +130,11 @@ public class SignListeners implements Listener {
 					player.sendMessage(ChatColor.RED + lang.ERROR_HOL_NOT_ASSIGNED);
 					return;
 				}
-				int selected = qh.getSelectedId(player.getName());
+				if(!qh.canInteract(player.getName())) {
+					player.sendMessage(ChatColor.RED + lang.ERROR_HOL_INTERACT);
+					return;
+				}
+				qh.interact(player.getName());
 				List<Integer> qsts = qh.getQuests();
 				
 				Quest currentQuest = qm.getPlayerQuest(player.getName());
@@ -153,6 +158,10 @@ public class SignListeners implements Listener {
 						}
 						return;
 					}
+				}
+				int selected = holMan.getOne(qh);
+				if(selected < 0) {
+					selected = qh.getSelectedId(player.getName());
 				}
 				// player doesn't have quest
 				if(qm.isQuestActive(selected)) {
