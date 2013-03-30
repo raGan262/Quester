@@ -95,6 +95,21 @@ public class SignListeners implements Listener {
 					player.sendMessage(ChatColor.RED + lang.ERROR_HOL_INTERACT);
 				}
 				qh.interact(player.getName());
+
+				Quest q = qm.getQuest(holMan.getOne(qh));
+				if(q != null) {
+					if(profMan.hasQuest(player.getName(), q.getName())) {
+						return;
+					}
+					else {
+						try {
+							qm.showQuest(player, q.getName(), lang);
+							return;
+						}
+						catch (QuesterException ignore) {}
+					}
+				}
+				
 				try {
 					holMan.selectNext(player.getName(), qh, lang);
 				} catch (HolderException e) {
