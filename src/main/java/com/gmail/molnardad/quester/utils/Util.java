@@ -522,6 +522,10 @@ public class Util {
 		}
 	}
 	
+	public static boolean isPlayer(Player player) {
+		return !player.hasMetadata("NPC");
+	}
+	
 	// LOCATION SERIALIZATION
 	
 	public static String displayLocation(Location loc) {

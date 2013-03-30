@@ -17,6 +17,7 @@ import com.gmail.molnardad.quester.managers.LanguageManager;
 import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.DeathObjective;
 import com.gmail.molnardad.quester.objectives.PlayerKillObjective;
+import com.gmail.molnardad.quester.utils.Util;
 
 public class DeathListener implements Listener {
 
@@ -65,7 +66,7 @@ public class DeathListener implements Listener {
 	    // PLAYER KILL OBJECTIVE
 	    Player killer = event.getEntity().getKiller();
 	    Player player = event.getEntity();
-	    if(player.hasMetadata("NPC")) {
+	    if(!Util.isPlayer(player)) {
 	    	return;
 	    }
 	    if(killer != null ) {
