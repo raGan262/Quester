@@ -136,11 +136,29 @@ public class QuestHolderManager {
 		saveHolders();
 	}
 	
+	public int getOne(QuestHolder holder) {
+		int one = -1;
+		List<Integer> heldQuests = holder.getQuests();
+		if(heldQuests.isEmpty()) {
+			return -1;
+		}
+		for(int q : heldQuests) {
+			if(qMan.isQuestActive(q)) {
+				if(one > 0) {
+					return -1;
+				}
+				else {
+					one = q;
+				}
+			}
+		}
+		return one;
+	}
+	
 	public boolean selectNext(String selecter, QuestHolder holder, QuesterLang lang) throws HolderException {
 		if(holder == null) {
 			return false;
 		}
-		holder.interact(selecter);
 		List<Integer> heldQuests = holder.getQuests();
 		if(heldQuests.isEmpty()) {
 			throw new HolderException(lang.ERROR_Q_NONE);
@@ -181,7 +199,7 @@ public class QuestHolderManager {
 		}
 		Iterator<Integer> iterator = holder.getQuests().iterator();
 		while(iterator.hasNext()) {
-			if(qMan.isQuest(iterator.next())) {
+			if(!qMan.isQuest(iterator.next())) {
 				iterator.remove();
 			}
 		}
