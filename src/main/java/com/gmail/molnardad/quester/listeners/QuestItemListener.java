@@ -23,7 +23,7 @@ public class QuestItemListener implements Listener {
 
 	private Map<String, ItemStack[]> items = new HashMap<String, ItemStack[]>();
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onAction(InventoryClickEvent event) {
 		if(Util.isQuestItem(event.getCurrentItem())) {
 			if(!event.isShiftClick() || !event.getInventory().getType().equals(InventoryType.CRAFTING)) {
@@ -32,14 +32,14 @@ public class QuestItemListener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onDrop(PlayerDropItemEvent event) {
 		if(Util.isQuestItem(event.getItemDrop().getItemStack())) {
 			event.setCancelled(true);
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onDeath(PlayerDeathEvent event) {
 		if(Util.isPlayer(event.getEntity())) {
 			List<ItemStack> itms = new ArrayList<ItemStack>();
@@ -57,7 +57,7 @@ public class QuestItemListener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onSpawn(PlayerRespawnEvent event) {
 		ItemStack[] itemList = items.get(event.getPlayer().getName());
 		if(itemList != null) {
