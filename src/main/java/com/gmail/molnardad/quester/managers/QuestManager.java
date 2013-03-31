@@ -603,6 +603,10 @@ public class QuestManager {
 	}
 	
 	public void complete(Player player, boolean command, QuesterLang lang) throws QuesterException {
+		complete(player, command, lang, true);
+	}
+	
+	public void complete(Player player, boolean command, QuesterLang lang, boolean checkObjs) throws QuesterException {
 		Quest quest = getPlayerQuest(player.getName());
 		if(quest == null)
 			throw new QuestException(lang.ERROR_Q_NOT_ASSIGNED);
@@ -611,10 +615,20 @@ public class QuestManager {
     	if(!quest.allowedWorld(player.getWorld().getName()))
     		throw new QuestException(lang.ERROR_Q_BAD_WORLD);
     	
-		completeObjective(player, lang);
+		boolean error = false;
+		if(checkObjs) {
+			error = ! completeObjective(player, lang);
+		}
+		
+		if(areObjectivesCompleted(player)) {
+			completeQuest(player, lang);
+		}
+		else if(error) {
+			throw new ObjectiveException(lang.ERROR_OBJ_CANT_DO);
+		}
 	}
 	
-	public void completeObjective(Player player, QuesterLang lang) throws QuesterException {
+	public boolean completeObjective(Player player, QuesterLang lang) throws QuesterException {
 		Quest quest = getPlayerQuest(player.getName());
 		List<Objective> objs = quest.getObjectives();
 		
@@ -630,12 +644,7 @@ public class QuestManager {
 			i++;
 		}
 
-		if(areObjectivesCompleted(player)) {
-			completeQuest(player, lang);
-		}
-		else if(!completed && i != 0) {
-			throw new ObjectiveException(lang.ERROR_OBJ_CANT_DO);
-		}
+		return (completed || i == 0);
 	}
 	
 	public void completeQuest(Player player, QuesterLang lang) throws QuesterException {
@@ -688,7 +697,7 @@ public class QuestManager {
 			}
 			if(checkAll) {
 				try{
-					complete(player, false, lang);
+					complete(player, false, lang, false);
 				} catch (QuesterException ignore) {}
 			}
 			profMan.saveProfiles();
@@ -857,13 +866,15 @@ public class QuestManager {
 			player.sendMessage(lang.INFO_PROGRESS.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 			List<Objective> objs = quest.getObjectives();
 			for(int i = 0; i < objs.size(); i++) {
-				if(objs.get(i).isComplete(progress.get(i)) && !objs.get(i).isHidden()) {
-					player.sendMessage(ChatColor.GREEN + " - " + lang.INFO_PROGRESS_COMPLETED);
-				} else {
-					boolean active = isObjectiveActive(player, i);
-					if(!objs.get(i).isHidden() && (active || !DataManager.ordOnlyCurrent)) {
-						ChatColor col = active ? ChatColor.YELLOW : ChatColor.RED;
-						player.sendMessage(col + " - " + objs.get(i).inShow(progress.get(i)));
+				if(!objs.get(i).isHidden()) {
+					if(objs.get(i).isComplete(progress.get(i))) {
+						player.sendMessage(ChatColor.GREEN + " - " + lang.INFO_PROGRESS_COMPLETED);
+					} else {
+						boolean active = isObjectiveActive(player, i);
+						if((active || !DataManager.ordOnlyCurrent)) {
+							ChatColor col = active ? ChatColor.YELLOW : ChatColor.RED;
+							player.sendMessage(col + " - " + objs.get(i).inShow(progress.get(i)));
+						}
 					}
 				}
 			}

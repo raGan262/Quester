@@ -35,6 +35,7 @@ public final class ObjectiveCompleteQevent extends Qevent {
 			if(objective >= 0 && objective < prog.size()) {
 				int req = plugin.getQuestManager().getPlayerQuest(player.getName()).getObjective(objective).getTargetAmount();
 				prog.set(objective, req);
+				plugin.getQuestManager().complete(player, false, plugin.getLanguageManager().getPlayerLang(player.getName()), false);
 			} else {
 				throw new ObjectiveException("Objective index out of bounds."); // objective does not exist
 			}
