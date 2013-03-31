@@ -161,6 +161,9 @@ public final class ActionObjective extends Objective {
 		if(block == null) {
 			return true;
 		}
+		if(blck == null) {
+			return false;
+		}
 		if(block.getId() == blck.getTypeId()) {
 			if(blockData == blck.getData() || blockData < 0) {
 				return true;
