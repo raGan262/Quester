@@ -410,6 +410,15 @@ public class QuestManager {
 		Objective obj = objs.get(first);
 		objs.set(first, objs.get(second));
 		objs.set(second, obj);
+		List<Qevent> evts = quest.getQevents();
+		for(Qevent e : evts) {
+			if(e.getOccasion() == first) {
+				e.setOccasion(second);
+			}
+			else if(e.getOccasion() == second) {
+				e.setOccasion(first);
+			}
+		}
 	}
 	
 	public void moveQuestObjective(String issuer, int which, int where, QuesterLang lang) throws QuesterException {
@@ -423,6 +432,23 @@ public class QuestManager {
 			throw new CustomException(lang.ERROR_CMD_ID_OUT_OF_BOUNDS);
 		}
 		Util.moveListUnit(quest.getObjectives(), which, where);
+		List<Qevent> evts = quest.getQevents();
+		for(Qevent e : evts) {
+			int occ = e.getOccasion();
+			if(occ == which) {
+				e.setOccasion(where);
+			}
+			else if(which < where) {
+				if(occ > which && occ <= where) {
+					e.setOccasion(occ-1);
+				}
+			}
+			else {
+				if(occ < which && occ >= where) {
+					e.setOccasion(occ+1);
+				}
+			} 
+		}
 	}
 	
 	public void addObjectivePrerequisites(String issuer, int id, Set<Integer> prereq, QuesterLang lang) throws QuesterException {

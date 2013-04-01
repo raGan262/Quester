@@ -17,9 +17,8 @@ public abstract class Qevent extends Element {
 	private long delay = 0;
 	private int occasion = -10;
 
-	public final void setOccasion(int occasion, int delay) {
+	public final void setOccasion(int occasion) {
 		this.occasion = occasion;
-		this.delay = delay;
 	}
 	
 	public final int getOccasion() {
@@ -132,7 +131,8 @@ public abstract class Qevent extends Element {
 				if(qev == null) {
 					return null;
 				}
-				qev.setOccasion(occ, del);
+				qev.occasion = occ;
+				qev.delay = del;
 			} catch (Exception e) {
 				Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Method load() missing or invalid. " + e.getClass().getName());
 				if(DataManager.debug) {
