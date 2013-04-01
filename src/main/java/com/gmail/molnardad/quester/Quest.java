@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -191,7 +192,7 @@ public class Quest {
 			q = qevents.get(i);
 			occ = q.getOccasion();
 			if(result.get(occ) == null) {
-				result.put(occ, new HashMap<Integer, Qevent>());
+				result.put(occ, new TreeMap<Integer, Qevent>());
 			}
 			result.get(occ).put(i, q);
 		}
