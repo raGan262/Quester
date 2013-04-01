@@ -18,14 +18,17 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 public final class ObjectiveCompleteQevent extends Qevent {
 
 	private final int objective;
+	private final boolean runEvents;
 	
-	public ObjectiveCompleteQevent(int obj) {
+	public ObjectiveCompleteQevent(int obj, boolean runEvents) {
 		this.objective = obj;
+		this.runEvents = runEvents;
 	}
 	
 	@Override
 	public String info() {
-		return String.valueOf(objective);
+		String evts = runEvents ? " (-e)" : "";
+		return String.valueOf(objective) + evts;
 	}
 
 	@Override
@@ -34,8 +37,18 @@ public final class ObjectiveCompleteQevent extends Qevent {
 			List<Integer> prog = plugin.getProfileManager().getProfile(player.getName()).getProgress();
 			if(objective >= 0 && objective < prog.size()) {
 				int req = plugin.getQuestManager().getPlayerQuest(player.getName()).getObjective(objective).getTargetAmount();
-				prog.set(objective, req);
-				plugin.getQuestManager().complete(player, false, plugin.getLanguageManager().getPlayerLang(player.getName()), false);
+				if(prog.get(objective) < req) {
+					if(runEvents) {
+						plugin.getQuestManager().incProgress(player, objective, prog.set(objective, req - prog.get(objective)));
+					}
+					else {
+						prog.set(objective, req);
+						plugin.getQuestManager().complete(player, false, plugin.getLanguageManager().getPlayerLang(player.getName()), false);
+					}
+				}
+				else {
+					throw new ObjectiveException("Objective already complete");
+				}
 			} else {
 				throw new ObjectiveException("Objective index out of bounds."); // objective does not exist
 			}
@@ -49,22 +62,25 @@ public final class ObjectiveCompleteQevent extends Qevent {
 			max = 1,
 			usage = "<objective ID>")
 	public static Qevent fromCommand(QCommandContext context) {
-		return new ObjectiveCompleteQevent(context.getInt(0));
+		return new ObjectiveCompleteQevent(context.getInt(0), context.hasFlag('e'));
 	}
 
 	@Override
 	protected void save(StorageKey key) {
 		key.setInt("objective", objective);
+		if(runEvents) {
+			key.setBoolean("runevents", runEvents);
+		}
 	}
 	
 	protected static Qevent load(StorageKey key) {
 		int obj;
-		
+		boolean run = key.getBoolean("runevents", false);
 		obj = key.getInt("objective", -1);
 		if(obj < 0) {
 			return null;
 		}
 		
-		return new ObjectiveCompleteQevent(obj);
+		return new ObjectiveCompleteQevent(obj, run);
 	}
 }
