@@ -14,11 +14,16 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 
 public abstract class Qevent extends Element {
 
-	private long delay = 0;
+	private int delay = 0;
 	private int occasion = -10;
 
 	public final void setOccasion(int occasion) {
 		this.occasion = occasion;
+	}
+	
+	public final void setOccasion(int occasion, int delay) {
+		this.occasion = occasion;
+		this.delay = delay;
 	}
 	
 	public final int getOccasion() {

@@ -14,33 +14,50 @@ import com.gmail.molnardad.quester.utils.ExpManager;
 public final class ExperienceQevent extends Qevent {
 
 	private final int amount;
+	private final boolean isLevel;
 	
-	public ExperienceQevent(int amt) {
+	public ExperienceQevent(int amt, boolean isLevel) {
 		this.amount = amt;
+		this.isLevel = isLevel;
 	}
 	
 	@Override
 	public String info() {
-		return String.valueOf(amount);
+		String lvl = isLevel ? " (-l)" : "";
+		return String.valueOf(amount) + lvl;
 	}
 
 	@Override
 	protected void run(Player player, Quester plugin) {
 		ExpManager expMan = new ExpManager(player);
-		expMan.changeExp(amount);
+		if(isLevel) {
+			int lvl = expMan.getLevelForExp(expMan.getCurrentExp());
+			if(lvl <= -amount) {
+				expMan.setExp(0);
+			}
+			else {
+				expMan.setExp(expMan.getXpForLevel(lvl + amount));
+			}
+		}
+		else {
+			expMan.changeExp(amount);
+		}
 	}
 
 	@QCommand(
 			min = 1,
 			max = 1,
-			usage = "<amount>")
+			usage = "<amount> (-l)")
 	public static Qevent fromCommand(QCommandContext context) {
-		return new ExperienceQevent(context.getInt(0));
+		return new ExperienceQevent(context.getInt(0), context.hasFlag('l'));
 	}
 	
 	@Override
 	protected void save(StorageKey key) {
 		key.setInt("amount", amount);
+		if(isLevel) {
+			key.setBoolean("islevel", isLevel);
+		}
 	}
 	
 	protected static Qevent load(StorageKey key) {
@@ -50,6 +67,6 @@ public final class ExperienceQevent extends Qevent {
 			return null;
 		}
 		
-		return new ExperienceQevent(amt);
+		return new ExperienceQevent(amt, key.getBoolean("islevel", false));
 	}
 }
