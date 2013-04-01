@@ -14,9 +14,11 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 public final class PointCondition extends Condition {
 
 	private final int amount;
+	private final boolean inverted;
 	
-	public PointCondition(int amount) {
+	public PointCondition(int amount, boolean invert) {
 		this.amount = amount;
+		this.inverted = invert;
 	}
 
 	@Override
@@ -26,27 +28,29 @@ public final class PointCondition extends Condition {
 	
 	@Override
 	public boolean isMet(Player player, Quester plugin) {
-		return plugin.getProfileManager().getProfile(player.getName()).getPoints() >= amount;
+		return (plugin.getProfileManager().getProfile(player.getName()).getPoints() >= amount) != inverted;
 	}
 	
 	@Override
 	public String show() {
-		return "Must have " + amount + " quest points.";
+		String flag = inverted ? "at least ": "less than ";
+		return "Must have " + flag + amount + " quest points.";
 	}
 	
 	@Override
 	public String info() {
-		return String.valueOf(amount);
+		String flag = inverted ? " (-i)": "";
+		return String.valueOf(amount) + flag;
 	}
 	
 	@QCommand(
 			min = 1,
 			max = 1,
-			usage = "<amount>")
+			usage = "<amount> (-i)")
 	public static Condition fromCommand(QCommandContext context) throws QCommandException {
 		try {
 			int amt = context.getInt(0);
-			return new PointCondition(amt);
+			return new PointCondition(amt, context.hasFlag('i'));
 			}
 		catch (NumberFormatException e) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_GENERAL);
@@ -55,6 +59,9 @@ public final class PointCondition extends Condition {
 	
 	protected void save(StorageKey key) {
 		key.setInt("amount", amount);
+		if(inverted) {
+			key.setBoolean("inverted", inverted);
+		}
 	}
 
 	protected static Condition load(StorageKey key) {
@@ -67,6 +74,6 @@ public final class PointCondition extends Condition {
 			return null;
 		}
 		
-		return new PointCondition(amt);
+		return new PointCondition(amt, key.getBoolean("inverted", false));
 	}
 }
