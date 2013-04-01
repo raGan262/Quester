@@ -254,7 +254,7 @@ public class PlayerProfile {
 		if(!completed.isEmpty()) {
 			StorageKey subKey = key.getSubKey("completed");
 			for(String name : completed.keySet()) {
-				subKey.setInt(name, completed.get(name));
+				subKey.setInt(name.replaceAll("\\.", "#%#"), completed.get(name));
 			}
 		}
 		
@@ -271,7 +271,7 @@ public class PlayerProfile {
 			StorageKey subKey = key.getSubKey("quests");
 			for(Progress prg : progresses) {
 				if(prg != null) {
-					subKey.setString(prg.quest, Util.implodeInt(prg.progress.toArray(new Integer[0]), "|"));
+					subKey.setString(prg.quest.replaceAll("\\.", "#%#"), Util.implodeInt(prg.progress.toArray(new Integer[0]), "|"));
 				}
 			}
 		}
@@ -294,7 +294,7 @@ public class PlayerProfile {
 		
 		if(key.getSubKey("completed").hasSubKeys()) {
 			for(StorageKey subKey : key.getSubKey("completed").getSubKeys()) {
-				prof.addCompleted(subKey.getName(), subKey.getInt("", 0));
+				prof.addCompleted(subKey.getName().replaceAll("#%#", "."), subKey.getInt("", 0));
 			}
 		}
 		
@@ -325,7 +325,7 @@ public class PlayerProfile {
 			for(StorageKey subKey : key.getSubKey("quests").getSubKeys()) {
 				if(subKey.getString("") != null) {
 					try {
-						Progress prg = prof.new Progress(subKey.getName());
+						Progress prg = prof.new Progress(subKey.getName().replaceAll("#%#", "."));
 						String[] strs = subKey.getString("").split("\\|");
 						if(strs.length != 1 || !strs[0].isEmpty()) {
 							for(String s : strs) {

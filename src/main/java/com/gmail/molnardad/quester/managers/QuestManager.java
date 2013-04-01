@@ -916,8 +916,11 @@ public class QuestManager {
 	}
 	
 	public void saveQuests() {
+		for(StorageKey subKey : questStorage.getKey("").getSubKeys()) {
+			subKey.removeKey("");
+		}
 		for(Quest q : allQuests.values()) {
-			StorageKey key = questStorage.getKey(q.getName().toLowerCase());
+			StorageKey key = questStorage.getKey(String.valueOf(q.getID()));
 			q.serialize(key);
 		}
 		questStorage.save();
