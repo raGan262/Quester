@@ -17,8 +17,9 @@ public final class QuestCondition extends Condition {
 	private final String quest;
 	private final int time;
 	private final boolean running;
+	private final boolean inverted;
 	
-	public QuestCondition(String quest, int time, boolean running) {
+	private QuestCondition(String quest, int time, boolean running, boolean invert) {
 		this.quest = quest;
 		if(running) {
 			this.time = 0;
@@ -27,6 +28,7 @@ public final class QuestCondition extends Condition {
 			this.time = time;
 		}
 		this.running = running;
+		this.inverted = invert;
 	}
 	
 	@Override
@@ -38,9 +40,9 @@ public final class QuestCondition extends Condition {
 	public boolean isMet(Player player, Quester plugin) {	
 		PlayerProfile profile = plugin.getProfileManager().getProfile(player.getName());
 		if(running) {
-			return profile.hasQuest(quest);
+			return profile.hasQuest(quest) != inverted;
 		}
-		if (!profile.isCompleted(quest)) {
+		if (profile.isCompleted(quest) == inverted) {
 			return false;
 		}
 		else {
@@ -48,7 +50,7 @@ public final class QuestCondition extends Condition {
 				return true;
 			}
 			else {
-				return ((System.currentTimeMillis() / 1000) - profile.getCompletionTime(quest)) < time;
+				return (((System.currentTimeMillis() / 1000) - profile.getCompletionTime(quest)) < time) != inverted;
 			}
 		}
 	}
@@ -69,14 +71,14 @@ public final class QuestCondition extends Condition {
 	@QCommand(
 			min = 1,
 			max = 2,
-			usage = "<quest name> [time in seconds] (-r)")
+			usage = "<quest name> [time in seconds] (-ri)")
 	public static Condition fromCommand(QCommandContext context) throws QCommandException {
 		String qst = context.getString(0);
 		int t = 0;
 		if(context.length() > 1) {
 			t = context.getInt(1, 0);
 		}
-		return new QuestCondition(qst, t, context.hasFlag('r'));
+		return new QuestCondition(qst, t, context.hasFlag('r'), context.hasFlag('i'));
 	}
 	
 	protected void save(StorageKey key) {
@@ -86,6 +88,9 @@ public final class QuestCondition extends Condition {
 		}
 		if(running) {
 			key.setBoolean("running", running);
+		}
+		if(inverted) {
+			key.setBoolean("inverted", inverted);
 		}
 	}
 
@@ -102,6 +107,6 @@ public final class QuestCondition extends Condition {
 		
 		time = key.getInt("time");
 		
-		return new QuestCondition(qst, time, key.getBoolean("running", false));
+		return new QuestCondition(qst, time, key.getBoolean("running", false), key.getBoolean("inverted", false));
 	}
 }
