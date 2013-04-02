@@ -64,7 +64,17 @@ public final class QuestCondition extends Condition {
 	@Override
 	public String info() {
 		String tm = (time > 0) ? "; TIME: " + time : "";
-		String run = running ? "; (-r)" : "";
+		StringBuilder run = new StringBuilder();
+		if(inverted || running) {
+			run.append(" (-");
+			if(running) {
+				run.append('r');
+			}
+			if(inverted) {
+				run.append('i');
+			}
+			run.append(')');
+		}
 		return quest + tm + run;
 	}
 	
