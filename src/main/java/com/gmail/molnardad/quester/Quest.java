@@ -271,10 +271,6 @@ public class Quest {
 				qevents.get(i).serialize(subKey.getSubKey(String.valueOf(i)));
 			}
 		}
-		
-		if(hasID()) {
-			key.setInt("ID", ID);
-		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -300,8 +296,15 @@ public class Quest {
 				}
 			}
 			
-			if(key.getInt("ID", -1) >= 0) {
-				quest.setID(key.getInt("ID"));
+			int id = key.getInt("ID", -1);
+			if(id < 0) {
+				try {
+					id = Integer.parseInt(key.getName());
+				}
+				catch (NumberFormatException ignore) {}
+			}
+			if(id >= 0) {
+				quest.setID(id);
 			}
 			
 			if(key.getString("flags") != null) {

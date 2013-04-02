@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -38,8 +39,8 @@ public class QuestManager {
 	private Quester plugin = null;
 	private Storage questStorage = null;
 	
-	private Map<String, Quest> allQuests = new HashMap<String, Quest>();
-	private Map<Integer, String> questIds = new HashMap<Integer, String>();
+	private Map<Integer, Quest> quests = new HashMap<Integer, Quest>();
+	private Map<String, Integer> questNames = new HashMap<String, Integer>();
 	public Map<Integer, Location> questLocations = new HashMap<Integer, Location>();
 	
 	private int questID = -1;
@@ -66,13 +67,9 @@ public class QuestManager {
 		qst.setID(questID);
 	}
 	
-	public void setQuestID(int newID) {
-		questID = newID;
-	}
-	
 	public void adjustQuestID() {
 		int newID = -1;
-		for(int i : questIds.keySet()) {
+		for(int i : quests.keySet()) {
 			if(i > newID)
 				newID = i;
 		}
@@ -90,19 +87,24 @@ public class QuestManager {
 		}
 	}
 	
+	public Set<Integer> getQuestIds() {
+		Set<Integer> result = new TreeSet<Integer>();
+		for(int i : quests.keySet()) {
+			result.add(i);
+		}
+		return result;
+	}
+	
 	public Collection<Quest> getQuests() {
-		return allQuests.values();
+		return quests.values();
 	}
 	
 	public Quest getQuest(String questName) {
-		if(questName == null || questName.isEmpty()) {
-			return null;
-		}
-		return allQuests.get(questName.toLowerCase());
+		return quests.get(questNames.get(questName.toLowerCase()));
 	}
 	
-	public Quest getQuest(int questID) {
-		return getQuest(questIds.get(questID));
+	public Quest getQuest(Integer questID) {
+		return quests.get(questID);
 	}
 	
 	public String getQuestName(int id) {
@@ -202,11 +204,11 @@ public class QuestManager {
 	}
 	
 	public boolean isQuest(int questID) {
-		return questIds.containsKey(questID);
+		return quests.containsKey(questID);
 	}
 	
 	public boolean isQuest(String questName) {
-		return allQuests.containsKey(questName.toLowerCase());
+		return questNames.containsKey(questName.toLowerCase());
 	}
 	
 	public boolean isQuestActive(CommandSender sender) {
@@ -233,8 +235,8 @@ public class QuestManager {
 		}
 		Quest q = new Quest(questName);
 		assignQuestID(q);
-		allQuests.put(questName.toLowerCase(), q);
-		questIds.put(q.getID(), questName.toLowerCase());
+		quests.put(q.getID(), q);
+		questNames.put(questName.toLowerCase(), q.getID());
 		profMan.selectQuest(issuer, q.getID());
 		return q;
 	}
@@ -242,9 +244,9 @@ public class QuestManager {
 	public Quest removeQuest(String issuer, int questID, QuesterLang lang) throws QuesterException {
 		Quest q = getQuest(questID);
 		modifyCheck(q, lang);
-		questIds.remove(q.getID());
+		questNames.remove(q.getName().toLowerCase());
 		questLocations.remove(q.getID());
-		allQuests.remove(q.getName().toLowerCase());
+		quests.remove(q.getID());
 		questStorage.getKey(q.getName().toLowerCase()).removeKey("");
 		adjustQuestID();
 		return q;
@@ -297,12 +299,9 @@ public class QuestManager {
 			throw new QuestException(lang.ERROR_Q_EXIST);
 		}
 		modifyCheck(quest, lang);
-		
-		allQuests.remove(quest.getName().toLowerCase());
-		questStorage.getKey(quest.getName().toLowerCase()).removeKey("");
+		questNames.remove(quest.getName().toLowerCase());
 		quest.setName(newName);
-		allQuests.put(newName.toLowerCase(), quest);
-		questIds.put(questId, newName.toLowerCase());
+		questNames.put(newName.toLowerCase(), questId);
 	}
 	
 	public void setQuestDescription(String issuer, String newDesc, QuesterLang lang) throws QuesterException {
@@ -855,7 +854,9 @@ public class QuestManager {
 			player = (Player) sender;
 		ChatColor color = ChatColor.RED;
 		PlayerProfile prof = profMan.getProfile(player.getName());
-		for(Quest q: getQuests()){
+		Quest q = null;
+		for(int i : getQuestIds()){
+			q = getQuest(i);
 			if(q.hasFlag(QuestFlag.ACTIVE) && !q.hasFlag(QuestFlag.HIDDEN)) {
 				if(player != null)
 					try {
@@ -876,7 +877,9 @@ public class QuestManager {
 	
 	public void showFullQuestList(CommandSender sender, QuesterLang lang) {
 		sender.sendMessage(Util.line(ChatColor.BLUE, lang.INFO_QUEST_LIST, ChatColor.GOLD));
-		for(Quest q: getQuests()){
+		Quest q = null;
+		for(int i : getQuestIds()){
+			q = getQuest(i);
 			ChatColor color = q.hasFlag(QuestFlag.ACTIVE) ? ChatColor.GREEN : ChatColor.RED;
 			ChatColor color2 = q.hasFlag(QuestFlag.HIDDEN) ? ChatColor.YELLOW : ChatColor.BLUE;
 			sender.sendMessage(color2 + "[" + q.getID() + "]" + color + q.getName());
@@ -958,7 +961,7 @@ public class QuestManager {
 		for(StorageKey subKey : questStorage.getKey("").getSubKeys()) {
 			subKey.removeKey("");
 		}
-		for(Quest q : allQuests.values()) {
+		for(Quest q : quests.values()) {
 			StorageKey key = questStorage.getKey(String.valueOf(q.getID()));
 			q.serialize(key);
 		}
@@ -967,7 +970,8 @@ public class QuestManager {
 	
 	public void loadQuests() {
 		questStorage.load();
-		Quester.log.info("Deserializing quest " + DataManager.debug + ".");
+		List<Quest> onHold = new ArrayList<Quest>();
+		int lastGeneric = 0;
 		for(StorageKey questKey : questStorage.getKey("").getSubKeys()) {
 			if(questKey.hasSubKeys()) {
 				if(DataManager.debug) {
@@ -978,16 +982,33 @@ public class QuestManager {
 					Quester.log.severe("Quest " + questKey.getName() + " corrupted.");
 					continue;
 				}
-				allQuests.put(quest.getName().toLowerCase(), quest);
+				if(questNames.containsKey(quest.getName().toLowerCase())) { // duplicate name, generating new one
+					quest.setName("");
+					String name = "";
+					while(questNames.containsKey(quest.getName()) || quest.getName().isEmpty()) {
+						name = "generic" + lastGeneric;
+						quest.setName(name);
+						lastGeneric++;
+					}
+					Quester.log.severe("Duplicate quest name in quest " + questKey.getName() + " detected, generated new name '" + name + "'.");
+				}
 				if(quest.hasID()) {
-					if(questIds.get(quest.getID()) != null) {
+					if(quests.get(quest.getID()) != null) { // duplicate ID
 						Quester.log.severe("Duplicate quest ID in quest " + questKey.getName() + " detected, new ID will be assigned.");
 						quest.setID(-1);
+						onHold.add(quest);
 					}
-					else {
-						questIds.put(quest.getID(), quest.getName().toLowerCase());
+					else { // everything all right
+						quests.put(quest.getID(), quest);
+						if(quest.hasLocation()) {
+							questLocations.put(quest.getID(), quest.getLocation());
+						}
 					}
 				}
+				else { // quest has default ID, new needs to be generated
+					onHold.add(quest);
+				}
+				questNames.put(quest.getName().toLowerCase(), quest.getID());
 				for(int i=0; i<quest.getObjectives().size(); i++) {
 					if(quest.getObjective(i) == null) {
 						Quester.log.info("Objective " + i + " is invalid.");
@@ -1009,18 +1030,17 @@ public class QuestManager {
 				}
 			}
 		}
-		adjustQuestID();
-		for(Quest q : allQuests.values()) {
-			if(!q.hasID()) {
-				assignQuestID(q);
-				questIds.put(q.getID(), q.getName().toLowerCase());
-			}
+		adjustQuestID(); // get ID ready
+		for(Quest q : onHold) {
+			assignQuestID(q);
+			quests.put(q.getID(), q);
+			questNames.put(q.getName().toLowerCase(), q.getID());
 			if(q.hasLocation()) {
 				questLocations.put(q.getID(), q.getLocation());
 			}
 		}
 		if(DataManager.verbose) {
-			Quester.log.info(allQuests.size() + " quests loaded.");
+			Quester.log.info(quests.size() + " quests loaded.");
 		}
 	}
 }
