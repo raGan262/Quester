@@ -36,8 +36,7 @@ public class UserCommands {
 	@QCommand(
 			section = "User",
 			desc = "displays help",
-			usage = "[arg1] [arg2]...",
-			permission = DataManager.PERM_USE_SHOW)
+			usage = "[arg1] [arg2]...")
 	public void help(QCommandContext context, CommandSender sender) throws QuesterException {
 		Map<String, List<String>> cmds = plugin.getCommandManager().getHelp(context.getArgs(), sender);
 		QuesterLang lang = context.getSenderLang();
