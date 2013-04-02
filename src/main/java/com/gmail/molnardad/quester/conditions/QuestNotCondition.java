@@ -76,7 +76,7 @@ public final class QuestNotCondition extends Condition {
 		if(context.length() > 1) {
 			t = context.getInt(1, 0);
 		}
-		return new QuestNotCondition(qst, t, context.hasFlag('r'));
+		return new QuestCondition(qst, t, context.hasFlag('r'), true);
 	}
 	
 	protected void save(StorageKey key) {
@@ -102,6 +102,6 @@ public final class QuestNotCondition extends Condition {
 		
 		time = key.getInt("time");
 		
-		return new QuestNotCondition(qst, time, key.getBoolean("running", false));
+		return new QuestCondition(qst, time, key.getBoolean("running", false), true);
 	}
 }

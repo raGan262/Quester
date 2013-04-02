@@ -19,7 +19,7 @@ public final class QuestCondition extends Condition {
 	private final boolean running;
 	private final boolean inverted;
 	
-	private QuestCondition(String quest, int time, boolean running, boolean invert) {
+	QuestCondition(String quest, int time, boolean running, boolean invert) {
 		this.quest = quest;
 		if(running) {
 			this.time = 0;
