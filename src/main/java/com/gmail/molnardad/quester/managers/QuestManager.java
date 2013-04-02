@@ -755,7 +755,10 @@ public class QuestManager {
 			player = (Player) sender;
 		}
 		sender.sendMessage(ChatColor.BLUE + lang.INFO_NAME + ": " + ChatColor.GOLD + qst.getName());
-		sender.sendMessage(ChatColor.BLUE + lang.INFO_DESCRIPTION + ": " + ChatColor.WHITE + qst.getDescription(sender.getName()));
+		String string = qst.getDescription(sender.getName());
+		if(!string.isEmpty()) {
+			sender.sendMessage(ChatColor.BLUE + lang.INFO_DESCRIPTION + ": " + ChatColor.WHITE + string);
+		}
 		List<Condition> cons = qst.getConditions();
 		if(!cons.isEmpty()) {
 			sender.sendMessage(ChatColor.BLUE + lang.INFO_CONDITIONS + ":");
@@ -798,11 +801,21 @@ public class QuestManager {
 		sender.sendMessage(Util.line(ChatColor.BLUE, lang.INFO_QUEST_INFO, ChatColor.GOLD));
 		
 		sender.sendMessage(ChatColor.BLUE + lang.INFO_NAME + ": " + "[" + qst.getID() + "]" + ChatColor.GOLD + qst.getName());
-		sender.sendMessage(ChatColor.BLUE + lang.INFO_DESCRIPTION + ": " + ChatColor.WHITE + qst.getDescription("%p"));
-		sender.sendMessage(ChatColor.BLUE + lang.INFO_LOCATION + ": " + ChatColor.WHITE + qst.getLocationString());
-		sender.sendMessage(ChatColor.BLUE + lang.INFO_FLAGS + ": " + ChatColor.WHITE + QuestFlag.stringize(qst.getFlags()));
-		String worlds = qst.getWorlds().isEmpty() ? "ANY" : qst.getWorldNames();
-		sender.sendMessage(ChatColor.BLUE + lang.INFO_WORLDS + ": " + ChatColor.WHITE + worlds);
+		String string = qst.getDescription(sender.getName());
+		if(!string.isEmpty()) {
+			sender.sendMessage(ChatColor.BLUE + lang.INFO_DESCRIPTION + ": " + ChatColor.WHITE + string);
+		}
+		string = qst.getLocationString();
+		if(!string.isEmpty()) {
+			sender.sendMessage(ChatColor.BLUE + lang.INFO_LOCATION + ": " + ChatColor.WHITE + string);
+		}
+		string = QuestFlag.stringize(qst.getFlags());
+		if(!string.isEmpty()) {
+			sender.sendMessage(ChatColor.BLUE + lang.INFO_FLAGS + ": " + ChatColor.WHITE + string);
+		}
+		if(!qst.getWorlds().isEmpty()) {
+			sender.sendMessage(ChatColor.BLUE + lang.INFO_WORLDS + ": " + ChatColor.WHITE + qst.getWorldNames());
+		}
 		int i;
 		Map<Integer, Map<Integer, Qevent>> qmap = qst.getQeventMap();
 		sender.sendMessage(ChatColor.BLUE + lang.INFO_EVENTS + ":");

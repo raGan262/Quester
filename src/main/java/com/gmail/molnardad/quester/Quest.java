@@ -98,7 +98,7 @@ public class Quest {
 		if(location != null)
 			return String.format("%.1f %.1f %.1f("+location.getWorld().getName()+"), range: %d", location.getX(), location.getY(), location.getZ(), range);
 		else
-			return "none";
+			return "";
 	}
 	
 	public Location getLocation() {
