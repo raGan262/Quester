@@ -76,8 +76,8 @@ public final class ItemCondition extends Condition {
 		if(questItem || inverted) {
 			flags += "; (-" + (questItem ? "q":"") + (inverted ? "i":"") + ")";
 		}
-		String dataStr = (data < 0 ? "ANY" : String.valueOf(data));
-		return material.name() + "[" + material.getId() + "]; DMG: " + dataStr + "; AMT: " + amount + flags;
+		String dataStr = (data < 0 ? "" : ":" + data);
+		return material.name() + "[" + material.getId() + dataStr + "]; AMT: " + amount + flags;
 	}
 	
 	@QCommand(
