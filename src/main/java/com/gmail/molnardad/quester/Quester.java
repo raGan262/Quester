@@ -392,7 +392,8 @@ public class Quester extends JavaPlugin {
 					NpcObjective.class,
 					DyeObjective.class,
 					BossObjective.class,
-					NpcKillObjective.class
+					NpcKillObjective.class,
+					DropObjective.class
 			};
 			for(Class<? extends Element> clss : classes) {
 				try {
