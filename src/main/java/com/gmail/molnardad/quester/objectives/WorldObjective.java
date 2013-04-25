@@ -15,9 +15,6 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("WORLD")
 public final class WorldObjective extends Objective {
 
-	/**
-	 * @uml.property  name="worldName"
-	 */
 	private final String worldName;
 	
 	public WorldObjective(String worldName) {

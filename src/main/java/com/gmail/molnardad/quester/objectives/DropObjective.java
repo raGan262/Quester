@@ -17,35 +17,12 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("DROP")
 public final class DropObjective extends Objective {
 
-	/**
-	 * @uml.property  name="material"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private final Material material;
-	/**
-	 * @uml.property  name="data"
-	 */
 	private final short data;
-	/**
-	 * @uml.property  name="amount"
-	 */
 	private final int amount;
-	/**
-	 * @uml.property  name="questItem"
-	 */
 	private final boolean questItem;
-	/**
-	 * @uml.property  name="location"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private final Location location;
-	/**
-	 * @uml.property  name="range"
-	 */
 	private final double range;
-	/**
-	 * @uml.property  name="range2"
-	 */
 	private final double range2;
 	
 	public DropObjective(int amt, Material mat, int dat, Location loc, double rng, boolean quest) {

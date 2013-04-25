@@ -10,9 +10,6 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("MILK")
 public final class MilkObjective extends Objective {
 
-	/**
-	 * @uml.property  name="amount"
-	 */
 	private final int amount;
 	
 	public MilkObjective(int amt) {

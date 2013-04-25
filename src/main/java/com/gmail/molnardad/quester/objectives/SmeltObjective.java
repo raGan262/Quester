@@ -16,18 +16,8 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("SMELT")
 public final class SmeltObjective extends Objective {
 
-	/**
-	 * @uml.property  name="material"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private final Material material;
-	/**
-	 * @uml.property  name="data"
-	 */
 	private final short data;
-	/**
-	 * @uml.property  name="amount"
-	 */
 	private final int amount;
 	
 	public SmeltObjective(int amt, Material mat, int dat) {

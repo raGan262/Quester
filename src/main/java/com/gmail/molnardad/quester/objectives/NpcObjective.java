@@ -10,13 +10,7 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("NPC")
 public final class NpcObjective extends Objective {
 
-	/**
-	 * @uml.property  name="index"
-	 */
 	private final int index;
-	/**
-	 * @uml.property  name="cancel"
-	 */
 	private final boolean cancel;
 	
 	public NpcObjective(int id, boolean ccl) {

@@ -13,13 +13,7 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("POINT")
 public final class PointCondition extends Condition {
 
-	/**
-	 * @uml.property  name="amount"
-	 */
 	private final int amount;
-	/**
-	 * @uml.property  name="inverted"
-	 */
 	private final boolean inverted;
 	
 	public PointCondition(int amount, boolean invert) {

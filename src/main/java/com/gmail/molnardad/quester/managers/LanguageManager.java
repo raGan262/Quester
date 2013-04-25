@@ -14,10 +14,6 @@ import com.gmail.molnardad.quester.strings.QuesterLang;
 
 public class LanguageManager {
 	
-	/**
-	 * @uml.property  name="languages"
-	 * @uml.associationEnd  qualifier="name:java.lang.String com.gmail.molnardad.quester.strings.QuesterLang"
-	 */
 	private Map<String, QuesterLang> languages = new HashMap<String, QuesterLang>();
 
 	public boolean hasLang(String name) {

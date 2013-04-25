@@ -14,18 +14,11 @@ public enum QuestFlag {
 	DEATHCANCEL(7),
 	REPEATABLE(8);
 
-    /**
-	 * @uml.property  name="type"
-	 */
     private final int type;
     QuestFlag (int type) {
         this.type = type;
     }
     
-    /**
-	 * @return
-	 * @uml.property  name="type"
-	 */
     public int getType() {
     	return type;
     }

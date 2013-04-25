@@ -7,24 +7,13 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public class QuesterSign {
 
-	/**
-	 * @uml.property  name="holder"
-	 */
 	private int holder = -1;
-	/**
-	 * @uml.property  name="location"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private final Location location;
 	
 	public QuesterSign(Location location) {
 		this.location = location;
 	}
 	
-	/**
-	 * @return
-	 * @uml.property  name="location"
-	 */
 	public Location getLocation() {
 		return location;
 	}

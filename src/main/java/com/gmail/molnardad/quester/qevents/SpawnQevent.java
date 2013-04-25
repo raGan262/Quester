@@ -18,23 +18,9 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("SPAWN")
 public final class SpawnQevent extends Qevent {
 
-	/**
-	 * @uml.property  name="location"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private final Location location;
-	/**
-	 * @uml.property  name="entity"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private final EntityType entity;
-	/**
-	 * @uml.property  name="range"
-	 */
 	private final int range;
-	/**
-	 * @uml.property  name="amount"
-	 */
 	private final int amount;
 	
 	public SpawnQevent(Location loc, int rng, EntityType ent, int amt) {

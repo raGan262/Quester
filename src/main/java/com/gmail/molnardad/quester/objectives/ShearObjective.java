@@ -15,14 +15,7 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("SHEAR")
 public final class ShearObjective extends Objective {
 
-	/**
-	 * @uml.property  name="color"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private final DyeColor color;
-	/**
-	 * @uml.property  name="amount"
-	 */
 	private final int amount;
 
 	public ShearObjective(int amt, DyeColor col) {

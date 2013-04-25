@@ -19,10 +19,6 @@ import com.gmail.molnardad.quester.objectives.BreakObjective;
 
 public class BreakListener implements Listener {
 
-	/**
-	 * @uml.property  name="qm"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private QuestManager qm;
 	
 	public BreakListener(Quester plugin) {

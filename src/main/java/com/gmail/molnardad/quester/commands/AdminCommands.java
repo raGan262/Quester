@@ -15,25 +15,9 @@ import com.gmail.molnardad.quester.managers.QuestManager;
 
 public class AdminCommands {
 
-	/**
-	 * @uml.property  name="plugin"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private Quester plugin = null;
-	/**
-	 * @uml.property  name="profMan"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private ProfileManager profMan = null;
-	/**
-	 * @uml.property  name="qMan"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private QuestManager qMan = null;
-	/**
-	 * @uml.property  name="holMan"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private QuestHolderManager holMan = null;
 	
 	public AdminCommands(Quester plugin) {

@@ -15,18 +15,8 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("PLACE")
 public final class PlaceObjective extends Objective {
 
-	/**
-	 * @uml.property  name="material"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private final Material material;
-	/**
-	 * @uml.property  name="data"
-	 */
 	private final byte data;
-	/**
-	 * @uml.property  name="amount"
-	 */
 	private final int amount;
 	
 	public PlaceObjective(int amt, Material mat, int dat) {
@@ -98,18 +88,10 @@ public final class PlaceObjective extends Objective {
 	
 	//Custom methods
 	
-	/**
-	 * @return
-	 * @uml.property  name="material"
-	 */
 	public Material getMaterial() {
 		return material;
 	}
 	
-	/**
-	 * @return
-	 * @uml.property  name="data"
-	 */
 	public byte getData() {
 		return data;
 	}

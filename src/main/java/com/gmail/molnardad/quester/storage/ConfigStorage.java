@@ -17,18 +17,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class ConfigStorage implements Storage {
 
 
-	/**
-	 * @uml.property  name="config"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private final YamlConfiguration config;
-	/**
-	 * @uml.property  name="conFile"
-	 */
 	private final File conFile;
-	/**
-	 * @uml.property  name="logger"
-	 */
 	private final Logger logger;
 	
 	public ConfigStorage(File file, Logger logger, InputStream defaultStream) {

@@ -14,21 +14,9 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("QUEST")
 public final class QuestCondition extends Condition {
 	
-	/**
-	 * @uml.property  name="quest"
-	 */
 	private final String quest;
-	/**
-	 * @uml.property  name="time"
-	 */
 	private final int time;
-	/**
-	 * @uml.property  name="running"
-	 */
 	private final boolean running;
-	/**
-	 * @uml.property  name="inverted"
-	 */
 	private final boolean inverted;
 	
 	QuestCondition(String quest, int time, boolean running, boolean invert) {

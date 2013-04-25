@@ -16,10 +16,6 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("TELE")
 public final class TeleportQevent extends Qevent {
 
-	/**
-	 * @uml.property  name="location"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private final Location location;
 	
 	public TeleportQevent(Location loc) {

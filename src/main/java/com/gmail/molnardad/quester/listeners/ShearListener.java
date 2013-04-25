@@ -18,10 +18,6 @@ import com.gmail.molnardad.quester.objectives.ShearObjective;
 
 public class ShearListener implements Listener {
 
-	/**
-	 * @uml.property  name="qm"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private QuestManager qm;
 	
 	public ShearListener(Quester plugin) {

@@ -13,15 +13,7 @@ import com.gmail.molnardad.quester.managers.QuestHolderManager;
 
 public class HolderCommands {
 	
-	/**
-	 * @uml.property  name="holMan"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	QuestHolderManager holMan = null;
-	/**
-	 * @uml.property  name="profMan"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	ProfileManager profMan = null;
 	
 	public HolderCommands(Quester plugin) {

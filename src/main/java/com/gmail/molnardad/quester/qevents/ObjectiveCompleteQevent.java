@@ -17,14 +17,7 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("OBJCOM")
 public final class ObjectiveCompleteQevent extends Qevent {
 
-	/**
-	 * @uml.property  name="objective"
-	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="java.lang.Integer"
-	 */
 	private final int objective;
-	/**
-	 * @uml.property  name="runEvents"
-	 */
 	private final boolean runEvents;
 	
 	public ObjectiveCompleteQevent(int obj, boolean runEvents) {

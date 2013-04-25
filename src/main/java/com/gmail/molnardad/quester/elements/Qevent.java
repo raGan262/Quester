@@ -14,19 +14,9 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 
 public abstract class Qevent extends Element {
 
-	/**
-	 * @uml.property  name="delay"
-	 */
 	private int delay = 0;
-	/**
-	 * @uml.property  name="occasion"
-	 */
 	private int occasion = -10;
 
-	/**
-	 * @param occasion
-	 * @uml.property  name="occasion"
-	 */
 	public final void setOccasion(int occasion) {
 		this.occasion = occasion;
 	}
@@ -36,10 +26,6 @@ public abstract class Qevent extends Element {
 		this.delay = delay;
 	}
 	
-	/**
-	 * @return
-	 * @uml.property  name="occasion"
-	 */
 	public final int getOccasion() {
 		return occasion;
 	}

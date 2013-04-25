@@ -14,9 +14,6 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("POINT")
 public final class PointQevent extends Qevent {
 
-	/**
-	 * @uml.property  name="amount"
-	 */
 	private final int amount;
 	
 	public PointQevent(int amt) {

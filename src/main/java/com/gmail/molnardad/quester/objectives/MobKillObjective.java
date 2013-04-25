@@ -15,14 +15,7 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("MOBKILL")
 public final class MobKillObjective extends Objective {
 
-	/**
-	 * @uml.property  name="entity"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private final EntityType entity;
-	/**
-	 * @uml.property  name="amount"
-	 */
 	private final int amount;
 
 	public MobKillObjective(int amt, EntityType ent) {

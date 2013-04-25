@@ -13,13 +13,7 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("MONEY")
 public final class MoneyCondition extends Condition {
 
-	/**
-	 * @uml.property  name="amount"
-	 */
 	private final double amount;
-	/**
-	 * @uml.property  name="inverted"
-	 */
 	private final boolean inverted;
 	
 	private MoneyCondition(double amount, boolean invert) {

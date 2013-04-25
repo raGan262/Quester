@@ -18,18 +18,8 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("BLOCK")
 public final class SetBlockQevent extends Qevent {
 
-	/**
-	 * @uml.property  name="location"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private final Location location;
-	/**
-	 * @uml.property  name="material"
-	 */
 	public final int material;
-	/**
-	 * @uml.property  name="data"
-	 */
 	public final byte data;
 	
 	public SetBlockQevent(int mat, int dat, Location loc) {

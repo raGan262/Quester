@@ -14,9 +14,6 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("MONEY")
 public final class MoneyQevent extends Qevent {
 
-	/**
-	 * @uml.property  name="amount"
-	 */
 	private final double amount;
 	
 	public MoneyQevent(double amt) {

@@ -6,16 +6,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -24,20 +22,12 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestItemListener implements Listener {
 
-	/**
-	 * @uml.property  name="items"
-	 * @uml.associationEnd  qualifier="getName:java.lang.String [Lorg.bukkit.inventory.ItemStack;"
-	 */
 	private Map<String, ItemStack[]> items = new HashMap<String, ItemStack[]>();
-	
-	private boolean isArmor(int id) {
-		return id > 297 && id < 318;
-	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onAction(InventoryClickEvent event) {
 		if(Util.isQuestItem(event.getCurrentItem())) {
-			if(!event.isShiftClick() || !event.getInventory().getType().equals(InventoryType.CRAFTING) || isArmor(event.getCurrentItem().getTypeId())) {
+			if(!event.isShiftClick() || !event.getInventory().getType().equals(InventoryType.CRAFTING)) {
 				event.setCancelled(true);
 			}
 		}
@@ -79,22 +69,9 @@ public class QuestItemListener implements Listener {
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onInteract(PlayerInteractEvent event) {
-		if(Util.isQuestItem(event.getItem())) {
+	public void onPlace(BlockPlaceEvent event) {
+		if(Util.isQuestItem(event.getItemInHand())) {
 			event.setCancelled(true);
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onDamage(EntityDamageByEntityEvent event) {
-		if(event.getDamager() instanceof Player) {
-			Player player = (Player) event.getDamager();
-			if(!Util.isPlayer(player)) {
-				return;
-			}
-			if(Util.isQuestItem(player.getItemInHand())) {
-				event.setCancelled(true);
-			}
 		}
 	}
 }

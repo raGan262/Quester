@@ -10,13 +10,7 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("BOSS")
 public final class BossObjective extends Objective {
 
-	/**
-	 * @uml.property  name="amount"
-	 */
 	private final int amount;
-	/**
-	 * @uml.property  name="name"
-	 */
 	private final String name;
 	
 	public BossObjective(String boss, int amt) {

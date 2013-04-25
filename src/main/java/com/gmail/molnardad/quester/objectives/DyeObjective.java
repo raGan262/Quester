@@ -15,18 +15,8 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("DYE")
 public final class DyeObjective extends Objective {
 
-	/**
-	 * @uml.property  name="amount"
-	 */
 	private final int amount;
-	/**
-	 * @uml.property  name="color"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private final DyeColor color;
-	/**
-	 * @uml.property  name="colorName"
-	 */
 	private final String colorName;
 	
 	public DyeObjective(int amt, DyeColor col) {

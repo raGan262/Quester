@@ -23,27 +23,10 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("ITEM")
 public final class ItemObjective extends Objective {
 
-	/**
-	 * @uml.property  name="material"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private final Material material;
-	/**
-	 * @uml.property  name="data"
-	 */
 	private final short data;
-	/**
-	 * @uml.property  name="amount"
-	 */
 	private final int amount;
-	/**
-	 * @uml.property  name="enchants"
-	 * @uml.associationEnd  qualifier="e:java.lang.Integer java.lang.Integer"
-	 */
 	private final Map<Integer, Integer> enchants;
-	/**
-	 * @uml.property  name="questItem"
-	 */
 	private final boolean questItem;
 	
 	public ItemObjective(Material mat, int amt, int dat, Map<Integer, Integer> enchs, boolean questItem) {

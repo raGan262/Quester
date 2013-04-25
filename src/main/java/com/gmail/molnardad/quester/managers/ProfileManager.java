@@ -25,36 +25,12 @@ import com.gmail.molnardad.quester.strings.QuesterLang;
 
 public class ProfileManager {
 
-	/**
-	 * @uml.property  name="profileStorage"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private Storage profileStorage = null;
-	/**
-	 * @uml.property  name="qMan"
-	 * @uml.associationEnd  multiplicity="(1 1)" inverse="profMan:com.gmail.molnardad.quester.managers.QuestManager"
-	 */
 	private QuestManager qMan = null;
-	/**
-	 * @uml.property  name="langMan"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private LanguageManager langMan = null;
 
-	/**
-	 * @uml.property  name="profiles"
-	 * @uml.associationEnd  qualifier="toLowerCase:java.lang.String com.gmail.molnardad.quester.PlayerProfile"
-	 */
 	private Map<String, PlayerProfile> profiles = new HashMap<String, PlayerProfile>();
-	/**
-	 * @uml.property  name="ranks"
-	 * @uml.associationEnd  qualifier="valueOf:java.lang.Integer java.lang.String"
-	 */
 	private Map<Integer, String> ranks = new HashMap<Integer, String>();
-	/**
-	 * @uml.property  name="sortedRanks"
-	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="java.lang.Integer"
-	 */
 	private List<Integer> sortedRanks = new ArrayList<Integer>();
 	
 	

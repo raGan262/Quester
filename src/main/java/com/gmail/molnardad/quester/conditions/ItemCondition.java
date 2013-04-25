@@ -16,26 +16,10 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("ITEM")
 public final class ItemCondition extends Condition {
 
-	/**
-	 * @uml.property  name="material"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private final Material material;
-	/**
-	 * @uml.property  name="data"
-	 */
 	private final short data;
-	/**
-	 * @uml.property  name="amount"
-	 */
 	private final int amount;
-	/**
-	 * @uml.property  name="inverted"
-	 */
 	private final boolean inverted;
-	/**
-	 * @uml.property  name="questItem"
-	 */
 	private final boolean questItem;
 	
 	private ItemCondition(Material mat, int amt, int dat, boolean invert, boolean quest) {

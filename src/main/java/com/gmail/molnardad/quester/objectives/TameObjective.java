@@ -13,14 +13,7 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("TAME")
 public final class TameObjective extends Objective {
 
-	/**
-	 * @uml.property  name="entity"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private final EntityType entity;
-	/**
-	 * @uml.property  name="amount"
-	 */
 	private final int amount;
 
 	public TameObjective(int amt, EntityType ent) {

@@ -14,17 +14,8 @@ import com.gmail.molnardad.quester.utils.ExpManager;
 @QElement("EXP")
 public final class ExperienceCondition extends Condition {
 
-	/**
-	 * @uml.property  name="amount"
-	 */
 	private final int amount;
-	/**
-	 * @uml.property  name="inverted"
-	 */
 	private final boolean inverted;
-	/**
-	 * @uml.property  name="isLevel"
-	 */
 	private final boolean isLevel;
 	
 	public ExperienceCondition(int amount, boolean isLevel, boolean invert) {

@@ -5,9 +5,6 @@ public class QUsageException extends QCommandException {
 
 	private static final long serialVersionUID = -3357140092874580056L;
 
-	/**
-	 * @uml.property  name="usage"
-	 */
 	private final String usage;
 	
 	public QUsageException(String message, String usage) {
@@ -15,10 +12,6 @@ public class QUsageException extends QCommandException {
 		this.usage = usage;
 	}
 	
-	/**
-	 * @return
-	 * @uml.property  name="usage"
-	 */
 	public String getUsage() {
 		return this.usage;
 	}

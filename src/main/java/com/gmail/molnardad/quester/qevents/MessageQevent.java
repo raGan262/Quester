@@ -13,13 +13,7 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("MSG")
 public final class MessageQevent extends Qevent {
 
-	/**
-	 * @uml.property  name="message"
-	 */
 	private final String message;
-	/**
-	 * @uml.property  name="rawmessage"
-	 */
 	private final String rawmessage;
 	
 	public MessageQevent(String msg) {

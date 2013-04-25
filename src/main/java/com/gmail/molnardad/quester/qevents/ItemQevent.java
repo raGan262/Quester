@@ -24,23 +24,9 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("ITEM")
 public final class ItemQevent extends Qevent {
 
-	/**
-	 * @uml.property  name="material"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	public final Material material;
-	/**
-	 * @uml.property  name="data"
-	 */
 	public final short data;
-	/**
-	 * @uml.property  name="amount"
-	 */
 	private final int amount;
-	/**
-	 * @uml.property  name="enchants"
-	 * @uml.associationEnd  qualifier="j:java.lang.Integer java.lang.Integer"
-	 */
 	private final Map<Integer, Integer> enchants;
 	
 	public ItemQevent(Material mat, int dat, int amt, Map<Integer, Integer> enchs) {

@@ -16,10 +16,6 @@ import com.gmail.molnardad.quester.managers.QuestManager;
 
 public class ModifierCommands {
 	
-	/**
-	 * @uml.property  name="qMan"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	QuestManager qMan = null;
 	
 	public ModifierCommands(Quester plugin) {

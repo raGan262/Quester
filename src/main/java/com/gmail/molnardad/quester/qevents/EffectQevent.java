@@ -17,10 +17,6 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("EFFECT")
 public class EffectQevent extends Qevent {
 
-	/**
-	 * @uml.property  name="effect"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private final PotionEffect effect;
 	
 	public EffectQevent(PotionEffect eff) {

@@ -14,17 +14,8 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("QUESTNOT")
 public final class QuestNotCondition extends Condition {
 
-	/**
-	 * @uml.property  name="quest"
-	 */
 	private final String quest;
-	/**
-	 * @uml.property  name="time"
-	 */
 	private final int time;
-	/**
-	 * @uml.property  name="running"
-	 */
 	private final boolean running;
 	
 	public QuestNotCondition(String quest, int time, boolean running) {

@@ -15,22 +15,9 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("BREAK")
 public final class BreakObjective extends Objective {
 
-	/**
-	 * @uml.property  name="material"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	private final Material material;
-	/**
-	 * @uml.property  name="data"
-	 */
 	private final byte data;
-	/**
-	 * @uml.property  name="amount"
-	 */
 	private final int amount;
-	/**
-	 * @uml.property  name="inHand"
-	 */
 	private final int inHand;
 	
 	public BreakObjective(int amt, Material mat, int dat, int hnd) {
@@ -116,18 +103,10 @@ public final class BreakObjective extends Objective {
 	
 	// Custom methods
 	
-	/**
-	 * @return
-	 * @uml.property  name="material"
-	 */
 	public Material getMaterial() {
 		return material;
 	}
 	
-	/**
-	 * @return
-	 * @uml.property  name="data"
-	 */
 	public byte getData() {
 		return data;
 	}

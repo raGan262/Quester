@@ -4,10 +4,6 @@ import java.util.HashSet;
 
 public class OccasionGroup {
 
-	/**
-	 * @uml.property  name="occasions"
-	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="java.lang.Integer"
-	 */
 	private HashSet<Integer> occasions = null;
 	
 	public OccasionGroup() {

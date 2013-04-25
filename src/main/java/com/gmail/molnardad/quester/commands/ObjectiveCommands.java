@@ -18,15 +18,7 @@ import com.gmail.molnardad.quester.strings.QuesterLang;
 
 public class ObjectiveCommands {
 	
-	/**
-	 * @uml.property  name="qMan"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	QuestManager qMan = null;
-	/**
-	 * @uml.property  name="eMan"
-	 * @uml.associationEnd  multiplicity="(1 1)"
-	 */
 	ElementManager eMan = null;
 	
 	public ObjectiveCommands(Quester plugin) {

@@ -14,9 +14,6 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("TOGGLE")
 public final class ToggleQevent extends Qevent {
 
-	/**
-	 * @uml.property  name="quest"
-	 */
 	private final int quest;
 	
 	public ToggleQevent(int qst) {

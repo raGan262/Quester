@@ -16,17 +16,8 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("TIME")
 public final class TimeCondition extends Condition {
 
-	/**
-	 * @uml.property  name="from"
-	 */
 	private final int from;
-	/**
-	 * @uml.property  name="to"
-	 */
 	private final int to;
-	/**
-	 * @uml.property  name="world"
-	 */
 	private final String world;
 	
 	public TimeCondition(int from, int to, String world) {
