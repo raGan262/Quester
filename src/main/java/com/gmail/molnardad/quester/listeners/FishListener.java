@@ -16,6 +16,10 @@ import com.gmail.molnardad.quester.managers.QuestManager;
 
 public class FishListener implements Listener {
 
+	/**
+	 * @uml.property  name="qm"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private QuestManager qm;
 	
 	public FishListener(Quester plugin) {

@@ -16,8 +16,18 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public abstract class Objective extends Element {
 
+	/**
+	 * @uml.property  name="desc"
+	 */
 	private String desc = "";
+	/**
+	 * @uml.property  name="hidden"
+	 */
 	private boolean hidden = false;
+	/**
+	 * @uml.property  name="prerequisites"
+	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="java.lang.Integer"
+	 */
 	private Set<Integer> prerequisites = new HashSet<Integer>();
 	
 	public Set<Integer> getPrerequisites() {
@@ -51,10 +61,18 @@ public abstract class Objective extends Element {
 		this.desc = "";
 	}
 	
+	/**
+	 * @param value
+	 * @uml.property  name="hidden"
+	 */
 	public void setHidden(boolean value) {
 		this.hidden = value;
 	}
 	
+	/**
+	 * @return
+	 * @uml.property  name="hidden"
+	 */
 	public boolean isHidden() {
 		return this.hidden;
 	}

@@ -13,7 +13,13 @@ import com.gmail.molnardad.quester.utils.ExpManager;
 @QElement("EXP")
 public final class ExperienceQevent extends Qevent {
 
+	/**
+	 * @uml.property  name="amount"
+	 */
 	private final int amount;
+	/**
+	 * @uml.property  name="isLevel"
+	 */
 	private final boolean isLevel;
 	
 	public ExperienceQevent(int amt, boolean isLevel) {

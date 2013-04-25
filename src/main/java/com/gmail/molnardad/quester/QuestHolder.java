@@ -11,9 +11,24 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestHolder {
 	
+	/**
+	 * @uml.property  name="heldQuests"
+	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="java.lang.Integer"
+	 */
 	private List<Integer> heldQuests = new ArrayList<Integer>();
+	/**
+	 * @uml.property  name="name"
+	 */
 	private String name;
+	/**
+	 * @uml.property  name="interactions"
+	 * @uml.associationEnd  qualifier="interacter:java.lang.String java.lang.Long"
+	 */
 	private Map<String, Long> interactions = new HashMap<String, Long>();
+	/**
+	 * @uml.property  name="selected"
+	 * @uml.associationEnd  qualifier="name:java.lang.String java.lang.Integer"
+	 */
 	private Map<String, Integer> selected = new HashMap<String, Integer>();
 	
 	public QuestHolder(String name) {
@@ -54,6 +69,10 @@ public class QuestHolder {
 		name = newName;
 	}
 	
+	/**
+	 * @return
+	 * @uml.property  name="name"
+	 */
 	public String getName() {
 		return name;
 	}

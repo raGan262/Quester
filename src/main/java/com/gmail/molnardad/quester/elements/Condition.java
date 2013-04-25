@@ -13,6 +13,9 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 
 public abstract class Condition extends Element {
 	
+	/**
+	 * @uml.property  name="desc"
+	 */
 	private String desc = "";
 	
 	private String coloredDesc() {

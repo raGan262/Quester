@@ -15,6 +15,10 @@ import com.gmail.molnardad.quester.managers.QuestManager;
 
 public class LocationCommands {
 	
+	/**
+	 * @uml.property  name="qMan"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	QuestManager qMan = null;
 	
 	public LocationCommands(Quester plugin) {

@@ -14,6 +14,9 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("PERM")
 public final class PermissionCondition extends Condition {
 	
+	/**
+	 * @uml.property  name="perm"
+	 */
 	private final String perm;
 	
 	public PermissionCondition(String perm) {

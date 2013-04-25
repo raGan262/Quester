@@ -11,13 +11,40 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public class PlayerProfile {
 
+	/**
+	 * @uml.property  name="name"
+	 */
 	private final String name;
+	/**
+	 * @uml.property  name="completed"
+	 * @uml.associationEnd  qualifier="toLowerCase:java.lang.String java.lang.Integer"
+	 */
 	private Map<String, Integer> completed;
+	/**
+	 * @uml.property  name="selected"
+	 */
 	private int selected;
+	/**
+	 * @uml.property  name="holder"
+	 */
 	private int holder;
+	/**
+	 * @uml.property  name="quest"
+	 * @uml.associationEnd  inverse="this$0:com.gmail.molnardad.quester.PlayerProfile$Progress"
+	 */
 	private Progress quest;
+	/**
+	 * @uml.property  name="progresses"
+	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="com.gmail.molnardad.quester.PlayerProfile$Progress"
+	 */
 	private List<Progress> progresses;
+	/**
+	 * @uml.property  name="points"
+	 */
 	private int points;
+	/**
+	 * @uml.property  name="rank"
+	 */
 	private String rank;
 	
 	private class Progress {
@@ -71,6 +98,10 @@ public class PlayerProfile {
 		rank = "";
 	}
 	
+	/**
+	 * @return
+	 * @uml.property  name="name"
+	 */
 	public String getName() {
 		return name;
 	}
@@ -195,10 +226,18 @@ public class PlayerProfile {
 		return progresses.indexOf(quest);
 	}
 	
+	/**
+	 * @return
+	 * @uml.property  name="selected"
+	 */
 	public int getSelected() {
 		return selected;
 	}
 	
+	/**
+	 * @param newSelected
+	 * @uml.property  name="selected"
+	 */
 	public void setSelected(int newSelected) {
 		selected = newSelected;
 	}
@@ -225,6 +264,10 @@ public class PlayerProfile {
 		return null;
 	}
 	
+	/**
+	 * @return
+	 * @uml.property  name="points"
+	 */
 	public int getPoints() {
 		return points;
 	}
@@ -233,10 +276,18 @@ public class PlayerProfile {
 		points += pts;
 	}
 	
+	/**
+	 * @return
+	 * @uml.property  name="rank"
+	 */
 	public String getRank() {
 		return rank;
 	}
 	
+	/**
+	 * @param newRank
+	 * @uml.property  name="rank"
+	 */
 	public void setRank(String newRank) {
 		rank = newRank;
 	}

@@ -15,8 +15,18 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("DEATH")
 public final class DeathObjective extends Objective {
 
+	/**
+	 * @uml.property  name="location"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private final Location location;
+	/**
+	 * @uml.property  name="amount"
+	 */
 	private final int amount;
+	/**
+	 * @uml.property  name="range"
+	 */
 	private final int range;
 	
 	public DeathObjective(int amt, Location loc, int rng) {

@@ -15,11 +15,33 @@ import com.google.common.collect.Lists;
 
 public class QCommandContext {
 
+	/**
+	 * @uml.property  name="comMan"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private final CommandManager comMan;
+	/**
+	 * @uml.property  name="args"
+	 */
 	private final String[] args;
+	/**
+	 * @uml.property  name="parentArgs"
+	 */
 	private final String[] parentArgs;
+	/**
+	 * @uml.property  name="sender"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private final CommandSender sender;
+	/**
+	 * @uml.property  name="flags"
+	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="java.lang.Character"
+	 */
 	private final Set<Character> flags;
+	/**
+	 * @uml.property  name="lang"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private final QuesterLang lang;
 	// valueFlags will be added once it is needed :)
 	
@@ -111,6 +133,14 @@ public class QCommandContext {
 		return args.length;
 	}
 	
+	/**
+	 * @return
+	 * @uml.property  name="sender"
+	 */
+	public CommandSender getSender() {
+		return sender;
+	}
+	
 	public Location getSenderLocation() {
 		if(sender instanceof BlockCommandSender) {
 			((BlockCommandSender) sender).getBlock().getLocation();
@@ -170,10 +200,18 @@ public class QCommandContext {
 		return flags.contains(character);
 	}
 	
+	/**
+	 * @return
+	 * @uml.property  name="args"
+	 */
 	public String[] getArgs() {
 		return args;
 	}
 	
+	/**
+	 * @return
+	 * @uml.property  name="parentArgs"
+	 */
 	public String[] getParentArgs() {
 		return parentArgs;
 	}

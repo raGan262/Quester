@@ -14,6 +14,9 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("CMD")
 public final class CommandQevent extends Qevent {
 
+	/**
+	 * @uml.property  name="command"
+	 */
 	private final String command;
 	
 	public CommandQevent(String cmd) {

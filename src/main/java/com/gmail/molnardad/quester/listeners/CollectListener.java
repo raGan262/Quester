@@ -22,7 +22,15 @@ import com.gmail.molnardad.quester.objectives.CollectObjective;
 
 public class CollectListener implements Listener {
 	
+	/**
+	 * @uml.property  name="qm"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private QuestManager qm = null;
+	/**
+	 * @uml.property  name="profMan"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private ProfileManager profMan = null;
 	
 	public CollectListener(Quester plugin) {

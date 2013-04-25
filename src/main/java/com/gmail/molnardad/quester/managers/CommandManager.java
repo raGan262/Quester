@@ -25,17 +25,52 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public class CommandManager {
 
+	/**
+	 * @uml.property  name="logger"
+	 */
 	Logger logger = null;
+	/**
+	 * @uml.property  name="langMan"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	LanguageManager langMan = null;
 	
+	/**
+	 * @uml.property  name="displayedCommand"
+	 */
 	String displayedCommand = "";
+	/**
+	 * @uml.property  name="helpCommand"
+	 */
 	String helpCommand = "help";
+	/**
+	 * @uml.property  name="arguments" multiplicity="(0 -1)" dimension="1"
+	 */
 	Object[] arguments = null;
+	/**
+	 * @uml.property  name="classes" multiplicity="(0 -1)" dimension="1"
+	 */
 	Class<?>[] classes = null;
 	
+	/**
+	 * @uml.property  name="labels"
+	 * @uml.associationEnd  multiplicity="(0 -1)" ordering="true" elementType="java.lang.reflect.Method" qualifier="parent:java.lang.reflect.Method java.util.Map"
+	 */
 	private Map<Method, Map<String, Method>> labels = new HashMap<Method, Map<String, Method>>();
+	/**
+	 * @uml.property  name="aliases"
+	 * @uml.associationEnd  qualifier="parent:java.lang.reflect.Method java.util.Map"
+	 */
 	private Map<Method, Map<String, Method>> aliases = new HashMap<Method, Map<String, Method>>();
+	/**
+	 * @uml.property  name="instances"
+	 * @uml.associationEnd  multiplicity="(0 -1)" ordering="true" elementType="java.lang.Object" qualifier="method:java.lang.reflect.Method java.lang.Object"
+	 */
 	private Map<Method, Object> instances = new HashMap<Method, Object>();
+	/**
+	 * @uml.property  name="annotations"
+	 * @uml.associationEnd  multiplicity="(0 -1)" ordering="true" elementType="java.lang.String" qualifier="method:java.lang.reflect.Method com.gmail.molnardad.quester.commandbase.QCommand"
+	 */
 	private Map<Method, QCommand> annotations = new HashMap<Method, QCommand>();
 	
 	public CommandManager(LanguageManager langMan, Logger logger, String displayedCommand, Object... arguments) {
@@ -49,6 +84,10 @@ public class CommandManager {
 		}
 	}
 	
+	/**
+	 * @param helpCommand
+	 * @uml.property  name="helpCommand"
+	 */
 	public void setHelpCommand(String helpCommand) {
 		if(helpCommand != null) {
 			this.helpCommand = helpCommand;

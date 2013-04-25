@@ -34,15 +34,46 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestManager {
 
+	/**
+	 * @uml.property  name="langMan"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private LanguageManager langMan = null;
+	/**
+	 * @uml.property  name="profMan"
+	 * @uml.associationEnd  inverse="qMan:com.gmail.molnardad.quester.managers.ProfileManager"
+	 */
 	private ProfileManager profMan = null;
+	/**
+	 * @uml.property  name="plugin"
+	 * @uml.associationEnd  multiplicity="(1 1)" inverse="quests:com.gmail.molnardad.quester.Quester"
+	 */
 	private Quester plugin = null;
+	/**
+	 * @uml.property  name="questStorage"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private Storage questStorage = null;
 	
+	/**
+	 * @uml.property  name="quests"
+	 * @uml.associationEnd  qualifier="valueOf:java.lang.Integer com.gmail.molnardad.quester.Quest"
+	 */
 	private Map<Integer, Quest> quests = new HashMap<Integer, Quest>();
+	/**
+	 * @uml.property  name="questNames"
+	 * @uml.associationEnd  qualifier="toLowerCase:java.lang.String java.lang.Integer"
+	 */
 	private Map<String, Integer> questNames = new HashMap<String, Integer>();
+	/**
+	 * @uml.property  name="questLocations"
+	 * @uml.associationEnd  qualifier="valueOf:java.lang.Integer org.bukkit.Location"
+	 */
 	public Map<Integer, Location> questLocations = new HashMap<Integer, Location>();
 	
+	/**
+	 * @uml.property  name="questID"
+	 */
 	private int questID = -1;
 	
 	public QuestManager(Quester plugin) {

@@ -22,7 +22,15 @@ import com.gmail.molnardad.quester.objectives.DropObjective;
 
 public class DropListener implements Listener {
 
+	/**
+	 * @uml.property  name="qm"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private QuestManager qm;
+	/**
+	 * @uml.property  name="plugin"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private Quester plugin;
 	
 	public DropListener(Quester plugin) {
@@ -73,12 +81,23 @@ public class DropListener implements Listener {
 	    }
 	}
 	
+	/**
+	 * @author  raGan
+	 */
 	class DropTask extends BukkitRunnable {
 
 		private final Item item;
 		private final Player player;
 		private final int id;
+		/**
+		 * @uml.property  name="qm"
+		 * @uml.associationEnd  
+		 */
 		private final QuestManager qm;
+		/**
+		 * @uml.property  name="obj"
+		 * @uml.associationEnd  
+		 */
 		private final DropObjective obj;
 		
 		public DropTask(Item item, DropObjective obj, Player player, int id, QuestManager qm) {

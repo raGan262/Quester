@@ -47,14 +47,44 @@ public class Quester extends JavaPlugin {
 		public static Random randGen = new Random();
 		public static Economy econ = null;
 		
+		/**
+		 * @uml.property  name="langs"
+		 * @uml.associationEnd  
+		 */
 		private LanguageManager langs = null;
+		/**
+		 * @uml.property  name="quests"
+		 * @uml.associationEnd  inverse="plugin:com.gmail.molnardad.quester.managers.QuestManager"
+		 */
 		private QuestManager quests = null;
+		/**
+		 * @uml.property  name="profiles"
+		 * @uml.associationEnd  
+		 */
 		private ProfileManager profiles = null;
+		/**
+		 * @uml.property  name="holders"
+		 * @uml.associationEnd  
+		 */
 		private QuestHolderManager holders = null;
+		/**
+		 * @uml.property  name="elements"
+		 * @uml.associationEnd  
+		 */
 		private ElementManager elements = null;
+		/**
+		 * @uml.property  name="commands"
+		 * @uml.associationEnd  
+		 */
 		private CommandManager commands = null;
 		
+		/**
+		 * @uml.property  name="loaded"
+		 */
 		private boolean loaded = false;
+		/**
+		 * @uml.property  name="saveID"
+		 */
 		private int saveID = 0;
 		
 		public static boolean citizens2 = false;

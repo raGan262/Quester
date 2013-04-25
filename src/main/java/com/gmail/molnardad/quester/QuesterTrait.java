@@ -6,6 +6,9 @@ import net.citizensnpcs.api.util.DataKey;
 
 public class QuesterTrait extends Trait {
 	
+	/**
+	 * @uml.property  name="holder"
+	 */
 	private int holder = -1;
 	
 	public QuesterTrait() {

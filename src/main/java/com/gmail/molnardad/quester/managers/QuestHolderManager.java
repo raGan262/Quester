@@ -26,14 +26,37 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestHolderManager {
 
+	/**
+	 * @uml.property  name="profMan"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private ProfileManager profMan = null;
+	/**
+	 * @uml.property  name="qMan"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private QuestManager qMan = null;
 	
+	/**
+	 * @uml.property  name="holderStorage"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private Storage holderStorage = null;
 	
+	/**
+	 * @uml.property  name="holderIds"
+	 * @uml.associationEnd  qualifier="valueOf:java.lang.Integer com.gmail.molnardad.quester.QuestHolder"
+	 */
 	private Map<Integer, QuestHolder> holderIds = new HashMap<Integer, QuestHolder>();
+	/**
+	 * @uml.property  name="signs"
+	 * @uml.associationEnd  qualifier="getLocation:org.bukkit.Location com.gmail.molnardad.quester.QuesterSign"
+	 */
 	private Map<Location, QuesterSign> signs = new HashMap<Location, QuesterSign>();
 	
+	/**
+	 * @uml.property  name="holderID"
+	 */
 	private int holderID = -1;
 	
 	public QuestHolderManager(Quester plugin) {
@@ -60,6 +83,10 @@ public class QuestHolderManager {
 		return holderID;
 	}
 	
+	/**
+	 * @param newID
+	 * @uml.property  name="holderID"
+	 */
 	public void setHolderID(int newID) {
 		holderID = newID;
 	}

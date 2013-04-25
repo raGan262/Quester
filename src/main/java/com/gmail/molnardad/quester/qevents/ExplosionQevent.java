@@ -14,8 +14,18 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("EXPLOSION")
 public final class ExplosionQevent extends Qevent {
 
+	/**
+	 * @uml.property  name="location"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private final Location location;
+	/**
+	 * @uml.property  name="damage"
+	 */
 	private final boolean damage;
+	/**
+	 * @uml.property  name="range"
+	 */
 	private final int range;
 	
 	public ExplosionQevent(Location loc, int rng, boolean dmg) {

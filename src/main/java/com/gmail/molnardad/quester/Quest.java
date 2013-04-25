@@ -20,15 +20,51 @@ import com.gmail.molnardad.quester.QuestFlag;
 
 public class Quest {
 
+	/**
+	 * @uml.property  name="objectives"
+	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="com.gmail.molnardad.quester.elements.Objective"
+	 */
 	private List<Objective> objectives = null;
+	/**
+	 * @uml.property  name="conditions"
+	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="com.gmail.molnardad.quester.elements.Condition"
+	 */
 	private List<Condition> conditions = null;
+	/**
+	 * @uml.property  name="qevents"
+	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="com.gmail.molnardad.quester.elements.Qevent"
+	 */
 	private List<Qevent> qevents = null;
+	/**
+	 * @uml.property  name="worlds"
+	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="java.lang.String"
+	 */
 	private Set<String> worlds = null;
+	/**
+	 * @uml.property  name="flags"
+	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="com.gmail.molnardad.quester.QuestFlag"
+	 */
 	private Set<QuestFlag> flags = null;
+	/**
+	 * @uml.property  name="description"
+	 */
 	private String description = null;
+	/**
+	 * @uml.property  name="name"
+	 */
 	private String name = null;
+	/**
+	 * @uml.property  name="location"
+	 * @uml.associationEnd  
+	 */
 	private Location location = null;
+	/**
+	 * @uml.property  name="range"
+	 */
 	private int range = 1;
+	/**
+	 * @uml.property  name="iD"
+	 */
 	private int ID = -1;
 	
 	
@@ -46,10 +82,18 @@ public class Quest {
 		return ID >= 0;
 	}
 	
+	/**
+	 * @return
+	 * @uml.property  name="iD"
+	 */
 	public int getID() {
 		return ID;
 	}
 	
+	/**
+	 * @param newID
+	 * @uml.property  name="iD"
+	 */
 	public void setID(int newID) {
 		ID = newID;
 	}
@@ -70,10 +114,18 @@ public class Quest {
 		flags.remove(flag);
 	}
 	
+	/**
+	 * @return
+	 * @uml.property  name="name"
+	 */
 	public String getName() {
 		return name;
 	}
 	
+	/**
+	 * @param newName
+	 * @uml.property  name="name"
+	 */
 	public void setName(String newName) {
 		name = newName;
 	}
@@ -82,6 +134,10 @@ public class Quest {
 		return ChatColor.translateAlternateColorCodes('&', description).replaceAll("%p", playerName);
 	}
 	
+	/**
+	 * @param newDescription
+	 * @uml.property  name="description"
+	 */
 	public void setDescription(String newDescription) {
 		description = newDescription;
 	}
@@ -101,18 +157,34 @@ public class Quest {
 			return "";
 	}
 	
+	/**
+	 * @return
+	 * @uml.property  name="location"
+	 */
 	public Location getLocation() {
 		return location;
 	}
 	
+	/**
+	 * @param loc
+	 * @uml.property  name="location"
+	 */
 	public void setLocation(Location loc) {
 		location = loc;
 	}
 	
+	/**
+	 * @return
+	 * @uml.property  name="range"
+	 */
 	public int getRange() {
 		return range;
 	}
 	
+	/**
+	 * @param rng
+	 * @uml.property  name="range"
+	 */
 	public void setRange(int rng) {
 		range = rng;
 	}

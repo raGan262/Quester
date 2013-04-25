@@ -13,6 +13,9 @@ import com.gmail.molnardad.quester.utils.ExpManager;
 @QElement("EXP")
 public final class ExpObjective extends Objective {
 
+	/**
+	 * @uml.property  name="amount"
+	 */
 	private final int amount;
 	
 	public ExpObjective(int amt) {

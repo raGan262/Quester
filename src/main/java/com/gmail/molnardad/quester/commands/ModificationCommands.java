@@ -16,7 +16,15 @@ import com.gmail.molnardad.quester.managers.QuestManager;
 
 public class ModificationCommands {
 
+	/**
+	 * @uml.property  name="qMan"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private QuestManager qMan = null;
+	/**
+	 * @uml.property  name="profMan"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private ProfileManager profMan = null;
 	
 	public ModificationCommands(Quester plugin) {

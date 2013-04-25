@@ -17,6 +17,10 @@ import com.gmail.molnardad.quester.objectives.BossObjective;
 
 public class BossDeathListener implements Listener {
 
+	/**
+	 * @uml.property  name="qm"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private QuestManager qm;
 	
 	public BossDeathListener(Quester plugin) {

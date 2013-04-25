@@ -21,8 +21,19 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("ENCHANT")
 public final class EnchantObjective extends Objective {
 
+	/**
+	 * @uml.property  name="material"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private final Material material;
+	/**
+	 * @uml.property  name="amount"
+	 */
 	private final int amount;
+	/**
+	 * @uml.property  name="enchants"
+	 * @uml.associationEnd  qualifier="valueOf:java.lang.Integer java.lang.Integer"
+	 */
 	private final Map<Integer, Integer> enchants;
 	
 	public EnchantObjective(Material mat, int amt, Map<Integer, Integer> enchs) {

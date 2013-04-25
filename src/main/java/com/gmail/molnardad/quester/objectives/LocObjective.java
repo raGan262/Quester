@@ -15,7 +15,14 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("LOCATION")
 public final class LocObjective extends Objective {
 
+	/**
+	 * @uml.property  name="location"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private final Location location;
+	/**
+	 * @uml.property  name="range"
+	 */
 	private final int range;
 	
 	public LocObjective(Location loc, int rng) {

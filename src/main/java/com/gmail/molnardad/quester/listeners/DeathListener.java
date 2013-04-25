@@ -21,7 +21,15 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public class DeathListener implements Listener {
 
+	/**
+	 * @uml.property  name="qm"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private QuestManager qm = null;
+	/**
+	 * @uml.property  name="langMan"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private LanguageManager langMan = null;
 	
 	public DeathListener(Quester plugin) {

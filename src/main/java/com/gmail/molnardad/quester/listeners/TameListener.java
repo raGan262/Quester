@@ -17,6 +17,10 @@ import com.gmail.molnardad.quester.objectives.TameObjective;
 
 public class TameListener implements Listener {
 
+	/**
+	 * @uml.property  name="qm"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private QuestManager qm;
 	
 	public TameListener(Quester plugin) {

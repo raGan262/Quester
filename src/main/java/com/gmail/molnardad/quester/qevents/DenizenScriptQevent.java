@@ -24,8 +24,19 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("DSCRIPT")
 public final class DenizenScriptQevent extends Qevent {
 
+	/**
+	 * @uml.property  name="script"
+	 * @uml.associationEnd  qualifier="key:java.lang.String java.lang.String"
+	 */
 	private final String script;
+	/**
+	 * @uml.property  name="npc"
+	 */
 	private final int npc;
+	/**
+	 * @uml.property  name="context"
+	 * @uml.associationEnd  qualifier="ck:java.lang.String java.lang.String"
+	 */
 	private final Map<String,String> context;
 	
 	public DenizenScriptQevent(String script, int npc, Map<String, String> context) {

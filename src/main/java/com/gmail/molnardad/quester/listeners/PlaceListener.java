@@ -19,6 +19,10 @@ import com.gmail.molnardad.quester.objectives.PlaceObjective;
 
 public class PlaceListener implements Listener {
 
+	/**
+	 * @uml.property  name="qm"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private QuestManager qm;
 	
 	public PlaceListener(Quester plugin) {

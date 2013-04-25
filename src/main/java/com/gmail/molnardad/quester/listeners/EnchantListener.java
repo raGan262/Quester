@@ -20,6 +20,10 @@ import com.gmail.molnardad.quester.objectives.EnchantObjective;
 
 public class EnchantListener implements Listener {
 
+	/**
+	 * @uml.property  name="qm"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private QuestManager qm;
 	
 	public EnchantListener(Quester plugin) {

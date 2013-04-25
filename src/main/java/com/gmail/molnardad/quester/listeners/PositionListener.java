@@ -18,7 +18,15 @@ import com.gmail.molnardad.quester.objectives.WorldObjective;
 
 public class PositionListener implements Runnable {
 	
+	/**
+	 * @uml.property  name="qm"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private QuestManager qm = null;
+	/**
+	 * @uml.property  name="langMan"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private LanguageManager langMan = null;
 	
 	public PositionListener(Quester plugin) {

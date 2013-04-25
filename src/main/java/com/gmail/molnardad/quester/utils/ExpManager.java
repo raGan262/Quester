@@ -25,7 +25,14 @@ public class ExpManager {
 	private static int xpRequiredForNextLevel[];
 	private static int xpTotalToReachLevel[];
 
+	/**
+	 * @uml.property  name="player"
+	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="org.bukkit.entity.Player"
+	 */
 	private final WeakReference<Player> player;
+	/**
+	 * @uml.property  name="playerName"
+	 */
 	private final String playerName;
 
 	static {

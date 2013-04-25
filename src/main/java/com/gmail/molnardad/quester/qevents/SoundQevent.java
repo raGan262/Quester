@@ -16,9 +16,23 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("SOUND")
 public final class SoundQevent extends Qevent {
 
+	/**
+	 * @uml.property  name="location"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private final Location location;
+	/**
+	 * @uml.property  name="sound"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private final Sound sound;
+	/**
+	 * @uml.property  name="volume"
+	 */
 	private final float volume;
+	/**
+	 * @uml.property  name="pitch"
+	 */
 	private final float pitch;
 	
 	public SoundQevent(Location loc, Sound snd, float vol, float pit) {

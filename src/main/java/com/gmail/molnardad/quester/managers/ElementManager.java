@@ -18,17 +18,36 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public class ElementManager {
 	
+	/**
+	 * @author  raGan
+	 */
 	final class ElementInfo<E> {
 		private Class<? extends E> clss;
 		private String usage;
 		private Method method;
+		/**
+		 * @uml.property  name="command"
+		 * @uml.associationEnd  
+		 */
 		private QCommand command;
 	}
 
 	private static ElementManager instance = null;
 	
+	/**
+	 * @uml.property  name="conditions"
+	 * @uml.associationEnd  qualifier="toUpperCase:java.lang.String com.gmail.molnardad.quester.managers.ElementManager$ElementInfo"
+	 */
 	private Map<String, ElementInfo<Condition>> conditions = new HashMap<String, ElementInfo<Condition>>();
+	/**
+	 * @uml.property  name="objectives"
+	 * @uml.associationEnd  qualifier="toUpperCase:java.lang.String com.gmail.molnardad.quester.managers.ElementManager$ElementInfo"
+	 */
 	private Map<String, ElementInfo<Objective>> objectives = new HashMap<String, ElementInfo<Objective>>();
+	/**
+	 * @uml.property  name="events"
+	 * @uml.associationEnd  inverse="this$0:com.gmail.molnardad.quester.managers.ElementManager$ElementInfo" qualifier="toUpperCase:java.lang.String com.gmail.molnardad.quester.managers.ElementManager$ElementInfo"
+	 */
 	private Map<String, ElementInfo<Qevent>> events = new HashMap<String, ElementInfo<Qevent>>();
 
 	public static ElementManager getInstance() {

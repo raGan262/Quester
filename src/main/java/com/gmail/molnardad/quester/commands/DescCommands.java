@@ -12,6 +12,10 @@ import com.gmail.molnardad.quester.managers.QuestManager;
 
 public class DescCommands {
 	
+	/**
+	 * @uml.property  name="qMan"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	QuestManager qMan = null;
 	
 	public DescCommands(Quester plugin) {

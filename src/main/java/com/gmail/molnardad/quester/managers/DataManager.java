@@ -61,6 +61,10 @@ public class DataManager {
 	public static final String PERM_ADMIN = "quester.admin";
 	
 	private static DataManager instance = null;
+	/**
+	 * @uml.property  name="storage"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private Storage storage = null;
 	
 	private DataManager(Quester plugin) {

@@ -11,8 +11,17 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("PLAYERKILL")
 public final class PlayerKillObjective extends Objective {
 
+	/**
+	 * @uml.property  name="playerName"
+	 */
 	private final String playerName;
+	/**
+	 * @uml.property  name="amount"
+	 */
 	private final int amount;
+	/**
+	 * @uml.property  name="perm"
+	 */
 	private final boolean perm;
 	
 	public PlayerKillObjective(int amt, String name, boolean perm) {

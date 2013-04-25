@@ -13,6 +13,9 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("MONEY")
 public final class MoneyObjective extends Objective {
 
+	/**
+	 * @uml.property  name="amount"
+	 */
 	private final double amount;
 	
 	public MoneyObjective(double amt) {

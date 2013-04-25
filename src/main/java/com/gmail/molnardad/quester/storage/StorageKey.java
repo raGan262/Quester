@@ -2,8 +2,14 @@ package com.gmail.molnardad.quester.storage;
 
 import java.util.List;
 
+/**
+ * @author  raGan
+ */
 public abstract class StorageKey {
 	
+	/**
+	 * @uml.property  name="path"
+	 */
 	protected String path = "";
 	
 	public StorageKey(String path) {
@@ -24,6 +30,9 @@ public abstract class StorageKey {
 		return path.substring(path.lastIndexOf(46) + 1);
 	}
 	
+	/**
+	 * @uml.property  name="storageType"
+	 */
 	public abstract String getStorageType();
 	
 	public abstract boolean keyExists(String key);

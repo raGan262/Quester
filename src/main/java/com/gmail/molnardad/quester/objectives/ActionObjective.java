@@ -21,12 +21,36 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("ACTION")
 public final class ActionObjective extends Objective {
 
+	/**
+	 * @uml.property  name="block"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private final Material block;
+	/**
+	 * @uml.property  name="blockData"
+	 */
 	private final int blockData;
+	/**
+	 * @uml.property  name="inHand"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private final Material inHand;
+	/**
+	 * @uml.property  name="inHandData"
+	 */
 	private final int inHandData;
+	/**
+	 * @uml.property  name="click"
+	 */
 	private final byte click;
+	/**
+	 * @uml.property  name="location"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private final Location location;
+	/**
+	 * @uml.property  name="range"
+	 */
 	private final int range;
 	
 	public ActionObjective(Material blck, int blckdat, Material hnd, int hnddat, int clck, Location loc, int rng) {

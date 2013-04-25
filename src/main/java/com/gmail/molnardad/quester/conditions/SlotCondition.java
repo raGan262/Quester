@@ -14,6 +14,9 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("SLOT")
 public final class SlotCondition extends Condition {
 
+	/**
+	 * @uml.property  name="amount"
+	 */
 	private final int amount;
 	
 	private SlotCondition(int amt) {

@@ -18,6 +18,10 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public class MobKillListener implements Listener {
 
+	/**
+	 * @uml.property  name="qm"
+	 * @uml.associationEnd  multiplicity="(1 1)"
+	 */
 	private QuestManager qm;
 	
 	public MobKillListener(Quester plugin) {

@@ -10,8 +10,17 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("NPCKILL")
 public final class NpcKillObjective extends Objective {
 
+	/**
+	 * @uml.property  name="name"
+	 */
 	private final String name;
+	/**
+	 * @uml.property  name="strName"
+	 */
 	private final String strName;
+	/**
+	 * @uml.property  name="amount"
+	 */
 	private final int amount;
 	
 	public NpcKillObjective(String name, int amt) {

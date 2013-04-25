@@ -14,6 +14,9 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("QUEST")
 public final class QuestQevent extends Qevent {
 
+	/**
+	 * @uml.property  name="quest"
+	 */
 	private final int quest;
 	
 	public QuestQevent(int qst) {

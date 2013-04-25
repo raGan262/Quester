@@ -10,6 +10,9 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 @QElement("FISH")
 public final class FishObjective extends Objective {
 
+	/**
+	 * @uml.property  name="amount"
+	 */
 	private final int amount;
 	
 	public FishObjective(int amt) {
