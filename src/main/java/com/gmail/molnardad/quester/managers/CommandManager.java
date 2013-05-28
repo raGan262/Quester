@@ -174,8 +174,8 @@ public class CommandManager {
 			else if(e.getCause() instanceof QuesterException) {
 				throw (QuesterException) e.getCause();
 			}
-			else if(e.getCause() instanceof NumberFormatException) {
-				throw (NumberFormatException) e.getCause();
+			else if(e.getCause() instanceof IllegalArgumentException) {
+				throw (IllegalArgumentException) e.getCause();
 			}
 			else {
 				ex = e;
