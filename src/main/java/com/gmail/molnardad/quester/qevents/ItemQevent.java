@@ -111,6 +111,9 @@ public final class ItemQevent extends Qevent {
 		int[] itm = parseItem(context.getString(0), context.getSenderLang());
 		mat = Material.getMaterial(itm[0]);
 		dat = itm[1];
+		if(dat < 0) {
+			dat = 0;
+		}
 		if(context.length() > 1) {
 			amt = context.getInt(1);
 			if(context.length() > 2) {
