@@ -42,7 +42,7 @@ public final class NpcKillObjective extends Objective {
 		if(name == null) {
 			return true;
 		}
-		return name.equalsIgnoreCase(npcName);
+		return name.equalsIgnoreCase(ChatColor.stripColor(npcName));
 	}
 
 	@Override
