@@ -28,9 +28,10 @@ public class Citizens2Listener implements Listener {
 	
 	QuestManager qm = Quester.qMan;
 	
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onLeftClick(NPCLeftClickEvent event) {
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
+			event.setCancelled(true);
 			QuestHolder qh = qm.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
 			Player player = event.getClicker();
 			if(!Util.permCheck(player, QuestData.PERM_USE_NPC, true)) {
@@ -68,9 +69,10 @@ public class Citizens2Listener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onRightClick(NPCRightClickEvent event) {
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
+			event.setCancelled(true);
 			QuestManager qm = Quester.qMan;
 			QuestHolder qh = qm.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
 			Player player = event.getClicker();
