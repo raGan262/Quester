@@ -872,7 +872,7 @@ public class QuestManager {
 						else if(prof.isCompleted(q.getName()) && !q.hasFlag(QuestFlag.REPEATABLE)) {
 							color = ChatColor.GREEN;
 						}
-						else if(areConditionsMet(player, q.getName(), lang)) {
+						else if(areConditionsMet(player, q, lang)) {
 							color = ChatColor.BLUE;
 						}
 					} catch (Exception e){}
