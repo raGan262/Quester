@@ -758,6 +758,7 @@ public class QuestManager {
 		Quest quest = getPlayerQuest(player.getName());
 		
 		unassignQuest(player.getName());
+		getProfile(player.getName()).addCompleted(quest.getName(), (int) (System.currentTimeMillis() / 1000));
 		if(QuestData.progMsgDone)
 			player.sendMessage(Quester.LABEL + Quester.strings.MSG_Q_COMPLETED.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 		if(QuestData.verbose)
@@ -766,7 +767,6 @@ public class QuestManager {
 			if(qv.getOccasion() == -3)
 				qv.execute(player);
 		}
-		getProfile(player.getName()).addCompleted(quest.getName(), (int) (System.currentTimeMillis() / 1000));
 		QuestData.saveProfiles();
 		if(quest.hasFlag(QuestFlag.ONLYFIRST)) {
 			deactivateQuest(quest);
