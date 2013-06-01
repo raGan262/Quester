@@ -850,10 +850,14 @@ public class QuestManager {
 	}
 	
 	public void showQuestList(CommandSender sender, QuesterLang lang) {
-		sender.sendMessage(Util.line(ChatColor.BLUE, lang.INFO_QUEST_LIST, ChatColor.GOLD));
 		Player player = null;
 		if(sender instanceof Player)
 			player = (Player) sender;
+		else {
+			showFullQuestList(sender, lang);
+			return;
+		}
+		sender.sendMessage(Util.line(ChatColor.BLUE, lang.INFO_QUEST_LIST, ChatColor.GOLD));
 		ChatColor color = ChatColor.RED;
 		PlayerProfile prof = profMan.getProfile(player.getName());
 		Quest q = null;
