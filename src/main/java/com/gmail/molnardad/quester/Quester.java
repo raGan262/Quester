@@ -44,7 +44,6 @@ import com.gmail.molnardad.quester.exceptions.*;
 public class Quester extends JavaPlugin {
 
 		public static Logger log = null;
-		public static Random randGen = new Random();
 		public static Economy econ = null;
 		
 		private LanguageManager langs = null;

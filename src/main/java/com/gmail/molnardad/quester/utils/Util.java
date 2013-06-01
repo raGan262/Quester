@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -29,6 +30,8 @@ import com.gmail.molnardad.quester.managers.DataManager;
 import com.gmail.molnardad.quester.strings.QuesterLang;
 
 public class Util {
+	
+	private static Random randGen = new Random();
 	
 	// LINE
 	public static String line(ChatColor lineColor) {
@@ -600,7 +603,7 @@ public class Util {
 		if(d == 0)
 			return loc;
 		Location newLoc = loc.clone();
-		Vector v = new Vector(Quester.randGen.nextDouble()*d*2 - d, 0, Quester.randGen.nextDouble()*d*2 - d);
+		Vector v = new Vector(randGen.nextDouble()*d*2 - d, 0, randGen.nextDouble()*d*2 - d);
 		newLoc.add(v);
 		
 		return newLoc;

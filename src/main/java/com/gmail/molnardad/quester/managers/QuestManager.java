@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -34,6 +35,7 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestManager {
 
+	private static final Random randGen = new Random();
 	private LanguageManager langMan = null;
 	private ProfileManager profMan = null;
 	private Quester plugin = null;
@@ -595,7 +597,7 @@ public class QuestManager {
 		if(aqsts.isEmpty()) {
 			throw new QuestException(lang.ERROR_Q_NONE_ACTIVE);
 		}
-		int id = Quester.randGen.nextInt(aqsts.size());
+		int id = randGen.nextInt(aqsts.size());
 		startQuest(player, aqsts.get(id).getName(), false, lang);
 	}
 	public void cancelQuest(Player player, boolean command, QuesterLang lang) throws QuesterException {
