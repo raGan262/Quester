@@ -135,11 +135,13 @@ public class QuestManager {
 	}
 	
 	public boolean areConditionsMet(Player player, Quest quest, QuesterLang lang) throws QuesterException {
-		if(quest == null)
+		if(quest == null) {
 			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
+		}
 		for(Condition c : quest.getConditions()) {
-			if(!c.isMet(player, plugin))
+			if(!c.isMet(player, plugin)) {
 				return false;
+			}
 		}
 		
 		return true;
@@ -864,18 +866,20 @@ public class QuestManager {
 		for(int i : getQuestIds()){
 			q = getQuest(i);
 			if(q.hasFlag(QuestFlag.ACTIVE) && !q.hasFlag(QuestFlag.HIDDEN)) {
-				if(player != null)
-					try {
-						if(prof.hasQuest(q.getName())) {
-							color = ChatColor.YELLOW;
-						}
-						else if(prof.isCompleted(q.getName()) && !q.hasFlag(QuestFlag.REPEATABLE)) {
-							color = ChatColor.GREEN;
-						}
-						else if(areConditionsMet(player, q, lang)) {
-							color = ChatColor.BLUE;
-						}
-					} catch (Exception e){}
+				try {
+					if(prof.hasQuest(q.getName())) {
+						color = ChatColor.YELLOW;
+					}
+					else if(prof.isCompleted(q.getName()) && !q.hasFlag(QuestFlag.REPEATABLE)) {
+						color = ChatColor.GREEN;
+					}
+					else if(areConditionsMet(player, q, lang)) {
+						color = ChatColor.BLUE;
+					}
+					else {
+						color = ChatColor.RED;
+					}
+				} catch (Exception e){e.printStackTrace();}
 				sender.sendMessage(ChatColor.GOLD + "* " + color + q.getName());
 			}
 		}
