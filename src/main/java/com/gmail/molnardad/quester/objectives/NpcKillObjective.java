@@ -2,6 +2,7 @@ package com.gmail.molnardad.quester.objectives;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 public final class NpcKillObjective extends Objective {
 
 	public static final String TYPE = "NPCKILL";
@@ -26,11 +27,16 @@ public final class NpcKillObjective extends Objective {
 	}
 	
 	@Override
+	public boolean isComplete(Player player, int progress) {
+		return progress >= amount;
+	}
+	
+	@Override
 	public String progress(int progress) {
 		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(1 - progress)).replaceAll("%t", String.valueOf(1));
+			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(amount - progress)).replaceAll("%t", String.valueOf(amount));
 		}
-		return "Kill " + strName + " - " + amount + "x";
+		return "Kill " + strName + " - " + (amount-progress) + "x";
 	}
 	
 	@Override

@@ -795,7 +795,7 @@ public class QuestManager {
 		Quest q = getQuest(prof.getQuest());
 		Objective obj = q.getObjectives().get(id);
 		prof.getProgress().set(id, newValue);
-		if(obj.getTargetAmount() <= newValue) {
+		if(obj.isComplete(player, newValue)) {
 			if(QuestData.progMsgObj)
 				player.sendMessage(Quester.LABEL + Quester.strings.MSG_OBJ_COMPLETED);
 			for(Qevent qv : q.getQevents()) {
