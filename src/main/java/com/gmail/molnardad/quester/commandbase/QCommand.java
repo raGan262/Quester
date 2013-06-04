@@ -17,4 +17,6 @@ public @interface QCommand {
 	String permission() default "";
 
 	String section() default "";
+	
+	boolean forceExecute() default false;
 }

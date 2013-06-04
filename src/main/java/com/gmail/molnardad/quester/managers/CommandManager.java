@@ -115,21 +115,30 @@ public class CommandManager {
 		}
 		String label = args[level].toLowerCase();
 		
+		boolean execute = false;
+		if(parent != null) {
+			execute = annotations.get(parent).forceExecute();
+		}
+		
 		Method method = labels.get(parent).get(label);
 		if(method == null) {
 			method = aliases.get(parent).get(label);
 		}
-		if(method == null) {
+		if(method == null && !execute) {
 			throw new QUsageException("Unknown argument: " + label, getUsage(args, level-1, parent));
+		}
+		else {
+			method = parent;
+			level--;
 		}
 
 		// check every permission for nested command
 		QCommand cmd = annotations.get(method);
-		if(!cmd.permission().isEmpty() && (sender == null || !Util.permCheck(sender, cmd.permission(), false, null))) {
+		if(sender == null || !Util.permCheck(sender, cmd.permission(), false, null)) {
 			throw new QPermissionException();
 		}
 		
-		if(labels.get(method) != null) { // going deeper
+		if(method != parent && labels.get(method) != null) { // going deeper
 			int numArgs = args.length - level - 1;
 			if(numArgs < 1) {
 				throw new QUsageException("Not enough argmunents.", getUsage(args, level, method));
@@ -201,6 +210,9 @@ public class CommandManager {
 			}
 			else {
 				throw new IllegalArgumentException(s);
+			}
+			if(!Util.permCheck(sender, annotations.get(m).permission(), false, null)) {
+				return result;
 			}
 		}
 		QCommand anno = null;
