@@ -124,12 +124,14 @@ public class CommandManager {
 		if(method == null) {
 			method = aliases.get(parent).get(label);
 		}
-		if(method == null && !execute) {
-			throw new QUsageException("Unknown argument: " + label, getUsage(args, level-1, parent));
-		}
-		else {
-			method = parent;
-			level--;
+		if(method == null) {
+			if(execute){
+				method = parent;
+				level--;
+			}
+			else {
+				throw new QUsageException("Unknown argument: " + label, getUsage(args, level-1, parent));
+			}
 		}
 
 		// check every permission for nested command
