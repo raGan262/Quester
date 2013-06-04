@@ -162,6 +162,9 @@ public class Util {
 	}
 	
 	public static boolean permCheck(CommandSender sender, String perm, boolean message, QuesterLang lang) {
+		if(perm.isEmpty()) {
+			return true;
+		}
 		if(sender.isOp() || sender.hasPermission(perm) || sender.hasPermission(DataManager.PERM_ADMIN)) {
 			return true;
 		}
