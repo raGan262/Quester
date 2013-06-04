@@ -165,8 +165,14 @@ public class Util {
 		if(perm.isEmpty()) {
 			return true;
 		}
-		if(sender.isOp() || sender.hasPermission(perm) || sender.hasPermission(DataManager.PERM_ADMIN)) {
+		if(sender.isOp() || sender.hasPermission(DataManager.PERM_ADMIN)) {
 			return true;
+		}
+		for(String s : perm.split("\\|\\|")) {
+			Quester.log.info(s);
+			if(sender.hasPermission(s)) {
+				return true;
+			}
 		}
 		if(message)
 			sender.sendMessage(ChatColor.RED + lang.MSG_PERMS);
