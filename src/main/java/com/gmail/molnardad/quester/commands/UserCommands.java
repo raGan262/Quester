@@ -152,7 +152,8 @@ public class UserCommands {
 			section = "User",
 			desc = "starts the quest",
 			max = 1,
-			usage = "\"[quest name]\"")
+			usage = "\"[quest name]\"",
+			permission = DataManager.PERM_USE_START_RANDOM+"||"+DataManager.PERM_USE_START_PICK)
 	public void start(QCommandContext context, CommandSender sender) throws QuesterException, QCommandException {
 		if(context.getPlayer() == null) {
 			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);
