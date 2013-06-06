@@ -2,7 +2,6 @@ package com.gmail.molnardad.quester;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
 import java.util.logging.Logger;
 
 import javax.management.InstanceNotFoundException;

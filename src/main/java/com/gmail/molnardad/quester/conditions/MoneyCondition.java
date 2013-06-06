@@ -57,7 +57,7 @@ public final class MoneyCondition extends Condition {
 			usage = "<amount> (-i)")
 	public static Condition fromCommand(QCommandContext context) throws QCommandException {
 		try {
-			double amt = context.getDouble(1);
+			double amt = context.getDouble(0);
 			return new MoneyCondition(amt, context.hasFlag('i'));
 		}
 		catch (NumberFormatException e) {
