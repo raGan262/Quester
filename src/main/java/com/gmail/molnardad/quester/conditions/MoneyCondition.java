@@ -37,7 +37,7 @@ public final class MoneyCondition extends Condition {
 	@Override
 	protected String show() {
 		if(Quester.vault) {
-			String flag = inverted ? "at least ": "less than ";
+			String flag = inverted ? "less than ": "at least ";
 			return "Must have " + flag + amount + " " + Quester.econ.currencyNamePlural() + ".";
 		}
 		else {
@@ -64,7 +64,8 @@ public final class MoneyCondition extends Condition {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_GENERAL);
 		}
 	}
-	
+
+	@Override
 	protected void save(StorageKey key) {
 		key.setDouble("amount", amount);
 		if(inverted) {

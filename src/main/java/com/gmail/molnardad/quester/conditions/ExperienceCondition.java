@@ -36,12 +36,12 @@ public final class ExperienceCondition extends Condition {
 		if(isLevel) {
 			value = expMan.getLevelForExp(value);
 		}
-		return (value >= amount) != inverted;
+		return (value < amount) == inverted;
 	}
 	
 	@Override
 	public String show() {
-		String flag = inverted ? "Must have at least ": "Must have less than ";
+		String flag = inverted ? "Must have less than " : "Must have at least ";
 		String lvlpt = isLevel ? " experience levels." : " experience points.";
 		return flag + amount + lvlpt;
 	}
@@ -73,7 +73,8 @@ public final class ExperienceCondition extends Condition {
 			}
 			return new ExperienceCondition(amt,context.hasFlag('l'), context.hasFlag('i'));
 	}
-	
+
+	@Override
 	protected void save(StorageKey key) {
 		key.setInt("amount", amount);
 		if(inverted) {

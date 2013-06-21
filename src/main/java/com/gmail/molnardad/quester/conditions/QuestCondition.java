@@ -42,23 +42,30 @@ public final class QuestCondition extends Condition {
 		if(running) {
 			return profile.hasQuest(quest) != inverted;
 		}
-		if (profile.isCompleted(quest) == inverted) {
-			return false;
+		if(time == 0) {
+			return profile.isCompleted(quest) != inverted;
 		}
 		else {
-			if(time == 0) {
-				return true;
-			}
-			else {
-				return (((System.currentTimeMillis() / 1000) - profile.getCompletionTime(quest)) < time) != inverted;
-			}
+			// QUEST: elapsed < time
+			// QUESTNOT: elapsed >= time
+			return (((System.currentTimeMillis() / 1000) - profile.getCompletionTime(quest)) < time) != inverted;
 		}
 	}
 	
 	@Override
 	public String show() {
+		String type = inverted ? "not " : "";
 		String status = running ? "be doing" : "have done";
-		return "Must " + status + " quest '" + quest + "'.";
+		StringBuilder period = new StringBuilder();
+		if(!running && time != 0) {
+			if(inverted) {
+				period.append(" for ").append(time).append(" seconds.");
+			}
+			else {
+				period.append(" at most ").append(time).append(" seconds ago.");
+			}
+		}
+		return "Must " + type + status + " quest '" + quest + "'" + period.toString() + ".";
 	}
 	
 	@Override
@@ -90,7 +97,8 @@ public final class QuestCondition extends Condition {
 		}
 		return new QuestCondition(qst, t, context.hasFlag('r'), context.hasFlag('i'));
 	}
-	
+
+	@Override
 	protected void save(StorageKey key) {
 		key.setString("quest", quest);
 		if(time != 0) {

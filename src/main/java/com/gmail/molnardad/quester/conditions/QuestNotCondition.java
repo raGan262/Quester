@@ -78,7 +78,8 @@ public final class QuestNotCondition extends Condition {
 		}
 		return new QuestCondition(qst, t, context.hasFlag('r'), true);
 	}
-	
+
+	@Override
 	protected void save(StorageKey key) {
 		key.setString("quest", quest);
 		if(time != 0) {

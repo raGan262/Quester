@@ -49,6 +49,7 @@ public final class PermissionCondition extends Condition {
 		return new PermissionCondition(perm);
 	}
 
+	@Override
 	protected void save(StorageKey key) {
 		key.setString("permission", perm);
 	}

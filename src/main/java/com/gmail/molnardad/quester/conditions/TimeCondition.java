@@ -102,7 +102,8 @@ public final class TimeCondition extends Condition {
 		}
 		return new TimeCondition(from, to, world);
 	}
-	
+
+	@Override
 	protected void save(StorageKey key) {
 		if(from > 0) {
 			key.setInt("from", from);
