@@ -33,7 +33,7 @@ public class PositionListener implements Runnable {
 		    if(quest != null) {
 		    	// LOCATION CHECK
 		    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
-		    		return;
+		    		continue;
 		    	List<Objective> objs = quest.getObjectives();
 		    	for(int i = 0; i < objs.size(); i++) {
 		    		if(objs.get(i).getType().equalsIgnoreCase("LOCATION")) {
@@ -43,7 +43,7 @@ public class PositionListener implements Runnable {
 		    			LocObjective obj = (LocObjective)objs.get(i);
 		    			if(obj.checkLocation(player.getLocation())) {
 		    				qm.incProgress(player, i);
-		    				return;
+		    				break;
 		    			}
 		    		} else if(objs.get(i).getType().equalsIgnoreCase("WORLD")) {
 		    			if(!qm.isObjectiveActive(player, i)){
@@ -52,7 +52,7 @@ public class PositionListener implements Runnable {
 		    			WorldObjective obj = (WorldObjective)objs.get(i);
 		    			if(obj.checkWorld(player.getWorld().getName())) {
 		    				qm.incProgress(player, i);
-		    				return;
+		    				break;
 		    			}
 		    		}
 		    	}
