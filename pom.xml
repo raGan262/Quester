@@ -53,7 +53,7 @@
     <dependency>
       <groupId>net.aufdemrand</groupId>
       <artifactId>denizen</artifactId>
-      <version>0.8.8-PRERELEASE</version>
+      <version>0.8.9-PRERELEASE</version>
       <scope>provided</scope>
     </dependency> 
     <dependency>
