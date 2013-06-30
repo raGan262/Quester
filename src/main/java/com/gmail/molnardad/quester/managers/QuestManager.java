@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -46,7 +46,7 @@ public class QuestManager {
 	private Quester plugin = null;
 	private Storage questStorage = null;
 	
-	private Map<Integer, Quest> quests = new HashMap<Integer, Quest>();
+	private Map<Integer, Quest> quests = new TreeMap<Integer, Quest>();
 	private Map<String, Integer> questNames = new HashMap<String, Integer>();
 	public Map<Integer, Location> questLocations = new HashMap<Integer, Location>();
 	
@@ -95,11 +95,7 @@ public class QuestManager {
 	}
 	
 	public Set<Integer> getQuestIds() {
-		Set<Integer> result = new TreeSet<Integer>();
-		for(int i : quests.keySet()) {
-			result.add(i);
-		}
-		return result;
+		return quests.keySet();
 	}
 	
 	public Collection<Quest> getQuests() {
