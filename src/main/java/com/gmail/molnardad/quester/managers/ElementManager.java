@@ -202,7 +202,7 @@ public class ElementManager {
 		try {
 			Method load = clss.getDeclaredMethod("load", StorageKey.class); 
 			if(!Modifier.isStatic(load.getModifiers()) || !Modifier.isProtected(load.getModifiers())) {
-				throw new ElementException("Incorrect load method modifiers, expected protected static.");
+				throw new ElementException("Incorrect load method modifiers, expected \"protected static\".");
 			}
 			if(clss.getSuperclass() == Condition.class) {
 				if(load.getReturnType() != Condition.class) {

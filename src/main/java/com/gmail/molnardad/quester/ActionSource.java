@@ -7,7 +7,7 @@ import com.gmail.molnardad.quester.elements.Qevent;
 
 public class ActionSource {
 	
-	
+	public static final int QUESTER = 0;
 	public static final int COMMAND = 1;
 	public static final int LISTENER = 2;
 	public static final int HOLDER = 3;
@@ -15,6 +15,7 @@ public class ActionSource {
 	public static final int OTHER = 5;
 
 	public static final ActionSource BLANKSOURCE = new ActionSource(ActionSource.OTHER, null);
+	public static final ActionSource QUESTERSOURCE = new ActionSource(ActionSource.QUESTER, null);
 	
 	
 	private final Object source;

@@ -26,6 +26,7 @@ import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.Qevent;
+import com.gmail.molnardad.quester.events.QuestCompleteEvent;
 import com.gmail.molnardad.quester.events.QuestStartEvent;
 import com.gmail.molnardad.quester.exceptions.*;
 import com.gmail.molnardad.quester.profiles.PlayerProfile;
@@ -672,7 +673,7 @@ public class QuestManager {
 		}
 		
 		if(areObjectivesCompleted(player)) {
-			completeQuest(player, lang);
+			completeQuest(player, as, lang);
 		}
 		else if(error) {
 			throw new ObjectiveException(lang.ERROR_OBJ_CANT_DO);
@@ -698,15 +699,21 @@ public class QuestManager {
 		return (completed || i == 0);
 	}
 	
-	public void completeQuest(Player player, QuesterLang lang) throws QuesterException {
+	public void completeQuest(Player player, ActionSource as,  QuesterLang lang) throws QuesterException {
 		Quest quest = getPlayerQuest(player.getName());
 		
 		profMan.unassignQuest(player.getName());
 		profMan.addCompletedQuest(player.getName(), quest.getName());
-		if(QConfiguration.progMsgDone)
+		if(QConfiguration.progMsgDone) {
 			player.sendMessage(Quester.LABEL + lang.MSG_Q_COMPLETED.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
-		if(QConfiguration.verbose)
+		}
+		if(QConfiguration.verbose) {
 			Quester.log.info(player.getName() + " completed quest '" + quest.getName() + "'.");
+		}
+		/* QuestStartEvent */
+		QuestCompleteEvent event = new QuestCompleteEvent(as, player, quest);
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		
 		for(Qevent qv : quest.getQevents()) {
 			if(qv.getOccasion() == -3)
 				qv.execute(player, plugin);
