@@ -26,6 +26,7 @@ import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.Qevent;
+import com.gmail.molnardad.quester.events.ObjectiveCompleteEvent;
 import com.gmail.molnardad.quester.events.QuestCompleteEvent;
 import com.gmail.molnardad.quester.events.QuestStartEvent;
 import com.gmail.molnardad.quester.exceptions.*;
@@ -710,7 +711,7 @@ public class QuestManager {
 		if(QConfiguration.verbose) {
 			Quester.log.info(player.getName() + " completed quest '" + quest.getName() + "'.");
 		}
-		/* QuestStartEvent */
+		/* QuestCompleteEvent */
 		QuestCompleteEvent event = new QuestCompleteEvent(as, player, quest);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
@@ -736,7 +737,7 @@ public class QuestManager {
 		incProgress(player, as, objectiveId, amount, true);
 	}
 	
-	public void incProgress(final Player player, ActionSource as, final int objectiveId, final int amount, final boolean checkAll) {
+	public void incProgress(final Player player, ActionSource as, int objectiveId, int amount, boolean checkAll) {
 		QuesterLang lang = langMan.getPlayerLang(player.getName());
 		PlayerProfile prof = profMan.getProfile(player.getName());
 		int newValue = prof.getProgress()[objectiveId] + amount;
@@ -748,6 +749,11 @@ public class QuestManager {
 			if(QConfiguration.progMsgObj && !obj.isHidden()) {
 				player.sendMessage(Quester.LABEL + lang.MSG_OBJ_COMPLETED);
 			}
+			/* ObjectiveCompleteEvent */
+			ObjectiveCompleteEvent event = new ObjectiveCompleteEvent(as, player, q, objectiveId);
+			Bukkit.getServer().getPluginManager().callEvent(event);
+			
+			
 			for(Qevent qv : q.getQevents()) {
 				if(qv.getOccasion() == objectiveId) {
 					qv.execute(player, plugin);
