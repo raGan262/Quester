@@ -1,10 +1,11 @@
-package com.gmail.molnardad.quester;
+package com.gmail.molnardad.quester.profiles;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.managers.QConfiguration;
 import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
@@ -60,7 +61,7 @@ public class PlayerProfile {
 		}
 	}
 	
-	public PlayerProfile(String player) {
+	PlayerProfile(String player) {
 		name = player;
 		completed = new HashMap<String, Integer>();
 		quest = null;
@@ -74,23 +75,15 @@ public class PlayerProfile {
 	public String getName() {
 		return name;
 	}
-	
-	public String getCompletedNames() {
-		return Util.implode(completed.keySet().toArray(new String[0]), ',');
+
+	public String[] getCompletedQuests() {
+		return completed.keySet().toArray(new String[0]);
 	}
-	
-	public void addCompleted(String questName) {
-		addCompleted(questName.toLowerCase(), 0);
-	}
-	
-	public void addCompleted(String questName, int time) {
-		completed.put(questName.toLowerCase(), time);
-	}
-	
+
 	public boolean isCompleted(String questName) {
 		return completed.containsKey(questName.toLowerCase());
 	}
-	
+
 	public int getCompletionTime(String questName) {
 		Integer time = completed.get(questName.toLowerCase());
 		if(time == null) {
@@ -98,90 +91,25 @@ public class PlayerProfile {
 		}
 		return time;
 	}
-	
+
 	public int getQuestAmount() {
 		return progresses.size();
 	}
-	
-	public boolean setQuest(int index) {
-		try {
-			quest = progresses.get(index);
-		} catch (Exception e) {
-			return false;
-		}
-		return true;
-	}
-	
-	public boolean setQuest(String questName) {
-		for(int i=0; i<progresses.size(); i++) {
-			if(progresses.get(i) != null && questName.equalsIgnoreCase(progresses.get(i).quest)) {
-				quest = progresses.get(i);
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public void refreshActive() {
-		if(quest == null) {
-			setQuest(0);
-		}
-	}
-	
-	public void addQuest(String questName, int progSize) {
-		Progress prg = new Progress(questName, progSize);
-		if(!progresses.contains(prg)) {
-			progresses.add(prg);
-			setQuest(progresses.size()-1);
-		}
-	}
-	
-	private void addQuest(Progress prg) {
-		if(!progresses.contains(prg)) {
-			progresses.add(prg);
-		}
-	}
 
-	public void unsetQuest() {
-		try {
-			progresses.remove(quest);
-			quest = null;
-		} catch (Exception ignore) {}
-	}
-	
-	public void unsetQuest(int index) {
-		try {
-			if(progresses.get(index).equals(quest)) {
-				quest = null;
-			}
-			progresses.remove(index);
-		} catch (Exception ignore) {}
-	}
-	
-	public void unsetQuest(String questName) {
-		try {
-			Progress prg = new Progress(questName);
-			progresses.remove(prg);
-			if(prg.equals(quest)) {
-				quest = null;
-			}
-		} catch (Exception ignore) {}
-	}
-	
-	public String getQuest() {
+	public String getQuestName() {
 		try {
 			return quest.quest;
 		} catch (Exception ignore) {}
 		return "";
 	}
-	
-	public String getQuest(int index) {
+
+	public String getQuestName(int index) {
 		try {
 			return progresses.get(index).quest;
 		} catch (Exception ignore) {}
 		return "";
 	}
-	
+
 	public boolean hasQuest(String questName) {
 		for(int i=0; i<progresses.size(); i++) {
 			if(progresses.get(i) != null && questName.equalsIgnoreCase(progresses.get(i).quest)) {
@@ -190,58 +118,145 @@ public class PlayerProfile {
 		}
 		return false;
 	}
-	
+
 	public int getActiveIndex() {
 		return progresses.indexOf(quest);
 	}
-	
+
+	public int getQuestIndex(String questName) {
+		for(int i=0; i<progresses.size(); i++) {
+			if(progresses.get(i).quest.equalsIgnoreCase(questName)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	public int getSelected() {
 		return selected;
 	}
-	
-	public void setSelected(int newSelected) {
-		selected = newSelected;
-	}
-	
+
 	public int getHolderID() {
 		return holder;
 	}
-	
-	public void setHolderID(int newID) {
-		holder = newID;
+
+	public int getPoints() {
+		return points;
+	}
+
+	public String getRank() {
+		return rank;
+	}
+
+	public Integer[] getProgress() {
+		if(quest == null) {
+			return null;
+		}
+		return quest.progress.toArray(new Integer[0]);
+	}
+
+	public Integer[] getProgress(int index) {
+		try {
+			return progresses.get(index).progress.toArray(new Integer[0]);
+		} catch (Exception ignore) {}
+		return null;
 	}
 	
-	public List<Integer> getProgress() {
+	List<Integer> getProgressList() {
 		if(quest == null) {
 			return null;
 		}
 		return quest.progress;
 	}
-	
-	public List<Integer> getProgress(int index) {
+
+	List<Integer> getProgressList(int index) {
 		try {
 			return progresses.get(index).progress;
 		} catch (Exception ignore) {}
 		return null;
 	}
-	
-	public int getPoints() {
+
+	void addCompleted(String questName) {
+		addCompleted(questName.toLowerCase(), 0);
+	}
+
+	void addCompleted(String questName, int time) {
+		completed.put(questName.toLowerCase(), time);
+	}
+
+	boolean setQuest(int index) {
+		try {
+			quest = progresses.get(index);
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
+	boolean setQuest(String questName) {
+		for(int i=0; i<progresses.size(); i++) {
+			if(progresses.get(i) != null && questName.equalsIgnoreCase(progresses.get(i).quest)) {
+				quest = progresses.get(i);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	void refreshActive() {
+		if(quest == null) {
+			setQuest(0);
+		}
+	}
+
+	void addQuest(String questName, int progSize) {
+		Progress prg = new Progress(questName, progSize);
+		if(!progresses.contains(prg)) {
+			progresses.add(prg);
+			setQuest(progresses.size()-1);
+		}
+	}
+
+	void unsetQuest() {
+		try {
+			progresses.remove(quest);
+			quest = null;
+		} catch (Exception ignore) {}
+	}
+
+	void unsetQuest(int index) {
+		try {
+			if(progresses.get(index).equals(quest)) {
+				quest = null;
+			}
+			progresses.remove(index);
+		} catch (Exception ignore) {}
+	}
+
+	void setSelected(int newSelected) {
+		selected = newSelected;
+	}
+
+	void setHolderID(int newID) {
+		holder = newID;
+	}
+
+	int addPoints(int pts) {
+		points += pts;
 		return points;
 	}
-	
-	public void addPoints(int pts) {
-		points += pts;
-	}
-	
-	public String getRank() {
-		return rank;
-	}
-	
-	public void setRank(String newRank) {
+
+	void setRank(String newRank) {
 		rank = newRank;
 	}
-	
-	public void serialize(StorageKey key) {
+
+	private void addQuest(Progress prg) {
+		if(!progresses.contains(prg)) {
+			progresses.add(prg);
+		}
+	}
+
+	void serialize(StorageKey key) {
 
 		key.setString("name", name);
 		
@@ -277,7 +292,7 @@ public class PlayerProfile {
 		}
 	}
 	
-	public static PlayerProfile deserialize(StorageKey key) {
+	static PlayerProfile deserialize(StorageKey key) {
 		PlayerProfile prof = null;
 		
 		if(key.getString("name") != null) {

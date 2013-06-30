@@ -2,13 +2,11 @@ package com.gmail.molnardad.quester.qevents;
 
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.PlayerProfile;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
-import com.gmail.molnardad.quester.managers.ProfileManager;
 import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("POINT")
@@ -27,10 +25,7 @@ public final class PointQevent extends Qevent {
 
 	@Override
 	protected void run(Player player, Quester plugin) {
-		ProfileManager profMan = plugin.getProfileManager();
-		PlayerProfile prof = profMan.getProfile(player.getName());
-		prof.addPoints(amount);
-		profMan.checkRank(prof);
+		plugin.getProfileManager().addPoints(player.getName(), amount);
 	}
 
 	@QCommand(

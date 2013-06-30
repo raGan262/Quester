@@ -16,8 +16,8 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QPermissionException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.managers.QConfiguration;
-import com.gmail.molnardad.quester.managers.ProfileManager;
 import com.gmail.molnardad.quester.managers.QuestManager;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.strings.QuesterLang;
 import com.gmail.molnardad.quester.utils.Util;
 
@@ -225,7 +225,7 @@ public class UserCommands {
 			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);
 			return;
 		}
-		if (profMan.switchQuest((Player) sender, context.getInt(0))) {
+		if (profMan.switchQuest(sender.getName(), context.getInt(0))) {
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_SWITCHED);
 		}
 	}

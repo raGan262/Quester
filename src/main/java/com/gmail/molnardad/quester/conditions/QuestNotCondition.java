@@ -2,13 +2,13 @@ package com.gmail.molnardad.quester.conditions;
 
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.PlayerProfile;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.QElement;
+import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("QUESTNOT")

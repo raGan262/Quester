@@ -18,6 +18,7 @@ import com.gmail.molnardad.quester.QuesterSign;
 import com.gmail.molnardad.quester.exceptions.CustomException;
 import com.gmail.molnardad.quester.exceptions.HolderException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;

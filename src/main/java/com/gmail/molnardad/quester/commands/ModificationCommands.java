@@ -11,8 +11,8 @@ import com.gmail.molnardad.quester.commandbase.QNestedCommand;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.managers.QConfiguration;
-import com.gmail.molnardad.quester.managers.ProfileManager;
 import com.gmail.molnardad.quester.managers.QuestManager;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 
 public class ModificationCommands {
 

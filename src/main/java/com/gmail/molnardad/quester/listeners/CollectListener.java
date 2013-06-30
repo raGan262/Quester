@@ -17,9 +17,9 @@ import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.managers.QConfiguration;
-import com.gmail.molnardad.quester.managers.ProfileManager;
 import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.CollectObjective;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 
 public class CollectListener implements Listener {
 	
@@ -40,6 +40,7 @@ public class CollectListener implements Listener {
 	    		return;
 	    	List<Objective> objs = quest.getObjectives();
 	    	for(int i = 0; i < objs.size(); i++) {
+	    		Integer[] progress = profMan.getProfile(player.getName()).getProgress();
 	    		// check if Objective is type COLLECT
 	    		if(objs.get(i).getType().equalsIgnoreCase("COLLECT")) {
 	    			if(!qm.isObjectiveActive(player, i)){
@@ -52,7 +53,7 @@ public class CollectListener implements Listener {
 	    				// if DATA >= 0 compare
 	    				if(obj.getData() < 0 || obj.getData() == item.getDurability()) {
 	    					int rem = event.getRemaining(); // amount not picked up (full inventory)
-	    					int req = obj.getTargetAmount() - profMan.getProfile(player.getName()).getProgress().get(i); // amount required by objective
+	    					int req = obj.getTargetAmount() - progress[i]; // amount required by objective
 	    					if(req < 0) { // can't be less than 0
 	    						req = 0;
 	    					}

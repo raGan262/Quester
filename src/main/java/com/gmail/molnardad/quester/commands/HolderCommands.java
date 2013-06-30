@@ -8,8 +8,8 @@ import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
-import com.gmail.molnardad.quester.managers.ProfileManager;
 import com.gmail.molnardad.quester.managers.QuestHolderManager;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 
 public class HolderCommands {
 	
@@ -30,7 +30,7 @@ public class HolderCommands {
 			usage = "<holder name>")
 	public void set(QCommandContext context, CommandSender sender) throws QuesterException {
 		int id = holMan.createHolder(context.getString(0));
-		profMan.getProfile(sender.getName()).setHolderID(id);
+		profMan.selectHolder(sender.getName(), id);
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().HOL_CREATED);
 	}
 	

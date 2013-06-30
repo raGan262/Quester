@@ -22,11 +22,11 @@ import com.gmail.molnardad.quester.exceptions.HolderException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.managers.QConfiguration;
 import com.gmail.molnardad.quester.managers.LanguageManager;
-import com.gmail.molnardad.quester.managers.ProfileManager;
 import com.gmail.molnardad.quester.managers.QuestHolderManager;
 import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.NpcKillObjective;
 import com.gmail.molnardad.quester.objectives.NpcObjective;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.strings.QuesterLang;
 import com.gmail.molnardad.quester.utils.Util;
 
@@ -74,7 +74,7 @@ public class Citizens2Listener implements Listener {
 			
 			Quest q = qm.getQuest(holMan.getOne(qh));
 			if(q != null) {
-				if(profMan.hasQuest(player.getName(), q.getName())) {
+				if(profMan.getProfile(player.getName()).hasQuest(q.getName())) {
 					return;
 				}
 				else {

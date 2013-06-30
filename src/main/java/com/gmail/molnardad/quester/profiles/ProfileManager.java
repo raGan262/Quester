@@ -1,8 +1,7 @@
-package com.gmail.molnardad.quester.managers;
+package com.gmail.molnardad.quester.profiles;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -12,12 +11,13 @@ import javax.management.InstanceNotFoundException;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.PlayerProfile;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.managers.LanguageManager;
+import com.gmail.molnardad.quester.managers.QConfiguration;
+import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;
@@ -48,8 +48,22 @@ public class ProfileManager {
 		return prof;
 	}
 	
-	public Collection<PlayerProfile> getProfiles() {
-		return profiles.values();
+	private void updateRank(PlayerProfile prof) {
+		int pts = prof.getPoints();
+		String lastRank = "";
+		for(int i : sortedRanks) {
+			if(pts >= i) {
+				lastRank = ranks.get(i);
+			} 
+			else 
+				break;
+		}
+		prof.setRank(lastRank);
+	}
+
+
+	public PlayerProfile[] getProfiles() {
+		return profiles.values().toArray(new PlayerProfile[0]);
 	}
 	
 	public PlayerProfile getProfile(String playerName) {
@@ -66,26 +80,9 @@ public class ProfileManager {
 	public boolean hasProfile(String playerName) {
 		return profiles.containsKey(playerName.toLowerCase());
 	}
-	
-	public boolean hasQuest(String playerName, String questName) {
-		return getProfile(playerName).hasQuest(questName);
-	}
 
 	public Map<Integer, String> getRanks() {
 		return ranks;
-	}
-	
-	public void checkRank(PlayerProfile prof) {
-		int pts = prof.getPoints();
-		String lastRank = "";
-		for(int i : sortedRanks) {
-			if(pts >= i) {
-				lastRank = ranks.get(i);
-			} 
-			else 
-				break;
-		}
-		prof.setRank(lastRank);
 	}
 	
 	public int getSelectedQuestID(String name) {
@@ -95,12 +92,17 @@ public class ProfileManager {
 		return getProfile(name).getSelected();
 	}
 	
-	public List<Integer> getProgress(String playerName) {
-		return getProfile(playerName).getProgress();
+	public boolean setProgress(String playerName, int objective, int value) {
+		return setProgress(playerName, getProfile(playerName).getActiveIndex(), objective, value);
 	}
 	
-	public List<Integer> getProgress(String playerName, int index) {
-		return getProfile(playerName).getProgress(index);
+	public boolean setProgress(String playerName, int index, int objective, int value) {
+		List<Integer> prog = getProfile(playerName).getProgressList(index);
+		if(prog != null && objective < prog.size() && objective >= 0) {
+			prog.set(objective, value);
+			return true;
+		}
+		return false;
 	}
 	
 	public void assignQuest(String playerName, Quest quest) {
@@ -122,12 +124,17 @@ public class ProfileManager {
 		prof.refreshActive();
 	}
 	
+	public void addCompletedQuest(String playerName, String questName) {
+		PlayerProfile prof = getProfile(playerName);
+		prof.addCompleted(questName, (int) (System.currentTimeMillis() / 1000));
+	}
+	
 	public void selectQuest(String changer, int id) throws QuesterException {
 		getProfile(changer).setSelected(id);
 	}
 	
 	public void clearSelectedQuest(String playerName) {
-		getProfile(playerName).setHolderID(-1);
+		getProfile(playerName).setSelected(-1);
 	}
 	
 	public void selectHolder(String changer, int id) throws QuesterException {
@@ -138,8 +145,12 @@ public class ProfileManager {
 		getProfile(playerName).setHolderID(-1);
 	}
 	
-	public boolean switchQuest(Player player, int id) {
-		return getProfile(player.getName()).setQuest(id);
+	public boolean switchQuest(String playerName, int id) {
+		return getProfile(playerName).setQuest(id);
+	}
+	
+	public int addPoints(String playerName, int amount) {
+		return getProfile(playerName).addPoints(amount);
 	}
 	
 	// DISPLAY METHODS
@@ -159,7 +170,7 @@ public class ProfileManager {
 		if(QConfiguration.useRank) {
 			sender.sendMessage(ChatColor.BLUE + lang.INFO_PROFILE_RANK + ": " + ChatColor.GOLD + prof.getRank());
 		}
-		sender.sendMessage(ChatColor.BLUE + lang.INFO_PROFILE_COMPLETED + ": " + ChatColor.WHITE + prof.getCompletedNames());
+		sender.sendMessage(ChatColor.BLUE + lang.INFO_PROFILE_COMPLETED + ": " + ChatColor.WHITE + prof.getCompletedQuests());
 		
 	}
 	
@@ -204,14 +215,14 @@ public class ProfileManager {
 		for(StorageKey subKey : mainKey.getSubKeys()) {
 			prof = PlayerProfile.deserialize(subKey);
 			if(prof != null) {
-				if(!prof.getQuest().isEmpty()) {
-					if(!qMan.isQuestActive(prof.getQuest()) || 
-							(qMan.getObjectiveAmount(prof.getQuest()) != prof.getProgress().size())) {
+				if(!prof.getQuestName().isEmpty()) {
+					if(!qMan.isQuestActive(prof.getQuestName()) || 
+							(qMan.getObjectiveAmount(prof.getQuestName()) != prof.getProgressList().size())) {
 						prof.unsetQuest();
 						Quester.log.info("Incorrect quest info in profile: " + subKey.getName());
 					}
 				}
-				checkRank(prof);
+				updateRank(prof);
 				profiles.put(prof.getName().toLowerCase(), prof);
 			} else {
 				Quester.log.info("Invalid key in profiles.yml: " + subKey.getName());

@@ -9,9 +9,9 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.commandbase.QNestedCommand;
 import com.gmail.molnardad.quester.managers.QConfiguration;
-import com.gmail.molnardad.quester.managers.ProfileManager;
 import com.gmail.molnardad.quester.managers.QuestHolderManager;
 import com.gmail.molnardad.quester.managers.QuestManager;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 
 public class AdminCommands {
 

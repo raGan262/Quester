@@ -1,7 +1,7 @@
 package com.gmail.molnardad.quester.commands;
 
 import com.gmail.molnardad.quester.Quester;
-import com.gmail.molnardad.quester.managers.ProfileManager;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 
 public class PlayerCommands {
 	

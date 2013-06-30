@@ -20,7 +20,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.gmail.molnardad.quester.ActionSource;
-import com.gmail.molnardad.quester.PlayerProfile;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestFlag;
 import com.gmail.molnardad.quester.Quester;
@@ -29,6 +28,8 @@ import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.events.QuestStartEvent;
 import com.gmail.molnardad.quester.exceptions.*;
+import com.gmail.molnardad.quester.profiles.PlayerProfile;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;
@@ -120,7 +121,7 @@ public class QuestManager {
 	}
 
 	public Quest getPlayerQuest(String playerName) {
-		return getQuest(profMan.getProfile(playerName).getQuest());
+		return getQuest(profMan.getProfile(playerName).getQuestName());
 	}
 	
 	public Quest getPlayerQuest(String playerName, int index) {
@@ -128,7 +129,7 @@ public class QuestManager {
 			return null;
 		}
 		else {
-			return getQuest(profMan.getProfile(playerName).getQuest(index));
+			return getQuest(profMan.getProfile(playerName).getQuestName(index));
 		}
 	}
 	
@@ -156,8 +157,9 @@ public class QuestManager {
 		boolean all = true;
 		
 		for(int i = 0; i < objs.size(); i++) {
-			if(objs.get(i).isComplete(prof.getProgress().get(i)))
+			if(objs.get(i).isComplete(prof.getProgress()[i])) {
 				continue;
+			}
 			all = false;
 		}
 		
@@ -183,8 +185,9 @@ public class QuestManager {
 		PlayerProfile prof = profMan.getProfile(player.getName());
 	
 		for(int i=0; i<objs.size(); i++) {
-			if(!objs.get(i).isComplete( prof.getProgress().get(i)))
+			if(!objs.get(i).isComplete( prof.getProgress()[i])) {
 				return i;
+			}
 		}
 		
 		return -1;
@@ -192,15 +195,15 @@ public class QuestManager {
 	
 	public boolean isObjectiveActive(Player player, int id) {
 		List<Objective> objs = getPlayerQuest(player.getName()).getObjectives();
-		List<Integer> progress = profMan.getProgress(player.getName());
+		Integer[] progress = profMan.getProfile(player.getName()).getProgress();
 		Set<Integer> prereq = objs.get(id).getPrerequisites();
 		
-		if(objs.get(id).isComplete(progress.get(id))) {
+		if(objs.get(id).isComplete(progress[id])) {
 			return false;
 		}
 		for(int i : prereq) {
 			try {
-				if(!objs.get(i).isComplete(progress.get(i))) {
+				if(!objs.get(i).isComplete(progress[i])) {
 					return false;
 				}
 			} catch (IndexOutOfBoundsException ignore) {
@@ -265,14 +268,13 @@ public class QuestManager {
 	public void deactivateQuest(Quest q) {
 		q.removeFlag(QuestFlag.ACTIVE);
 		for(PlayerProfile prof: profMan.getProfiles()) {
-			while(prof.hasQuest(q.getName())) {
-				prof.unsetQuest(q.getName());
+			if(prof.hasQuest(q.getName())) {
+				profMan.unassignQuest(prof.getName(), prof.getQuestIndex(q.getName()));
 				Player player = Bukkit.getServer().getPlayerExact(prof.getName());
 				if(player != null){
 					player.sendMessage(Quester.LABEL + langMan.getPlayerLang(player.getName()).MSG_Q_DEACTIVATED);
 				}
 			}
-			prof.refreshActive();
 		}
 		profMan.saveProfiles();
 	}
@@ -571,7 +573,8 @@ public class QuestManager {
 				}
 			}
 		}
-		QuestStartEvent event = new QuestStartEvent(player, qst);
+		/* QuestStartEvent */
+		QuestStartEvent event = new QuestStartEvent(as, player, qst);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		if(event.isCancelled()) {
 			if(QConfiguration.verbose) {
@@ -601,7 +604,7 @@ public class QuestManager {
 		for(Quest q : qsts) {
 			if(q.hasFlag(QuestFlag.ACTIVE) 
 					&& !q.hasFlag(QuestFlag.HIDDEN) 
-					&& !profMan.hasQuest(player.getName(), q.getName()) 
+					&& !profMan.getProfile(player.getName()).hasQuest(q.getName()) 
 					&& areConditionsMet(player, q, lang)) {
 				aqsts.add(q);
 			}
@@ -699,7 +702,7 @@ public class QuestManager {
 		Quest quest = getPlayerQuest(player.getName());
 		
 		profMan.unassignQuest(player.getName());
-		profMan.getProfile(player.getName()).addCompleted(quest.getName(), (int) (System.currentTimeMillis() / 1000));
+		profMan.addCompletedQuest(player.getName(), quest.getName());
 		if(QConfiguration.progMsgDone)
 			player.sendMessage(Quester.LABEL + lang.MSG_Q_COMPLETED.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 		if(QConfiguration.verbose)
@@ -729,10 +732,10 @@ public class QuestManager {
 	public void incProgress(final Player player, ActionSource as, final int objectiveId, final int amount, final boolean checkAll) {
 		QuesterLang lang = langMan.getPlayerLang(player.getName());
 		PlayerProfile prof = profMan.getProfile(player.getName());
-		int newValue = prof.getProgress().get(objectiveId) + amount;
-		Quest q = getQuest(prof.getQuest());
+		int newValue = prof.getProgress()[objectiveId] + amount;
+		Quest q = getQuest(prof.getQuestName());
 		Objective obj = q.getObjectives().get(objectiveId);
-		prof.getProgress().set(objectiveId, newValue);
+		profMan.setProgress(prof.getName(), objectiveId, newValue);
 		// TODO add progress update message
 		if(obj.getTargetAmount() <= newValue) {
 			if(QConfiguration.progMsgObj && !obj.isHidden()) {
@@ -921,14 +924,15 @@ public class QuestManager {
 	
 	public void showProgress(Player player, int index, QuesterLang lang) throws QuesterException {
 		Quest quest = null;
-		List<Integer> progress = null;
+		Integer[] progress = null;
+		PlayerProfile prof = profMan.getProfile(player.getName());
 		if(index < 0) {
 			quest = getPlayerQuest(player.getName());
-			progress = profMan.getProgress(player.getName());
+			progress = prof.getProgress();
 		}
 		else {
 			quest = getPlayerQuest(player.getName(), index);
-			progress = profMan.getProgress(player.getName(), index);
+			progress = prof.getProgress(index);
 		}
 		if(quest == null) {
 			throw new QuestException(lang.ERROR_Q_NOT_ASSIGNED);
@@ -938,13 +942,13 @@ public class QuestManager {
 			List<Objective> objs = quest.getObjectives();
 			for(int i = 0; i < objs.size(); i++) {
 				if(!objs.get(i).isHidden()) {
-					if(objs.get(i).isComplete(progress.get(i))) {
+					if(objs.get(i).isComplete(progress[i])) {
 						player.sendMessage(ChatColor.GREEN + " - " + lang.INFO_PROGRESS_COMPLETED);
 					} else {
 						boolean active = isObjectiveActive(player, i);
 						if((active || !QConfiguration.ordOnlyCurrent)) {
 							ChatColor col = active ? ChatColor.YELLOW : ChatColor.RED;
-							player.sendMessage(col + " - " + objs.get(i).inShow(progress.get(i)));
+							player.sendMessage(col + " - " + objs.get(i).inShow(progress[i]));
 						}
 					}
 				}
@@ -968,7 +972,7 @@ public class QuestManager {
 				+ "(Limit: " + QConfiguration.maxQuests + ")");
 		int current = prof.getActiveIndex();
 		for(int i=0; i<prof.getQuestAmount(); i++) {
-			sender.sendMessage("[" + i + "] " + (current == i ? ChatColor.GREEN : ChatColor.YELLOW) + getQuest(prof.getQuest(i)).getName());
+			sender.sendMessage("[" + i + "] " + (current == i ? ChatColor.GREEN : ChatColor.YELLOW) + getQuest(prof.getQuestName(i)).getName());
 		}
 		
 	}
