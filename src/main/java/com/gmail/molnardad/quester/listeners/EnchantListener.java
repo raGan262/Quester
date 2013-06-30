@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
@@ -44,7 +45,7 @@ public class EnchantListener implements Listener {
 	    			ItemStack item = event.getItem();
 	    			Map<Enchantment, Integer> enchs = event.getEnchantsToAdd();
 	    			if(obj.check(item, enchs)) {
-	    				qm.incProgress(player, i);
+	    				qm.incProgress(player, ActionSource.listenerSource(event), i);
 	    				return;
 	    			}
 	    		}

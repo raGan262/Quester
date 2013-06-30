@@ -2,6 +2,7 @@ package com.gmail.molnardad.quester.managers;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -21,6 +22,7 @@ public class LanguageManager {
 	}
 	
 	public QuesterLang getPlayerLang(String playerName) {
+		// this will change
 		return getDefaultLang();
 	}
 	
@@ -46,11 +48,14 @@ public class LanguageManager {
 		Exception ex = null;
 		int eCount = 0;
 		for(Field f : lang.getClass().getFields()) {
+			if(Modifier.isStatic(f.getModifiers())) {
+				continue;
+			}
 			String val = key.getString(f.getName(), "");
 			if(val.isEmpty()) {
 				try {
 					key.setString(f.getName(),((String)f.get(lang)).replaceAll("\\n", "%n"));
-					if(DataManager.debug) {
+					if(QConfiguration.debug) {
 						Quester.log.info(f.getName() + " in " + file.getName() + " reset to default.");
 					}
 				} catch (Exception e) {
@@ -68,7 +73,7 @@ public class LanguageManager {
 		}
 		if(ex != null) {
 			Quester.log.info(eCount + " error(s) occured while loading strings from file " + file.getName() + ".");
-			if(DataManager.debug) {
+			if(QConfiguration.debug) {
 				Quester.log.info("Last error:");
 				ex.printStackTrace();
 			}

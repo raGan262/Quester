@@ -20,7 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
 import com.gmail.molnardad.quester.listeners.*;
-import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.QConfiguration;
 import com.gmail.molnardad.quester.managers.ElementManager;
 import com.gmail.molnardad.quester.managers.LanguageManager;
 import com.gmail.molnardad.quester.managers.CommandManager;
@@ -69,9 +69,9 @@ public class Quester extends JavaPlugin {
 			
 			log = this.getLogger();
 			
-			DataManager.createInstance(this);
+			QConfiguration.createInstance(this);
 			try {
-				DataManager.loadData();
+				QConfiguration.loadData();
 			}
 			catch (InstanceNotFoundException e1) {
 				log.severe("DataManager instance exception. Disabling quester...");
@@ -87,11 +87,11 @@ public class Quester extends JavaPlugin {
 			profiles = new ProfileManager(this);
 			quests.setProfileManager(profiles); // loading conflicts...
 			holders = new QuestHolderManager(this);
-			commands = new CommandManager(langs, log, DataManager.displayedCmd, this);
+			commands = new CommandManager(langs, log, QConfiguration.displayedCmd, this);
 
 			this.loadLocal();
 			registerElements();
-			if(DataManager.useRank) {
+			if(QConfiguration.useRank) {
 				profiles.loadRanks();
 			}
 			holders.loadHolders();
@@ -147,7 +147,7 @@ public class Quester extends JavaPlugin {
 				// profiles
 				// holders, signs
 				// quests
-				if(DataManager.verbose) {
+				if(QConfiguration.verbose) {
 					log.info("Quester data saved.");
 				}
 			}
@@ -275,8 +275,8 @@ public class Quester extends JavaPlugin {
 			langs.loadLang("english", new File(getDataFolder(), "langEN.yml"));
 			int i = 1;
 			try {
-				if(DataManager.getConfigKey("languges").hasSubKeys()) {
-					for(StorageKey subKey : DataManager.getConfigKey("languges").getSubKeys()) {
+				if(QConfiguration.getConfigKey("languges").hasSubKeys()) {
+					for(StorageKey subKey : QConfiguration.getConfigKey("languges").getSubKeys()) {
 						if(subKey.getString("") != null) {
 							langs.loadLang(subKey.getName(), new File(getDataFolder(), subKey.getString("") + ".yml"));
 							i++;
@@ -405,14 +405,14 @@ public class Quester extends JavaPlugin {
 		
 		public boolean startSaving() {
 			if(saveID == 0) {
-				if(DataManager.saveInterval > 0) {
+				if(QConfiguration.saveInterval > 0) {
 					saveID = getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 						
 						@Override
 						public void run() {
 							profiles.saveProfiles();
 						}
-					}, DataManager.saveInterval * 20L * 60L, DataManager.saveInterval * 20L * 60L);
+					}, QConfiguration.saveInterval * 20L * 60L, QConfiguration.saveInterval * 20L * 60L);
 				}
 				return true;
 			}

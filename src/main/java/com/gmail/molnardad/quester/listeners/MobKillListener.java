@@ -9,6 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
+import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
@@ -44,7 +45,7 @@ public class MobKillListener implements Listener {
 			    		EntityType ent = event.getEntity().getType();
 		    			MobKillObjective obj = (MobKillObjective)objs.get(i);
 		    			if(obj.check(ent)) {
-		    				qm.incProgress(player, i);
+		    				qm.incProgress(player, ActionSource.listenerSource(event), i);
 		    				return;
 		    			}
 		    		}

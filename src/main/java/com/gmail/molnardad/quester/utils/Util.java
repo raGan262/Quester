@@ -26,7 +26,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.gmail.molnardad.quester.Quester;
-import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.QConfiguration;
 import com.gmail.molnardad.quester.strings.QuesterLang;
 
 public class Util {
@@ -65,16 +65,16 @@ public class Util {
 		if(args.length < 1)
 			throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_INVALID);
 		
-		if(args[0].equalsIgnoreCase(DataManager.locLabelHere)) {
+		if(args[0].equalsIgnoreCase(QConfiguration.locLabelHere)) {
 			if(sender instanceof Player) {
 				return ((Player) sender).getLocation();
 			}
 			else {
 				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_HERE
-						.replaceAll("%here", DataManager.locLabelHere));
+						.replaceAll("%here", QConfiguration.locLabelHere));
 			}
 		}
-		else if(args[0].equalsIgnoreCase(DataManager.locLabelBlock)) {
+		else if(args[0].equalsIgnoreCase(QConfiguration.locLabelBlock)) {
 			if(sender instanceof Player) {
 				Block block = ((Player) sender).getTargetBlock(null, 5);
 				if(block == null) {
@@ -84,10 +84,10 @@ public class Util {
 			}
 			else {
 				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_BLOCK
-						.replaceAll("%block", DataManager.locLabelBlock));
+						.replaceAll("%block", QConfiguration.locLabelBlock));
 			}
 		}
-		else if(args[0].equalsIgnoreCase(DataManager.locLabelPlayer)) {
+		else if(args[0].equalsIgnoreCase(QConfiguration.locLabelPlayer)) {
 			return null;
 		}
 		
@@ -103,7 +103,7 @@ public class Util {
 			if(y < 0) {
 				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_COORDS_INVALID);
 			}
-			if(sender instanceof Player && args[3].equalsIgnoreCase(DataManager.worldLabelThis)) {
+			if(sender instanceof Player && args[3].equalsIgnoreCase(QConfiguration.worldLabelThis)) {
 				loc = new Location(((Player)sender).getWorld(), x, y, z);
 			} else {
 				World world = Bukkit.getServer().getWorld(args[3]);
@@ -165,7 +165,7 @@ public class Util {
 		if(perm.isEmpty()) {
 			return true;
 		}
-		if(sender.isOp() || sender.hasPermission(DataManager.PERM_ADMIN)) {
+		if(sender.isOp() || sender.hasPermission(QConfiguration.PERM_ADMIN)) {
 			return true;
 		}
 		for(String s : perm.split("\\|\\|")) {
@@ -598,7 +598,7 @@ public class Util {
 				pitch = Float.parseFloat(split[5]);
 			loc = new Location(world, x, y, z, yaw, pitch);
 		} catch (Exception e) {
-			if(DataManager.debug) {
+			if(QConfiguration.debug) {
 				Quester.log.severe("Error when deserializing location.");
 			}
 		}

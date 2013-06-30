@@ -12,10 +12,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
-import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.QConfiguration;
 import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.CollectObjective;
 import com.gmail.molnardad.quester.objectives.DropObjective;
@@ -42,7 +43,7 @@ public class DropListener implements Listener {
 	    	List<Objective> objs = quest.getObjectives();
 	    	for(int i = 0; i < objs.size(); i++) {
 	    		// check if Objective is type COLLECT
-	    		if(DataManager.colSubOnDrop && collectObj && objs.get(i).getType().equalsIgnoreCase("COLLECT")) {
+	    		if(QConfiguration.colSubOnDrop && collectObj && objs.get(i).getType().equalsIgnoreCase("COLLECT")) {
 	    			if(!qm.isObjectiveActive(player, i)){
 	    				continue;
 	    			}
@@ -50,7 +51,7 @@ public class DropListener implements Listener {
 	    			ItemStack item = event.getItemDrop().getItemStack();
 	    			if(item.getTypeId() == obj.getMaterial().getId()) {
 	    				if(obj.getData() < 0 || obj.getData() == item.getDurability()) {
-	    					qm.incProgress(player, i, -item.getAmount());
+	    					qm.incProgress(player, ActionSource.listenerSource(event), i, -item.getAmount());
 	    					collectObj = false;
 	    				}
 	    			}
@@ -98,7 +99,7 @@ public class DropListener implements Listener {
 			}
 			if(vel.lengthSquared() < 0.001D) {
 				if(obj.isMatching(item.getLocation().getBlock().getLocation())) {
-					qm.incProgress(player, id, item.getItemStack().getAmount());
+					qm.incProgress(player, ActionSource.otherSource(null), id, item.getItemStack().getAmount());
 				}
 				cancel();
 			}

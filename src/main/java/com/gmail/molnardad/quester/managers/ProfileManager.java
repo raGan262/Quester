@@ -156,7 +156,7 @@ public class ProfileManager {
 		PlayerProfile prof = getProfile(name);
 		sender.sendMessage(ChatColor.BLUE + lang.INFO_NAME + ": " + ChatColor.GOLD + prof.getName());
 		sender.sendMessage(ChatColor.BLUE + lang.INFO_PROFILE_POINTS + ": " + ChatColor.WHITE + prof.getPoints());
-		if(DataManager.useRank) {
+		if(QConfiguration.useRank) {
 			sender.sendMessage(ChatColor.BLUE + lang.INFO_PROFILE_RANK + ": " + ChatColor.GOLD + prof.getRank());
 		}
 		sender.sendMessage(ChatColor.BLUE + lang.INFO_PROFILE_COMPLETED + ": " + ChatColor.WHITE + prof.getCompletedNames());
@@ -171,7 +171,7 @@ public class ProfileManager {
 		
 		StorageKey rankKey = null;
 		try {
-			rankKey = DataManager.getConfigKey("ranks");
+			rankKey = QConfiguration.getConfigKey("ranks");
 		}
 		catch (InstanceNotFoundException e) {
 			Quester.log.severe("DataManager instance exception occured while acessing ranks.");
@@ -188,7 +188,7 @@ public class ProfileManager {
 			sortedList.add(0);
 			Quester.log.info("No ranks found. Added default rank.");
 			try {
-				DataManager.saveData();
+				QConfiguration.saveData();
 			}
 			catch (InstanceNotFoundException ignore) { }
 		}
@@ -218,7 +218,7 @@ public class ProfileManager {
 			}
 		}
 		saveProfiles();
-		if(DataManager.verbose) {
+		if(QConfiguration.verbose) {
 			Quester.log.info(profiles.size() + " profiles loaded.");
 		}
 	}

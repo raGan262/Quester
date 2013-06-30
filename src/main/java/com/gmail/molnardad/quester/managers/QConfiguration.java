@@ -9,7 +9,7 @@ import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;
 
-public class DataManager {
+public class QConfiguration {
 	
 	// GENERAL
 	public static boolean verbose = true;
@@ -60,17 +60,17 @@ public class DataManager {
 	public static final String PERM_MODIFY = "quester.modify";
 	public static final String PERM_ADMIN = "quester.admin";
 	
-	private static DataManager instance = null;
+	private static QConfiguration instance = null;
 	private Storage storage = null;
 	
-	private DataManager(Quester plugin) {
+	private QConfiguration(Quester plugin) {
 		File file = new File(plugin.getDataFolder(), "config.yml");
 		storage = new ConfigStorage(file, Quester.log, plugin.getResource(file.getName()));
 		storage.load();
 	}
 	
 	public static void createInstance(Quester quester) {
-		instance = new DataManager(quester);
+		instance = new QConfiguration(quester);
 	}
 	
 	private static void wrongConfig(String path, String def) {
@@ -103,8 +103,8 @@ public class DataManager {
 		
 		// VERBOSE-LOGGING
 		path = "general.verbose-logging";
-		DataManager.verbose = mainKey.getBoolean(path, false);
-		mainKey.setBoolean(path, DataManager.verbose);
+		QConfiguration.verbose = mainKey.getBoolean(path, false);
+		mainKey.setBoolean(path, QConfiguration.verbose);
 
 		// SAVE INTERVAL
 		path = "general.save-interval";
@@ -112,43 +112,43 @@ public class DataManager {
 			mainKey.setInt(path, 15);
 			wrongConfig(path, "15");
 		}
-		DataManager.saveInterval = mainKey.getInt(path, 15);
-		mainKey.setInt(path, DataManager.saveInterval);
+		QConfiguration.saveInterval = mainKey.getInt(path, 15);
+		mainKey.setInt(path, QConfiguration.saveInterval);
 		
 		// DEBUG INFO
 		path = "general.debug-info";
-		DataManager.debug = mainKey.getBoolean(path);
-		mainKey.setBoolean(path, DataManager.debug);
+		QConfiguration.debug = mainKey.getBoolean(path);
+		mainKey.setBoolean(path, QConfiguration.debug);
 
 		// DEBUG INFO
 		path = "general.use-rank";
-		DataManager.useRank = mainKey.getBoolean(path);
-		mainKey.setBoolean(path, DataManager.useRank);
+		QConfiguration.useRank = mainKey.getBoolean(path);
+		mainKey.setBoolean(path, QConfiguration.useRank);
 		
 		// SHOW ONLY CURRENT
 		path = "objectives.show-only-current";
-		DataManager.ordOnlyCurrent = mainKey.getBoolean(path, true);
-		mainKey.setBoolean(path, DataManager.ordOnlyCurrent);
+		QConfiguration.ordOnlyCurrent = mainKey.getBoolean(path, true);
+		mainKey.setBoolean(path, QConfiguration.ordOnlyCurrent);
 		
 		// BREAK NO DROPS
 		path = "objectives.break.no-drops";
-		DataManager.brkNoDrops = mainKey.getBoolean(path, false);
-		mainKey.setBoolean(path, DataManager.brkNoDrops);
+		QConfiguration.brkNoDrops = mainKey.getBoolean(path, false);
+		mainKey.setBoolean(path, QConfiguration.brkNoDrops);
 		
 		// BREAK SUBTRACT ON PLACE
 		path = "objectives.break.subtract-on-place";
-		DataManager.brkSubOnPlace = mainKey.getBoolean(path, true);
-		mainKey.setBoolean(path, DataManager.brkSubOnPlace);
+		QConfiguration.brkSubOnPlace = mainKey.getBoolean(path, true);
+		mainKey.setBoolean(path, QConfiguration.brkSubOnPlace);
 		
 		// COLLECT REMOVE ON PICKUP
 		path = "objectives.collect.remove-on-pickup";
-		DataManager.colRemPickup = mainKey.getBoolean(path, true);
-		mainKey.setBoolean(path, DataManager.colRemPickup);
+		QConfiguration.colRemPickup = mainKey.getBoolean(path, true);
+		mainKey.setBoolean(path, QConfiguration.colRemPickup);
 				
 		// COLLECT SUBTRACT ON DROP
 		path = "objectives.collect.subtract-on-drop";
-		DataManager.colSubOnDrop = mainKey.getBoolean(path, false);
-		mainKey.setBoolean(path, DataManager.colSubOnDrop);
+		QConfiguration.colSubOnDrop = mainKey.getBoolean(path, false);
+		mainKey.setBoolean(path, QConfiguration.colSubOnDrop);
 		
 		// MAX QUESTS
 		path = "quests.max-amount";
@@ -156,25 +156,25 @@ public class DataManager {
 			mainKey.setInt(path, 1);
 			wrongConfig(path, "1");
 		}
-		DataManager.maxQuests = mainKey.getInt(path, 1);
-		mainKey.setInt(path, DataManager.maxQuests);
+		QConfiguration.maxQuests = mainKey.getInt(path, 1);
+		mainKey.setInt(path, QConfiguration.maxQuests);
 		
 		// PROGRES MESSAGES
 		path = "quests.messages.start-show";
-		DataManager.progMsgStart = mainKey.getBoolean(path, true);
-		mainKey.setBoolean(path, DataManager.progMsgStart);
+		QConfiguration.progMsgStart = mainKey.getBoolean(path, true);
+		mainKey.setBoolean(path, QConfiguration.progMsgStart);
 		
 		path = "quests.messages.cancel-show";
-		DataManager.progMsgCancel = mainKey.getBoolean(path, true);
-		mainKey.setBoolean(path, DataManager.progMsgCancel);
+		QConfiguration.progMsgCancel = mainKey.getBoolean(path, true);
+		mainKey.setBoolean(path, QConfiguration.progMsgCancel);
 		
 		path = "quests.messages.done-show";
-		DataManager.progMsgDone = mainKey.getBoolean(path, true);
-		mainKey.setBoolean(path, DataManager.progMsgDone);
+		QConfiguration.progMsgDone = mainKey.getBoolean(path, true);
+		mainKey.setBoolean(path, QConfiguration.progMsgDone);
 		
 		path = "quests.messages.objective-show";
-		DataManager.progMsgObj = mainKey.getBoolean(path, true);
-		mainKey.setBoolean(path, DataManager.progMsgObj);
+		QConfiguration.progMsgObj = mainKey.getBoolean(path, true);
+		mainKey.setBoolean(path, QConfiguration.progMsgObj);
 	
 		// COMMANDS
 		path = "commands.displayed-cmd";
@@ -183,8 +183,8 @@ public class DataManager {
 			mainKey.setString(path, "/q");
 			wrongConfig(path, "/q");
 		}
-		DataManager.displayedCmd = mainKey.getString(path, "/q");
-		mainKey.setString(path, DataManager.displayedCmd);
+		QConfiguration.displayedCmd = mainKey.getString(path, "/q");
+		mainKey.setString(path, QConfiguration.displayedCmd);
 		
 		path = "commands.world-label-this";
 		temp = mainKey.getString(path, "");
@@ -192,8 +192,8 @@ public class DataManager {
 			mainKey.setString(path, "this");
 			wrongConfig(path, "this");
 		}
-		DataManager.worldLabelThis = mainKey.getString(path, "this");
-		mainKey.setString(path, DataManager.worldLabelThis);
+		QConfiguration.worldLabelThis = mainKey.getString(path, "this");
+		mainKey.setString(path, QConfiguration.worldLabelThis);
 		
 		path = "commands.loc-label-here";
 		temp = mainKey.getString(path, "");
@@ -201,8 +201,8 @@ public class DataManager {
 			mainKey.setString(path, "here");
 			wrongConfig(path, "here");
 		}
-		DataManager.locLabelHere = mainKey.getString(path, "here");
-		mainKey.setString(path, DataManager.locLabelHere);
+		QConfiguration.locLabelHere = mainKey.getString(path, "here");
+		mainKey.setString(path, QConfiguration.locLabelHere);
 		
 		path = "commands.loc-label-player";
 		temp = mainKey.getString(path, "");
@@ -210,8 +210,8 @@ public class DataManager {
 			mainKey.setString(path, "player");
 			wrongConfig(path, "player");
 		}
-		DataManager.locLabelPlayer = mainKey.getString(path, "player");
-		mainKey.setString(path, DataManager.locLabelPlayer);
+		QConfiguration.locLabelPlayer = mainKey.getString(path, "player");
+		mainKey.setString(path, QConfiguration.locLabelPlayer);
 		
 		path = "commands.loc-label-block";
 		temp = mainKey.getString(path, "");
@@ -219,8 +219,8 @@ public class DataManager {
 			mainKey.setString(path, "block");
 			wrongConfig(path, "block");
 		}
-		DataManager.locLabelBlock = mainKey.getString(path, "block");
-		mainKey.setString(path, DataManager.locLabelBlock);
+		QConfiguration.locLabelBlock = mainKey.getString(path, "block");
+		mainKey.setString(path, QConfiguration.locLabelBlock);
 		
 		saveData();
 	}

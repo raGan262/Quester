@@ -3,6 +3,7 @@ package com.gmail.molnardad.quester.qevents;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
@@ -28,7 +29,7 @@ public final class QuestQevent extends Qevent {
 	@Override
 	protected void run(Player player, Quester plugin) {
 		try {
-			plugin.getQuestManager().startQuest(player, quest, false, plugin.getLanguageManager().getPlayerLang(player.getName()));
+			plugin.getQuestManager().startQuest(player, quest, ActionSource.eventSource(this), plugin.getLanguageManager().getPlayerLang(player.getName()));
 		} catch (QuesterException e) {
 			Quester.log.info("Event failed to give quest to " + player.getName() + ". Reason: " + ChatColor.stripColor(e.getMessage()));
 		}

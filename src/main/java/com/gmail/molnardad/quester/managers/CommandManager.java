@@ -194,7 +194,7 @@ public class CommandManager {
 		}
 		if(ex != null) {
 			logger.warning("Failed to execute command.");
-			if(DataManager.debug) {
+			if(QConfiguration.debug) {
 				ex.printStackTrace();
 			}
 		}
@@ -364,7 +364,7 @@ public class CommandManager {
 			ex = e;
 		}
 		if(ex != null) {
-			if(DataManager.debug) {
+			if(QConfiguration.debug) {
 				logger.info("Instantiating class '" + clss.getCanonicalName() + " failed.");
 				ex.printStackTrace();
 			}

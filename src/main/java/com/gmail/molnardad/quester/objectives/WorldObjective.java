@@ -9,7 +9,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
-import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.QConfiguration;
 import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("WORLD")
@@ -42,7 +42,7 @@ public final class WorldObjective extends Objective {
 			usage = "{<world>}")
 	public static Objective fromCommand(QCommandContext context) throws QCommandException {
 		World world = null;
-		String label = DataManager.worldLabelThis;
+		String label = QConfiguration.worldLabelThis;
 		if(context.getString(0).equalsIgnoreCase(label)) {
 			Player player = context.getPlayer();
 			if(player != null) {

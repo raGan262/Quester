@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.QConfiguration;
 import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
@@ -284,7 +284,7 @@ public class PlayerProfile {
 			prof = new PlayerProfile(key.getString("name"));
 		}
 		else {
-			if(DataManager.debug) {
+			if(QConfiguration.debug) {
 				Quester.log.info("Profile name not found.");
 			}
 			return null;
@@ -309,13 +309,13 @@ public class PlayerProfile {
 					prof.addQuest(prg);
 					prof.setQuest(0);
 				} catch (Exception e) {
-					if(DataManager.verbose) {
+					if(QConfiguration.verbose) {
 						Quester.log.info("Invalid progress in profile.");
 					}
 				}
 			}
 			else {
-				if(DataManager.verbose) {
+				if(QConfiguration.verbose) {
 					Quester.log.info("Invalid or missing progress for quest '" + key.getString("quest") + "' in profile.");
 				}
 			}
@@ -334,13 +334,13 @@ public class PlayerProfile {
 						}		
 						prof.addQuest(prg);
 					} catch (Exception e) {
-						if(DataManager.verbose) {
+						if(QConfiguration.verbose) {
 							Quester.log.info("Invalid progress in profile.");
 						}
 					}
 				}
 				else {
-					if(DataManager.verbose) {
+					if(QConfiguration.verbose) {
 						Quester.log.info("Invalid or missing progress for quest '" + key + "' in profile.");
 					}
 				}

@@ -9,10 +9,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
-import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.QConfiguration;
 import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.BreakObjective;
 import com.gmail.molnardad.quester.objectives.PlaceObjective;
@@ -34,7 +35,7 @@ public class PlaceListener implements Listener {
 	    		return;
 	    	List<Objective> objs = quest.getObjectives();
 			Block block = event.getBlock();
-	    	if(DataManager.brkSubOnPlace) {
+	    	if(QConfiguration.brkSubOnPlace) {
 		    	for(int i = 0; i < objs.size(); i++) {
 		    		// check if Objective is type BREAK
 		    		if(objs.get(i).getType().equalsIgnoreCase("BREAK")) {
@@ -46,7 +47,7 @@ public class PlaceListener implements Listener {
 		    			if(block.getTypeId() == obj.getMaterial().getId()) {
 		    				// if DATA >= 0 compare
 		    				if(obj.getData() < 0 || obj.getData() == block.getData()) {
-		    					qm.incProgress(player, i, -1);
+		    					qm.incProgress(player, ActionSource.listenerSource(event), i, -1);
 		    					break;
 		    				}
 		    			}
@@ -64,7 +65,7 @@ public class PlaceListener implements Listener {
 	    			if(block.getTypeId() == obj.getMaterial().getId()) {
 	    				// if DATA >= 0 compare
 	    				if(obj.getData() < 0 || obj.getData() == block.getData()) {
-	    					qm.incProgress(player, i);
+	    					qm.incProgress(player, ActionSource.listenerSource(event), i);
 	    					return;
 	    				}
 	    			}

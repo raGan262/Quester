@@ -8,7 +8,7 @@ import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.commandbase.QNestedCommand;
-import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.QConfiguration;
 import com.gmail.molnardad.quester.managers.ProfileManager;
 import com.gmail.molnardad.quester.managers.QuestHolderManager;
 import com.gmail.molnardad.quester.managers.QuestManager;
@@ -32,7 +32,7 @@ public class AdminCommands {
 			section = "Admin",
 			desc = "saves quests and profiles",
 			max = 0,
-			permission = DataManager.PERM_ADMIN)
+			permission = QConfiguration.PERM_ADMIN)
 	public void save(QCommandContext context, CommandSender sender) {
 		profMan.saveProfiles();
 		qMan.saveQuests();
@@ -46,15 +46,15 @@ public class AdminCommands {
 			section = "Admin",
 			desc = "starts scheduled profile saving",
 			max = 0,
-			permission = DataManager.PERM_ADMIN)
+			permission = QConfiguration.PERM_ADMIN)
 	public void startsave(QCommandContext context, CommandSender sender) {
-		if(DataManager.saveInterval == 0) {
+		if(QConfiguration.saveInterval == 0) {
 			sender.sendMessage(ChatColor.RED + context.getSenderLang().MSG_AUTOSAVE_DISABLED);
 			return;
 		}
 		if(plugin.startSaving()) {
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().MSG_AUTOSAVE_STARTED
-					.replaceAll("%interval", String.valueOf(DataManager.saveInterval)));
+					.replaceAll("%interval", String.valueOf(QConfiguration.saveInterval)));
 		} else {
 			sender.sendMessage(ChatColor.RED + context.getSenderLang().MSG_AUTOSAVE_RUNNING);
 		}
@@ -65,9 +65,9 @@ public class AdminCommands {
 			section = "Admin",
 			desc = "stops scheduled profile saving",
 			max = 0,
-			permission = DataManager.PERM_ADMIN)
+			permission = QConfiguration.PERM_ADMIN)
 	public void stopsave(QCommandContext context, CommandSender sender) {
-		if(DataManager.saveInterval == 0) {
+		if(QConfiguration.saveInterval == 0) {
 			sender.sendMessage(ChatColor.RED + context.getSenderLang().MSG_AUTOSAVE_DISABLED);
 			return;
 		}
@@ -83,7 +83,7 @@ public class AdminCommands {
 			section = "Admin",
 			desc = "reloads config and local file",
 			max = 0,
-			permission = DataManager.PERM_ADMIN)
+			permission = QConfiguration.PERM_ADMIN)
 	public void reload(QCommandContext context, CommandSender sender) {
 		// TODO reloading once loading is done
 		//DataManager.reloadData();
@@ -96,7 +96,7 @@ public class AdminCommands {
 			section = "Admin",
 			desc = "version info",
 			max = 0,
-			permission = DataManager.PERM_ADMIN)
+			permission = QConfiguration.PERM_ADMIN)
 	public void version(QCommandContext context, CommandSender sender) {
 		sender.sendMessage(Quester.LABEL + ChatColor.GOLD + "version " + plugin.getDescription().getVersion());
 		sender.sendMessage(Quester.LABEL + plugin.getDescription().getWebsite());

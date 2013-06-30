@@ -14,13 +14,14 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestHolder;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.QuesterSign;
 import com.gmail.molnardad.quester.exceptions.HolderException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
-import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.QConfiguration;
 import com.gmail.molnardad.quester.managers.LanguageManager;
 import com.gmail.molnardad.quester.managers.ProfileManager;
 import com.gmail.molnardad.quester.managers.QuestHolderManager;
@@ -66,13 +67,13 @@ public class SignListeners implements Listener {
 				}
 			}
 			
-			if(!Util.permCheck(player, DataManager.PERM_USE_SIGN, true, lang)) {
+			if(!Util.permCheck(player, QConfiguration.PERM_USE_SIGN, true, lang)) {
 				return;
 			}
 			if(player.isSneaking()) {
 				return;
 			}
-			boolean isOp = Util.permCheck(player, DataManager.PERM_MODIFY, false, null);
+			boolean isOp = Util.permCheck(player, QConfiguration.PERM_MODIFY, false, null);
 
 			event.setCancelled(true);
 			QuestHolder qh = holMan.getHolder(qs.getHolderID());
@@ -163,7 +164,7 @@ public class SignListeners implements Listener {
 					// player has quest and quest giver accepts this quest
 					if(questID >= 0 && qsts.contains(questID)) {
 						try {
-							qm.complete(player, false, lang);
+							qm.complete(player, ActionSource.holderSource(qh), lang);
 						} catch (QuesterException e) {
 							try {
 								qm.showProgress(player, lang);
@@ -181,7 +182,7 @@ public class SignListeners implements Listener {
 				// player doesn't have quest
 				if(qm.isQuestActive(selected)) {
 					try {
-						qm.startQuest(player, qm.getQuestName(selected), false, lang);
+						qm.startQuest(player, qm.getQuestName(selected), ActionSource.holderSource(qh), lang);
 					} catch (QuesterException e) {
 						player.sendMessage(e.getMessage());
 					}
@@ -200,7 +201,7 @@ public class SignListeners implements Listener {
 			Sign sign = (Sign) block.getState();
 			if(holMan.getSign(sign.getLocation()) != null) {
 				QuesterLang lang = langMan.getPlayerLang(event.getPlayer().getName());
-				if(!event.getPlayer().isSneaking() || !Util.permCheck(event.getPlayer(), DataManager.PERM_MODIFY, false, null)) {
+				if(!event.getPlayer().isSneaking() || !Util.permCheck(event.getPlayer(), QConfiguration.PERM_MODIFY, false, null)) {
 					event.setCancelled(true);
 					return;
 				}
@@ -215,7 +216,7 @@ public class SignListeners implements Listener {
 		Block block = event.getBlock();
 		if(event.getLine(0).equals("[Quester]")) {
 			QuesterLang lang = langMan.getPlayerLang(event.getPlayer().getName());
-			if(!Util.permCheck(event.getPlayer(), DataManager.PERM_MODIFY, true, lang)) {
+			if(!Util.permCheck(event.getPlayer(), QConfiguration.PERM_MODIFY, true, lang)) {
 				block.breakNaturally();
 			}
 			event.setLine(0, ChatColor.BLUE + "[Quester]");

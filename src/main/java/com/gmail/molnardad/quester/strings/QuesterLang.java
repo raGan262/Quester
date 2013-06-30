@@ -3,6 +3,8 @@ package com.gmail.molnardad.quester.strings;
 import java.io.File;
 
 public class QuesterLang {
+	
+	public static QuesterLang defaultLang = new QuesterLang(null);
 
 	public String MSG_ONLY_PLAYER = "This command can only be run by player.";
 	public String MSG_PROFILES_SAVE = "Profiles saved.";

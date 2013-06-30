@@ -19,6 +19,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.PlayerProfile;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestFlag;
@@ -26,6 +27,7 @@ import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.Qevent;
+import com.gmail.molnardad.quester.events.QuestStartEvent;
 import com.gmail.molnardad.quester.exceptions.*;
 import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
@@ -534,17 +536,17 @@ public class QuestManager {
 	
 	// QUEST PROGRESS METHODS
 
-	public void startQuest(Player player, int questID, boolean command, QuesterLang lang) throws QuesterException {
+	public void startQuest(Player player, int questID, ActionSource as, QuesterLang lang) throws QuesterException {
 		Quest qst = getQuest(questID);
-		startQuest(player, qst, command, lang);
+		startQuest(player, qst, as, lang);
 	}
 	
-	public void startQuest(Player player, String questName, boolean command, QuesterLang lang) throws QuesterException {
+	public void startQuest(Player player, String questName, ActionSource as, QuesterLang lang) throws QuesterException {
 		Quest qst = getQuest(questName);
-		startQuest(player, qst, command, lang);
+		startQuest(player, qst, as, lang);
 	}
 	
-	public void startQuest(Player player, Quest qst, boolean command, QuesterLang lang) throws QuesterException {
+	public void startQuest(Player player, Quest qst, ActionSource as, QuesterLang lang) throws QuesterException {
 		String playerName = player.getName();
 		if(qst == null){
 			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
@@ -553,15 +555,15 @@ public class QuestManager {
 		if(prof.hasQuest(qst.getName())) {
 			throw new QuestException(lang.ERROR_Q_ASSIGNED);
 		}
-		if(prof.getQuestAmount() >= DataManager.maxQuests) {
+		if(prof.getQuestAmount() >= QConfiguration.maxQuests) {
 			throw new QuestException(lang.ERROR_Q_MAX_AMOUNT);
 		}
 		if(!qst.hasFlag(QuestFlag.ACTIVE)) {
 			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
 		}
-		if(command && qst.hasFlag(QuestFlag.HIDDEN))
+		if(as.is(ActionSource.COMMAND) && qst.hasFlag(QuestFlag.HIDDEN))
 			throw new QuestException(lang.ERROR_Q_NOT_CMD);
-		if (!Util.permCheck(player, DataManager.PERM_ADMIN, false, null)){
+		if (!Util.permCheck(player, QConfiguration.PERM_ADMIN, false, null)){
 			for(Condition con : qst.getConditions()) {
 				if(!con.isMet(player, plugin)) {
 					player.sendMessage(ChatColor.RED + con.inShow());
@@ -569,13 +571,22 @@ public class QuestManager {
 				}
 			}
 		}
+		QuestStartEvent event = new QuestStartEvent(player, qst);
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		if(event.isCancelled()) {
+			if(QConfiguration.verbose) {
+				Quester.log.info("QuestStart event cancelled. (" + player.getName() + "; '" + qst.getName() + "')");
+			}
+			return;
+		}
+		
 		profMan.assignQuest(playerName, qst);
-		if(DataManager.progMsgStart)
+		if(QConfiguration.progMsgStart)
 			player.sendMessage(Quester.LABEL + lang.MSG_Q_STARTED.replaceAll("%q", ChatColor.GOLD + qst.getName() + ChatColor.BLUE));
 		String description = qst.getDescription(playerName);
 		if(!description.isEmpty() && !qst.hasFlag(QuestFlag.NODESC))
 			player.sendMessage(description);
-		if(DataManager.verbose)
+		if(QConfiguration.verbose)
 			Quester.log.info(playerName + " started quest '" + qst.getName() + "'.");
 		for(Qevent qv : qst.getQevents()) {
 			if(qv.getOccasion() == -1)
@@ -584,7 +595,7 @@ public class QuestManager {
 		profMan.saveProfiles();
 	}
 	
-	public void startRandomQuest(Player player, QuesterLang lang) throws QuesterException {
+	public void startRandomQuest(Player player, ActionSource as, QuesterLang lang) throws QuesterException {
 		Collection<Quest> qsts = getQuests();
 		ArrayList<Quest> aqsts = new ArrayList<Quest>();
 		for(Quest q : qsts) {
@@ -600,12 +611,12 @@ public class QuestManager {
 			throw new QuestException(lang.ERROR_Q_NONE_ACTIVE);
 		}
 		int id = randGen.nextInt(aqsts.size());
-		startQuest(player, aqsts.get(id).getName(), false, lang);
+		startQuest(player, aqsts.get(id).getName(), as, lang);
 	}
-	public void cancelQuest(Player player, boolean command, QuesterLang lang) throws QuesterException {
-		cancelQuest(player, -1, command, lang);
+	public void cancelQuest(Player player, ActionSource as, QuesterLang lang) throws QuesterException {
+		cancelQuest(player, -1, as, lang);
 	}
-	public void cancelQuest(Player player, int index, boolean command, QuesterLang lang) throws QuesterException {
+	public void cancelQuest(Player player, int index, ActionSource as, QuesterLang lang) throws QuesterException {
 		Quest quest = null;
 		if(index < 0) {
 			quest = getPlayerQuest(player.getName());
@@ -616,13 +627,16 @@ public class QuestManager {
 		if(quest == null) {
 			throw new QuestException(lang.ERROR_Q_NOT_ASSIGNED);
 		}
-		if(command && quest.hasFlag(QuestFlag.UNCANCELLABLE)) {
+		if(as == null) {
+			as = ActionSource.BLANKSOURCE;
+		}
+		if(as.is(ActionSource.COMMAND) && quest.hasFlag(QuestFlag.UNCANCELLABLE)) {
 			throw new QuestException(lang.ERROR_Q_CANT_CANCEL);
 		}
 		profMan.unassignQuest(player.getName(), index);
-		if(DataManager.progMsgCancel)
+		if(QConfiguration.progMsgCancel)
 			player.sendMessage(Quester.LABEL + lang.MSG_Q_CANCELLED.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
-		if(DataManager.verbose)
+		if(QConfiguration.verbose)
 			Quester.log.info(player.getName() + " cancelled quest '" + quest.getName() + "'.");
 		for(Qevent qv : quest.getQevents()) {
 			if(qv.getOccasion() == -2)
@@ -631,22 +645,27 @@ public class QuestManager {
 		profMan.saveProfiles();
 	}
 	
-	public void complete(Player player, boolean command, QuesterLang lang) throws QuesterException {
-		complete(player, command, lang, true);
+	public void complete(Player player, ActionSource as, QuesterLang lang) throws QuesterException {
+		complete(player, as, lang, true);
 	}
 	
-	public void complete(Player player, boolean command, QuesterLang lang, boolean checkObjs) throws QuesterException {
+	public void complete(Player player, ActionSource as, QuesterLang lang, boolean checkObjs) throws QuesterException {
 		Quest quest = getPlayerQuest(player.getName());
 		if(quest == null)
 			throw new QuestException(lang.ERROR_Q_NOT_ASSIGNED);
-		if(command && quest.hasFlag(QuestFlag.HIDDEN))
+		if(as == null) {
+			as = ActionSource.BLANKSOURCE;
+		}
+		
+		if(as.is(ActionSource.COMMAND) && quest.hasFlag(QuestFlag.HIDDEN))
 			throw new QuestException(lang.ERROR_Q_NOT_CMD);
+		
     	if(!quest.allowedWorld(player.getWorld().getName()))
     		throw new QuestException(lang.ERROR_Q_BAD_WORLD);
     	
 		boolean error = false;
 		if(checkObjs) {
-			error = ! completeObjective(player, lang);
+			error = ! completeObjective(player, as, lang);
 		}
 		
 		if(areObjectivesCompleted(player)) {
@@ -657,7 +676,7 @@ public class QuestManager {
 		}
 	}
 	
-	public boolean completeObjective(Player player, QuesterLang lang) throws QuesterException {
+	private boolean completeObjective(Player player, ActionSource as, QuesterLang lang) throws QuesterException {
 		Quest quest = getPlayerQuest(player.getName());
 		List<Objective> objs = quest.getObjectives();
 		
@@ -666,7 +685,7 @@ public class QuestManager {
 		while(i<objs.size() && !completed) {
 			if(isObjectiveActive(player, i)) {
 				if(objs.get(i).tryToComplete(player)) {
-					incProgress(player, i, false);
+					incProgress(player, as, i, false);
 					completed = true;
 				} 
 			}
@@ -681,9 +700,9 @@ public class QuestManager {
 		
 		profMan.unassignQuest(player.getName());
 		profMan.getProfile(player.getName()).addCompleted(quest.getName(), (int) (System.currentTimeMillis() / 1000));
-		if(DataManager.progMsgDone)
+		if(QConfiguration.progMsgDone)
 			player.sendMessage(Quester.LABEL + lang.MSG_Q_COMPLETED.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
-		if(DataManager.verbose)
+		if(QConfiguration.verbose)
 			Quester.log.info(player.getName() + " completed quest '" + quest.getName() + "'.");
 		for(Qevent qv : quest.getQevents()) {
 			if(qv.getOccasion() == -3)
@@ -695,38 +714,38 @@ public class QuestManager {
 		}
 	}
 	
-	public void incProgress(Player player, int id) {
-		incProgress(player, id, 1, true);
+	public void incProgress(Player player, ActionSource as, int objectiveId) {
+		incProgress(player, as, objectiveId, 1, true);
 	}
 	
-	public void incProgress(Player player, int id, boolean checkAll) {
-		incProgress(player, id, 1, checkAll);
+	public void incProgress(Player player, ActionSource as, int objectiveId, boolean checkAll) {
+		incProgress(player, as, objectiveId, 1, checkAll);
 	}
 	
-	public void incProgress(Player player, int id, int amount) {
-		incProgress(player, id, amount, true);
+	public void incProgress(Player player, ActionSource as, int objectiveId, int amount) {
+		incProgress(player, as, objectiveId, amount, true);
 	}
 	
-	public void incProgress(final Player player, final int id, final int amount, final boolean checkAll) {
+	public void incProgress(final Player player, ActionSource as, final int objectiveId, final int amount, final boolean checkAll) {
 		QuesterLang lang = langMan.getPlayerLang(player.getName());
 		PlayerProfile prof = profMan.getProfile(player.getName());
-		int newValue = prof.getProgress().get(id) + amount;
+		int newValue = prof.getProgress().get(objectiveId) + amount;
 		Quest q = getQuest(prof.getQuest());
-		Objective obj = q.getObjectives().get(id);
-		prof.getProgress().set(id, newValue);
+		Objective obj = q.getObjectives().get(objectiveId);
+		prof.getProgress().set(objectiveId, newValue);
 		// TODO add progress update message
 		if(obj.getTargetAmount() <= newValue) {
-			if(DataManager.progMsgObj && !obj.isHidden()) {
+			if(QConfiguration.progMsgObj && !obj.isHidden()) {
 				player.sendMessage(Quester.LABEL + lang.MSG_OBJ_COMPLETED);
 			}
 			for(Qevent qv : q.getQevents()) {
-				if(qv.getOccasion() == id) {
+				if(qv.getOccasion() == objectiveId) {
 					qv.execute(player, plugin);
 				}
 			}
 			if(checkAll) {
 				try{
-					complete(player, false, lang, false);
+					complete(player, as, lang, false);
 				} catch (QuesterException ignore) {}
 			}
 			profMan.saveProfiles();
@@ -749,7 +768,7 @@ public class QuestManager {
 			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
 		}
 		if(!qst.hasFlag(QuestFlag.ACTIVE) || qst.hasFlag(QuestFlag.HIDDEN)) {
-			if(!Util.permCheck(sender, DataManager.PERM_MODIFY, false, null)) {
+			if(!Util.permCheck(sender, QConfiguration.PERM_MODIFY, false, null)) {
 				throw new QuestException(lang.ERROR_Q_NOT_EXIST);
 			}
 		}
@@ -777,7 +796,7 @@ public class QuestManager {
 			List<Objective> objs = qst.getObjectives();
 			sender.sendMessage(ChatColor.BLUE + lang.INFO_OBJECTIVES + ":");
 			for(int i = 0; i < objs.size(); i++) {
-				if(!objs.get(i).isHidden() && (objs.get(i).getPrerequisites().isEmpty() || !DataManager.ordOnlyCurrent)) {
+				if(!objs.get(i).isHidden() && (objs.get(i).getPrerequisites().isEmpty() || !QConfiguration.ordOnlyCurrent)) {
 					sender.sendMessage(ChatColor.WHITE + " - " + objs.get(i).inShow(0));
 				}
 			}
@@ -923,7 +942,7 @@ public class QuestManager {
 						player.sendMessage(ChatColor.GREEN + " - " + lang.INFO_PROGRESS_COMPLETED);
 					} else {
 						boolean active = isObjectiveActive(player, i);
-						if((active || !DataManager.ordOnlyCurrent)) {
+						if((active || !QConfiguration.ordOnlyCurrent)) {
 							ChatColor col = active ? ChatColor.YELLOW : ChatColor.RED;
 							player.sendMessage(col + " - " + objs.get(i).inShow(progress.get(i)));
 						}
@@ -946,7 +965,7 @@ public class QuestManager {
 		}
 		PlayerProfile prof = profMan.getProfile(name);
 		sender.sendMessage(ChatColor.BLUE + (sender.getName().equalsIgnoreCase(name) ? "Your quests: " : prof.getName() + "\'s quests: " ) 
-				+ "(Limit: " + DataManager.maxQuests + ")");
+				+ "(Limit: " + QConfiguration.maxQuests + ")");
 		int current = prof.getActiveIndex();
 		for(int i=0; i<prof.getQuestAmount(); i++) {
 			sender.sendMessage("[" + i + "] " + (current == i ? ChatColor.GREEN : ChatColor.YELLOW) + getQuest(prof.getQuest(i)).getName());
@@ -984,7 +1003,7 @@ public class QuestManager {
 		int lastGeneric = 0;
 		for(StorageKey questKey : questStorage.getKey("").getSubKeys()) {
 			if(questKey.hasSubKeys()) {
-				if(DataManager.debug) {
+				if(QConfiguration.debug) {
 					Quester.log.info("Deserializing quest " + questKey.getName() + ".");
 				}
 				Quest quest = Quest.deserialize(questKey);
@@ -1049,7 +1068,7 @@ public class QuestManager {
 				questLocations.put(q.getID(), q.getLocation());
 			}
 		}
-		if(DataManager.verbose) {
+		if(QConfiguration.verbose) {
 			Quester.log.info(quests.size() + " quests loaded.");
 		}
 	}

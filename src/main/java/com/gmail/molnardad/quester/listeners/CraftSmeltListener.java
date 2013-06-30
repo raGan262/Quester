@@ -14,6 +14,7 @@ import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
@@ -60,14 +61,14 @@ public class CraftSmeltListener implements Listener {
 		    				// actual crafted amount
 		    				int amtCrafted = Math.min(spc, count);
 		    				if(amtCrafted > 0) {
-		    					qm.incProgress(player, i, item.getAmount()*amtCrafted);
+		    					qm.incProgress(player, ActionSource.listenerSource(event), i, item.getAmount()*amtCrafted);
 			    				return;
 		    				}
 	    				}
 	    			} else {
 	    				ItemStack inHand = event.getCursor();
 	    				if(obj.check(item) && checkHand(inHand, item)) {
-	    					qm.incProgress(player, i, item.getAmount());
+	    					qm.incProgress(player, ActionSource.listenerSource(event), i, item.getAmount());
 	    					return;
 	    				}
 	    			}
@@ -102,14 +103,14 @@ public class CraftSmeltListener implements Listener {
 	    				if(obj.check(item)) {
 		    				int spc = getInvSpace(player.getInventory(), item, 1);
 		    				if(spc != 0) {
-		    					qm.incProgress(player, i, Math.min(item.getAmount(), spc));
+		    					qm.incProgress(player, ActionSource.listenerSource(event), i, Math.min(item.getAmount(), spc));
 			    				return;
 		    				}	    			
 	    				}
 	    			} else {
 		    			ItemStack inHand = event.getCursor();
 		    			if(obj.check(item) && checkHand(inHand, item)) {
-		    				qm.incProgress(player, i, item.getAmount());
+		    				qm.incProgress(player, ActionSource.listenerSource(event), i, item.getAmount());
 		    				return;
 		    			}
 	    			}

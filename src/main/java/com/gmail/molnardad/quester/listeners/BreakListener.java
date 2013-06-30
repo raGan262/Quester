@@ -10,10 +10,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
-import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.QConfiguration;
 import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.BreakObjective;
 
@@ -52,10 +53,10 @@ public class BreakListener implements Listener {
 	    			if(passed && obj.checkHand(player.getItemInHand().getTypeId())) {
 	    				// if DATA >= 0 compare
 	    				if(obj.getData() < 0 || obj.getData() == block.getData()) {
-	    					if(DataManager.brkNoDrops) {
+	    					if(QConfiguration.brkNoDrops) {
 	    						block.setType(Material.AIR);
 	    					}
-	    					qm.incProgress(player, i);
+	    					qm.incProgress(player, ActionSource.listenerSource(event), i);
 	    					return;
 	    				}
 	    			}

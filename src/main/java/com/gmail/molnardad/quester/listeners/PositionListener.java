@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestFlag;
 import com.gmail.molnardad.quester.Quester;
@@ -42,7 +43,7 @@ public class PositionListener implements Runnable {
 		    			}
 		    			LocObjective obj = (LocObjective)objs.get(i);
 		    			if(obj.checkLocation(player.getLocation())) {
-		    				qm.incProgress(player, i);
+		    				qm.incProgress(player, ActionSource.otherSource(null), i);
 		    				break;
 		    			}
 		    		} else if(objs.get(i).getType().equalsIgnoreCase("WORLD")) {
@@ -51,7 +52,7 @@ public class PositionListener implements Runnable {
 		    			}
 		    			WorldObjective obj = (WorldObjective)objs.get(i);
 		    			if(obj.checkWorld(player.getWorld().getName())) {
-		    				qm.incProgress(player, i);
+		    				qm.incProgress(player, ActionSource.otherSource(null), i);
 		    				break;
 		    			}
 		    		}
@@ -65,7 +66,7 @@ public class PositionListener implements Runnable {
 		    		if(loc2.getWorld().getName().equals(loc.getWorld().getName())) {
 			    		if(loc2.distanceSquared(loc) <= qst.getRange()*qst.getRange() && qst.hasFlag(QuestFlag.ACTIVE)) {
 			    			try {
-								qm.startQuest(player, qst.getName(), false, langMan.getPlayerLang(player.getName()));
+								qm.startQuest(player, qst.getName(), ActionSource.otherSource(null), langMan.getPlayerLang(player.getName()));
 							} catch (QuesterException e) {
 							}
 			    		}

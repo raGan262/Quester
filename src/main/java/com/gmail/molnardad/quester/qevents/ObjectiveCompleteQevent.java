@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
@@ -38,12 +39,13 @@ public final class ObjectiveCompleteQevent extends Qevent {
 			if(objective >= 0 && objective < prog.size()) {
 				int req = plugin.getQuestManager().getPlayerQuest(player.getName()).getObjective(objective).getTargetAmount();
 				if(prog.get(objective) < req) {
+					ActionSource as = ActionSource.eventSource(this);
 					if(runEvents) {
-						plugin.getQuestManager().incProgress(player, objective, prog.set(objective, req - prog.get(objective)));
+						plugin.getQuestManager().incProgress(player, as, objective, prog.set(objective, req - prog.get(objective)));
 					}
 					else {
 						prog.set(objective, req);
-						plugin.getQuestManager().complete(player, false, plugin.getLanguageManager().getPlayerLang(player.getName()), false);
+						plugin.getQuestManager().complete(player, as, plugin.getLanguageManager().getPlayerLang(player.getName()), false);
 					}
 				}
 				else {

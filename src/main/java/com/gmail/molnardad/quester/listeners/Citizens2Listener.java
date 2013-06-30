@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestHolder;
 import com.gmail.molnardad.quester.Quester;
@@ -19,7 +20,7 @@ import com.gmail.molnardad.quester.QuesterTrait;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.exceptions.HolderException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
-import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.QConfiguration;
 import com.gmail.molnardad.quester.managers.LanguageManager;
 import com.gmail.molnardad.quester.managers.ProfileManager;
 import com.gmail.molnardad.quester.managers.QuestHolderManager;
@@ -49,11 +50,11 @@ public class Citizens2Listener implements Listener {
 			QuestHolder qh = holMan.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
 			Player player = event.getClicker();
 			QuesterLang lang = langMan.getPlayerLang(player.getName());
-			if(!Util.permCheck(player, DataManager.PERM_USE_NPC, true, lang)) {
+			if(!Util.permCheck(player, QConfiguration.PERM_USE_NPC, true, lang)) {
 				return;
 			}
 			// If player has perms and holds blaze rod
-			boolean isOp = Util.permCheck(player, DataManager.PERM_MODIFY, false, null);
+			boolean isOp = Util.permCheck(player, QConfiguration.PERM_MODIFY, false, null);
 			if(isOp) {
 				if(player.getItemInHand().getTypeId() == 369) {
 					event.getNPC().getTrait(QuesterTrait.class).setHolderID(-1);
@@ -110,10 +111,10 @@ public class Citizens2Listener implements Listener {
 			QuestHolder qh = holMan.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
 			Player player = event.getClicker();
 			QuesterLang lang = langMan.getPlayerLang(player.getName());
-			if(!Util.permCheck(player, DataManager.PERM_USE_NPC, true, lang)) {
+			if(!Util.permCheck(player, QConfiguration.PERM_USE_NPC, true, lang)) {
 				return;
 			}
-			boolean isOP = Util.permCheck(player, DataManager.PERM_MODIFY, false, null);
+			boolean isOP = Util.permCheck(player, QConfiguration.PERM_MODIFY, false, null);
 			// If player has perms and holds blaze rod
 			if(isOP) {
 				if(player.getItemInHand().getTypeId() == 369) {
@@ -149,7 +150,7 @@ public class Citizens2Listener implements Listener {
 				// player has quest and quest giver accepts this quest
 				if(questID >= 0 && qsts.contains(questID)) {
 					try {
-						qm.complete(player, false, lang);
+						qm.complete(player, ActionSource.holderSource(qh), lang);
 					} catch (QuesterException e) {
 						try {
 							qm.showProgress(player, lang);
@@ -167,7 +168,7 @@ public class Citizens2Listener implements Listener {
 			// player doesn't have quest
 			if(qm.isQuestActive(selected)) {
 				try {
-					qm.startQuest(player, qm.getQuest(selected), false, lang);
+					qm.startQuest(player, qm.getQuest(selected), ActionSource.holderSource(qh), lang);
 				} catch (QuesterException e) {
 					player.sendMessage(e.getMessage());
 				}
@@ -192,7 +193,7 @@ public class Citizens2Listener implements Listener {
 	    			}
 	    			NpcObjective obj = (NpcObjective)objs.get(i);
 	    			if(obj.checkNpc(event.getNPC().getId())) {
-	    				qm.incProgress(player, i);
+	    				qm.incProgress(player, ActionSource.listenerSource(event), i);
 	    				if(obj.getCancel()) {
 	    					event.setCancelled(true);
 	    				}
@@ -221,7 +222,7 @@ public class Citizens2Listener implements Listener {
 	    			}
 	    			NpcKillObjective obj = (NpcKillObjective)objs.get(i);
 	    			if(obj.checkNpc(event.getNPC().getName())) {
-	    				qm.incProgress(player, i);
+	    				qm.incProgress(player, ActionSource.listenerSource(event), i);
 	    				return;
 	    			}
 	    		}

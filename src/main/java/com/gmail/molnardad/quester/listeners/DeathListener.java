@@ -8,6 +8,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
+import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.QuestFlag;
 import com.gmail.molnardad.quester.Quester;
@@ -41,7 +42,7 @@ public class DeathListener implements Listener {
 	    	// DEATH CHECK
 	    	if(quest.hasFlag(QuestFlag.DEATHCANCEL)) {
 	    		try {
-					qm.cancelQuest(player, false, langMan.getPlayerLang(player.getName()));
+					qm.cancelQuest(player, ActionSource.listenerSource(event), langMan.getPlayerLang(player.getName()));
 				} catch (QuesterException e) {
 				}
 	    		return;
@@ -56,7 +57,7 @@ public class DeathListener implements Listener {
 	    			}
 	    			DeathObjective obj = (DeathObjective)objs.get(i);
 	    			if(obj.checkDeath(player.getLocation())) {
-	    				qm.incProgress(player, i);
+	    				qm.incProgress(player, ActionSource.listenerSource(event), i);
 	    				return;
 	    			}
 	    		}
@@ -86,7 +87,7 @@ public class DeathListener implements Listener {
 		    		if(objs.get(i).getType().equalsIgnoreCase("PLAYERKILL")) {
 		    			PlayerKillObjective obj = (PlayerKillObjective)objs.get(i);
 		    			if(obj.checkPlayer(player)) {
-		    				qm.incProgress(killer, i);
+		    				qm.incProgress(killer, ActionSource.listenerSource(event), i);
 		    				return;
 		    			}
 		    		}

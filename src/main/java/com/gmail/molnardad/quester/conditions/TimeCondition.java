@@ -10,7 +10,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.QElement;
-import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.QConfiguration;
 import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("TIME")
@@ -86,9 +86,9 @@ public final class TimeCondition extends Condition {
 			to *= 1000;
 		}
 		if(context.length() > 1) {
-			if(context.getString(1).equalsIgnoreCase(DataManager.worldLabelThis)) {
+			if(context.getString(1).equalsIgnoreCase(QConfiguration.worldLabelThis)) {
 				if(context.getPlayer() == null) {
-					throw new QCommandException(context.getSenderLang().ERROR_CMD_WORLD_THIS.replaceAll("%this", DataManager.worldLabelThis));
+					throw new QCommandException(context.getSenderLang().ERROR_CMD_WORLD_THIS.replaceAll("%this", QConfiguration.worldLabelThis));
 				}
 				world = context.getPlayer().getWorld().getName();
 			}

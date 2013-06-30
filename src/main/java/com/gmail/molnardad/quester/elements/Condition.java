@@ -7,7 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
-import com.gmail.molnardad.quester.managers.DataManager;
+import com.gmail.molnardad.quester.managers.QConfiguration;
 import com.gmail.molnardad.quester.managers.ElementManager;
 import com.gmail.molnardad.quester.storage.StorageKey;
 
@@ -96,7 +96,7 @@ public abstract class Condition extends Element {
 				}
 			} catch (Exception e) {
 				Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Method load() missing or invalid. " + e.getClass().getName());
-				if(DataManager.debug) {
+				if(QConfiguration.debug) {
 					e.printStackTrace();
 				}
 				return null;

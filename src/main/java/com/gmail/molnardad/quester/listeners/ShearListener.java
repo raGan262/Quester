@@ -10,6 +10,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 
+import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
@@ -41,7 +42,7 @@ public class ShearListener implements Listener {
 		    			}
 		    			ShearObjective obj = (ShearObjective)objs.get(i);
 		    			if(obj.check(sheep.getColor())) {
-		    				qm.incProgress(player, i);
+		    				qm.incProgress(player, ActionSource.listenerSource(event), i);
 		    				return;
 		    			}
 		    		}

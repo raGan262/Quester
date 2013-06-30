@@ -317,7 +317,7 @@ public class QuestHolderManager {
 		}
 		
 		saveHolders();
-		if(DataManager.verbose) {
+		if(QConfiguration.verbose) {
 			Quester.log.info(holderIds.size() + " holders loaded.");
 			Quester.log.info(signs.size() + " signs loaded.");
 		}
