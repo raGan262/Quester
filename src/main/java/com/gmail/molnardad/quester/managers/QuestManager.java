@@ -103,7 +103,11 @@ public class QuestManager {
 	}
 	
 	public Quest getQuest(String questName) {
-		return quests.get(questNames.get(questName.toLowerCase()));
+		Integer id = questNames.get(questName.toLowerCase());
+		if(id == null) {
+			return null;
+		}
+		return quests.get(id);
 	}
 	
 	public Quest getQuest(Integer questID) {

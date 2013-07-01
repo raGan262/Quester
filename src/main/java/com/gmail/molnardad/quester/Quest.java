@@ -185,16 +185,22 @@ public class Quest {
 	}
 	
 	public Map<Integer, Map<Integer, Qevent>> getQeventMap() {
+		return getQeventMap(null);
+	}
+	
+	public Map<Integer, Map<Integer, Qevent>> getQeventMap(String type) {
 		Map<Integer, Map<Integer, Qevent>> result = new HashMap<Integer, Map<Integer, Qevent>>();
 		Qevent q = null;
 		int occ = 0;
 		for(int i=0; i<qevents.size(); i++) {
-			q = qevents.get(i);
-			occ = q.getOccasion();
-			if(result.get(occ) == null) {
-				result.put(occ, new TreeMap<Integer, Qevent>());
+			if(type == null || type.equalsIgnoreCase(type)) {
+				q = qevents.get(i);
+				occ = q.getOccasion();
+				if(result.get(occ) == null) {
+					result.put(occ, new TreeMap<Integer, Qevent>());
+				}
+				result.get(occ).put(i, q);
 			}
-			result.get(occ).put(i, q);
 		}
 		return result;
 	}
