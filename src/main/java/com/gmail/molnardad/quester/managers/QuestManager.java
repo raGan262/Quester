@@ -27,6 +27,7 @@ import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.events.ObjectiveCompleteEvent;
+import com.gmail.molnardad.quester.events.QuestCancelEvent;
 import com.gmail.molnardad.quester.events.QuestCompleteEvent;
 import com.gmail.molnardad.quester.events.QuestStartEvent;
 import com.gmail.molnardad.quester.exceptions.*;
@@ -638,6 +639,10 @@ public class QuestManager {
 		if(as.is(ActionSource.COMMAND) && quest.hasFlag(QuestFlag.UNCANCELLABLE)) {
 			throw new QuestException(lang.ERROR_Q_CANT_CANCEL);
 		}
+		/* QuestCancelEvent */
+		QuestCancelEvent event = new QuestCancelEvent(as, player, quest);
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		
 		profMan.unassignQuest(player.getName(), index);
 		if(QConfiguration.progMsgCancel)
 			player.sendMessage(Quester.LABEL + lang.MSG_Q_CANCELLED.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
