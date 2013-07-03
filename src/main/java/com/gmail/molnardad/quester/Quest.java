@@ -193,8 +193,8 @@ public class Quest {
 		Qevent q = null;
 		int occ = 0;
 		for(int i=0; i<qevents.size(); i++) {
-			if(type == null || type.equalsIgnoreCase(type)) {
-				q = qevents.get(i);
+			q = qevents.get(i);
+			if(type == null || type.equalsIgnoreCase(q.getType())) {
 				occ = q.getOccasion();
 				if(result.get(occ) == null) {
 					result.put(occ, new TreeMap<Integer, Qevent>());
