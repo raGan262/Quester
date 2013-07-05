@@ -72,14 +72,14 @@ public class Citizens2Listener implements Listener {
 			}
 			qh.interact(player.getName());
 			
-			Quest q = qm.getQuest(holMan.getOne(qh));
-			if(q != null) {
-				if(profMan.getProfile(player.getName()).hasQuest(q.getName())) {
+			Quest quest = qm.getQuest(holMan.getOne(qh));
+			if(quest != null) {
+				if(profMan.getProfile(player.getName()).hasQuest(quest)) {
 					return;
 				}
 				else {
 					try {
-						qm.showQuest(player, q.getName(), lang);
+						qm.showQuest(player, quest.getName(), lang);
 						return;
 					}
 					catch (QuesterException ignore) {}
@@ -139,7 +139,7 @@ public class Citizens2Listener implements Listener {
 			qh.interact(player.getName());
 			List<Integer> qsts = qh.getQuests();
 			
-			Quest currentQuest = qm.getPlayerQuest(player.getName());
+			Quest currentQuest = profMan.getProfile(player.getName()).getQuest();
 			if(!player.isSneaking()) {
 				int questID = currentQuest == null ? -1 : currentQuest.getID();
 				// player has quest and quest giver does not accept this quest
@@ -150,7 +150,7 @@ public class Citizens2Listener implements Listener {
 				// player has quest and quest giver accepts this quest
 				if(questID >= 0 && qsts.contains(questID)) {
 					try {
-						qm.complete(player, ActionSource.holderSource(qh), lang);
+						profMan.complete(player, ActionSource.holderSource(qh), lang);
 					} catch (QuesterException e) {
 						try {
 							qm.showProgress(player, lang);
@@ -168,7 +168,7 @@ public class Citizens2Listener implements Listener {
 			// player doesn't have quest
 			if(qm.isQuestActive(selected)) {
 				try {
-					qm.startQuest(player, qm.getQuest(selected), ActionSource.holderSource(qh), lang);
+					profMan.startQuest(player, qm.getQuest(selected), ActionSource.holderSource(qh), lang);
 				} catch (QuesterException e) {
 					player.sendMessage(e.getMessage());
 				}
@@ -181,19 +181,19 @@ public class Citizens2Listener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onAnyClick(NPCRightClickEvent event) {
 		Player player = event.getClicker();
-    	Quest quest = qm.getPlayerQuest(player.getName());
+    	Quest quest = profMan.getProfile(player.getName()).getQuest();
 	    if(quest != null) {
 	    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
 	    		return;
 	    	List<Objective> objs = quest.getObjectives();
 	    	for(int i = 0; i < objs.size(); i++) {
 	    		if(objs.get(i).getType().equalsIgnoreCase("NPC")) {
-		    		if(!qm.isObjectiveActive(player, i)){
+		    		if(!profMan.isObjectiveActive(player, i)){
 	    				continue;
 	    			}
 	    			NpcObjective obj = (NpcObjective)objs.get(i);
 	    			if(obj.checkNpc(event.getNPC().getId())) {
-	    				qm.incProgress(player, ActionSource.listenerSource(event), i);
+	    				profMan.incProgress(player, ActionSource.listenerSource(event), i);
 	    				if(obj.getCancel()) {
 	    					event.setCancelled(true);
 	    				}
@@ -210,19 +210,19 @@ public class Citizens2Listener implements Listener {
 		if(player == null) {
 			return;
 		}
-    	Quest quest = qm.getPlayerQuest(player.getName());
+    	Quest quest = profMan.getProfile(player.getName()).getQuest();
 	    if(quest != null) {
 	    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
 	    		return;
 	    	List<Objective> objs = quest.getObjectives();
 	    	for(int i = 0; i < objs.size(); i++) {
 	    		if(objs.get(i).getType().equalsIgnoreCase("NPCKILL")) {
-		    		if(!qm.isObjectiveActive(player, i)){
+		    		if(!profMan.isObjectiveActive(player, i)){
 	    				continue;
 	    			}
 	    			NpcKillObjective obj = (NpcKillObjective)objs.get(i);
 	    			if(obj.checkNpc(event.getNPC().getName())) {
-	    				qm.incProgress(player, ActionSource.listenerSource(event), i);
+	    				profMan.incProgress(player, ActionSource.listenerSource(event), i);
 	    				return;
 	    			}
 	    		}

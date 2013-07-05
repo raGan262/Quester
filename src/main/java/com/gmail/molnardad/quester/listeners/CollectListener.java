@@ -17,33 +17,30 @@ import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.managers.QConfiguration;
-import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.CollectObjective;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 
 public class CollectListener implements Listener {
 	
-	private QuestManager qm = null;
 	private ProfileManager profMan = null;
 	
 	public CollectListener(Quester plugin) {
-		this.qm = plugin.getQuestManager();
 		this.profMan = plugin.getProfileManager();
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPickup(PlayerPickupItemEvent event) {
 	    Player player = event.getPlayer();
-    	Quest quest = qm.getPlayerQuest(player.getName());
+    	Quest quest = profMan.getProfile(player.getName()).getQuest();
 	    if(quest != null) {
 	    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
 	    		return;
 	    	List<Objective> objs = quest.getObjectives();
 	    	for(int i = 0; i < objs.size(); i++) {
-	    		Integer[] progress = profMan.getProfile(player.getName()).getProgress();
+	    		int[] progress = profMan.getProfile(player.getName()).getProgress().getProgress();
 	    		// check if Objective is type COLLECT
 	    		if(objs.get(i).getType().equalsIgnoreCase("COLLECT")) {
-	    			if(!qm.isObjectiveActive(player, i)){
+	    			if(!profMan.isObjectiveActive(player, i)){
 	    				continue;
 	    			}
 	    			CollectObjective obj = (CollectObjective)objs.get(i);
@@ -61,7 +58,7 @@ public class CollectListener implements Listener {
 	    					if(more < 0) { // can't be less than 0
 	    						more = 0;
 	    					}
-	    					qm.incProgress(player, ActionSource.listenerSource(event), i, item.getAmount()); // increase by amount actually picked up
+	    					profMan.incProgress(player, ActionSource.listenerSource(event), i, item.getAmount()); // increase by amount actually picked up
 	    					if(QConfiguration.colRemPickup) {
 		    					Location loc = event.getItem().getLocation();
 		    					event.getItem().remove();

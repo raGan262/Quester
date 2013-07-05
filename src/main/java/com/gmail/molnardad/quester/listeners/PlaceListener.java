@@ -14,22 +14,22 @@ import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.managers.QConfiguration;
-import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.BreakObjective;
 import com.gmail.molnardad.quester.objectives.PlaceObjective;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 
 public class PlaceListener implements Listener {
 
-	private QuestManager qm;
+	private ProfileManager profMan;
 	
 	public PlaceListener(Quester plugin) {
-		this.qm = plugin.getQuestManager();
+		this.profMan = plugin.getProfileManager();
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onBreak(BlockPlaceEvent event) {
 	    Player player = event.getPlayer();
-    	Quest quest = qm.getPlayerQuest(player.getName());
+    	Quest quest = profMan.getProfile(player.getName()).getQuest();
 	    if(quest != null) {
 	    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
 	    		return;
@@ -39,7 +39,7 @@ public class PlaceListener implements Listener {
 		    	for(int i = 0; i < objs.size(); i++) {
 		    		// check if Objective is type BREAK
 		    		if(objs.get(i).getType().equalsIgnoreCase("BREAK")) {
-		    			if(!qm.isObjectiveActive(player, i)){
+		    			if(!profMan.isObjectiveActive(player, i)){
 		    				continue;
 		    			}
 			    		BreakObjective obj = (BreakObjective)objs.get(i);
@@ -47,7 +47,7 @@ public class PlaceListener implements Listener {
 		    			if(block.getTypeId() == obj.getMaterial().getId()) {
 		    				// if DATA >= 0 compare
 		    				if(obj.getData() < 0 || obj.getData() == block.getData()) {
-		    					qm.incProgress(player, ActionSource.listenerSource(event), i, -1);
+		    					profMan.incProgress(player, ActionSource.listenerSource(event), i, -1);
 		    					break;
 		    				}
 		    			}
@@ -57,7 +57,7 @@ public class PlaceListener implements Listener {
 	    	for(int i = 0; i < objs.size(); i++) {
 	    		// check if Objective is type PLACE
 	    		if(objs.get(i).getType().equalsIgnoreCase("PLACE")) {
-	    			if(!qm.isObjectiveActive(player, i)){
+	    			if(!profMan.isObjectiveActive(player, i)){
 	    				continue;
 	    			}
 		    		PlaceObjective obj = (PlaceObjective)objs.get(i);
@@ -65,7 +65,7 @@ public class PlaceListener implements Listener {
 	    			if(block.getTypeId() == obj.getMaterial().getId()) {
 	    				// if DATA >= 0 compare
 	    				if(obj.getData() < 0 || obj.getData() == block.getData()) {
-	    					qm.incProgress(player, ActionSource.listenerSource(event), i);
+	    					profMan.incProgress(player, ActionSource.listenerSource(event), i);
 	    					return;
 	    				}
 	    			}

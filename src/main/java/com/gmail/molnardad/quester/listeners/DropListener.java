@@ -17,17 +17,17 @@ import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.managers.QConfiguration;
-import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.CollectObjective;
 import com.gmail.molnardad.quester.objectives.DropObjective;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 
 public class DropListener implements Listener {
 
-	private QuestManager qm;
+	private ProfileManager profMan;
 	private Quester plugin;
 	
 	public DropListener(Quester plugin) {
-		this.qm = plugin.getQuestManager();
+		this.profMan = plugin.getProfileManager();
 		this.plugin = plugin;
 	}
 		
@@ -36,7 +36,7 @@ public class DropListener implements Listener {
 		boolean collectObj = true;
 		boolean dropObj = true;
 	    Player player = event.getPlayer();
-		Quest quest = qm.getPlayerQuest(player.getName());
+		Quest quest = profMan.getProfile(player.getName()).getQuest();
 	    if(quest != null) {
 	    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
 	    		return;
@@ -44,25 +44,25 @@ public class DropListener implements Listener {
 	    	for(int i = 0; i < objs.size(); i++) {
 	    		// check if Objective is type COLLECT
 	    		if(QConfiguration.colSubOnDrop && collectObj && objs.get(i).getType().equalsIgnoreCase("COLLECT")) {
-	    			if(!qm.isObjectiveActive(player, i)){
+	    			if(!profMan.isObjectiveActive(player, i)){
 	    				continue;
 	    			}
 	    			CollectObjective obj = (CollectObjective)objs.get(i);
 	    			ItemStack item = event.getItemDrop().getItemStack();
 	    			if(item.getTypeId() == obj.getMaterial().getId()) {
 	    				if(obj.getData() < 0 || obj.getData() == item.getDurability()) {
-	    					qm.incProgress(player, ActionSource.listenerSource(event), i, -item.getAmount());
+	    					profMan.incProgress(player, ActionSource.listenerSource(event), i, -item.getAmount());
 	    					collectObj = false;
 	    				}
 	    			}
 	    		}
 	    		else if(dropObj && objs.get(i).getType().equalsIgnoreCase("DROP")){
-	    			if(!qm.isObjectiveActive(player, i)){
+	    			if(!profMan.isObjectiveActive(player, i)){
 	    				continue;
 	    			}
 	    			DropObjective obj = (DropObjective)objs.get(i);
 	    			if(obj.isMatching(event.getItemDrop().getItemStack())) {
-	    				new DropTask(event.getItemDrop(), obj, player, i, qm).runTaskTimer(plugin, 20L, 10L);
+	    				new DropTask(event.getItemDrop(), obj, player, i).runTaskTimer(plugin, 20L, 10L);
 	    				dropObj = false;
 	    			}
 	    		}
@@ -79,14 +79,12 @@ public class DropListener implements Listener {
 		private final Item item;
 		private final Player player;
 		private final int id;
-		private final QuestManager qm;
 		private final DropObjective obj;
 		
-		public DropTask(Item item, DropObjective obj, Player player, int id, QuestManager qm) {
+		public DropTask(Item item, DropObjective obj, Player player, int id) {
 			this.item = item;
 			this.player = player;
 			this.id = id;
-			this.qm = qm;
 			this.obj = obj;
 		}
 		
@@ -99,7 +97,7 @@ public class DropListener implements Listener {
 			}
 			if(vel.lengthSquared() < 0.001D) {
 				if(obj.isMatching(item.getLocation().getBlock().getLocation())) {
-					qm.incProgress(player, ActionSource.otherSource(null), id, item.getItemStack().getAmount());
+					profMan.incProgress(player, ActionSource.otherSource(null), id, item.getItemStack().getAmount());
 				}
 				cancel();
 			}

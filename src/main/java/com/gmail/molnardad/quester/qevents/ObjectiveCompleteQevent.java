@@ -11,6 +11,7 @@ import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.ObjectiveException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.storage.StorageKey;
 
@@ -35,17 +36,18 @@ public final class ObjectiveCompleteQevent extends Qevent {
 	protected void run(Player player, Quester plugin) {
 		try {
 			ProfileManager profMan = plugin.getProfileManager();
-			Integer[] prog = profMan.getProfile(player.getName()).getProgress();
+			PlayerProfile prof = profMan.getProfile(player.getName());
+			int[] prog = prof.getProgress().getProgress();
 			if(objective >= 0 && objective < prog.length) {
-				int req = plugin.getQuestManager().getPlayerQuest(player.getName()).getObjective(objective).getTargetAmount();
+				int req = prof.getQuest().getObjective(objective).getTargetAmount();
 				if(prog[objective] < req) {
 					ActionSource as = ActionSource.eventSource(this);
 					if(runEvents) {
-						plugin.getQuestManager().incProgress(player, as, objective, req - prog[objective]);
+						profMan.incProgress(player, as, objective, req - prog[objective]);
 					}
 					else {
 						profMan.setProgress(player.getName(), objective, req);
-						plugin.getQuestManager().complete(player, as, plugin.getLanguageManager().getPlayerLang(player.getName()), false);
+						profMan.complete(player, as, plugin.getLanguageManager().getPlayerLang(player.getName()), false);
 					}
 				}
 				else {

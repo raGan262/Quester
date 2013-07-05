@@ -14,15 +14,15 @@ import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
-import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.ShearObjective;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 
 public class ShearListener implements Listener {
 
-	private QuestManager qm;
+	private ProfileManager profMan;
 	
 	public ShearListener(Quester plugin) {
-		this.qm = plugin.getQuestManager();
+		this.profMan = plugin.getProfileManager();
 	}
 		
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -30,19 +30,19 @@ public class ShearListener implements Listener {
 		if(event.getEntity().getType() == EntityType.SHEEP) {
 			Player player = event.getPlayer();
 			Sheep sheep = (Sheep) event.getEntity();
-	    	Quest quest = qm.getPlayerQuest(player.getName());
+	    	Quest quest = profMan.getProfile(player.getName()).getQuest();
 		    if(quest != null) {
 		    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
 		    		return;
 				List<Objective> objs = quest.getObjectives();
 		    	for(int i = 0; i < objs.size(); i++) {
 		    		if(objs.get(i).getType().equalsIgnoreCase("SHEAR")) {
-		    			if(!qm.isObjectiveActive(player, i)){
+		    			if(!profMan.isObjectiveActive(player, i)){
 		    				continue;
 		    			}
 		    			ShearObjective obj = (ShearObjective)objs.get(i);
 		    			if(obj.check(sheep.getColor())) {
-		    				qm.incProgress(player, ActionSource.listenerSource(event), i);
+		    				profMan.incProgress(player, ActionSource.listenerSource(event), i);
 		    				return;
 		    			}
 		    		}

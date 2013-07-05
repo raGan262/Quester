@@ -15,21 +15,21 @@ import com.gmail.molnardad.quester.Quest;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.managers.QConfiguration;
-import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.BreakObjective;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 
 public class BreakListener implements Listener {
 
-	private QuestManager qm;
+	private ProfileManager profMan;
 	
 	public BreakListener(Quester plugin) {
-		this.qm = plugin.getQuestManager();
+		this.profMan = plugin.getProfileManager();
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBreak(BlockBreakEvent event) {
 	    Player player = event.getPlayer();
-    	Quest quest = qm.getPlayerQuest(player.getName());
+    	Quest quest = profMan.getProfile(player.getName()).getQuest();
 	    if(quest != null) {
 	    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
 	    		return;
@@ -37,7 +37,7 @@ public class BreakListener implements Listener {
 	    	for(int i = 0; i < objs.size(); i++) {
 	    		// check if Objective is type BREAK
 	    		if(objs.get(i).getType().equalsIgnoreCase("BREAK")) {
-		    		if(!qm.isObjectiveActive(player, i)){
+		    		if(!profMan.isObjectiveActive(player, i)){
 	    				continue;
 	    			}
 	    			BreakObjective obj = (BreakObjective)objs.get(i);
@@ -56,7 +56,7 @@ public class BreakListener implements Listener {
 	    					if(QConfiguration.brkNoDrops) {
 	    						block.setType(Material.AIR);
 	    					}
-	    					qm.incProgress(player, ActionSource.listenerSource(event), i);
+	    					profMan.incProgress(player, ActionSource.listenerSource(event), i);
 	    					return;
 	    				}
 	    			}

@@ -147,6 +147,22 @@ public class Util {
 		return result.toString();
 	}
 	
+	
+	//whatever
+	public static String implodeInt(int[] ints, String glue) {
+		StringBuilder result = new StringBuilder();
+		boolean first = true;
+		for(int i = 0; i < ints.length; i++) {
+			if(first) {
+				first = false;
+			} else {
+				result.append(glue);
+			}
+			result.append(ints[i]);
+		}
+		return result.toString();
+	}
+	
 	public static String implodeInt(Integer[] ints, String glue) {
 		StringBuilder result = new StringBuilder();
 		boolean first = true;

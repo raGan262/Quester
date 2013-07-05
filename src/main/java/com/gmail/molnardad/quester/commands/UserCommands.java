@@ -163,14 +163,14 @@ public class UserCommands {
 		ActionSource as = ActionSource.commandSource(sender);
 		if(context.length() == 0) {
 			if(Util.permCheck(sender, QConfiguration.PERM_USE_START_RANDOM, false, null)) {
-				qMan.startRandomQuest(context.getPlayer(), as, context.getSenderLang());
+				profMan.startRandomQuest(context.getPlayer(), as, context.getSenderLang());
 			}
 			else {
 				throw new QPermissionException();
 			}
 		}
 		else if(Util.permCheck(sender, QConfiguration.PERM_USE_START_PICK, false, null)) {
-			qMan.startQuest((Player) sender, context.getString(0), as, context.getSenderLang());
+			profMan.startQuest((Player) sender, context.getString(0), as, context.getSenderLang());
 		}
 		else {
 			throw new QPermissionException();
@@ -189,7 +189,7 @@ public class UserCommands {
 			return;
 		}
 		ActionSource as = ActionSource.commandSource(sender);
-		qMan.complete((Player) sender, as, context.getSenderLang());
+		profMan.complete((Player) sender, as, context.getSenderLang());
 	}
 
 	@QCommandLabels({"cancel"})
@@ -209,7 +209,7 @@ public class UserCommands {
 			index = context.getInt(0);
 		}
 		ActionSource as = ActionSource.commandSource(sender);
-		qMan.cancelQuest((Player) sender, index, as, context.getSenderLang());
+		profMan.cancelQuest((Player) sender, index, as, context.getSenderLang());
 	}
 	
 	@QCommandLabels({"switch"})

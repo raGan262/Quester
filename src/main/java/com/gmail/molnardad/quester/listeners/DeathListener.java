@@ -15,18 +15,18 @@ import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.managers.LanguageManager;
-import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.DeathObjective;
 import com.gmail.molnardad.quester.objectives.PlayerKillObjective;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class DeathListener implements Listener {
 
-	private QuestManager qm = null;
+	private ProfileManager profMan = null;
 	private LanguageManager langMan = null;
 	
 	public DeathListener(Quester plugin) {
-		this.qm = plugin.getQuestManager();
+		this.profMan = plugin.getProfileManager();
 		this.langMan = plugin.getLanguageManager();
 	}
 		
@@ -37,12 +37,12 @@ public class DeathListener implements Listener {
 	    	return;
 	    }
 	    // DEATH OBJECTIVE
-    	Quest quest = qm.getPlayerQuest(player.getName());
+    	Quest quest = profMan.getProfile(player.getName()).getQuest();
 	    if(quest != null) {
 	    	// DEATH CHECK
 	    	if(quest.hasFlag(QuestFlag.DEATHCANCEL)) {
 	    		try {
-					qm.cancelQuest(player, ActionSource.listenerSource(event), langMan.getPlayerLang(player.getName()));
+					profMan.cancelQuest(player, ActionSource.listenerSource(event), langMan.getPlayerLang(player.getName()));
 				} catch (QuesterException e) {
 				}
 	    		return;
@@ -52,12 +52,12 @@ public class DeathListener implements Listener {
 	    	List<Objective> objs = quest.getObjectives();
 	    	for(int i = 0; i < objs.size(); i++) {
 	    		if(objs.get(i).getType().equalsIgnoreCase("DEATH")) {
-	    			if(!qm.isObjectiveActive(player, i)){
+	    			if(!profMan.isObjectiveActive(player, i)){
 	    				continue;
 	    			}
 	    			DeathObjective obj = (DeathObjective)objs.get(i);
 	    			if(obj.checkDeath(player.getLocation())) {
-	    				qm.incProgress(player, ActionSource.listenerSource(event), i);
+	    				profMan.incProgress(player, ActionSource.listenerSource(event), i);
 	    				return;
 	    			}
 	    		}
@@ -74,20 +74,20 @@ public class DeathListener implements Listener {
 	    	return;
 	    }
 	    if(killer != null ) {
-    		Quest quest = qm.getPlayerQuest(killer.getName());
+    		Quest quest = profMan.getProfile(killer.getName()).getQuest();
 	    	if(quest != null) {
 	    		// PLAYERKILL CHECK
 		    	if(!quest.allowedWorld(killer.getWorld().getName().toLowerCase()))
 		    		return;
 	    		List<Objective> objs = quest.getObjectives();
 		    	for(int i = 0; i < objs.size(); i++) {
-		    		if(!qm.isObjectiveActive(killer, i)){
+		    		if(!profMan.isObjectiveActive(killer, i)){
 	    				continue;
 	    			}
 		    		if(objs.get(i).getType().equalsIgnoreCase("PLAYERKILL")) {
 		    			PlayerKillObjective obj = (PlayerKillObjective)objs.get(i);
 		    			if(obj.checkPlayer(player)) {
-		    				qm.incProgress(killer, ActionSource.listenerSource(event), i);
+		    				profMan.incProgress(killer, ActionSource.listenerSource(event), i);
 		    				return;
 		    			}
 		    		}

@@ -2,32 +2,51 @@ package com.gmail.molnardad.quester.profiles;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.management.InstanceNotFoundException;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quest;
+import com.gmail.molnardad.quester.QuestFlag;
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.elements.Condition;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.Qevent;
+import com.gmail.molnardad.quester.events.ObjectiveCompleteEvent;
+import com.gmail.molnardad.quester.events.QuestCancelEvent;
+import com.gmail.molnardad.quester.events.QuestCompleteEvent;
+import com.gmail.molnardad.quester.events.QuestStartEvent;
+import com.gmail.molnardad.quester.exceptions.ObjectiveException;
+import com.gmail.molnardad.quester.exceptions.QuestException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.managers.LanguageManager;
 import com.gmail.molnardad.quester.managers.QConfiguration;
 import com.gmail.molnardad.quester.managers.QuestManager;
+import com.gmail.molnardad.quester.profiles.QuestProgress.ObjectiveStatus;
 import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.strings.QuesterLang;
+import com.gmail.molnardad.quester.utils.Util;
 
 public class ProfileManager {
 
 	private Storage profileStorage = null;
 	private QuestManager qMan = null;
 	private LanguageManager langMan = null;
+	private Quester plugin = null;
+	private Random randGen = new Random();
 
 	private Map<String, PlayerProfile> profiles = new HashMap<String, PlayerProfile>();
 	private Map<Integer, String> ranks = new HashMap<Integer, String>();
@@ -35,6 +54,7 @@ public class ProfileManager {
 	
 	
 	public ProfileManager(Quester plugin) {
+		this.plugin = plugin;
 		qMan = plugin.getQuestManager();
 		langMan = plugin.getLanguageManager();
 		File file = new File(plugin.getDataFolder(), "profiles.yml");
@@ -93,20 +113,20 @@ public class ProfileManager {
 	}
 	
 	public boolean setProgress(String playerName, int objective, int value) {
-		return setProgress(playerName, getProfile(playerName).getActiveIndex(), objective, value);
+		return setProgress(playerName, getProfile(playerName).getQuestProgressIndex(), objective, value);
 	}
 	
 	public boolean setProgress(String playerName, int index, int objective, int value) {
-		List<Integer> prog = getProfile(playerName).getProgressList(index);
-		if(prog != null && objective < prog.size() && objective >= 0) {
-			prog.set(objective, value);
+		QuestProgress prog = getProfile(playerName).getProgress(index);
+		if(prog != null) {
+			prog.setProgress(objective, value);
 			return true;
 		}
 		return false;
 	}
 	
 	public void assignQuest(String playerName, Quest quest) {
-		getProfile(playerName).addQuest(quest.getName(), quest.getObjectives().size());
+		getProfile(playerName).addQuest(quest);
 	}
 	
 	public void unassignQuest(String playerName) {
@@ -146,11 +166,276 @@ public class ProfileManager {
 	}
 	
 	public boolean switchQuest(String playerName, int id) {
-		return getProfile(playerName).setQuest(id);
+		return getProfile(playerName).setActiveQuest(id);
 	}
 	
 	public int addPoints(String playerName, int amount) {
 		return getProfile(playerName).addPoints(amount);
+	}
+	
+	public boolean areObjectivesCompleted(Player player) {
+		
+		for(ObjectiveStatus status : getProfile(player.getName()).getProgress().getObjectiveStatuses()) {
+			if(status != ObjectiveStatus.COMPLETED) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public int getCurrentObjective(Player player) {
+		
+		return getProfile(player.getName()).getProgress().getCurrentObjectiveID();
+	}
+	
+	public boolean isObjectiveActive(Player player, int id) {
+		
+		QuestProgress progress = getProfile(player.getName()).getProgress();
+		return progress.getObjectiveStatus(id) == ObjectiveStatus.ACTIVE;
+	}
+	
+	// QUEST PROGRESS METHODS
+
+	public void startQuest(Player player, int questID, ActionSource as, QuesterLang lang) throws QuesterException {
+		Quest qst = qMan.getQuest(questID);
+		startQuest(player, qst, as, lang);
+	}
+	
+	public void startQuest(Player player, String questName, ActionSource as, QuesterLang lang) throws QuesterException {
+		Quest qst = qMan.getQuest(questName);
+		startQuest(player, qst, as, lang);
+	}
+	
+	public void startQuest(Player player, Quest quest, ActionSource as, QuesterLang lang) throws QuesterException {
+		String playerName = player.getName();
+		if(quest == null){
+			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
+		}
+		PlayerProfile prof = getProfile(playerName);
+		if(prof.hasQuest(quest)) {
+			throw new QuestException(lang.ERROR_Q_ASSIGNED);
+		}
+		if(prof.getQuestAmount() >= QConfiguration.maxQuests) {
+			throw new QuestException(lang.ERROR_Q_MAX_AMOUNT);
+		}
+		if(!quest.hasFlag(QuestFlag.ACTIVE)) {
+			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
+		}
+		if(as.is(ActionSource.COMMAND) && quest.hasFlag(QuestFlag.HIDDEN))
+			throw new QuestException(lang.ERROR_Q_NOT_CMD);
+		if (!Util.permCheck(player, QConfiguration.PERM_ADMIN, false, null)){
+			for(Condition con : quest.getConditions()) {
+				if(!con.isMet(player, plugin)) {
+					player.sendMessage(ChatColor.RED + con.inShow());
+					return;
+				}
+			}
+		}
+		/* QuestStartEvent */
+		QuestStartEvent event = new QuestStartEvent(as, player, quest);
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		if(event.isCancelled()) {
+			if(QConfiguration.verbose) {
+				Quester.log.info("QuestStart event cancelled. (" + player.getName() + "; '" + quest.getName() + "')");
+			}
+			return;
+		}
+		
+		assignQuest(playerName, quest);
+		if(QConfiguration.progMsgStart)
+			player.sendMessage(Quester.LABEL + lang.MSG_Q_STARTED.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
+		String description = quest.getDescription(playerName);
+		if(!description.isEmpty() && !quest.hasFlag(QuestFlag.NODESC))
+			player.sendMessage(description);
+		if(QConfiguration.verbose)
+			Quester.log.info(playerName + " started quest '" + quest.getName() + "'.");
+		for(Qevent qv : quest.getQevents()) {
+			if(qv.getOccasion() == -1)
+				qv.execute(player, plugin);
+		}
+		saveProfiles();
+	}
+	
+	public void startRandomQuest(Player player, ActionSource as, QuesterLang lang) throws QuesterException {
+		Collection<Quest> allQuests = qMan.getQuests();
+		ArrayList<Quest> chosenQuests = new ArrayList<Quest>();
+		for(Quest quest : allQuests) {
+			if(quest.hasFlag(QuestFlag.ACTIVE) 
+					&& !quest.hasFlag(QuestFlag.HIDDEN) 
+					&& !getProfile(player.getName()).hasQuest(quest) 
+					&& qMan.areConditionsMet(player, quest, lang)) {
+				chosenQuests.add(quest);
+			}
+		}
+		allQuests = null;
+		if(chosenQuests.isEmpty()) {
+			throw new QuestException(lang.ERROR_Q_NONE_ACTIVE);
+		}
+		int id = randGen.nextInt(chosenQuests.size());
+		startQuest(player, chosenQuests.get(id).getName(), as, lang);
+	}
+	public void cancelQuest(Player player, ActionSource as, QuesterLang lang) throws QuesterException {
+		cancelQuest(player, -1, as, lang);
+	}
+	public void cancelQuest(Player player, int index, ActionSource as, QuesterLang lang) throws QuesterException {
+		Quest quest = null;
+		PlayerProfile prof = getProfile(player.getName());
+		if(index < 0) {
+			if(prof.getProgress() != null) {
+				quest = prof.getProgress().getQuest();
+			}
+		}
+		else {
+			if(prof.getProgress(index) != null) {
+				quest = prof.getProgress(index).getQuest();
+			}
+		}
+		if(quest == null) {
+			throw new QuestException(lang.ERROR_Q_NOT_ASSIGNED);
+		}
+		if(as == null) {
+			as = ActionSource.BLANKSOURCE;
+		}
+		if(as.is(ActionSource.COMMAND) && quest.hasFlag(QuestFlag.UNCANCELLABLE)) {
+			throw new QuestException(lang.ERROR_Q_CANT_CANCEL);
+		}
+		/* QuestCancelEvent */
+		QuestCancelEvent event = new QuestCancelEvent(as, player, quest);
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		
+		unassignQuest(player.getName(), index);
+		if(QConfiguration.progMsgCancel)
+			player.sendMessage(Quester.LABEL + lang.MSG_Q_CANCELLED.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
+		if(QConfiguration.verbose)
+			Quester.log.info(player.getName() + " cancelled quest '" + quest.getName() + "'.");
+		for(Qevent qv : quest.getQevents()) {
+			if(qv.getOccasion() == -2)
+				qv.execute(player, plugin);
+		}
+		saveProfiles();
+	}
+	
+	public void complete(Player player, ActionSource as, QuesterLang lang) throws QuesterException {
+		complete(player, as, lang, true);
+	}
+	
+	public void complete(Player player, ActionSource as, QuesterLang lang, boolean checkObjs) throws QuesterException {
+		Quest quest = getProfile(player.getName()).getQuest();
+		if(quest == null)
+			throw new QuestException(lang.ERROR_Q_NOT_ASSIGNED);
+		if(as == null) {
+			as = ActionSource.BLANKSOURCE;
+		}
+		
+		if(as.is(ActionSource.COMMAND) && quest.hasFlag(QuestFlag.HIDDEN))
+			throw new QuestException(lang.ERROR_Q_NOT_CMD);
+		
+    	if(!quest.allowedWorld(player.getWorld().getName()))
+    		throw new QuestException(lang.ERROR_Q_BAD_WORLD);
+    	
+		boolean error = false;
+		if(checkObjs) {
+			error = ! completeObjective(player, as, lang);
+		}
+		
+		if(areObjectivesCompleted(player)) {
+			completeQuest(player, as, lang);
+		}
+		else if(error) {
+			throw new ObjectiveException(lang.ERROR_OBJ_CANT_DO);
+		}
+	}
+	
+	private boolean completeObjective(Player player, ActionSource as, QuesterLang lang) throws QuesterException {
+		Quest quest = getProfile(player.getName()).getQuest();
+		List<Objective> objs = quest.getObjectives();
+		
+		int i = 0;
+		boolean completed = false;
+		while(i<objs.size() && !completed) {
+			if(isObjectiveActive(player, i)) {
+				if(objs.get(i).tryToComplete(player)) {
+					incProgress(player, as, i, false);
+					completed = true;
+				} 
+			}
+			i++;
+		}
+
+		return (completed || i == 0);
+	}
+	
+	public void completeQuest(Player player, ActionSource as,  QuesterLang lang) throws QuesterException {
+		Quest quest = getProfile(player.getName()).getQuest();
+		
+		unassignQuest(player.getName());
+		addCompletedQuest(player.getName(), quest.getName());
+		if(QConfiguration.progMsgDone) {
+			player.sendMessage(Quester.LABEL + lang.MSG_Q_COMPLETED.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
+		}
+		if(QConfiguration.verbose) {
+			Quester.log.info(player.getName() + " completed quest '" + quest.getName() + "'.");
+		}
+		/* QuestCompleteEvent */
+		QuestCompleteEvent event = new QuestCompleteEvent(as, player, quest);
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		
+		for(Qevent qv : quest.getQevents()) {
+			if(qv.getOccasion() == -3)
+				qv.execute(player, plugin);
+		}
+		saveProfiles();
+		if(quest.hasFlag(QuestFlag.ONLYFIRST)) {
+			qMan.deactivateQuest(quest);
+		}
+	}
+	
+	public void incProgress(Player player, ActionSource as, int objectiveId) {
+		incProgress(player, as, objectiveId, 1, true);
+	}
+	
+	public void incProgress(Player player, ActionSource as, int objectiveId, boolean checkAll) {
+		incProgress(player, as, objectiveId, 1, checkAll);
+	}
+	
+	public void incProgress(Player player, ActionSource as, int objectiveId, int amount) {
+		incProgress(player, as, objectiveId, amount, true);
+	}
+	
+	public void incProgress(final Player player, ActionSource as, int objectiveId, int amount, boolean checkAll) {
+		QuesterLang lang = langMan.getPlayerLang(player.getName());
+		PlayerProfile prof = getProfile(player.getName());
+		QuestProgress prog = prof.getProgress();
+		if(prog == null || objectiveId < 0 || objectiveId >= prog.getSize()) {
+			return;
+		}
+		int newValue = prog.getProgress()[objectiveId] + amount;
+		Quest q = prof.getQuest();
+		Objective obj = q.getObjectives().get(objectiveId);
+		setProgress(prof.getName(), objectiveId, newValue);
+		
+		// TODO add progress update message
+		if(obj.getTargetAmount() <= newValue) {
+			if(QConfiguration.progMsgObj && !obj.isHidden()) {
+				player.sendMessage(Quester.LABEL + lang.MSG_OBJ_COMPLETED);
+			}
+			/* ObjectiveCompleteEvent */
+			ObjectiveCompleteEvent event = new ObjectiveCompleteEvent(as, player, q, objectiveId);
+			Bukkit.getServer().getPluginManager().callEvent(event);
+			
+			
+			for(Qevent qv : q.getQevents()) {
+				if(qv.getOccasion() == objectiveId) {
+					qv.execute(player, plugin);
+				}
+			}
+			if(checkAll) {
+				try{
+					complete(player, as, lang, false);
+				} catch (QuesterException ignore) {}
+			}
+			saveProfiles();
+		} 
 	}
 	
 	// DISPLAY METHODS
@@ -170,7 +455,7 @@ public class ProfileManager {
 		if(QConfiguration.useRank) {
 			sender.sendMessage(ChatColor.BLUE + lang.INFO_PROFILE_RANK + ": " + ChatColor.GOLD + prof.getRank());
 		}
-		sender.sendMessage(ChatColor.BLUE + lang.INFO_PROFILE_COMPLETED + ": " + ChatColor.WHITE + prof.getCompletedQuests());
+		sender.sendMessage(ChatColor.BLUE + lang.INFO_PROFILE_COMPLETED + ": " + ChatColor.WHITE + Util.implode(prof.getCompletedQuests(), ','));
 		
 	}
 	
@@ -213,15 +498,8 @@ public class ProfileManager {
 		StorageKey mainKey = profileStorage.getKey("");
 		PlayerProfile prof;
 		for(StorageKey subKey : mainKey.getSubKeys()) {
-			prof = PlayerProfile.deserialize(subKey);
+			prof = PlayerProfile.deserialize(subKey, qMan);
 			if(prof != null) {
-				if(!prof.getQuestName().isEmpty()) {
-					if(!qMan.isQuestActive(prof.getQuestName()) || 
-							(qMan.getObjectiveAmount(prof.getQuestName()) != prof.getProgressList().size())) {
-						prof.unsetQuest();
-						Quester.log.info("Incorrect quest info in profile: " + subKey.getName());
-					}
-				}
 				updateRank(prof);
 				profiles.put(prof.getName().toLowerCase(), prof);
 			} else {
