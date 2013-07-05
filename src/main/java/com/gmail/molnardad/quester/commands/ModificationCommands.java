@@ -116,7 +116,7 @@ public class ModificationCommands {
 			usage = "<quest ID>",
 			permission = QConfiguration.PERM_MODIFY)
 	public void select(QCommandContext context, CommandSender sender) throws QuesterException {
-		profMan.selectQuest(sender.getName(), context.getInt(0));
+		profMan.selectQuest(sender.getName(), qMan.getQuest(context.getInt(0)));
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_SELECTED);
 	}
 

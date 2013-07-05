@@ -1,5 +1,6 @@
 package com.gmail.molnardad.quester.profiles;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +16,7 @@ public class PlayerProfile {
 
 	private final String name;
 	private Map<String, Integer> completed;
-	private int selected;
+	private WeakReference<Quest> selected;
 	private int holder;
 	private QuestProgress current;
 	private List<QuestProgress> progresses;
@@ -27,7 +28,7 @@ public class PlayerProfile {
 		completed = new HashMap<String, Integer>();
 		current = null;
 		progresses = new ArrayList<QuestProgress>();
-		selected = -1;
+		selected = new WeakReference<Quest>(null);
 		holder = -1;
 		points = 0;
 		rank = "";
@@ -87,8 +88,8 @@ public class PlayerProfile {
 		return -1;
 	}
 
-	public int getSelected() {
-		return selected;
+	public Quest getSelected() {
+		return selected.get();
 	}
 
 	public int getHolderID() {
@@ -179,8 +180,8 @@ public class PlayerProfile {
 		} catch (Exception ignore) {}
 	}
 
-	void setSelected(int newSelected) {
-		selected = newSelected;
+	void setSelected(Quest newSelected) {
+		selected = new WeakReference<Quest>(newSelected);
 	}
 
 	void setHolderID(int newID) {

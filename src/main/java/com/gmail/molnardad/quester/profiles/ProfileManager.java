@@ -105,11 +105,11 @@ public class ProfileManager {
 		return ranks;
 	}
 	
-	public int getSelectedQuestID(String name) {
-		if(name == null) {
-			return -1;
+	public Quest getSelectedQuest(String playerName) {
+		if(playerName == null) {
+			return null;
 		}
-		return getProfile(name).getSelected();
+		return getProfile(playerName).getSelected();
 	}
 	
 	public boolean setProgress(String playerName, int objective, int value) {
@@ -149,12 +149,12 @@ public class ProfileManager {
 		prof.addCompleted(questName, (int) (System.currentTimeMillis() / 1000));
 	}
 	
-	public void selectQuest(String changer, int id) throws QuesterException {
-		getProfile(changer).setSelected(id);
+	public void selectQuest(String changer, Quest newSelected) throws QuesterException {
+		getProfile(changer).setSelected(newSelected);
 	}
 	
 	public void clearSelectedQuest(String playerName) {
-		getProfile(playerName).setSelected(-1);
+		getProfile(playerName).setSelected(null);
 	}
 	
 	public void selectHolder(String changer, int id) throws QuesterException {

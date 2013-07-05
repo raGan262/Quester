@@ -130,7 +130,7 @@ public class QuestManager {
 	
 	public boolean isQuestActive(CommandSender sender) {
 		
-		return isQuestActive(profMan.getSelectedQuestID(sender.getName()));
+		return isQuestActive(profMan.getSelectedQuest(sender.getName()));
 	}
 	
 	public boolean isQuestActive(String questName) {
@@ -155,12 +155,12 @@ public class QuestManager {
 		if(isQuest(questName)){
 			throw new QuestException(lang.ERROR_Q_EXIST);
 		}
-		Quest q = new Quest(questName);
-		assignQuestID(q);
-		quests.put(q.getID(), q);
-		questNames.put(questName.toLowerCase(), q.getID());
-		profMan.selectQuest(issuer, q.getID());
-		return q;
+		Quest quest = new Quest(questName);
+		assignQuestID(quest);
+		quests.put(quest.getID(), quest);
+		questNames.put(questName.toLowerCase(), quest.getID());
+		profMan.selectQuest(issuer, quest);
+		return quest;
 	}
 	
 	public Quest removeQuest(String issuer, int questID, QuesterLang lang) throws QuesterException {
@@ -193,7 +193,7 @@ public class QuestManager {
 	}
 	
 	public boolean toggleQuest(CommandSender issuer, QuesterLang lang) throws QuesterException {
-		return toggleQuest(profMan.getSelectedQuestID(issuer.getName()), lang);
+		return toggleQuest(profMan.getSelectedQuest(issuer.getName()), lang);
 	}
 	
 	public boolean toggleQuest(int questID, QuesterLang lang) throws QuesterException {
@@ -214,31 +214,30 @@ public class QuestManager {
 	}
 	
 	public void changeQuestName(String issuer, String newName, QuesterLang lang) throws QuesterException {
-		int questId = profMan.getSelectedQuestID(issuer);
-		Quest quest = getQuest(questId);
+		Quest quest = profMan.getSelectedQuest(issuer);
 		if(isQuest(newName)) {
 			throw new QuestException(lang.ERROR_Q_EXIST);
 		}
 		modifyCheck(quest, lang);
 		questNames.remove(quest.getName().toLowerCase());
 		quest.setName(newName);
-		questNames.put(newName.toLowerCase(), questId);
+		questNames.put(newName.toLowerCase(), quest.getID());
 	}
 	
 	public void setQuestDescription(String issuer, String newDesc, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		quest.setDescription(newDesc);
 	}
 	
 	public void addQuestDescription(String issuer, String descToAdd, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		quest.addDescription(descToAdd);
 	}
 	
 	public void setQuestLocation(String issuer, Location loc, int range, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		quest.setLocation(loc);
 		quest.setRange(range);
@@ -246,7 +245,7 @@ public class QuestManager {
 	}
 	
 	public void removeQuestLocation(String issuer, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		quest.setLocation(null);
 		quest.setRange(1);
@@ -254,20 +253,20 @@ public class QuestManager {
 	}
 	
 	public void addQuestWorld(String issuer, String worldName, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		quest.addWorld(worldName);
 	}
 	
 	public boolean removeQuestWorld(String issuer, String worldName, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		boolean result = quest.removeWorld(worldName);
 		return result;
 	}
 	
 	public void addQuestFlag(String issuer, QuestFlag[] flags, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		for(QuestFlag f : flags) {
 			quest.addFlag(f);
@@ -275,7 +274,7 @@ public class QuestManager {
 	}
 	
 	public void removeQuestFlag(String issuer, QuestFlag[] flags, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		for(QuestFlag f : flags) {
 			quest.removeFlag(f);
@@ -283,13 +282,13 @@ public class QuestManager {
 	}
 	
 	public void addQuestObjective(String issuer, Objective newObjective, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		quest.addObjective(newObjective);
 	}
 	
 	public void removeQuestObjective(String issuer, int id, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		if(!quest.removeObjective(id)){
 			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
@@ -297,7 +296,7 @@ public class QuestManager {
 	}
 	
 	public void addObjectiveDescription(String issuer, int id, String desc, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		List<Objective> objs = quest.getObjectives();
 		if(id >= objs.size() || id < 0) {
@@ -307,7 +306,7 @@ public class QuestManager {
 	}
 	
 	public void removeObjectiveDescription(String issuer, int id, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		List<Objective> objs = quest.getObjectives();
 		if(id >= objs.size() || id < 0) {
@@ -317,7 +316,7 @@ public class QuestManager {
 	}
 	
 	public void swapQuestObjectives(String issuer, int first, int second, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		if(first == second) {
 			throw new CustomException(lang.ERROR_WHY);
 		}
@@ -342,7 +341,7 @@ public class QuestManager {
 	}
 	
 	public void moveQuestObjective(String issuer, int which, int where, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		if(which == where) {
 			throw new CustomException(lang.ERROR_WHY);
 		}
@@ -372,7 +371,7 @@ public class QuestManager {
 	}
 	
 	public void addObjectivePrerequisites(String issuer, int id, Set<Integer> prereq, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		List<Objective> objs = quest.getObjectives();
 		if(id >= objs.size() || id < 0) {
@@ -386,7 +385,7 @@ public class QuestManager {
 	}
 	
 	public void removeObjectivePrerequisites(String issuer, int id, Set<Integer> prereq, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		List<Objective> objs = quest.getObjectives();
 		if(id >= objs.size() || id < 0) {
@@ -398,13 +397,13 @@ public class QuestManager {
 	}
 	
 	public void addQuestCondition(String issuer, Condition newCondition, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		quest.addCondition(newCondition);
 	}
 	
 	public void removeQuestCondition(String issuer, int id, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		if(!quest.removeCondition(id)){
 			throw new ConditionException(lang.ERROR_CON_NOT_EXIST);
@@ -412,7 +411,7 @@ public class QuestManager {
 	}
 	
 	public void addConditionDescription(String issuer, int id, String desc, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		List<Condition> cons = quest.getConditions();
 		if(id >= cons.size() || id < 0) {
@@ -422,7 +421,7 @@ public class QuestManager {
 	}
 	
 	public void removeConditionDescription(String issuer, int id, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		List<Condition> cons = quest.getConditions();
 		if(id >= cons.size() || id < 0) {
@@ -432,7 +431,7 @@ public class QuestManager {
 	}
 	
 	public void addQevent(String issuer, Qevent newQevent, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		int occasion = newQevent.getOccasion();
 		if(occasion < -3 || occasion >= quest.getObjectives().size() ) {
@@ -442,7 +441,7 @@ public class QuestManager {
 	}
 	
 	public void removeQevent(String issuer, int id, QuesterLang lang) throws QuesterException {
-		Quest quest = getQuest(profMan.getSelectedQuestID(issuer));
+		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		if(!quest.removeQevent(id)){
 			throw new EventException(lang.ERROR_EVT_NOT_EXIST);
@@ -520,7 +519,7 @@ public class QuestManager {
 	}
 	
 	public void showQuestInfo(CommandSender sender, QuesterLang lang) throws QuesterException {
-		showQuestInfo(sender, profMan.getSelectedQuestID(sender.getName()), lang);
+		showQuestInfo(sender, profMan.getSelectedQuest(sender.getName()), lang);
 	}
 	
 	public void showQuestInfo(CommandSender sender, int id, QuesterLang lang) throws QuesterException {
