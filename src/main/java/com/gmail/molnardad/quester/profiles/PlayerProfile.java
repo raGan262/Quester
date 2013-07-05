@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.gmail.molnardad.quester.Quest;
+import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.Quester;
-import com.gmail.molnardad.quester.managers.QConfiguration;
-import com.gmail.molnardad.quester.managers.QuestManager;
+import com.gmail.molnardad.quester.quests.Quest;
+import com.gmail.molnardad.quester.quests.QuestManager;
 import com.gmail.molnardad.quester.storage.StorageKey;
 
 public class PlayerProfile {

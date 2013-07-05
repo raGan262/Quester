@@ -1,4 +1,4 @@
-package com.gmail.molnardad.quester.managers;
+package com.gmail.molnardad.quester;
 
 import java.io.File;
 import java.security.InvalidKeyException;
@@ -12,13 +12,11 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.QuestHolder;
-import com.gmail.molnardad.quester.Quester;
-import com.gmail.molnardad.quester.QuesterSign;
 import com.gmail.molnardad.quester.exceptions.CustomException;
 import com.gmail.molnardad.quester.exceptions.HolderException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
+import com.gmail.molnardad.quester.quests.QuestManager;
 import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;

@@ -25,8 +25,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.Quester;
-import com.gmail.molnardad.quester.managers.QConfiguration;
 import com.gmail.molnardad.quester.strings.QuesterLang;
 
 public class Util {

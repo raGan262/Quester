@@ -6,9 +6,8 @@ import org.apache.commons.lang.SerializationException;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.Quester;
-import com.gmail.molnardad.quester.managers.QConfiguration;
-import com.gmail.molnardad.quester.managers.ElementManager;
 import com.gmail.molnardad.quester.storage.StorageKey;
 
 public abstract class Condition extends Element {

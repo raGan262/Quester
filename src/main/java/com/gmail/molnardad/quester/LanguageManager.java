@@ -1,4 +1,4 @@
-package com.gmail.molnardad.quester.managers;
+package com.gmail.molnardad.quester;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;

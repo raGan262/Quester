@@ -5,7 +5,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 
 import com.gmail.molnardad.quester.ActionSource;
-import com.gmail.molnardad.quester.Quest;
+import com.gmail.molnardad.quester.quests.Quest;
 
 public class QuestCancelEvent extends QuesterEvent implements Cancellable {
 	

@@ -7,16 +7,16 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.ActionSource;
-import com.gmail.molnardad.quester.Quest;
-import com.gmail.molnardad.quester.QuestFlag;
+import com.gmail.molnardad.quester.LanguageManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
-import com.gmail.molnardad.quester.managers.LanguageManager;
-import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.objectives.LocObjective;
 import com.gmail.molnardad.quester.objectives.WorldObjective;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
+import com.gmail.molnardad.quester.quests.Quest;
+import com.gmail.molnardad.quester.quests.QuestFlag;
+import com.gmail.molnardad.quester.quests.QuestManager;
 
 public class PositionListener implements Runnable {
 	

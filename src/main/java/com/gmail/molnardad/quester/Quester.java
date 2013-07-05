@@ -20,12 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
 import com.gmail.molnardad.quester.listeners.*;
-import com.gmail.molnardad.quester.managers.QConfiguration;
-import com.gmail.molnardad.quester.managers.ElementManager;
-import com.gmail.molnardad.quester.managers.LanguageManager;
-import com.gmail.molnardad.quester.managers.CommandManager;
-import com.gmail.molnardad.quester.managers.QuestHolderManager;
-import com.gmail.molnardad.quester.managers.QuestManager;
+import com.gmail.molnardad.quester.commandbase.CommandManager;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QPermissionException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QUsageException;
@@ -36,8 +31,10 @@ import com.gmail.molnardad.quester.conditions.*;
 import com.gmail.molnardad.quester.objectives.*;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.qevents.*;
+import com.gmail.molnardad.quester.quests.QuestManager;
 import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.elements.Element;
+import com.gmail.molnardad.quester.elements.ElementManager;
 import com.gmail.molnardad.quester.exceptions.*;
 
 public class Quester extends JavaPlugin {

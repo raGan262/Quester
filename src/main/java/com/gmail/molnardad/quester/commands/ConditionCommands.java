@@ -10,10 +10,10 @@ import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.commandbase.QNestedCommand;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Condition;
+import com.gmail.molnardad.quester.elements.ElementManager;
 import com.gmail.molnardad.quester.exceptions.ElementException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
-import com.gmail.molnardad.quester.managers.ElementManager;
-import com.gmail.molnardad.quester.managers.QuestManager;
+import com.gmail.molnardad.quester.quests.QuestManager;
 import com.gmail.molnardad.quester.strings.QuesterLang;
 
 public class ConditionCommands {

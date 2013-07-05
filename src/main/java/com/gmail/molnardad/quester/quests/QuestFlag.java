@@ -1,4 +1,4 @@
-package com.gmail.molnardad.quester;
+package com.gmail.molnardad.quester.quests;
 
 import java.util.HashSet;
 import java.util.Set;

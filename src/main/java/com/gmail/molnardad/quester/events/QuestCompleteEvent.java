@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
 import com.gmail.molnardad.quester.ActionSource;
-import com.gmail.molnardad.quester.Quest;
+import com.gmail.molnardad.quester.quests.Quest;
 
 public class QuestCompleteEvent extends QuesterEvent {
 	

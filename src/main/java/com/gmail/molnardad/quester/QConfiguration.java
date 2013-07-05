@@ -1,10 +1,9 @@
-package com.gmail.molnardad.quester.managers;
+package com.gmail.molnardad.quester;
 
 import java.io.File;
 
 import javax.management.InstanceNotFoundException;
 
-import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;

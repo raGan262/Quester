@@ -15,17 +15,17 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.gmail.molnardad.quester.ActionSource;
-import com.gmail.molnardad.quester.Quest;
+import com.gmail.molnardad.quester.LanguageManager;
+import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.QuestHolder;
+import com.gmail.molnardad.quester.QuestHolderManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.QuesterSign;
 import com.gmail.molnardad.quester.exceptions.HolderException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
-import com.gmail.molnardad.quester.managers.QConfiguration;
-import com.gmail.molnardad.quester.managers.LanguageManager;
-import com.gmail.molnardad.quester.managers.QuestHolderManager;
-import com.gmail.molnardad.quester.managers.QuestManager;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
+import com.gmail.molnardad.quester.quests.Quest;
+import com.gmail.molnardad.quester.quests.QuestManager;
 import com.gmail.molnardad.quester.strings.QuesterLang;
 import com.gmail.molnardad.quester.utils.Util;
 

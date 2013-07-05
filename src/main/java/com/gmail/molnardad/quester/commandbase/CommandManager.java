@@ -1,4 +1,4 @@
-package com.gmail.molnardad.quester.managers;
+package com.gmail.molnardad.quester.commandbase;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -13,10 +13,8 @@ import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import com.gmail.molnardad.quester.commandbase.QCommand;
-import com.gmail.molnardad.quester.commandbase.QCommandContext;
-import com.gmail.molnardad.quester.commandbase.QCommandLabels;
-import com.gmail.molnardad.quester.commandbase.QNestedCommand;
+import com.gmail.molnardad.quester.LanguageManager;
+import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QPermissionException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QUsageException;

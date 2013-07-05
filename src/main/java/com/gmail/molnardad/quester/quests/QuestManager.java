@@ -1,4 +1,4 @@
-package com.gmail.molnardad.quester.managers;
+package com.gmail.molnardad.quester.quests;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,8 +18,8 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.gmail.molnardad.quester.Quest;
-import com.gmail.molnardad.quester.QuestFlag;
+import com.gmail.molnardad.quester.LanguageManager;
+import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.Objective;

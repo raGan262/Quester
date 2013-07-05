@@ -3,10 +3,10 @@ package com.gmail.molnardad.quester.profiles;
 import java.util.Arrays;
 import java.util.List;
 
-import com.gmail.molnardad.quester.Quest;
+import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
-import com.gmail.molnardad.quester.managers.QConfiguration;
+import com.gmail.molnardad.quester.quests.Quest;
 import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 

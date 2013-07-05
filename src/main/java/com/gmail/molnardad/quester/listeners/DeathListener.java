@@ -9,15 +9,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.gmail.molnardad.quester.ActionSource;
-import com.gmail.molnardad.quester.Quest;
-import com.gmail.molnardad.quester.QuestFlag;
+import com.gmail.molnardad.quester.LanguageManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
-import com.gmail.molnardad.quester.managers.LanguageManager;
 import com.gmail.molnardad.quester.objectives.DeathObjective;
 import com.gmail.molnardad.quester.objectives.PlayerKillObjective;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
+import com.gmail.molnardad.quester.quests.Quest;
+import com.gmail.molnardad.quester.quests.QuestFlag;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class DeathListener implements Listener {
