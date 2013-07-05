@@ -20,6 +20,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -418,6 +420,17 @@ public class Util {
 					break;
 			case 5 : result = result + " V";
 					break;
+			case 6 : result = result + " VI";
+					break;
+			case 7 : result = result + " VII";
+					break;
+			case 8 : result = result + " VIII";
+					break;
+			case 9 : result = result + " IX";
+					break;
+			case 10 : result = result + " X";
+					break;
+			default : result = result + " " + lvl;
 		}
 		return result;
 	}
@@ -643,5 +656,20 @@ public class Util {
 			list.set(i, list.get(i+increment));
 		}
 		list.set(where, temp);
+	}
+	
+	// INVENTORY
+
+	public static Inventory createInventory(Player player) {
+		
+		Inventory inv = Bukkit.getServer().createInventory(null, InventoryType.PLAYER);
+		ItemStack[] contents = player.getInventory().getContents();
+		
+		for(int i = 0; i < contents.length; i++){
+			if(contents[i] != null){
+				inv.setItem(i, contents[i].clone());
+			}
+		}
+		return inv;
 	}
 }

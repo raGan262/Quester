@@ -246,7 +246,7 @@ public class UserCommands {
 		if(context.length() > 0) {
 			index = context.getInt(0);
 		}
-		qMan.showProgress((Player) sender, index, context.getSenderLang());
+		profMan.showProgress((Player) sender, index, context.getSenderLang());
 	}
 	
 	@QCommandLabels({"quests"})
@@ -258,10 +258,10 @@ public class UserCommands {
 			permission = QConfiguration.PERM_USE_QUESTS)
 	public void quests(QCommandContext context, CommandSender sender) throws QuesterException {
 		if(Util.permCheck(sender, QConfiguration.PERM_ADMIN, false, null) && context.length() > 0) {
-			qMan.showTakenQuests(sender, context.getString(0), context.getSenderLang());
+			profMan.showTakenQuests(sender, context.getString(0), context.getSenderLang());
 		}
 		else {
-			qMan.showTakenQuests(sender);
+			profMan.showTakenQuests(sender);
 		}
 	}
 }

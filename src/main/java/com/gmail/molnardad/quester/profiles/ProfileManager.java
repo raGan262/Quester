@@ -455,6 +455,65 @@ public class ProfileManager {
 		
 	}
 	
+	public void showProgress(Player player, QuesterLang lang) throws QuesterException {
+		showProgress(player, -1, lang);
+	}
+	
+	public void showProgress(Player player, int index, QuesterLang lang) throws QuesterException {
+		Quest quest = null;
+		QuestProgress progress = null;
+		PlayerProfile prof = getProfile(player.getName());
+		if(index < 0) {
+			progress = prof.getProgress();
+		}
+		else {
+			progress = prof.getProgress(index);
+		}
+		if(progress == null) {
+			throw new QuestException(lang.ERROR_Q_NOT_ASSIGNED);
+		}
+		quest = progress.getQuest();
+		
+		if(!quest.hasFlag(QuestFlag.HIDDENOBJS)) {
+			player.sendMessage(lang.INFO_PROGRESS.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
+			List<Objective> objs = quest.getObjectives();
+			for(int i = 0; i < objs.size(); i++) {
+				if(!objs.get(i).isHidden()) {
+					if(progress.getObjectiveStatus(i) == ObjectiveStatus.COMPLETED) {
+						player.sendMessage(ChatColor.GREEN + " - " + lang.INFO_PROGRESS_COMPLETED);
+					} else {
+						boolean active = progress.getObjectiveStatus(i) == ObjectiveStatus.ACTIVE;
+						if((active || !QConfiguration.ordOnlyCurrent)) {
+							ChatColor col = active ? ChatColor.YELLOW : ChatColor.RED;
+							player.sendMessage(col + " - " + objs.get(i).inShow(progress.getProgress()[i]));
+						}
+					}
+				}
+			}
+		} else {
+			player.sendMessage(Quester.LABEL + lang.INFO_PROGRESS_HIDDEN);
+		}
+	}
+	
+	public void showTakenQuests(CommandSender sender) {
+		showTakenQuests(sender, sender.getName(), langMan.getPlayerLang(sender.getName()));
+	}
+	
+	public void showTakenQuests(CommandSender sender, String name, QuesterLang lang) {
+		if(!hasProfile(name)) {
+			sender.sendMessage(ChatColor.RED + lang.INFO_PROFILE_NOT_EXIST.replaceAll("%p", name));
+			return;
+		}
+		PlayerProfile prof = getProfile(name);
+		sender.sendMessage(ChatColor.BLUE + (sender.getName().equalsIgnoreCase(name) ? "Your quests: " : prof.getName() + "\'s quests: " ) 
+				+ "(Limit: " + QConfiguration.maxQuests + ")");
+		int current = prof.getQuestProgressIndex();
+		for(int i=0; i<prof.getQuestAmount(); i++) {
+			sender.sendMessage("[" + i + "] " + (current == i ? ChatColor.GREEN : ChatColor.YELLOW) + prof.getProgress(i).getQuest().getName());
+		}
+		
+	}
+	
 	// STORAGE
 
 	public void loadRanks() {

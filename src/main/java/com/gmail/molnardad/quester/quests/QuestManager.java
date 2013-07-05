@@ -14,9 +14,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import com.gmail.molnardad.quester.LanguageManager;
 import com.gmail.molnardad.quester.QConfiguration;
@@ -28,7 +25,6 @@ import com.gmail.molnardad.quester.exceptions.*;
 import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.profiles.QuestProgress;
-import com.gmail.molnardad.quester.profiles.QuestProgress.ObjectiveStatus;
 import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;
@@ -627,78 +623,6 @@ public class QuestManager {
 			ChatColor color2 = q.hasFlag(QuestFlag.HIDDEN) ? ChatColor.YELLOW : ChatColor.BLUE;
 			sender.sendMessage(color2 + "[" + q.getID() + "]" + color + q.getName());
 		}
-	}
-	
-	public void showProgress(Player player, QuesterLang lang) throws QuesterException {
-		showProgress(player, -1, lang);
-	}
-	
-	public void showProgress(Player player, int index, QuesterLang lang) throws QuesterException {
-		Quest quest = null;
-		QuestProgress progress = null;
-		PlayerProfile prof = profMan.getProfile(player.getName());
-		if(index < 0) {
-			progress = prof.getProgress();
-		}
-		else {
-			progress = prof.getProgress(index);
-		}
-		if(progress == null) {
-			throw new QuestException(lang.ERROR_Q_NOT_ASSIGNED);
-		}
-		quest = progress.getQuest();
-		
-		if(!quest.hasFlag(QuestFlag.HIDDENOBJS)) {
-			player.sendMessage(lang.INFO_PROGRESS.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
-			List<Objective> objs = quest.getObjectives();
-			for(int i = 0; i < objs.size(); i++) {
-				if(!objs.get(i).isHidden()) {
-					if(progress.getObjectiveStatus(i) == ObjectiveStatus.COMPLETED) {
-						player.sendMessage(ChatColor.GREEN + " - " + lang.INFO_PROGRESS_COMPLETED);
-					} else {
-						boolean active = progress.getObjectiveStatus(i) == ObjectiveStatus.ACTIVE;
-						if((active || !QConfiguration.ordOnlyCurrent)) {
-							ChatColor col = active ? ChatColor.YELLOW : ChatColor.RED;
-							player.sendMessage(col + " - " + objs.get(i).inShow(progress.getProgress()[i]));
-						}
-					}
-				}
-			}
-		} else {
-			player.sendMessage(Quester.LABEL + lang.INFO_PROGRESS_HIDDEN);
-		}
-	}
-	
-	public void showTakenQuests(CommandSender sender) {
-		showTakenQuests(sender, sender.getName(), langMan.getPlayerLang(sender.getName()));
-	}
-	
-	public void showTakenQuests(CommandSender sender, String name, QuesterLang lang) {
-		if(!profMan.hasProfile(name)) {
-			sender.sendMessage(ChatColor.RED + lang.INFO_PROFILE_NOT_EXIST.replaceAll("%p", name));
-			return;
-		}
-		PlayerProfile prof = profMan.getProfile(name);
-		sender.sendMessage(ChatColor.BLUE + (sender.getName().equalsIgnoreCase(name) ? "Your quests: " : prof.getName() + "\'s quests: " ) 
-				+ "(Limit: " + QConfiguration.maxQuests + ")");
-		int current = prof.getQuestProgressIndex();
-		for(int i=0; i<prof.getQuestAmount(); i++) {
-			sender.sendMessage("[" + i + "] " + (current == i ? ChatColor.GREEN : ChatColor.YELLOW) + prof.getProgress(i).getQuest().getName());
-		}
-		
-	}
-	
-	public static Inventory createInventory(Player player) {
-		
-		Inventory inv = Bukkit.getServer().createInventory(null, InventoryType.PLAYER);
-		ItemStack[] contents = player.getInventory().getContents();
-		
-		for(int i = 0; i < contents.length; i++){
-			if(contents[i] != null){
-				inv.setItem(i, contents[i].clone());
-			}
-		}
-		return inv;
 	}
 	
 	public void saveQuests() {

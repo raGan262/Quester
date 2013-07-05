@@ -167,7 +167,7 @@ public class SignListeners implements Listener {
 							profMan.complete(player, ActionSource.holderSource(qh), lang);
 						} catch (QuesterException e) {
 							try {
-								qm.showProgress(player, lang);
+								profMan.showProgress(player, lang);
 							} catch (QuesterException f) {
 								player.sendMessage(ChatColor.DARK_PURPLE + lang.ERROR_INTERESTING);
 							}

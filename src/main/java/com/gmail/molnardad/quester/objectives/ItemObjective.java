@@ -16,7 +16,6 @@ import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
-import com.gmail.molnardad.quester.quests.QuestManager;
 import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
@@ -73,7 +72,7 @@ public final class ItemObjective extends Objective {
 
 	@Override
 	public boolean tryToComplete(Player player) {
-		Inventory newInv = QuestManager.createInventory(player);
+		Inventory newInv = Util.createInventory(player);
 		if(takeInventory(newInv)) {
 			takeInventory(player.getInventory());
 			return true;
