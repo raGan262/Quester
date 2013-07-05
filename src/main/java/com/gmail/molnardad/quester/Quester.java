@@ -140,10 +140,9 @@ public class Quester extends JavaPlugin {
 		public void onDisable() {
 			if(loaded) {
 				stopSaving();
-				// TODO SAVING
-				// profiles
-				// holders, signs
-				// quests
+				quests.saveQuests();
+				profiles.saveProfiles();
+				holders.saveHolders();
 				if(QConfiguration.verbose) {
 					log.info("Quester data saved.");
 				}

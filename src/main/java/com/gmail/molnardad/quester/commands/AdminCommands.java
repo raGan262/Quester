@@ -32,13 +32,25 @@ public class AdminCommands {
 			section = "Admin",
 			desc = "saves quests and profiles",
 			max = 0,
+			usage = "(-qph)",
 			permission = QConfiguration.PERM_ADMIN)
 	public void save(QCommandContext context, CommandSender sender) {
-		profMan.saveProfiles();
-		qMan.saveQuests();
-		holMan.saveHolders();
-		// TODO change message to match this
-		sender.sendMessage(context.getSenderLang().MSG_PROFILES_SAVE);
+		boolean pro, que, hol;
+		pro = context.hasFlag('p');
+		que = context.hasFlag('q');
+		hol = context.hasFlag('h');
+		if(pro || que || hol) {
+			if(que) qMan.saveQuests();
+			if(pro) profMan.saveProfiles();
+			if(hol) holMan.saveHolders();
+		}
+		else {
+			profMan.saveProfiles();
+			qMan.saveQuests();
+			holMan.saveHolders();
+		}
+		
+		sender.sendMessage(context.getSenderLang().MSG_DATA_SAVE);
 	}
 	
 	@QCommandLabels({"startsave"})

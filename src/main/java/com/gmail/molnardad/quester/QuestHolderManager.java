@@ -94,13 +94,11 @@ public class QuestHolderManager {
 		QuestHolder qh = new QuestHolder(name);
 		int id = getNewHolderID();
 		holderIds.put(id, qh);
-		saveHolders();
 		return id;
 	}
 	
 	public void removeHolder(int ID) {
 		holderIds.remove(ID);
-		saveHolders();
 	}
 	
 	public void addHolderQuest(String issuer, int questID, QuesterLang lang) throws QuesterException {
@@ -109,7 +107,6 @@ public class QuestHolderManager {
 			throw new HolderException(lang.ERROR_HOL_NOT_EXIST);
 		}
 		qh.addQuest(questID);
-		saveHolders();
 	}
 	
 	public void removeHolderQuest(String issuer, int questID, QuesterLang lang) throws QuesterException {
@@ -118,7 +115,6 @@ public class QuestHolderManager {
 			throw new HolderException(lang.ERROR_HOL_NOT_EXIST);
 		}
 		qh.removeQuest(questID);
-		saveHolders();
 	}
 	
 	public void moveHolderQuest(String issuer, int which, int where, QuesterLang lang) throws QuesterException {
@@ -132,7 +128,6 @@ public class QuestHolderManager {
 		catch (IndexOutOfBoundsException e) {
 			throw new CustomException(lang.ERROR_CMD_ID_OUT_OF_BOUNDS);
 		}
-		saveHolders();
 	}
 	
 	public int getOne(QuestHolder holder) {
@@ -315,7 +310,6 @@ public class QuestHolderManager {
 			signs.put(sign.getLocation(), sign);
 		}
 		
-		saveHolders();
 		if(QConfiguration.verbose) {
 			Quester.log.info(holderIds.size() + " holders loaded.");
 			Quester.log.info(signs.size() + " signs loaded.");

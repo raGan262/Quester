@@ -7,7 +7,7 @@ public class QuesterLang {
 	public static QuesterLang defaultLang = new QuesterLang(null);
 
 	public String MSG_ONLY_PLAYER = "This command can only be run by player.";
-	public String MSG_PROFILES_SAVE = "Profiles saved.";
+	public String MSG_DATA_SAVE = "Quest data saved.";
 	public String MSG_AUTOSAVE_DISABLED = "AutoSaving is disabled in config.";
 	public String MSG_AUTOSAVE_STARTED = "Saving started. Interval: %intervalm";// %interval = autosave interval;
 	public String MSG_AUTOSAVE_RUNNING = "Saving already running.";
