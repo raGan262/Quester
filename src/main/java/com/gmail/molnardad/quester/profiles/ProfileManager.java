@@ -253,7 +253,6 @@ public class ProfileManager {
 			if(qv.getOccasion() == -1)
 				qv.execute(player, plugin);
 		}
-		saveProfiles();
 	}
 	
 	public void startRandomQuest(Player player, ActionSource as, QuesterLang lang) throws QuesterException {
@@ -312,7 +311,6 @@ public class ProfileManager {
 			if(qv.getOccasion() == -2)
 				qv.execute(player, plugin);
 		}
-		saveProfiles();
 	}
 	
 	public void complete(Player player, ActionSource as, QuesterLang lang) throws QuesterException {
@@ -384,7 +382,6 @@ public class ProfileManager {
 			if(qv.getOccasion() == -3)
 				qv.execute(player, plugin);
 		}
-		saveProfiles();
 		if(quest.hasFlag(QuestFlag.ONLYFIRST)) {
 			qMan.deactivateQuest(quest);
 		}
@@ -434,7 +431,6 @@ public class ProfileManager {
 					complete(player, as, lang, false);
 				} catch (QuesterException ignore) {}
 			}
-			saveProfiles();
 		} 
 	}
 	
@@ -506,7 +502,6 @@ public class ProfileManager {
 				Quester.log.info("Invalid key in profiles.yml: " + subKey.getName());
 			}
 		}
-		saveProfiles();
 		if(QConfiguration.verbose) {
 			Quester.log.info(profiles.size() + " profiles loaded.");
 		}
