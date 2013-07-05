@@ -50,7 +50,7 @@ public class Quest {
 		return ID;
 	}
 	
-	public void setID(int newID) {
+	void setID(int newID) {
 		ID = newID;
 	}
 	
@@ -59,14 +59,14 @@ public class Quest {
 	}
 	
 	public Set<QuestFlag> getFlags() {
-		return flags;
+		return new HashSet<QuestFlag>(flags);
 	}
 	
-	public void addFlag(QuestFlag flag) {
+	void addFlag(QuestFlag flag) {
 		flags.add(flag);
 	}
 	
-	public void removeFlag(QuestFlag flag) {
+	void removeFlag(QuestFlag flag) {
 		flags.remove(flag);
 	}
 	
@@ -74,7 +74,7 @@ public class Quest {
 		return name;
 	}
 	
-	public void setName(String newName) {
+	void setName(String newName) {
 		name = newName;
 	}
 	
@@ -82,11 +82,11 @@ public class Quest {
 		return ChatColor.translateAlternateColorCodes('&', description).replaceAll("%p", playerName);
 	}
 	
-	public void setDescription(String newDescription) {
+	void setDescription(String newDescription) {
 		description = newDescription;
 	}
 	
-	public void addDescription(String toAdd) {
+	void addDescription(String toAdd) {
 		description = (description + " " + toAdd).trim();
 	}
 	
@@ -94,18 +94,11 @@ public class Quest {
 		return location != null;
 	}
 	
-	public String getLocationString() {
-		if(location != null)
-			return String.format("%.1f %.1f %.1f("+location.getWorld().getName()+"), range: %d", location.getX(), location.getY(), location.getZ(), range);
-		else
-			return "";
-	}
-	
 	public Location getLocation() {
 		return location;
 	}
 	
-	public void setLocation(Location loc) {
+	void setLocation(Location loc) {
 		location = loc;
 	}
 	
@@ -113,7 +106,7 @@ public class Quest {
 		return range;
 	}
 	
-	public void setRange(int rng) {
+	void setRange(int rng) {
 		range = rng;
 	}
 	
@@ -125,11 +118,11 @@ public class Quest {
 	}
 	
 	public List<Objective> getObjectives() {
-		return objectives;
+		return new ArrayList<Objective>(objectives);
 	}
 	
-	public ArrayList<Objective> getObjectives(String type) {
-		ArrayList<Objective> result = new ArrayList<Objective>();
+	public List<Objective> getObjectives(String type) {
+		List<Objective> result = new ArrayList<Objective>();
 		for(Objective o: objectives){
 			if(o.getType().equalsIgnoreCase(type)){
 				result.add(o);
@@ -138,7 +131,7 @@ public class Quest {
 		return result;
 	}
 	
-	public boolean removeObjective(int id) {
+	boolean removeObjective(int id) {
 		if(id < objectives.size()){
 			objectives.remove(id);
 			return true;
@@ -146,7 +139,7 @@ public class Quest {
 		return false;
 	}
 	
-	public void addObjective(Objective newObjective) {
+	void addObjective(Objective newObjective) {
 		objectives.add(newObjective);
 	}
 
@@ -158,10 +151,10 @@ public class Quest {
 	}
 	
 	public List<Condition> getConditions() {
-		return conditions;
+		return new ArrayList<Condition>(conditions);
 	}
 	
-	public boolean removeCondition(int id) {
+	boolean removeCondition(int id) {
 		if(id < conditions.size() && id >= 0){
 			conditions.remove(id);
 			return true;
@@ -169,7 +162,7 @@ public class Quest {
 		return false;
 	}
 	
-	public void addCondition(Condition newCondition) {
+	void addCondition(Condition newCondition) {
 		conditions.add(newCondition);
 	}
 	
@@ -181,7 +174,7 @@ public class Quest {
 	}
 	
 	public List<Qevent> getQevents() {
-		return qevents;
+		return new ArrayList<Qevent>(qevents);
 	}
 	
 	public Map<Integer, Map<Integer, Qevent>> getQeventMap() {
@@ -205,7 +198,7 @@ public class Quest {
 		return result;
 	}
 	
-	public boolean removeQevent(int id) {
+	boolean removeQevent(int id) {
 		if(id < qevents.size() && id >= 0){
 			qevents.remove(id);
 			return true;
@@ -213,7 +206,7 @@ public class Quest {
 		return false;
 	}
 	
-	public void addQevent(Qevent newQevent) {
+	void addQevent(Qevent newQevent) {
 		qevents.add(newQevent);
 	}
 	
@@ -222,14 +215,14 @@ public class Quest {
 	}
 	
 	public Set<String> getWorlds() {
-		return worlds;
+		return new HashSet<String>(worlds);
 	}
 	
-	public void addWorld(String worldName) {
+	void addWorld(String worldName) {
 		worlds.add(worldName.toLowerCase());
 	}
 	
-	public boolean removeWorld(String worldName) {
+	boolean removeWorld(String worldName) {
 		if(!worlds.contains(worldName.toLowerCase()))
 			return false;
 		worlds.remove(worldName.toLowerCase());
@@ -240,7 +233,7 @@ public class Quest {
 		return (worlds.contains(worldName.toLowerCase()) || worlds.isEmpty());
 	}
 	
-	public void serialize(StorageKey key) {
+	void serialize(StorageKey key) {
 		
 		key.setString("name", name);
 		if(!description.isEmpty()) {
@@ -280,7 +273,7 @@ public class Quest {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static Quest deserialize(StorageKey key) {
+	static Quest deserialize(StorageKey key) {
 		Quest quest;
 		try {
 			String name;
