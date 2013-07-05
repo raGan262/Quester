@@ -36,11 +36,6 @@ public class QuestProgress {
 		updateObjectives();
 	}
 	
-	void addToProgress(int objectiveID, int toAdd) {
-		if(objectiveID >= 0 || objectiveID < progress.length) {
-		}
-	}
-	
 	public ObjectiveStatus[] getObjectiveStatuses() {
 		return Arrays.copyOf(objectiveStatuses, objectiveStatuses.length);
 	}
@@ -82,9 +77,20 @@ public class QuestProgress {
 		return quest;
 	}
 	
+	void setProgressWithoutUpdate(int objectiveID, int newValue) {
+		if(objectiveID >= 0 && objectiveID < progress.length) {
+			progress[objectiveID] = newValue;
+		}
+	}
+	
 	public boolean setProgress(int objectiveID, int newValue) {
-		if(getObjectiveStatus(objectiveID) == ObjectiveStatus.ACTIVE) {
-			
+		if(objectiveID >= 0 && objectiveID < progress.length) {
+			progress[objectiveID] = newValue;
+			// if objective status went from not complete to complete or vice versa
+			if((objectiveStatuses[objectiveID] == ObjectiveStatus.COMPLETED)
+					!= quest.getObjective(objectiveID).isComplete(newValue)) {
+				updateObjectives();
+			}
 			return true;
 		}
 		return false;
@@ -138,10 +144,11 @@ public class QuestProgress {
 		try {
 			prog = new QuestProgress(quest);
 			String[] strs = progressString.split("\\|");
-			if(strs.length != 1 || !strs[0].isEmpty()) {
+			if(!strs[0].isEmpty()) {
 				for(int i=0; i < strs.length; i++) {
-					prog.setProgress(i, Integer.parseInt(strs[i]));
+					prog.setProgressWithoutUpdate(i, Integer.parseInt(strs[i]));
 				}
+				prog.updateObjectives();
 			}		
 		} catch (Exception e) {
 			return null;
