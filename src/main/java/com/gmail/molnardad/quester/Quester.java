@@ -373,7 +373,7 @@ public class Quester extends JavaPlugin {
 					ExpObjective.class,
 					FishObjective.class,
 					ItemObjective.class,
-					LocObjective.class,
+					RegionObjective.class,
 					MilkObjective.class,
 					MobKillObjective.class,
 					MoneyObjective.class,
@@ -382,6 +382,7 @@ public class Quester extends JavaPlugin {
 					ShearObjective.class,
 					SmeltObjective.class,
 					TameObjective.class,
+					LocObjective.class,
 					WorldObjective.class,
 					ActionObjective.class,
 					NpcObjective.class,
@@ -389,7 +390,8 @@ public class Quester extends JavaPlugin {
 					BossObjective.class,
 					NpcKillObjective.class,
 					DropObjective.class,
-					ChatObjective.class
+					ChatObjective.class,
+					RegionObjective.class
 			};
 			for(Class<? extends Element> clss : classes) {
 				try {

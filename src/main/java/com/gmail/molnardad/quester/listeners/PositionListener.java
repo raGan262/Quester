@@ -11,8 +11,7 @@ import com.gmail.molnardad.quester.LanguageManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
-import com.gmail.molnardad.quester.objectives.LocObjective;
-import com.gmail.molnardad.quester.objectives.WorldObjective;
+import com.gmail.molnardad.quester.objectives.RegionObjective;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.Quest;
 import com.gmail.molnardad.quester.quests.QuestFlag;
@@ -40,21 +39,12 @@ public class PositionListener implements Runnable {
 		    		continue;
 		    	List<Objective> objs = quest.getObjectives();
 		    	for(int i = 0; i < objs.size(); i++) {
-		    		if(objs.get(i).getType().equalsIgnoreCase("LOCATION")) {
+		    		if(objs.get(i).getType().equalsIgnoreCase("REGION")) {
 		    			if(!profMan.isObjectiveActive(player, i)){
 		    				continue;
 		    			}
-		    			LocObjective obj = (LocObjective)objs.get(i);
+		    			RegionObjective obj = (RegionObjective)objs.get(i);
 		    			if(obj.checkLocation(player.getLocation())) {
-		    				profMan.incProgress(player, ActionSource.otherSource(null), i);
-		    				break;
-		    			}
-		    		} else if(objs.get(i).getType().equalsIgnoreCase("WORLD")) {
-		    			if(!profMan.isObjectiveActive(player, i)){
-		    				continue;
-		    			}
-		    			WorldObjective obj = (WorldObjective)objs.get(i);
-		    			if(obj.checkWorld(player.getWorld().getName())) {
 		    				profMan.incProgress(player, ActionSource.otherSource(null), i);
 		    				break;
 		    			}

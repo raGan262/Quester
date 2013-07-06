@@ -11,6 +11,8 @@ import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.storage.StorageKey;
 
+/* DEPRECATED - use inverted QUEST condition instead */
+
 @QElement("QUESTNOT")
 public final class QuestNotCondition extends Condition {
 

@@ -157,6 +157,7 @@ public class QuesterLang {
 	public String ERROR_CMD_ID_OUT_OF_BOUNDS = "Index does not exist.";
 	public String ERROR_CMD_OCC_INCORRECT = "Incorrect ocasion.";
 	public String ERROR_CMD_OCC_INCORRECT_FORM = "Incorrect occasion format.";
+	public String ERROR_CMD_REGION_INVALID = "Invalid region.";
 	
 	public String ERROR_Q_EXIST = "Quest already exists.";
 	public String ERROR_Q_NOT_EXIST = "Quest does not exist.";
