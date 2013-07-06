@@ -321,6 +321,7 @@ public class Quester extends JavaPlugin {
 			getServer().getPluginManager().registerEvents(new SignListeners(this), this);
 			getServer().getPluginManager().registerEvents(new ActionListener(this), this);
 			getServer().getPluginManager().registerEvents(new DyeListener(this), this);
+			getServer().getPluginManager().registerEvents(new ChatListener(this), this);
 			getServer().getPluginManager().registerEvents(new QuestItemListener(), this);
 			if(citizens2) {
 				getServer().getPluginManager().registerEvents(new Citizens2Listener(this), this);
@@ -387,7 +388,8 @@ public class Quester extends JavaPlugin {
 					DyeObjective.class,
 					BossObjective.class,
 					NpcKillObjective.class,
-					DropObjective.class
+					DropObjective.class,
+					ChatObjective.class
 			};
 			for(Class<? extends Element> clss : classes) {
 				try {
