@@ -21,33 +21,33 @@ public abstract class Region {
 	
 	public abstract String toString();
 	
+	public abstract String serializeToString();
+	
 	public static Region fromString(CommandSender sender, String string) {
 		try {
 			String[] strs = string.split(Pattern.quote(SEPARATOR));
-			if(strs[0].equals("SPHERE")) {
+			if(strs[0].equalsIgnoreCase("SPHERE")) {
 				return new Sphere(Util.getLoc(sender, strs[1]), Double.valueOf(strs[2]));
 			}
-			else if(strs[0].equals("CUBOID")) {
+			else if(strs[0].equalsIgnoreCase("CUBOID")) {
 				return new Cuboid(Util.getLoc(sender, strs[1]), Util.getLoc(sender, strs[2]));
 			}
-			else if(strs[0].equals("WORLD")) {
+			else if(strs[0].equalsIgnoreCase("WORLD")) {
 				if(sender instanceof Player && strs[1].equalsIgnoreCase(QConfiguration.worldLabelThis)) {
 					strs[1] = ((Player) sender).getWorld().getName();
 				}
 				return new World(strs[1]);
 			}
-			else if(strs[0].equals("ANYWHERE")) {
+			else if(strs[0].equalsIgnoreCase("ANYWHERE")) {
 				return Region.ANYWHERE;
 			}
 		}
-		catch (Exception ignore) {
-			ignore.printStackTrace();
-		}
+		catch (Exception ignore) {}
 		return null;
 	}
-
+	
 	public void serialize(StorageKey key) {
-		key.setString("", getType() + SEPARATOR + toString());
+		key.setString("", getType() + SEPARATOR + serializeToString());
 	}
 	
 	public static Region deserialize(StorageKey key) {
@@ -68,6 +68,11 @@ public abstract class Region {
 
 		@Override
 		public String toString() {
+			return getType();
+		}
+
+		@Override
+		public String serializeToString() {
 			return "";
 		}
 		
@@ -103,6 +108,11 @@ public abstract class Region {
 
 		@Override
 		public String toString() {
+			return getType() + " " + Util.displayLocation(center) + " R=" + range;
+		}
+
+		@Override
+		public String serializeToString() {
 			return Util.serializeLocString(center) + SEPARATOR + range;
 		}
 	}
@@ -144,6 +154,11 @@ public abstract class Region {
 
 		@Override
 		public String toString() {
+			return getType() + " " + Util.displayLocation(min) + " " + Util.displayLocation(max);
+		}
+
+		@Override
+		public String serializeToString() {
 			return Util.serializeLocString(min) + SEPARATOR + Util.serializeLocString(max);
 		}
 	}
@@ -174,6 +189,11 @@ public abstract class Region {
 
 		@Override
 		public String toString() {
+			return getType() + " " + world;
+		}
+
+		@Override
+		public String serializeToString() {
 			return world;
 		}
 		

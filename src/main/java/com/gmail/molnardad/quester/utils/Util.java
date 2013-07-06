@@ -585,7 +585,7 @@ public class Util {
 		if(loc == null)
 			return null;
 		
-		str = String.format(Locale.ENGLISH, "%.1f;%.1f;%.1f;"+loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ());
+		str = String.format(Locale.ENGLISH, "%.1f;%.1f;%.1f;%s", loc.getX(), loc.getY(), loc.getZ(), loc.getWorld().getName());
 		
 		return str;
 	}
@@ -596,7 +596,7 @@ public class Util {
 		if(loc == null)
 			return null;
 		
-		str = String.format(Locale.ENGLISH, "%.2f;%.2f;%.2f;"+loc.getWorld().getName()+";%.2f;%.2f;", loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
+		str = String.format(Locale.ENGLISH, "%.2f;%.2f;%.2f;%s;%.2f;%.2f;", loc.getX(), loc.getY(), loc.getZ(), loc.getWorld().getName(), loc.getYaw(), loc.getPitch());
 		
 		return str;
 	}

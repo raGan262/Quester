@@ -36,7 +36,7 @@ public final class RegionObjective extends Objective {
 	
 	@Override
 	protected String info() {
-		return region.getType() + " " + region.toString();
+		return region.toString();
 	}
 	
 	@QCommand(
