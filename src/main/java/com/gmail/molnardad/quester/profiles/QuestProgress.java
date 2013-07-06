@@ -131,26 +131,30 @@ public class QuestProgress {
 		if(!key.getSubKeys().isEmpty()) {
 			progressString = key.getString("progress");
 		}
-		else if(key.getString("") != null) {
+		else if(key.getString("") != null) { // older format
 			progressString = key.getString("");
 		}
 		
-		if(progressString == null) {
-			if(QConfiguration.verbose) {
-				Quester.log.info("Invalid or missing progress for quest '" + key + "' in profile.");
-			}
-		}
 		QuestProgress prog = null;
 		try {
 			prog = new QuestProgress(quest);
 			String[] strs = progressString.split("\\|");
-			if(!strs[0].isEmpty()) {
+			if(strs[0].isEmpty()) {
+				strs = new String[0];
+			}
+			if(strs.length == prog.getSize()) {
 				for(int i=0; i < strs.length; i++) {
 					prog.setProgressWithoutUpdate(i, Integer.parseInt(strs[i]));
 				}
 				prog.updateObjectives();
-			}		
+			}
+			else {
+				throw new Exception();
+			}
 		} catch (Exception e) {
+			if(QConfiguration.verbose) {
+				Quester.log.info("Invalid or missing progress for quest '" + key + "' in profile.");
+			}
 			return null;
 		}
 		

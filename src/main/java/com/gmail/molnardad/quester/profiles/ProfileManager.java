@@ -434,6 +434,26 @@ public class ProfileManager {
 		} 
 	}
 	
+	public String[] validateProgress(PlayerProfile profile) {
+		QuestProgress[] progs = profile.getProgresses();
+		boolean localUnset = false;
+		List<String> unset = new ArrayList<String>(QConfiguration.maxQuests);
+		for(int i=progs.length-1; i >= 0; i--) {
+			localUnset = false;
+			Quest quest = progs[i].getQuest();
+			if(!quest.equals(qMan.getQuest(quest.getID()))		// if ID or name changed
+					|| progs[i].getSize() != quest.getObjectives().size()) {	// if number of objectives changed
+				localUnset = true;
+			}
+			
+			if(localUnset) {
+				profile.unsetQuest(i);
+				unset.add(quest.getName());
+			}
+		}
+		return unset.toArray(new String[0]);
+	}
+	
 	// DISPLAY METHODS
 	
 	public void showProfile(CommandSender sender) {
@@ -505,8 +525,8 @@ public class ProfileManager {
 			return;
 		}
 		PlayerProfile prof = getProfile(name);
-		sender.sendMessage(ChatColor.BLUE + (sender.getName().equalsIgnoreCase(name) ? "Your quests: " : prof.getName() + "\'s quests: " ) 
-				+ "(Limit: " + QConfiguration.maxQuests + ")");
+		sender.sendMessage(ChatColor.BLUE + (sender.getName().equalsIgnoreCase(name) ? lang.INFO_QUESTS + ": " : lang.INFO_QUESTS_OTHER.replaceAll("%p", prof.getName()) + ": " ) 
+				+ "(" + lang.INFO_LIMIT + ": " + QConfiguration.maxQuests + ")");
 		int current = prof.getQuestProgressIndex();
 		for(int i=0; i<prof.getQuestAmount(); i++) {
 			sender.sendMessage("[" + i + "] " + (current == i ? ChatColor.GREEN : ChatColor.YELLOW) + prof.getProgress(i).getQuest().getName());

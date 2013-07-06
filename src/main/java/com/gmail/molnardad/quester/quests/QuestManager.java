@@ -636,11 +636,33 @@ public class QuestManager {
 		questStorage.save();
 	}
 	
-	public void loadQuests() {
-		questStorage.load();
+	public boolean loadQuests() {
+		return loadQuests(null);
+	}
+	
+	public boolean loadQuests(String fileName) {
+		Storage storage = questStorage;
+		if(fileName != null) {
+			File storageFile = new File(plugin.getDataFolder(), fileName);
+			if(storageFile.exists()) {
+				storage = new ConfigStorage(storageFile, plugin.getLogger(), null);
+			}
+			else {
+				return false;
+			}
+		}
+		if(!storage.load()) {
+			return false;
+		}
+		
+		if(fileName == null) {
+			quests.clear();
+			questNames.clear();
+			questLocations.clear();
+		}
 		List<Quest> onHold = new ArrayList<Quest>();
 		int lastGeneric = 0;
-		for(StorageKey questKey : questStorage.getKey("").getSubKeys()) {
+		for(StorageKey questKey : storage.getKey("").getSubKeys()) {
 			if(questKey.hasSubKeys()) {
 				if(QConfiguration.debug) {
 					Quester.log.info("Deserializing quest " + questKey.getName() + ".");
@@ -668,6 +690,7 @@ public class QuestManager {
 					}
 					else { // everything all right
 						quests.put(quest.getID(), quest);
+						questNames.put(quest.getName().toLowerCase(), quest.getID());
 						if(quest.hasLocation()) {
 							questLocations.put(quest.getID(), quest.getLocation());
 						}
@@ -676,7 +699,6 @@ public class QuestManager {
 				else { // quest has default ID, new needs to be generated
 					onHold.add(quest);
 				}
-				questNames.put(quest.getName().toLowerCase(), quest.getID());
 				for(int i=0; i<quest.getObjectives().size(); i++) {
 					if(quest.getObjective(i) == null) {
 						Quester.log.info("Objective " + i + " is invalid.");
@@ -710,5 +732,6 @@ public class QuestManager {
 		if(QConfiguration.verbose) {
 			Quester.log.info(quests.size() + " quests loaded.");
 		}
+		return true;
 	}
 }

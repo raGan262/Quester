@@ -7,18 +7,19 @@ public class QuesterLang {
 	public static QuesterLang defaultLang = new QuesterLang(null);
 
 	public String MSG_ONLY_PLAYER = "This command can only be run by player.";
-	public String MSG_DATA_SAVE = "Quest data saved.";
+	public String MSG_DATA_SAVE = "Quester data saved.";
 	public String MSG_AUTOSAVE_DISABLED = "AutoSaving is disabled in config.";
 	public String MSG_AUTOSAVE_STARTED = "Saving started. Interval: %intervalm";// %interval = autosave interval;
 	public String MSG_AUTOSAVE_RUNNING = "Saving already running.";
 	public String MSG_AUTOSAVE_STOPPED = "Saving Stopped.";
 	public String MSG_AUTOSAVE_NOT_RUNNING = "Saving not running.";
-	public String MSG_CONFIG_RELOADED = "Quest configs reloaded.";
+	public String MSG_DATA_RELOADED = "Quester data reloaded.";
 	public String MSG_PERMS = "You don't have permission for this.";
 	public String MSG_Q_STARTED = "You have started quest %q";// %q = quest name;
 	public String MSG_Q_COMPLETED = "Quest %q completed.";// %q = quest name;
 	public String MSG_Q_CANCELLED = "Quest %q cancelled.";// %q = quest name;
 	public String MSG_Q_DEACTIVATED = "One of your quests has been deactivated.";
+	public String MSG_Q_SOME_CANCELLED = "Some of your quests have been cancelled.";
 	public String MSG_OBJ_COMPLETED = "You completed a quest objective.";
 
 	
@@ -41,6 +42,9 @@ public class QuesterLang {
 	public String INFO_PROFILE_COMPLETED = "Completed quests";
 	public String INFO_PROFILE_NOT_EXIST = "%p does not have profile.";// %p = player name;
 	public String INFO_HOLDER_LIST = "Holder list";
+	public String INFO_QUESTS = "Quests";
+	public String INFO_QUESTS_OTHER = "%p's quests";
+	public String INFO_LIMIT = "Limit";
 
 	public String HELP_SECTION_USE = "Quester help";
 	public String HELP_SECTION_MODIFY = "Modify help";

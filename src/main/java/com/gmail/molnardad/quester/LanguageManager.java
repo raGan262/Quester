@@ -92,6 +92,10 @@ public class LanguageManager {
 		return true;
 	}
 	
+	public void reloadLangs() {
+		// TODO
+	}
+	
 	public Set<String> getLangSet() {
 		return languages.keySet();
 	}

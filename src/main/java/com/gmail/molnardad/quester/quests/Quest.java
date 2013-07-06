@@ -372,8 +372,10 @@ public class Quest {
 	@Override
 	public boolean equals(Object obj) {
 		if(obj != null && obj instanceof Quest) {
-			Quest qst = (Quest) obj;
-			return getName().equals(qst.getName());
+			Quest other = (Quest) obj;
+			return name.equals(other.name) 
+					&& ID == other.ID
+					&& flags.equals(other.flags);
 		}
 		return false;
 	}
