@@ -36,6 +36,8 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.elements.Element;
 import com.gmail.molnardad.quester.elements.ElementManager;
 import com.gmail.molnardad.quester.exceptions.*;
+import com.gmail.molnardad.quester.holder.QuestHolderManager;
+import com.gmail.molnardad.quester.holder.QuesterTrait;
 
 public class Quester extends JavaPlugin {
 
@@ -390,8 +392,7 @@ public class Quester extends JavaPlugin {
 					BossObjective.class,
 					NpcKillObjective.class,
 					DropObjective.class,
-					ChatObjective.class,
-					RegionObjective.class
+					ChatObjective.class
 			};
 			for(Class<? extends Element> clss : classes) {
 				try {
