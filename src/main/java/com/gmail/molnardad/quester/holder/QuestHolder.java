@@ -1,4 +1,4 @@
-package com.gmail.molnardad.quester;
+package com.gmail.molnardad.quester.holder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +50,7 @@ public class QuestHolder {
 		return -1;
 	}
 	
-	protected void setname(String newName) {
+	protected void setName(String newName) {
 		name = newName;
 	}
 	
