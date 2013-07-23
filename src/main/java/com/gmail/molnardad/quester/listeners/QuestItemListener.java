@@ -14,6 +14,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -25,7 +26,14 @@ public class QuestItemListener implements Listener {
 	private Map<String, ItemStack[]> items = new HashMap<String, ItemStack[]>();
 	
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onAction(InventoryClickEvent event) {
+	public void onAction(PlayerInteractEvent event) {
+		if(Util.isQuestItem(event.getItem())) {
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onClick(InventoryClickEvent event) {
 		if(Util.isQuestItem(event.getCurrentItem())) {
 			if(!event.isShiftClick() || !event.getInventory().getType().equals(InventoryType.CRAFTING)) {
 				event.setCancelled(true);
