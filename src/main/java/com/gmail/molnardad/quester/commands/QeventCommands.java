@@ -11,7 +11,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.ElementManager;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.ElementException;
-import com.gmail.molnardad.quester.exceptions.EventException;
+import com.gmail.molnardad.quester.exceptions.QeventException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.quests.QuestManager;
 import com.gmail.molnardad.quester.strings.QuesterLang;
@@ -27,7 +27,7 @@ public class QeventCommands {
 		eMan = plugin.getElementManager();
 	}
 	
-	private Qevent getQevent(String type, String occassion,  QCommandContext subContext, QuesterLang lang) throws EventException, QCommandException, QuesterException {
+	private Qevent getQevent(String type, String occassion,  QCommandContext subContext, QuesterLang lang) throws QeventException, QCommandException, QuesterException {
 		int[] occasion;
 		try {
 			occasion = Util.deserializeOccasion(occassion, lang);
@@ -39,7 +39,7 @@ public class QeventCommands {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.ERROR_EVT_NOT_EXIST);
 			subContext.getSender().sendMessage(ChatColor.RED + lang.EVT_LIST + ": "
 					+ ChatColor.WHITE + eMan.getEventList());
-			throw new EventException(lang.ERROR_EVT_NOT_EXIST);
+			throw new QeventException(lang.ERROR_EVT_NOT_EXIST);
 		}
 		Qevent evt = eMan.getEventFromCommand(type, subContext);
 		if(evt != null) {
@@ -61,7 +61,7 @@ public class QeventCommands {
 		try {
 			qevent = getQevent(type, context.getString(0), context.getSubContext(2), context.getSenderLang());
 		}
-		catch (EventException e) {
+		catch (QeventException e) {
 			return;
 		}
 		if(qevent == null) {
@@ -85,7 +85,7 @@ public class QeventCommands {
 		try {
 			qevent = getQevent(type, context.getString(1), context.getSubContext(3), context.getSenderLang());
 		}
-		catch (EventException e) {
+		catch (QeventException e) {
 			return;
 		}
 		if(qevent == null) {

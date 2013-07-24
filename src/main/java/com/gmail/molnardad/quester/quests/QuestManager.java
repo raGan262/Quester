@@ -472,7 +472,7 @@ public class QuestManager {
 		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		if(!quest.removeQevent(id)){
-			throw new EventException(lang.ERROR_EVT_NOT_EXIST);
+			throw new QeventException(lang.ERROR_EVT_NOT_EXIST);
 		}
 	}
 	
