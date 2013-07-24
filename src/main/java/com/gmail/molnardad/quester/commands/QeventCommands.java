@@ -53,7 +53,7 @@ public class QeventCommands {
 			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
 		}
 		evt.setOccasion(occasion[0], occasion[1]);
-		qMan.addQevent(sender.getName(), evt, context.getSenderLang());
+		qMan.addQuestQevent(sender.getName(), evt, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + lang.EVT_ADD.replaceAll("%type", type.toUpperCase()));
 	}
 	
@@ -65,7 +65,7 @@ public class QeventCommands {
 			max = 1,
 			usage = "<event ID>")
 	public void remove(QCommandContext context, CommandSender sender) throws QuesterException {
-		qMan.removeQevent(sender.getName(), context.getInt(0), context.getSenderLang());
+		qMan.removeQuestQevent(sender.getName(), context.getInt(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().EVT_REMOVE.replaceAll("%id", context.getString(0)));
 	}
 	

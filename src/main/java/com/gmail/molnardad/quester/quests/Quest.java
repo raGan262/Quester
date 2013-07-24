@@ -142,6 +142,10 @@ public class Quest {
 	void addObjective(Objective newObjective) {
 		objectives.add(newObjective);
 	}
+	
+	void setObjective(int objectiveID, Objective newObjective) {
+		objectives.set(objectiveID, newObjective);
+	}
 
 	public Condition getCondition(int id) {
 		if(id < conditions.size()){
@@ -164,6 +168,10 @@ public class Quest {
 	
 	void addCondition(Condition newCondition) {
 		conditions.add(newCondition);
+	}
+	
+	void setCondition(int conditionID, Condition newCondition) {
+		conditions.set(conditionID, newCondition);
 	}
 	
 	public Qevent getQevent(int id) {
@@ -208,6 +216,10 @@ public class Quest {
 	
 	void addQevent(Qevent newQevent) {
 		qevents.add(newQevent);
+	}
+	
+	void setQevent(int qeventID, Qevent newQevent) {
+		qevents.set(qeventID, newQevent);
 	}
 	
 	public String getWorldNames() {

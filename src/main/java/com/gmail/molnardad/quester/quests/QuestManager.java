@@ -283,6 +283,15 @@ public class QuestManager {
 		quest.addObjective(newObjective);
 	}
 	
+	public void setQuestObjective(String issuer, int id, Objective newObjective, QuesterLang lang) throws QuesterException {
+		Quest quest = profMan.getSelectedQuest(issuer);
+		modifyCheck(quest, lang);
+		if(quest.getObjective(id) == null){
+			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
+		}
+		quest.setObjective(id, newObjective);
+	}
+	
 	public void removeQuestObjective(String issuer, int id, QuesterLang lang) throws QuesterException {
 		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
@@ -398,6 +407,15 @@ public class QuestManager {
 		quest.addCondition(newCondition);
 	}
 	
+	public void setQuestCondition(String issuer, int id, Condition newCondition, QuesterLang lang) throws QuesterException {
+		Quest quest = profMan.getSelectedQuest(issuer);
+		modifyCheck(quest, lang);
+		if(quest.getCondition(id) == null){
+			throw new ConditionException(lang.ERROR_CON_NOT_EXIST);
+		}
+		quest.setCondition(id, newCondition);
+	}
+	
 	public void removeQuestCondition(String issuer, int id, QuesterLang lang) throws QuesterException {
 		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
@@ -426,7 +444,7 @@ public class QuestManager {
 		cons.get(id).removeDescription();
 	}
 	
-	public void addQevent(String issuer, Qevent newQevent, QuesterLang lang) throws QuesterException {
+	public void addQuestQevent(String issuer, Qevent newQevent, QuesterLang lang) throws QuesterException {
 		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		int occasion = newQevent.getOccasion();
@@ -436,7 +454,17 @@ public class QuestManager {
 		quest.addQevent(newQevent);
 	}
 	
-	public void removeQevent(String issuer, int id, QuesterLang lang) throws QuesterException {
+	public void setQuestQevent(String issuer, Qevent newQevent, QuesterLang lang) throws QuesterException {
+		Quest quest = profMan.getSelectedQuest(issuer);
+		modifyCheck(quest, lang);
+		int occasion = newQevent.getOccasion();
+		if(occasion < -3 || occasion >= quest.getObjectives().size() ) {
+			throw new ConditionException(lang.ERROR_OCC_NOT_EXIST);
+		}
+		quest.addQevent(newQevent);
+	}
+	
+	public void removeQuestQevent(String issuer, int id, QuesterLang lang) throws QuesterException {
 		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		if(!quest.removeQevent(id)){
