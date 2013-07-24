@@ -11,6 +11,7 @@ import com.gmail.molnardad.quester.commandbase.QNestedCommand;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.ElementManager;
+import com.gmail.molnardad.quester.exceptions.ConditionException;
 import com.gmail.molnardad.quester.exceptions.ElementException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.quests.QuestManager;
@@ -26,6 +27,21 @@ public class ConditionCommands {
 		eMan = plugin.getElementManager();
 	}
 	
+	private Condition getCondition(String type, QCommandContext subContext, QuesterLang lang) throws ConditionException, QCommandException, QuesterException {
+
+		if(!eMan.isCondition(type)) {
+			subContext.getSender().sendMessage(ChatColor.RED + lang.ERROR_CON_NOT_EXIST);
+			subContext.getSender().sendMessage(ChatColor.RED + lang.CON_LIST + ": "
+					+ ChatColor.WHITE + eMan.getConditionList());
+			throw new ConditionException(lang.ERROR_CON_NOT_EXIST);
+		}
+		Condition con = eMan.getConditionFromCommand(type, subContext);
+		if(con == null) {
+			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
+		}
+		return con;
+	}
+	
 	@QCommandLabels({"add", "a"})
 	@QCommand(
 			section = "QMod",
@@ -35,17 +51,35 @@ public class ConditionCommands {
 	public void add(QCommandContext context, CommandSender sender) throws QCommandException, QuesterException {
 		QuesterLang lang = context.getSenderLang();
 		String type = context.getString(0);
-		if(!eMan.isCondition(type)) {
-			sender.sendMessage(ChatColor.RED + lang.ERROR_CON_NOT_EXIST);
-			sender.sendMessage(ChatColor.RED + lang.CON_LIST + ": "
-					+ ChatColor.WHITE + eMan.getConditionList());
+		Condition condition;
+		try {
+			condition = getCondition(type, context.getSubContext(1), lang);
+		}
+		catch (ConditionException e) {
 			return;
 		}
-		Condition con = eMan.getConditionFromCommand(type, context.getSubContext(1));
-		if(con == null) {
-			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
+		qMan.addQuestCondition(sender.getName(), condition, context.getSenderLang());
+		sender.sendMessage(ChatColor.GREEN + lang.CON_ADD.replaceAll("%type", type.toUpperCase()));
+	}
+	
+	@QCommandLabels({"set", "s"})
+	@QCommand(
+			section = "QMod",
+			desc = "adds a condition",
+			min = 2,
+			usage = "<con ID> <con type> [args]")
+	public void set(QCommandContext context, CommandSender sender) throws QCommandException, QuesterException {
+		QuesterLang lang = context.getSenderLang();
+		int conditionID = context.getInt(0);
+		String type = context.getString(1);
+		Condition condition;
+		try {
+			condition = getCondition(type, context.getSubContext(2), lang);
 		}
-		qMan.addQuestCondition(sender.getName(), con, context.getSenderLang());
+		catch (ConditionException e) {
+			return;
+		}
+		qMan.setQuestCondition(sender.getName(), conditionID, condition, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + lang.CON_ADD.replaceAll("%type", type.toUpperCase()));
 	}
 	

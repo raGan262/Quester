@@ -35,7 +35,10 @@ public class ObjectiveCommands {
 			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
 		}
 		Objective obj = eMan.getObjectiveFromCommand(type, subContext);
-		if(obj != null && subContext.hasFlag('h')) {
+		if(obj == null) {
+			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
+		}
+		else if(subContext.hasFlag('h')) {
 			obj.setHidden(true);
 		}
 		return obj;
@@ -57,9 +60,6 @@ public class ObjectiveCommands {
 		catch (ObjectiveException e) {
 			return;
 		}
-		if(obj == null) {
-			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
-		}
 		qMan.addQuestObjective(sender.getName(), obj, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + lang.OBJ_ADD.replaceAll("%type", type.toUpperCase()));
 	}
@@ -80,9 +80,6 @@ public class ObjectiveCommands {
 		}
 		catch (ObjectiveException e) {
 			return;
-		}
-		if(obj == null) {
-			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
 		}
 		qMan.setQuestObjective(sender.getName(), objectiveID, obj, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + lang.OBJ_ADD.replaceAll("%type", type.toUpperCase()));

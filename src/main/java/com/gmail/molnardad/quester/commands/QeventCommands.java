@@ -45,6 +45,9 @@ public class QeventCommands {
 		if(evt != null) {
 			evt.setOccasion(occasion[0], occasion[1]);
 		}
+		else {
+			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
+		}
 		return evt;
 	}
 	
@@ -59,15 +62,12 @@ public class QeventCommands {
 		String type = context.getString(1);
 		Qevent qevent;
 		try {
-			qevent = getQevent(type, context.getString(0), context.getSubContext(2), context.getSenderLang());
+			qevent = getQevent(type, context.getString(0), context.getSubContext(2), lang);
 		}
 		catch (QeventException e) {
 			return;
 		}
-		if(qevent == null) {
-			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
-		}
-		qMan.addQuestQevent(sender.getName(), qevent, context.getSenderLang());
+		qMan.addQuestQevent(sender.getName(), qevent, lang);
 		sender.sendMessage(ChatColor.GREEN + lang.EVT_ADD.replaceAll("%type", type.toUpperCase()));
 	}
 	
@@ -83,15 +83,12 @@ public class QeventCommands {
 		int qeventID = context.getInt(0);
 		Qevent qevent;
 		try {
-			qevent = getQevent(type, context.getString(1), context.getSubContext(3), context.getSenderLang());
+			qevent = getQevent(type, context.getString(1), context.getSubContext(3), lang);
 		}
 		catch (QeventException e) {
 			return;
 		}
-		if(qevent == null) {
-			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
-		}
-		qMan.setQuestQevent(sender.getName(), qeventID, qevent, context.getSenderLang());
+		qMan.setQuestQevent(sender.getName(), qeventID, qevent, lang);
 		sender.sendMessage(ChatColor.GREEN + lang.EVT_ADD.replaceAll("%type", type.toUpperCase()));
 	}
 	
