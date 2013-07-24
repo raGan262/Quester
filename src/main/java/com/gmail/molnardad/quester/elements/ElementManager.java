@@ -11,7 +11,6 @@ import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QUsageException;
-import com.gmail.molnardad.quester.elements.*;
 import com.gmail.molnardad.quester.exceptions.ElementException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.storage.StorageKey;
@@ -136,16 +135,25 @@ public class ElementManager {
 		return Util.implode(events.keySet().toArray(new String[0]), ',');
 	}
 	
+	private String getParentArgs(String[] args) {
+		StringBuilder result = new StringBuilder();
+		result.append(QConfiguration.displayedCmd).append(' ');
+		for(String arg : args) {
+			result.append(arg).append(' ');
+		}
+		return result.toString();
+	}
+	
 	private Element getFromCommand(ElementInfo<? extends Element> ei, QCommandContext context) throws QCommandException, QuesterException {
 		Object obj = null; 
 		try {
 			String parent;
 			if(context.length() < ei.command.min()) {
-				parent = QConfiguration.displayedCmd+' '+context.getParentArg(0)+' '+context.getParentArg(1)+' ';
+				parent = getParentArgs(context.getParentArgs());
 				throw new QUsageException(context.getSenderLang().ERROR_CMD_ARGS_NOT_ENOUGH, parent + ei.usage);
 			}
 			if(!(ei.command.max() < 0) && context.length() > ei.command.max()) {
-				parent = QConfiguration.displayedCmd+' '+context.getParentArg(0)+' '+context.getParentArg(1)+' ';
+				parent = getParentArgs(context.getParentArgs());
 				throw new QUsageException(context.getSenderLang().ERROR_CMD_ARGS_TOO_MANY, ei.usage);
 			}
 			
@@ -253,7 +261,7 @@ public class ElementManager {
 		ei.clss = clss;
 		ei.command = fromCommand.getAnnotation(QCommand.class);
 		ei.method = fromCommand;
-		ei.usage = type.toLowerCase() + ' ' + ei.command.usage();
+		ei.usage = ei.command.usage();
 		conditions.put(type, ei);
 	}
 	
@@ -275,7 +283,7 @@ public class ElementManager {
 		ei.clss = clss;
 		ei.command = fromCommand.getAnnotation(QCommand.class);
 		ei.method = fromCommand;
-		ei.usage = "{<occasion>} " + type.toLowerCase() + ' ' + ei.command.usage();
+		ei.usage = ei.command.usage();
 		events.put(type, ei);
 	}
 
@@ -297,7 +305,7 @@ public class ElementManager {
 		ei.clss = clss;
 		ei.command = fromCommand.getAnnotation(QCommand.class);
 		ei.method = fromCommand;
-		ei.usage = type.toLowerCase() + ' ' + ei.command.usage();
+		ei.usage = ei.command.usage();
 		objectives.put(type, ei);
 	}
 }
