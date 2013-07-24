@@ -25,7 +25,7 @@
     </repository>
     <repository>
       <id>citizensapi-repo</id>
-      <url>http://ci.citizensnpcs.com/plugin/repository/everything</url>
+      <url>http://repo.citizensnpcs.com</url>
     </repository>
     <repository>
       <id>denizens-repo</id>
