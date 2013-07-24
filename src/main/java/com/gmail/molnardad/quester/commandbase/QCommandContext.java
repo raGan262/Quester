@@ -110,6 +110,10 @@ public class QCommandContext {
 		return args.length;
 	}
 	
+	public CommandSender getSender() {
+		return sender;
+	}
+	
 	public Location getSenderLocation() {
 		if(sender instanceof BlockCommandSender) {
 			((BlockCommandSender) sender).getBlock().getLocation();
