@@ -27,10 +27,10 @@
       <id>citizensapi-repo</id>
       <url>http://repo.citizensnpcs.com</url>
     </repository>
-    <repository>
-      <id>denizens-repo</id>
-      <url>http://ci.citizensnpcs.com/view/All/job/Denizen/1000/maven-repository/repository/</url>
-    </repository>
+<!--     <repository> -->
+<!--       <id>denizens-repo</id> -->
+<!--       <url>http://ci.citizensnpcs.com/view/All/job/Denizen/1000/maven-repository/repository/</url> -->
+<!--     </repository> -->
     <repository>
       <id>Plugin Metrics</id>
       <url>http://repo.mcstats.org/content/repositories/public</url>
