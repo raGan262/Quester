@@ -19,6 +19,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
+import com.gmail.molnardad.quester.lang.LanguageManager;
 import com.gmail.molnardad.quester.listeners.*;
 import com.gmail.molnardad.quester.commandbase.CommandManager;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;

@@ -15,20 +15,20 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.LanguageManager;
 import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.*;
+import com.gmail.molnardad.quester.lang.LanguageManager;
+import com.gmail.molnardad.quester.lang.QuesterLang;
 import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.profiles.QuestProgress;
 import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;
-import com.gmail.molnardad.quester.strings.QuesterLang;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestManager {

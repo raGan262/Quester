@@ -1,4 +1,4 @@
-package com.gmail.molnardad.quester.strings;
+package com.gmail.molnardad.quester.lang;
 
 import java.io.File;
 

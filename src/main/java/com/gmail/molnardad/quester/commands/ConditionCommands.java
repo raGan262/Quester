@@ -14,8 +14,8 @@ import com.gmail.molnardad.quester.elements.ElementManager;
 import com.gmail.molnardad.quester.exceptions.ConditionException;
 import com.gmail.molnardad.quester.exceptions.ElementException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.lang.QuesterLang;
 import com.gmail.molnardad.quester.quests.QuestManager;
-import com.gmail.molnardad.quester.strings.QuesterLang;
 
 public class ConditionCommands {
 	

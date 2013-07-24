@@ -1,4 +1,4 @@
-package com.gmail.molnardad.quester;
+package com.gmail.molnardad.quester.lang;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -7,10 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.gmail.molnardad.quester.QConfiguration;
+import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;
-import com.gmail.molnardad.quester.strings.QuesterLang;
 
 public class LanguageManager {
 	

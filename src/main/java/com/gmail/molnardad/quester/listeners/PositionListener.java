@@ -7,10 +7,10 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.ActionSource;
-import com.gmail.molnardad.quester.LanguageManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.lang.LanguageManager;
 import com.gmail.molnardad.quester.objectives.RegionObjective;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.Quest;

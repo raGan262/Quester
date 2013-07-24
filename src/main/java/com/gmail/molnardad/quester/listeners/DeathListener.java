@@ -9,10 +9,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.gmail.molnardad.quester.ActionSource;
-import com.gmail.molnardad.quester.LanguageManager;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.lang.LanguageManager;
 import com.gmail.molnardad.quester.objectives.DeathObjective;
 import com.gmail.molnardad.quester.objectives.PlayerKillObjective;
 import com.gmail.molnardad.quester.profiles.ProfileManager;

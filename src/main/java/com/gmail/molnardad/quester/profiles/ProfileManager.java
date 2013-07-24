@@ -17,7 +17,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.ActionSource;
-import com.gmail.molnardad.quester.LanguageManager;
 import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Condition;
@@ -30,6 +29,8 @@ import com.gmail.molnardad.quester.events.QuestStartEvent;
 import com.gmail.molnardad.quester.exceptions.ObjectiveException;
 import com.gmail.molnardad.quester.exceptions.QuestException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.lang.LanguageManager;
+import com.gmail.molnardad.quester.lang.QuesterLang;
 import com.gmail.molnardad.quester.profiles.QuestProgress.ObjectiveStatus;
 import com.gmail.molnardad.quester.quests.Quest;
 import com.gmail.molnardad.quester.quests.QuestFlag;
@@ -37,7 +38,6 @@ import com.gmail.molnardad.quester.quests.QuestManager;
 import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;
-import com.gmail.molnardad.quester.strings.QuesterLang;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class ProfileManager {

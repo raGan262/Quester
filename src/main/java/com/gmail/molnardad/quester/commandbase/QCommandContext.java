@@ -9,7 +9,7 @@ import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.strings.QuesterLang;
+import com.gmail.molnardad.quester.lang.QuesterLang;
 import com.google.common.collect.Lists;
 
 public class QCommandContext {

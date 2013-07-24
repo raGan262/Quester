@@ -29,7 +29,7 @@ import org.bukkit.util.Vector;
 
 import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.Quester;
-import com.gmail.molnardad.quester.strings.QuesterLang;
+import com.gmail.molnardad.quester.lang.QuesterLang;
 
 public class Util {
 	

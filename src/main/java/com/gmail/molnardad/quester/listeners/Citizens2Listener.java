@@ -13,7 +13,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import com.gmail.molnardad.quester.ActionSource;
-import com.gmail.molnardad.quester.LanguageManager;
 import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
@@ -22,12 +21,13 @@ import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.holder.QuestHolder;
 import com.gmail.molnardad.quester.holder.QuestHolderManager;
 import com.gmail.molnardad.quester.holder.QuesterTrait;
+import com.gmail.molnardad.quester.lang.LanguageManager;
+import com.gmail.molnardad.quester.lang.QuesterLang;
 import com.gmail.molnardad.quester.objectives.NpcKillObjective;
 import com.gmail.molnardad.quester.objectives.NpcObjective;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.Quest;
 import com.gmail.molnardad.quester.quests.QuestManager;
-import com.gmail.molnardad.quester.strings.QuesterLang;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class Citizens2Listener implements Listener {

@@ -13,8 +13,8 @@ import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.ElementException;
 import com.gmail.molnardad.quester.exceptions.QeventException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.lang.QuesterLang;
 import com.gmail.molnardad.quester.quests.QuestManager;
-import com.gmail.molnardad.quester.strings.QuesterLang;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class QeventCommands {

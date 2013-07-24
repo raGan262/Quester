@@ -13,12 +13,12 @@ import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import com.gmail.molnardad.quester.LanguageManager;
 import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QPermissionException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QUsageException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.lang.LanguageManager;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class CommandManager {

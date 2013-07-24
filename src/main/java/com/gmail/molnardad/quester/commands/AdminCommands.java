@@ -7,7 +7,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.LanguageManager;
 import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
@@ -15,6 +14,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.commandbase.QNestedCommand;
 import com.gmail.molnardad.quester.holder.QuestHolderManager;
+import com.gmail.molnardad.quester.lang.LanguageManager;
 import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.QuestManager;
