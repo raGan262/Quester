@@ -286,10 +286,14 @@ public class QuestManager {
 	public void setQuestObjective(String issuer, int id, Objective newObjective, QuesterLang lang) throws QuesterException {
 		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
-		if(quest.getObjective(id) == null){
+		Objective oldObj = quest.getObjective(id);
+		if(oldObj == null){
 			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
 		}
 		quest.setObjective(id, newObjective);
+		for(int prerequisity : oldObj.getPrerequisites()) {
+			newObjective.addPrerequisity(prerequisity);
+		}
 	}
 	
 	public void removeQuestObjective(String issuer, int id, QuesterLang lang) throws QuesterException {
