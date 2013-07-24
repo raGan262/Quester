@@ -82,7 +82,7 @@ public class ObjectiveCommands {
 			return;
 		}
 		qMan.setQuestObjective(sender.getName(), objectiveID, obj, context.getSenderLang());
-		sender.sendMessage(ChatColor.GREEN + lang.OBJ_ADD.replaceAll("%type", type.toUpperCase()));
+		sender.sendMessage(ChatColor.GREEN + lang.OBJ_SET.replaceAll("%type", type.toUpperCase()));
 	}
 	
 	@QCommandLabels({"remove", "r"})

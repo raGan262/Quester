@@ -94,6 +94,7 @@ public class QuesterLang {
 	// OBJECTIVE STRINGS
 	
 	public String OBJ_ADD = "%type objective added."; // %type = objective type;
+	public String OBJ_SET = "%type objective set."; // %type = objective type;
 	public String OBJ_LIST = "Available objective types";
 	public String OBJ_REMOVE = "Objective %id removed."; // %id = objective ID;
 	
@@ -110,6 +111,7 @@ public class QuesterLang {
 	// CONDITION STRINGS
 
 	public String CON_ADD = "%type condition added."; // %type = condition type;
+	public String CON_SET = "%type condition set."; // %type = condition type;
 	public String CON_LIST = "Available condition types";
 	public String CON_REMOVE = "Condition %id removed."; // %id = condition ID;
 	
@@ -119,6 +121,7 @@ public class QuesterLang {
 	// EVENT STRINGS
 	
 	public String EVT_ADD = "%type event added."; // %type = event type;
+	public String EVT_SET = "%type event set."; // %type = event type;
 	public String EVT_LIST = "Available event types";
 	public String EVT_REMOVE = "Event %id removed.";// %id = event ID;
 	public String EVT_SPECIFY = "Specify occasion and delay.";

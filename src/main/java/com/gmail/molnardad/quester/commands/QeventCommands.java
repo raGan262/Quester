@@ -89,7 +89,7 @@ public class QeventCommands {
 			return;
 		}
 		qMan.setQuestQevent(sender.getName(), qeventID, qevent, lang);
-		sender.sendMessage(ChatColor.GREEN + lang.EVT_ADD.replaceAll("%type", type.toUpperCase()));
+		sender.sendMessage(ChatColor.GREEN + lang.EVT_SET.replaceAll("%type", type.toUpperCase()));
 	}
 	
 	@QCommandLabels({"remove", "r"})

@@ -80,7 +80,7 @@ public class ConditionCommands {
 			return;
 		}
 		qMan.setQuestCondition(sender.getName(), conditionID, condition, context.getSenderLang());
-		sender.sendMessage(ChatColor.GREEN + lang.CON_ADD.replaceAll("%type", type.toUpperCase()));
+		sender.sendMessage(ChatColor.GREEN + lang.CON_SET.replaceAll("%type", type.toUpperCase()));
 	}
 	
 	@QCommandLabels({"remove", "r"})
