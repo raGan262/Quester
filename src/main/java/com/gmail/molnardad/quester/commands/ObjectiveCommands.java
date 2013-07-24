@@ -12,6 +12,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.ElementManager;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.exceptions.ElementException;
+import com.gmail.molnardad.quester.exceptions.ObjectiveException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.quests.QuestManager;
 import com.gmail.molnardad.quester.strings.QuesterLang;
@@ -26,29 +27,64 @@ public class ObjectiveCommands {
 		eMan = plugin.getElementManager();
 	}
 	
+	private Objective getObjective(String type, QCommandContext subContext, QuesterLang lang) throws QCommandException, ObjectiveException, QuesterException {
+		if(!eMan.isObjective(type)) {
+			subContext.getSender().sendMessage(ChatColor.RED + lang.ERROR_OBJ_NOT_EXIST);
+			subContext.getSender().sendMessage(ChatColor.RED + lang.OBJ_LIST + ": "
+					+ ChatColor.WHITE + eMan.getObjectiveList());
+			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
+		}
+		Objective obj = eMan.getObjectiveFromCommand(type, subContext);
+		if(obj != null && subContext.hasFlag('h')) {
+			obj.setHidden(true);
+		}
+		return obj;
+	}
+	
 	@QCommandLabels({"add", "a"})
 	@QCommand(
 			section = "QMod",
 			desc = "adds an objective",
 			min = 1,
-			usage = "<objective type> [args]")
+			usage = "<objective type> [args] (-h)")
 	public void add(QCommandContext context, CommandSender sender) throws QCommandException, QuesterException {
 		QuesterLang lang = context.getSenderLang();
 		String type = context.getString(0);
-		if(!eMan.isObjective(type)) {
-			sender.sendMessage(ChatColor.RED + lang.ERROR_OBJ_NOT_EXIST);
-			sender.sendMessage(ChatColor.RED + lang.OBJ_LIST + ": "
-					+ ChatColor.WHITE + eMan.getObjectiveList());
+		Objective obj;
+		try {
+			obj = getObjective(type, context.getSubContext(1), lang);
+		}
+		catch (ObjectiveException e) {
 			return;
 		}
-		Objective obj = eMan.getObjectiveFromCommand(type, context.getSubContext(1));
 		if(obj == null) {
 			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
 		}
-		if(context.hasFlag('h')) {
-			obj.setHidden(true);
-		}
 		qMan.addQuestObjective(sender.getName(), obj, context.getSenderLang());
+		sender.sendMessage(ChatColor.GREEN + lang.OBJ_ADD.replaceAll("%type", type.toUpperCase()));
+	}
+	
+	@QCommandLabels({"set", "s"})
+	@QCommand(
+			section = "QMod",
+			desc = "sets an objective",
+			min = 2,
+			usage = "<obj ID> <obj type> [args] (-h)")
+	public void set(QCommandContext context, CommandSender sender) throws QCommandException, QuesterException {
+		QuesterLang lang = context.getSenderLang();
+		int objectiveID = context.getInt(0);
+		String type = context.getString(1);
+		Objective obj;
+		try {
+			obj = getObjective(type, context.getSubContext(2), lang);
+		}
+		catch (ObjectiveException e) {
+			return;
+		}
+		if(obj == null) {
+			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
+		}
+		qMan.setQuestObjective(sender.getName(), objectiveID, obj, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + lang.OBJ_ADD.replaceAll("%type", type.toUpperCase()));
 	}
 	
