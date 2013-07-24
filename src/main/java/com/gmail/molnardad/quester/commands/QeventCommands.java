@@ -11,6 +11,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.ElementManager;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.ElementException;
+import com.gmail.molnardad.quester.exceptions.EventException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.quests.QuestManager;
 import com.gmail.molnardad.quester.strings.QuesterLang;
@@ -26,6 +27,27 @@ public class QeventCommands {
 		eMan = plugin.getElementManager();
 	}
 	
+	private Qevent getQevent(String type, String occassion,  QCommandContext subContext, QuesterLang lang) throws EventException, QCommandException, QuesterException {
+		int[] occasion;
+		try {
+			occasion = Util.deserializeOccasion(occassion, lang);
+		}
+		catch (IllegalArgumentException e) {
+			throw new QCommandException(e.getMessage());
+		}
+		if(!eMan.isEvent(type)) {
+			subContext.getSender().sendMessage(ChatColor.RED + lang.ERROR_EVT_NOT_EXIST);
+			subContext.getSender().sendMessage(ChatColor.RED + lang.EVT_LIST + ": "
+					+ ChatColor.WHITE + eMan.getEventList());
+			throw new EventException(lang.ERROR_EVT_NOT_EXIST);
+		}
+		Qevent evt = eMan.getEventFromCommand(type, subContext);
+		if(evt != null) {
+			evt.setOccasion(occasion[0], occasion[1]);
+		}
+		return evt;
+	}
+	
 	@QCommandLabels({"add", "a"})
 	@QCommand(
 			section = "QMod",
@@ -34,26 +56,42 @@ public class QeventCommands {
 			usage = "{<occasion>} <event type> [args]")
 	public void add(QCommandContext context, CommandSender sender) throws QCommandException, QuesterException {
 		QuesterLang lang = context.getSenderLang();
-		int[] occasion;
-		try {
-			occasion = Util.deserializeOccasion(context.getString(0), context.getSenderLang());
-		}
-		catch (IllegalArgumentException e) {
-			throw new QCommandException(e.getMessage());
-		}
 		String type = context.getString(1);
-		if(!eMan.isEvent(type)) {
-			sender.sendMessage(ChatColor.RED + lang.ERROR_EVT_NOT_EXIST);
-			sender.sendMessage(ChatColor.RED + lang.EVT_LIST + ": "
-					+ ChatColor.WHITE + eMan.getEventList());
+		Qevent qevent;
+		try {
+			qevent = getQevent(type, context.getString(0), context.getSubContext(2), context.getSenderLang());
+		}
+		catch (EventException e) {
 			return;
 		}
-		Qevent evt = eMan.getEventFromCommand(type, context.getSubContext(2));
-		if(evt == null) {
+		if(qevent == null) {
 			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
 		}
-		evt.setOccasion(occasion[0], occasion[1]);
-		qMan.addQuestQevent(sender.getName(), evt, context.getSenderLang());
+		qMan.addQuestQevent(sender.getName(), qevent, context.getSenderLang());
+		sender.sendMessage(ChatColor.GREEN + lang.EVT_ADD.replaceAll("%type", type.toUpperCase()));
+	}
+	
+	@QCommandLabels({"set", "s"})
+	@QCommand(
+			section = "QMod",
+			desc = "sets an event",
+			min = 3,
+			usage = "<evt ID> {<occasion>} <evt type> [args]")
+	public void set(QCommandContext context, CommandSender sender) throws QCommandException, QuesterException {
+		QuesterLang lang = context.getSenderLang();
+		String type = context.getString(2);
+		int qeventID = context.getInt(0);
+		Qevent qevent;
+		try {
+			qevent = getQevent(type, context.getString(1), context.getSubContext(3), context.getSenderLang());
+		}
+		catch (EventException e) {
+			return;
+		}
+		if(qevent == null) {
+			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
+		}
+		qMan.setQuestQevent(sender.getName(), qeventID, qevent, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + lang.EVT_ADD.replaceAll("%type", type.toUpperCase()));
 	}
 	

@@ -458,14 +458,14 @@ public class QuestManager {
 		quest.addQevent(newQevent);
 	}
 	
-	public void setQuestQevent(String issuer, Qevent newQevent, QuesterLang lang) throws QuesterException {
+	public void setQuestQevent(String issuer, int qeventID, Qevent newQevent, QuesterLang lang) throws QuesterException {
 		Quest quest = profMan.getSelectedQuest(issuer);
 		modifyCheck(quest, lang);
 		int occasion = newQevent.getOccasion();
 		if(occasion < -3 || occasion >= quest.getObjectives().size() ) {
 			throw new ConditionException(lang.ERROR_OCC_NOT_EXIST);
 		}
-		quest.addQevent(newQevent);
+		quest.setQevent(qeventID, newQevent);
 	}
 	
 	public void removeQuestQevent(String issuer, int id, QuesterLang lang) throws QuesterException {
