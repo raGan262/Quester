@@ -58,7 +58,7 @@ public final class SpawnQevent extends Qevent {
 	public static Qevent fromCommand(QCommandContext context) throws QCommandException {
 		EntityType ent = parseEntity(context.getString(0));
 		int amt = context.getInt(1);
-		Location loc = Util.getLoc(context.getPlayer(), context.getString(2));
+		Location loc = Util.getLoc(context.getSender(), context.getString(2));
 		int rng = 0;
 		if(amt < 1) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
@@ -78,7 +78,9 @@ public final class SpawnQevent extends Qevent {
 			key.setInt("amount", amount);
 		}
 		key.setInt("entity", entity.getTypeId());
-		key.setString("location", Util.serializeLocString(location));
+		if(location != null) {
+			key.setString("location", Util.serializeLocString(location));
+		}
 		if(range != 0) {
 			key.setInt("range", range);
 		}
@@ -89,7 +91,12 @@ public final class SpawnQevent extends Qevent {
 		EntityType ent = null;
 		Location loc = null;
 		try {
-			loc = Util.deserializeLocString(key.getString("location", ""));
+			if(key.getString("location") != null) {
+				loc = Util.deserializeLocString(key.getString("location"));
+				if(loc == null) {
+					return null;
+				}
+			}
 			rng = key.getInt("range", 0);
 			if(rng < 0) {
 				rng = 0;
