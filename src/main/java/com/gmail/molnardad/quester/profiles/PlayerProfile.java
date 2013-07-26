@@ -22,6 +22,7 @@ public class PlayerProfile {
 	private List<QuestProgress> progresses;
 	private int points;
 	private String rank;
+	private boolean changed;
 	
 	PlayerProfile(String player) {
 		name = player;
@@ -32,10 +33,20 @@ public class PlayerProfile {
 		holder = -1;
 		points = 0;
 		rank = "";
+		changed = false;
 	}
 	
 	public String getName() {
 		return name;
+	}
+
+	void addCompleted(String questName) {
+		addCompleted(questName.toLowerCase(), 0);
+	}
+
+	void addCompleted(String questName, int time) {
+		completed.put(questName.toLowerCase(), time);
+		changed = true;
 	}
 
 	public String[] getCompletedQuests() {
@@ -66,6 +77,22 @@ public class PlayerProfile {
 		return getQuestProgressIndex(quest) != -1;
 	}
 
+	boolean setActiveQuest(int index) {
+		try {
+			current = progresses.get(index);
+			changed = true;
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
+	void refreshActive() {
+		if(current == null) {
+			setActiveQuest(0);
+		}
+	}
+
 	public int getQuestProgressIndex() {
 		return progresses.indexOf(current);
 	}
@@ -88,20 +115,65 @@ public class PlayerProfile {
 		return -1;
 	}
 
+	void setSelected(Quest newSelected) {
+		selected = new WeakReference<Quest>(newSelected);
+	}
+
 	public Quest getSelected() {
 		return selected.get();
+	}
+
+	void setHolderID(int newID) {
+		holder = newID;
 	}
 
 	public int getHolderID() {
 		return holder;
 	}
 
+	int addPoints(int pts) {
+		changed = true;
+		points += pts;
+		return points;
+	}
+
 	public int getPoints() {
 		return points;
 	}
 
+	void setRank(String newRank) {
+		rank = newRank;
+	}
+
 	public String getRank() {
 		return rank;
+	}
+
+	void addQuest(Quest quest) {
+		QuestProgress prg = new QuestProgress(quest);
+		if(!progresses.contains(prg)) {
+			progresses.add(prg);
+			setActiveQuest(progresses.size()-1);
+			changed = true;
+		}
+	}
+
+	void unsetQuest() {
+		try {
+			progresses.remove(current);
+			current = null;
+			changed = true;
+		} catch (Exception ignore) {}
+	}
+
+	void unsetQuest(int index) {
+		try {
+			if(progresses.get(index).equals(current)) {
+				current = null;
+			}
+			progresses.remove(index);
+			changed = true;
+		} catch (Exception ignore) {}
 	}
 
 	public Quest getQuest() {
@@ -133,74 +205,19 @@ public class PlayerProfile {
 		return progresses.toArray(new QuestProgress[0]);
 	}
 
-	void addCompleted(String questName) {
-		addCompleted(questName.toLowerCase(), 0);
-	}
-
-	void addCompleted(String questName, int time) {
-		completed.put(questName.toLowerCase(), time);
-	}
-
-	boolean setActiveQuest(int index) {
-		try {
-			current = progresses.get(index);
-		} catch (Exception e) {
-			return false;
-		}
-		return true;
-	}
-
-	void refreshActive() {
-		if(current == null) {
-			setActiveQuest(0);
-		}
-	}
-
-	void addQuest(Quest quest) {
-		QuestProgress prg = new QuestProgress(quest);
-		if(!progresses.contains(prg)) {
-			progresses.add(prg);
-			setActiveQuest(progresses.size()-1);
-		}
-	}
-
-	void unsetQuest() {
-		try {
-			progresses.remove(current);
-			current = null;
-		} catch (Exception ignore) {}
-	}
-
-	void unsetQuest(int index) {
-		try {
-			if(progresses.get(index).equals(current)) {
-				current = null;
-			}
-			progresses.remove(index);
-		} catch (Exception ignore) {}
-	}
-
-	void setSelected(Quest newSelected) {
-		selected = new WeakReference<Quest>(newSelected);
-	}
-
-	void setHolderID(int newID) {
-		holder = newID;
-	}
-
-	int addPoints(int pts) {
-		points += pts;
-		return points;
-	}
-
-	void setRank(String newRank) {
-		rank = newRank;
-	}
-
 	private void addQuestProgress(QuestProgress prg) {
 		if(!progresses.contains(prg)) {
 			progresses.add(prg);
+			changed = true;
 		}
+	}
+	
+	public boolean isChanged() {
+		return changed;
+	}
+	
+	void setUnchanged() {
+		changed = false;
 	}
 
 	void serialize(StorageKey key) {
