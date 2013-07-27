@@ -78,11 +78,11 @@ public final class TimeCondition extends Condition {
 		from = Integer.parseInt(ss[0]);
 		to = Integer.parseInt(ss[1]);
 		if(from >= 0 && from < 25) {
-			from = (from + 16) % 24;
+			from = (from + 18) % 24;
 			from *= 1000;
 		}
 		if(to >= 0 && to < 25) {
-			to = (to + 16) % 24;
+			to = (to + 18) % 24;
 			to *= 1000;
 		}
 		if(context.length() > 1) {
