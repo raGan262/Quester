@@ -29,7 +29,7 @@ public final class ExperienceQevent extends Qevent {
 
 	@Override
 	protected void run(Player player, Quester plugin) {
-		ExpManager expMan = new ExpManager(player);
+ 		ExpManager expMan = new ExpManager(player);
 		if(isLevel) {
 			int lvl = expMan.getLevelForExp(expMan.getCurrentExp());
 			if(lvl <= -amount) {
@@ -63,7 +63,7 @@ public final class ExperienceQevent extends Qevent {
 	protected static Qevent load(StorageKey key) {
 		int amt;
 		amt = key.getInt("amount", 0);
-		if(amt < 1) {
+		if(amt == 0) {
 			return null;
 		}
 		
