@@ -566,7 +566,9 @@ public class Util {
 	
 	public static boolean isQuestItem(ItemStack item) {
 		try {
-			return ChatColor.stripColor(item.getItemMeta().getLore().get(0)).equalsIgnoreCase("Quest Item");
+			List<String> lore = item.getItemMeta().getLore();
+			return ChatColor.stripColor(lore.get(0)).equalsIgnoreCase("Quest Item")
+					|| ChatColor.stripColor(lore.get(lore.size()-1)).equalsIgnoreCase("Quest Item");
 		}
 		catch (Exception e) {
 			return false;
