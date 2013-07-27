@@ -9,8 +9,6 @@ import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Region;
-import com.gmail.molnardad.quester.utils.Util;
-import com.gmail.molnardad.quester.utils.Region.Sphere;
 
 @QElement("REGION")
 public final class RegionObjective extends Objective {
@@ -63,16 +61,7 @@ public final class RegionObjective extends Objective {
 		Region region = Region.deserialize(key.getSubKey("region"));
 		
 		if(region == null) {
-			Location location = Util.deserializeLocString(key.getString("location", ""));
-			int range = 3;
-			if(location == null) {
-				return null;
-			}
-			range = key.getInt("range", 3);
-			if(range < 1) {
-				range = 3;
-			}
-			region = new Sphere(location, range);
+			return null;
 		}
 		return new RegionObjective(region, key.getBoolean("inverted", false));
 	}
