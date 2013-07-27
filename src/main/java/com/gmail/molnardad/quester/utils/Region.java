@@ -103,6 +103,9 @@ public abstract class Region {
 			if(location == null) {
 				return false;
 			}
+			if(location.getWorld().getUID() != center.getWorld().getUID()) {
+				return false;
+			}	
 			return center.distanceSquared(location) <= powRange;
 		}
 
@@ -126,7 +129,7 @@ public abstract class Region {
 			if(loc1 == null || loc2 == null) {
 				throw new IllegalArgumentException("Locations cannot be null.");
 			}
-			if(!loc1.getWorld().equals(loc2.getWorld())) {
+			if(loc1.getWorld().getUID() != loc2.getWorld().getUID()) {
 				throw new IllegalArgumentException("Locations must be within the same world.");
 			}
 			this.min = new Location(loc1.getWorld(), Math.min(loc1.getX(), loc2.getX()), Math.min(loc1.getY(), loc2.getY()), Math.min(loc1.getZ(), loc2.getZ()));
@@ -140,7 +143,7 @@ public abstract class Region {
 		
 		@Override
 		public boolean isWithin(Location location) {
-			if(location == null || !min.getWorld().equals(location.getWorld())) {
+			if(location == null || min.getWorld().getUID() != location.getWorld().getUID()) {
 				return false;
 			}
 			
