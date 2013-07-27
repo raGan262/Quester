@@ -65,27 +65,20 @@ public final class LightningQevent extends Qevent {
 		if(damage) {
 			key.setBoolean("damage", damage);
 		}
-		key.setString("location", Util.serializeLocString(location));
+		if(location != null) {
+			key.setString("location", Util.serializeLocString(location));
+		}
 		if(range != 0) {
 			key.setInt("range", range);
 		}
 	}
 	
 	protected static Qevent load(StorageKey key) {
-		int rng = 0;
-		boolean dmg = false;
-		Location loc = null;
-		try {
-			loc = Util.deserializeLocString(key.getString("location", ""));
-			rng = key.getInt("range", 0);
-			if(rng < 0) {
-				rng = 0;
-			}
-			dmg = key.getBoolean("damage", false);
-		} catch (Exception e) {
-			return null;
+		Location loc = Util.deserializeLocString(key.getString("location", ""));
+		int rng = key.getInt("range", 0);
+		if(rng < 0) {
+			rng = 0;
 		}
-		
-		return new LightningQevent(loc, rng, dmg);
+		return new LightningQevent(loc, rng, key.getBoolean("damage", false));
 	}
 }
