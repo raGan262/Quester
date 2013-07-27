@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.storage.StorageKey;
@@ -47,7 +48,11 @@ public final class MoneyQevent extends Qevent {
 			min = 1,
 			max = 1,
 			usage = "<amount>")
-	public static Qevent fromCommand(QCommandContext context) {
+	public static Qevent fromCommand(QCommandContext context) throws QCommandException {
+		double amt = context.getDouble(0);
+		if(amt == 0.0D) {
+			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_NONZERO);
+		}
 		return new MoneyQevent(context.getDouble(0));
 	}
 
@@ -57,9 +62,7 @@ public final class MoneyQevent extends Qevent {
 	}
 	
 	protected static Qevent load(StorageKey key) {
-		double amt;
-		
-		amt = key.getDouble("amount", 0.0D);
+		double amt = key.getDouble("amount", 0.0D);
 		if(amt == 0) {
 			return null;
 		}

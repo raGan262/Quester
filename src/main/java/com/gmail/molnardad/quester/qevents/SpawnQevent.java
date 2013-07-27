@@ -74,10 +74,10 @@ public final class SpawnQevent extends Qevent {
 
 	@Override
 	protected void save(StorageKey key) {
+		key.setInt("entity", entity.getTypeId());
 		if(amount != 1) {
 			key.setInt("amount", amount);
 		}
-		key.setInt("entity", entity.getTypeId());
 		if(location != null) {
 			key.setString("location", Util.serializeLocString(location));
 		}
@@ -87,32 +87,22 @@ public final class SpawnQevent extends Qevent {
 	}
 	
 	protected static Qevent load(StorageKey key) {
-		int rng = 0, amt = 1;
 		EntityType ent = null;
-		Location loc = null;
 		try {
-			if(key.getString("location") != null) {
-				loc = Util.deserializeLocString(key.getString("location"));
-				if(loc == null) {
-					return null;
-				}
-			}
-			rng = key.getInt("range", 0);
-			if(rng < 0) {
-				rng = 0;
-			}
-			amt = key.getInt("amount", 1);
-			if(amt < 1) {
-				amt = 1;
-			}
-			try {
-				ent = Util.parseEntity(key.getString("entity", ""));
-			} catch (Exception ignore) {}
-			if(ent == null) {
-				return null;
-			}
+			ent = Util.parseEntity(key.getString("entity", ""));
 		} catch (Exception e) {
 			return null;
+		}
+		
+		Location loc = Util.deserializeLocString(key.getString("location", ""));
+		
+		int rng = key.getInt("range", 0);
+		if(rng < 0) {
+			rng = 0;
+		}
+		int amt = key.getInt("amount", 1);
+		if(amt < 1) {
+			amt = 1;
 		}
 		
 		return new SpawnQevent(loc, rng, ent, amt);

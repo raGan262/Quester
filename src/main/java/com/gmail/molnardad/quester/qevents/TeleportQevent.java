@@ -8,6 +8,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.storage.StorageKey;
@@ -42,8 +43,12 @@ public final class TeleportQevent extends Qevent {
 			min = 1,
 			max = 1,
 			usage = "{<location>}")
-	public static Qevent fromCommand(QCommandContext context) {
-		return new TeleportQevent(Util.getLoc(context.getPlayer(), context.getString(0), context.getSenderLang()));
+	public static Qevent fromCommand(QCommandContext context) throws QCommandException {
+		Location loc = Util.getLoc(context.getPlayer(), context.getString(0), context.getSenderLang());
+		if(loc == null) {
+			throw new QCommandException(context.getSenderLang().ERROR_CMD_LOC_INVALID);
+		}
+		return new TeleportQevent(loc);
 	}
 
 	@Override
@@ -53,13 +58,8 @@ public final class TeleportQevent extends Qevent {
 	}
 	
 	protected static Qevent load(StorageKey key) {
-		Location loc = null;
-		try {
-			loc = Util.deserializeLocString(key.getString("location"));
-			if(loc == null) {
-				return null;
-			}
-		} catch (Exception e) {
+		Location loc = Util.deserializeLocString(key.getString("location", ""));
+		if(loc == null) {
 			return null;
 		}
 		

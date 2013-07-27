@@ -216,10 +216,7 @@ public final class ItemQevent extends Qevent {
 	
 	protected static Qevent load(StorageKey key) {
 		Material mat = null;
-		int dat = 0, amt = 1;
-		Map<Integer, Integer> enchs = null;
-		boolean invert = key.getBoolean("inverted", false);
-		boolean quest = key.getBoolean("quest", false);
+		int dat = 0;
 		try {
 			int[] itm = Util.parseItem(key.getString("item", ""));
 			mat = Material.getMaterial(itm[0]);
@@ -227,19 +224,20 @@ public final class ItemQevent extends Qevent {
 			if(dat < 0) {
 				dat = 0;
 			}
-			amt = key.getInt("amount", 1);
-			if(amt < 1) {
-				amt = 1;
-			}
-			try {
-				enchs = Util.parseEnchants(key.getString("enchants", ""));
-			} catch (IllegalArgumentException e) {
-				enchs = null;
-			}
 		} catch (Exception e) {
 			return null;
 		}
 		
-		return new ItemQevent(mat, dat, amt, enchs, invert, quest);
+		int amt = key.getInt("amount", 1);
+		if(amt < 1) {
+			amt = 1;
+		}
+		
+		Map<Integer, Integer> enchs = null;
+		try {
+			enchs = Util.parseEnchants(key.getString("enchants", ""));
+		} catch (IllegalArgumentException ignore) {}
+		
+		return new ItemQevent(mat, dat, amt, enchs, key.getBoolean("inverted", false), key.getBoolean("quest", false));
 	}
 }

@@ -7,6 +7,7 @@ import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
@@ -39,8 +40,12 @@ public final class QuestQevent extends Qevent {
 			min = 1,
 			max = 1,
 			usage = "<quest ID>")
-	public static Qevent fromCommand(QCommandContext context) {
-		return new QuestQevent(context.getInt(0));
+	public static Qevent fromCommand(QCommandContext context) throws QCommandException {
+		int id = context.getInt(0);
+		if(id < 0) {
+			throw new QCommandException(context.getSenderLang().ERROR_CMD_BAD_ID);
+		}
+		return new QuestQevent(id);
 	}
 
 	@Override
@@ -49,9 +54,7 @@ public final class QuestQevent extends Qevent {
 	}
 	
 	protected static Qevent load(StorageKey key) {
-		int qst;
-		
-		qst = key.getInt("quest", -1);
+		int qst = key.getInt("quest", -1);
 		if(qst < 0) {
 			return null;
 		}

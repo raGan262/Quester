@@ -45,9 +45,7 @@ public final class MessageQevent extends Qevent {
 	}
 	
 	protected static Qevent load(StorageKey key) {
-		String msg;
-		
-		msg = key.getString("message");
+		String msg = key.getString("message");
 		if(msg == null) {
 			return null;
 		}

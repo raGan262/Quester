@@ -71,7 +71,9 @@ public final class SoundQevent extends Qevent {
 	@Override
 	protected void save(StorageKey key) {
 		key.setString("sound", sound.name());
-		key.setString("location", Util.serializeLocString(location));
+		if(location != null) {
+			key.setString("location", Util.serializeLocString(location));
+		}
 		if(volume != 1F) {
 			key.setDouble("volume", volume);
 		}
@@ -85,9 +87,9 @@ public final class SoundQevent extends Qevent {
 		if(snd == null) {
 			return null;
 		}
+		Location loc = Util.deserializeLocString(key.getString("location", ""));
 		float vol = (float) key.getDouble("volume", 1F);
 		float pit = (float) key.getDouble("pitch", 1F);
-		Location loc = Util.deserializeLocString(key.getString("location", ""));
 		if(vol < 0F) {
 			vol = 1F;
 		}

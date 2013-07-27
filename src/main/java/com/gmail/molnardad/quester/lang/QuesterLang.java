@@ -144,6 +144,7 @@ public class QuesterLang {
 	public String ERROR_CMD_EFFECT_AMPLIFIER = "Amplifier must be non-negative number.";
 	public String ERROR_CMD_AMOUNT_GENERAL = "Amount must be number.";
 	public String ERROR_CMD_AMOUNT_POSITIVE = "Amount must be positive number.";
+	public String ERROR_CMD_AMOUNT_NONZERO = "Amount must not be zero.";
 	public String ERROR_CMD_LOC_INVALID = "Invalid location.";
 	public String ERROR_CMD_LOC_HERE = "Location '%here' requires player context."; // %here = location label;
 	public String ERROR_CMD_LOC_BLOCK = "Location '%block' requires player context."; // %block = location label;

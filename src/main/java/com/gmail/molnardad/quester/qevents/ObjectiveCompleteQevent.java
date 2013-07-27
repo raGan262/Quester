@@ -7,6 +7,7 @@ import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
+import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.ObjectiveException;
@@ -64,9 +65,13 @@ public final class ObjectiveCompleteQevent extends Qevent {
 	@QCommand(
 			min = 1,
 			max = 1,
-			usage = "<objective ID>")
-	public static Qevent fromCommand(QCommandContext context) {
-		return new ObjectiveCompleteQevent(context.getInt(0), context.hasFlag('e'));
+			usage = "<objective ID> (-e)")
+	public static Qevent fromCommand(QCommandContext context) throws QCommandException {
+		int obj = context.getInt(0);
+		if(obj < 0) {
+			throw new QCommandException(context.getSenderLang().ERROR_CMD_BAD_ID);
+		}
+		return new ObjectiveCompleteQevent(obj, context.hasFlag('e'));
 	}
 
 	@Override
@@ -78,13 +83,11 @@ public final class ObjectiveCompleteQevent extends Qevent {
 	}
 	
 	protected static Qevent load(StorageKey key) {
-		int obj;
-		boolean run = key.getBoolean("runevents", false);
-		obj = key.getInt("objective", -1);
+		int obj = key.getInt("objective", -1);
 		if(obj < 0) {
 			return null;
 		}
 		
-		return new ObjectiveCompleteQevent(obj, run);
+		return new ObjectiveCompleteQevent(obj, key.getBoolean("runevents", false));
 	}
 }
