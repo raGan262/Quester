@@ -15,44 +15,44 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class ConfigStorage implements Storage {
-
-
+	
 	private final YamlConfiguration config;
 	private final File conFile;
 	private final Logger logger;
 	
-	public ConfigStorage(File file, Logger logger, InputStream defaultStream) {
+	public ConfigStorage(final File file, final Logger logger, final InputStream defaultStream) {
 		if(logger == null) {
 			this.logger = Bukkit.getLogger();
 		}
 		else {
 			this.logger = logger;
 		}
-	    this.config = new YamlConfiguration();
-	    this.conFile = file;
-	    if (!file.exists()) {
-	      create(defaultStream);
-	      save();
-	    }
+		config = new YamlConfiguration();
+		conFile = file;
+		if(!file.exists()) {
+			create(defaultStream);
+			save();
+		}
 	}
 	
-	private void create(InputStream defaultStream) {
+	private void create(final InputStream defaultStream) {
 		try {
-		    conFile.getParentFile().mkdirs();
+			conFile.getParentFile().mkdirs();
 			conFile.createNewFile();
-		} catch (IOException ex) {
+		}
+		catch (final IOException ex) {
 			logger.severe("Could not create file: " + conFile.getName() + " !");
 		}
-		if (defaultStream != null) {
+		if(defaultStream != null) {
 			try {
 				config.load(defaultStream);
 				logger.info("Loaded default file: " + conFile.getName() + " !");
 			}
-			catch (IOException e) {
+			catch (final IOException e) {
 				logger.severe("Could not load default file: " + conFile.getName() + " !");
 				e.printStackTrace();
 			}
-			catch (InvalidConfigurationException e) {
+			catch (final InvalidConfigurationException e) {
 				logger.severe("Could not load default file: " + conFile.getName() + " !");
 				e.printStackTrace();
 			}
@@ -62,7 +62,7 @@ public class ConfigStorage implements Storage {
 		}
 	}
 	
-	private boolean hasPath(String path) {
+	private boolean hasPath(final String path) {
 		return config.get(path) != null;
 	}
 	
@@ -70,50 +70,52 @@ public class ConfigStorage implements Storage {
 	public void save() {
 		try {
 			config.save(conFile);
-		} catch (IOException ex) {
+		}
+		catch (final IOException ex) {
 			logger.severe("Can't write to file '" + conFile.getName() + "'!");
-	    }
+		}
 	}
-
+	
 	@Override
 	public boolean load() {
 		try {
-			this.config.load(conFile);
+			config.load(conFile);
 			return true;
-		} catch (Exception ex) {
+		}
+		catch (final Exception ex) {
 			ex.printStackTrace();
 		}
-		return false;	
+		return false;
 	}
-
+	
 	@Override
-	public StorageKey getKey(String root) {
+	public StorageKey getKey(final String root) {
 		return new ConfigKey(root);
 	}
 	
 	public class ConfigKey extends StorageKey {
-
-		protected ConfigKey(String root) {
+		
+		protected ConfigKey(final String root) {
 			super(root);
 		}
-
+		
 		@Override
 		public String getStorageType() {
 			return "YAML";
 		}
-
+		
 		@Override
-		public boolean keyExists(String key) {
+		public boolean keyExists(final String key) {
 			return hasPath(createRelativeKey(key));
-		}
-
-		@Override
-		public void removeKey(String key) {
-			ConfigStorage.this.config.set(createRelativeKey(key), null);
 		}
 		
 		@Override
-		public StorageKey getSubKey(String key) {
+		public void removeKey(final String key) {
+			config.set(createRelativeKey(key), null);
+		}
+		
+		@Override
+		public StorageKey getSubKey(final String key) {
 			return new ConfigKey(createRelativeKey(key));
 		}
 		
@@ -121,17 +123,17 @@ public class ConfigStorage implements Storage {
 		public List<StorageKey> getSubKeys() {
 			Set<String> keySet = null;
 			if(path == "") {
-				keySet = ConfigStorage.this.config.getKeys(false);
+				keySet = config.getKeys(false);
 			}
 			else {
-				ConfigurationSection section = ConfigStorage.this.config.getConfigurationSection(path);
+				final ConfigurationSection section = config.getConfigurationSection(path);
 				if(section != null) {
 					keySet = section.getKeys(false);
 				}
 			}
 			if(keySet != null) {
-				List<StorageKey> result = new ArrayList<StorageKey>();
-				for(String key : keySet) {
+				final List<StorageKey> result = new ArrayList<StorageKey>();
+				for(final String key : keySet) {
 					result.add(new ConfigKey(createRelativeKey(key)));
 				}
 				return result;
@@ -144,109 +146,78 @@ public class ConfigStorage implements Storage {
 		@Override
 		public boolean hasSubKeys() {
 			if(path == "") {
-				return !ConfigStorage.this.config.getKeys(false).isEmpty();
+				return !config.getKeys(false).isEmpty();
 			}
 			else {
-				return ConfigStorage.this.config.getConfigurationSection(path) != null;
+				return config.getConfigurationSection(path) != null;
 			}
 		}
 		
 		@Override
-		public boolean getBoolean(String key) {
-			return getBoolean(key, false);
-		}
-
-		@Override
-		public boolean getBoolean(String key, boolean value) {
-			String path = createRelativeKey(key);
-			return ConfigStorage.this.config.getBoolean(path, value);
-		}
-
-		@Override
-		public void setBoolean(String key, boolean value) {
-			ConfigStorage.this.config.set(createRelativeKey(key), value);
-		}
-
-		@Override
-		public int getInt(String key) {
-			return getInt(key, 0);
-		}
-
-		@Override
-		public int getInt(String key, int value) {
-			String path = createRelativeKey(key);
-			return ConfigStorage.this.config.getInt(path, value);
-		}
-
-		@Override
-		public void setInt(String key, int value) {
-			ConfigStorage.this.config.set(createRelativeKey(key), value);
-		}
-
-		@Override
-		public long getLong(String key) {
-			return getLong(key, 0L);
-		}
-
-		@Override
-		public long getLong(String key, long value) {
-			String path = createRelativeKey(key);
-			return ConfigStorage.this.config.getLong(path, value);
-		}
-
-		@Override
-		public void setLong(String key, long value) {
-			ConfigStorage.this.config.set(createRelativeKey(key), value);
-		}
-
-		@Override
-		public double getDouble(String key) {
-			return getDouble(key, 0.0D);
-		}
-
-		@Override
-		public double getDouble(String key, double value) {
-			String path = createRelativeKey(key);
-			return ConfigStorage.this.config.getDouble(path, value);
-		}
-
-		@Override
-		public void setDouble(String key, double value) {
-			ConfigStorage.this.config.set(createRelativeKey(key), value);
-		}
-
-		@Override
-		public String getString(String key) {
-			return getString(key, null);
-		}
-
-		@Override
-		public String getString(String key, String value) {
-			String path = createRelativeKey(key);
-			return ConfigStorage.this.config.getString(path, value);
-		}
-
-		@Override
-		public void setString(String key, String value) {
-			ConfigStorage.this.config.set(createRelativeKey(key), value);
-		}
-
-		@Override
-		public Object getRaw(String key) {
-			return getRaw(key, null);
-		}
-
-		@Override
-		public Object getRaw(String key, Object value) {
-			String path = createRelativeKey(key);
-			return ConfigStorage.this.config.get(path, value);
-		}
-
-		@Override
-		public void setRaw(String key, Object value) {
-			ConfigStorage.this.config.set(createRelativeKey(key), value);
+		public boolean getBoolean(final String key, final boolean value) {
+			final String path = createRelativeKey(key);
+			return config.getBoolean(path, value);
 		}
 		
+		@Override
+		public void setBoolean(final String key, final boolean value) {
+			config.set(createRelativeKey(key), value);
+		}
+		
+		@Override
+		public int getInt(final String key, final int value) {
+			final String path = createRelativeKey(key);
+			return config.getInt(path, value);
+		}
+		
+		@Override
+		public void setInt(final String key, final int value) {
+			config.set(createRelativeKey(key), value);
+		}
+		
+		@Override
+		public long getLong(final String key, final long value) {
+			final String path = createRelativeKey(key);
+			return config.getLong(path, value);
+		}
+		
+		@Override
+		public void setLong(final String key, final long value) {
+			config.set(createRelativeKey(key), value);
+		}
+		
+		@Override
+		public double getDouble(final String key, final double value) {
+			final String path = createRelativeKey(key);
+			return config.getDouble(path, value);
+		}
+		
+		@Override
+		public void setDouble(final String key, final double value) {
+			config.set(createRelativeKey(key), value);
+		}
+		
+		@Override
+		public String getString(final String key, final String value) {
+			final String path = createRelativeKey(key);
+			return config.getString(path, value);
+		}
+		
+		@Override
+		public void setString(final String key, final String value) {
+			config.set(createRelativeKey(key), value);
+		}
+		
+		@Override
+		public Object getRaw(final String key, final Object value) {
+			final String path = createRelativeKey(key);
+			return config.get(path, value);
+		}
+		
+		@Override
+		public void setRaw(final String key, final Object value) {
+			config.set(createRelativeKey(key), value);
+		}
 		
 	}
 	
