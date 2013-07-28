@@ -1,30 +1,35 @@
 package com.gmail.molnardad.quester.profiles;
 
 import java.lang.ref.WeakReference;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.quests.Quest;
 import com.gmail.molnardad.quester.quests.QuestManager;
+import com.gmail.molnardad.quester.storage.MemoryStorageKey;
 import com.gmail.molnardad.quester.storage.StorageKey;
 
 public class PlayerProfile {
-
+	
 	private final String name;
-	private Map<String, Integer> completed;
+	private final Map<String, Integer> completed;
 	private WeakReference<Quest> selected;
 	private int holder;
 	private QuestProgress current;
-	private List<QuestProgress> progresses;
+	private final List<QuestProgress> progresses;
 	private int points;
 	private String rank;
 	private boolean changed;
 	
-	PlayerProfile(String player) {
+	PlayerProfile(final String player) {
 		name = player;
 		completed = new HashMap<String, Integer>();
 		current = null;
@@ -39,66 +44,67 @@ public class PlayerProfile {
 	public String getName() {
 		return name;
 	}
-
-	void addCompleted(String questName) {
+	
+	void addCompleted(final String questName) {
 		addCompleted(questName.toLowerCase(), 0);
 	}
-
-	void addCompleted(String questName, int time) {
+	
+	void addCompleted(final String questName, final int time) {
 		completed.put(questName.toLowerCase(), time);
-		changed = true;
+		setChanged();
 	}
-
+	
 	public String[] getCompletedQuests() {
 		return completed.keySet().toArray(new String[0]);
 	}
-
-	public boolean isCompleted(String questName) {
+	
+	public boolean isCompleted(final String questName) {
 		return completed.containsKey(questName.toLowerCase());
 	}
-
-	public int getCompletionTime(String questName) {
-		Integer time = completed.get(questName.toLowerCase());
+	
+	public int getCompletionTime(final String questName) {
+		final Integer time = completed.get(questName.toLowerCase());
 		if(time == null) {
 			return 0;
 		}
 		return time;
 	}
-
+	
 	public int getQuestAmount() {
 		return progresses.size();
 	}
 	
-	public boolean hasQuest(String questName) {
+	public boolean hasQuest(final String questName) {
 		return getQuestProgressIndex(questName) != -1;
 	}
 	
-	public boolean hasQuest(Quest quest) {
+	public boolean hasQuest(final Quest quest) {
 		return getQuestProgressIndex(quest) != -1;
 	}
-
-	boolean setActiveQuest(int index) {
+	
+	boolean setActiveQuest(final int index) {
 		try {
 			current = progresses.get(index);
-			changed = true;
-		} catch (Exception e) {
+			setChanged();
+		}
+		catch (final Exception e) {
 			return false;
 		}
 		return true;
 	}
-
+	
 	void refreshActive() {
 		if(current == null) {
 			setActiveQuest(0);
 		}
 	}
-
+	
 	public int getQuestProgressIndex() {
 		return progresses.indexOf(current);
 	}
-
-	public int getQuestProgressIndex(Quest quest) {
-		for(int i=0; i<progresses.size(); i++) {
+	
+	public int getQuestProgressIndex(final Quest quest) {
+		for(int i = 0; i < progresses.size(); i++) {
 			if(progresses.get(i).quest.equals(quest)) {
 				return i;
 			}
@@ -106,84 +112,86 @@ public class PlayerProfile {
 		return -1;
 	}
 	
-	public int getQuestProgressIndex(String questName) {
-		for(int i=0; i<progresses.size(); i++) {
+	public int getQuestProgressIndex(final String questName) {
+		for(int i = 0; i < progresses.size(); i++) {
 			if(progresses.get(i).quest.getName().equalsIgnoreCase(questName)) {
 				return i;
 			}
 		}
 		return -1;
 	}
-
-	void setSelected(Quest newSelected) {
+	
+	void setSelected(final Quest newSelected) {
 		selected = new WeakReference<Quest>(newSelected);
 	}
-
+	
 	public Quest getSelected() {
 		return selected.get();
 	}
-
-	void setHolderID(int newID) {
+	
+	void setHolderID(final int newID) {
 		holder = newID;
 	}
-
+	
 	public int getHolderID() {
 		return holder;
 	}
-
-	int addPoints(int pts) {
-		changed = true;
+	
+	int addPoints(final int pts) {
+		setChanged();
 		points += pts;
 		return points;
 	}
-
+	
 	public int getPoints() {
 		return points;
 	}
-
-	void setRank(String newRank) {
+	
+	void setRank(final String newRank) {
 		rank = newRank;
 	}
-
+	
 	public String getRank() {
 		return rank;
 	}
-
-	void addQuest(Quest quest) {
-		QuestProgress prg = new QuestProgress(quest);
+	
+	void addQuest(final Quest quest) {
+		final QuestProgress prg = new QuestProgress(quest);
 		if(!progresses.contains(prg)) {
 			progresses.add(prg);
-			setActiveQuest(progresses.size()-1);
-			changed = true;
+			setActiveQuest(progresses.size() - 1);
+			setChanged();
 		}
 	}
-
+	
 	void unsetQuest() {
 		try {
 			progresses.remove(current);
 			current = null;
-			changed = true;
-		} catch (Exception ignore) {}
+			setChanged();
+		}
+		catch (final Exception ignore) {}
 	}
-
-	void unsetQuest(int index) {
+	
+	void unsetQuest(final int index) {
 		try {
 			if(progresses.get(index).equals(current)) {
 				current = null;
 			}
 			progresses.remove(index);
-			changed = true;
-		} catch (Exception ignore) {}
+			setChanged();
+		}
+		catch (final Exception ignore) {}
 	}
-
+	
 	public Quest getQuest() {
 		if(current == null) {
 			return null;
 		}
 		return current.quest;
 	}
-
-	public Quest getQuest(int index) {
+	
+	public Quest getQuest(final int index) {
 		if(getProgress(index) == null) {
 			return null;
 		}
@@ -193,22 +201,22 @@ public class PlayerProfile {
 	public QuestProgress getProgress() {
 		return current;
 	}
-
-	public QuestProgress getProgress(int index) {
+	
+	public QuestProgress getProgress(final int index) {
 		if(index >= 0 && index < progresses.size()) {
 			return progresses.get(index);
 		}
 		return null;
 	}
-
+	
 	public QuestProgress[] getProgresses() {
 		return progresses.toArray(new QuestProgress[0]);
 	}
-
-	private void addQuestProgress(QuestProgress prg) {
+	
+	private void addQuestProgress(final QuestProgress prg) {
 		if(!progresses.contains(prg)) {
 			progresses.add(prg);
-			changed = true;
+			setChanged();
 		}
 	}
 	
@@ -216,12 +224,16 @@ public class PlayerProfile {
 		return changed;
 	}
 	
+	void setChanged() {
+		changed = true;
+	}
+	
 	void setUnchanged() {
 		changed = false;
 	}
-
-	void serialize(StorageKey key) {
-
+	
+	void serialize(final StorageKey key) {
+		
 		key.setString("name", name);
 		
 		key.removeKey("points");
@@ -231,15 +243,15 @@ public class PlayerProfile {
 		
 		key.removeKey("completed");
 		if(!completed.isEmpty()) {
-			StorageKey subKey = key.getSubKey("completed");
-			for(String name : completed.keySet()) {
+			final StorageKey subKey = key.getSubKey("completed");
+			for(final String name : completed.keySet()) {
 				subKey.setInt(name.replaceAll("\\.", "#%#"), completed.get(name));
 			}
 		}
 		
 		key.removeKey("active");
 		if(current != null) {
-			int index = progresses.indexOf(current);
+			final int index = progresses.indexOf(current);
 			if(index > -1) {
 				key.setInt("active", index);
 			}
@@ -247,17 +259,18 @@ public class PlayerProfile {
 		
 		key.removeKey("quests");
 		if(!progresses.isEmpty()) {
-			StorageKey subKey = key.getSubKey("quests");
-			for(QuestProgress prg : progresses) {
+			final StorageKey subKey = key.getSubKey("quests");
+			for(final QuestProgress prg : progresses) {
 				if(prg != null) {
-					//subKey.setString(prg.quest.getName().replaceAll("\\.", "#%#"), Util.implodeInt(prg.progress.toArray(new Integer[0]), "|"));
+					// subKey.setString(prg.quest.getName().replaceAll("\\.", "#%#"),
+					// Util.implodeInt(prg.progress.toArray(new Integer[0]), "|"));
 					prg.serialize(subKey.getSubKey(String.valueOf(prg.quest.getID())));
 				}
 			}
 		}
 	}
 	
-	static PlayerProfile deserialize(StorageKey key, QuestManager qMan) {
+	static PlayerProfile deserialize(final StorageKey key, final QuestManager qMan) {
 		PlayerProfile prof = null;
 		
 		if(key.getString("name") != null) {
@@ -273,49 +286,50 @@ public class PlayerProfile {
 		prof.addPoints(key.getInt("points", 0));
 		
 		if(key.getSubKey("completed").hasSubKeys()) {
-			for(StorageKey subKey : key.getSubKey("completed").getSubKeys()) {
+			for(final StorageKey subKey : key.getSubKey("completed").getSubKeys()) {
 				prof.addCompleted(subKey.getName().replaceAll("#%#", "."), subKey.getInt("", 0));
 			}
 		}
 		
-//		OLD OLD FORMAT
-//		if(key.getString("quest") != null) {
-//			if(key.getString("progress") != null) {
-//				try {
-//					QuestProgress prg = prof.new QuestProgress(key.getString("quest"));
-//					String[] strs = key.getString("progress", "").split("\\|");
-//					for(int i=0; i < strs.length; i++) {
-//						prg.addToProgress(Integer.parseInt(strs[i]));
-//					}
-//					prof.addQuestProgress(prg);
-//					prof.setActiveQuest(0);
-//				} catch (Exception e) {
-//					if(QConfiguration.verbose) {
-//						Quester.log.info("Invalid progress in profile.");
-//					}
-//				}
-//			}
-//			else {
-//				if(QConfiguration.verbose) {
-//					Quester.log.info("Invalid or missing progress for quest '" + key.getString("quest") + "' in profile.");
-//				}
-//			}
-//		}
+		//		OLD OLD FORMAT
+		//		if(key.getString("quest") != null) {
+		//			if(key.getString("progress") != null) {
+		//				try {
+		//					final QuestProgress prg = prof.new QuestProgress(key.getString("quest"));
+		//					final String[] strs = key.getString("progress", "").split("\\|");
+		//					for(int i = 0; i < strs.length; i++) {
+		//						prg.addToProgress(Integer.parseInt(strs[i]));
+		//					}
+		//					prof.addQuestProgress(prg);
+		//					prof.setActiveQuest(0);
+		//				}
+		//				catch (final Exception e) {
+		//					if(QConfiguration.verbose) {
+		//						Quester.log.info("Invalid progress in profile.");
+		//					}
+		//				}
+		//			}
+		//			else {
+		//				if(QConfiguration.verbose) {
+		//					Quester.log.info("Invalid or missing progress for quest '" + key.getString("quest") + "' in profile.");
+		//				}
+		//			}
+		//		}
 		
 		if(key.getSubKey("quests").hasSubKeys()) {
-			for(StorageKey subKey : key.getSubKey("quests").getSubKeys()) {
+			for(final StorageKey subKey : key.getSubKey("quests").getSubKeys()) {
 				Quest quest = null;
 				try {
 					quest = qMan.getQuest(Integer.parseInt(subKey.getName()));
 				}
-				catch (NumberFormatException e) {
+				catch (final NumberFormatException e) {
 					// compatibility with older format
 					quest = qMan.getQuest(subKey.getName().replaceAll("#%#", "."));
 				}
 				if(quest == null) {
 					continue;
 				}
-				QuestProgress prog = QuestProgress.deserialize(subKey, quest);
+				final QuestProgress prog = QuestProgress.deserialize(subKey, quest);
 				if(prog == null) {
 					Quester.log.info("Invalid quest progress in profile '" + prof.getName() + "'.");
 				}
@@ -327,6 +341,153 @@ public class PlayerProfile {
 		
 		prof.setActiveQuest(key.getInt("active", 0));
 		
+		prof.setChanged();
+		
 		return prof;
+	}
+	
+	// is used to serialize profiles into database
+	static class SerializedPlayerProfile {
+		
+		static final String delimiter1 = "~~";
+		static final String delimiter2 = "|";
+		
+		final String name;
+		final int current;
+		final String progresses;
+		final String completed;
+		final String reputation;
+		final boolean changed;
+		
+		private String insertQuerry = null;
+		private String updateQuerry = null;
+		
+		SerializedPlayerProfile(final PlayerProfile prof) {
+			name = prof.name;
+			current = prof.getQuestProgressIndex();
+			StringBuilder sb = new StringBuilder();
+			boolean run = false;
+			for(final QuestProgress progress : prof.progresses) {
+				sb.append(progress.quest.getID());
+				for(final int p : progress.progress) {
+					sb.append(delimiter2).append(p);
+				}
+				sb.append(delimiter1);
+				run = true;
+			}
+			progresses = run ? sb.substring(0, sb.length() - delimiter1.length()) : "";
+			
+			run = false;
+			sb = new StringBuilder();
+			for(final Entry<String, Integer> entry : prof.completed.entrySet()) {
+				sb.append(entry.getKey()).append(delimiter2).append(entry.getValue())
+						.append(delimiter1);
+				run = true;
+			}
+			completed = run ? sb.substring(0, sb.length() - delimiter1.length()) : "";
+			
+			sb = new StringBuilder();
+			// until reputation is implemented
+			sb.append("default").append(delimiter2).append(prof.points);
+			reputation = sb.toString();
+			changed = prof.changed;
+		}
+		
+		SerializedPlayerProfile(final ResultSet rs) throws SQLException {
+			name = rs.getString("name");
+			current = rs.getInt("current");
+			progresses = rs.getString("quests");
+			completed = rs.getString("completed");
+			reputation = rs.getString("reputation");
+			changed = false;
+		}
+		
+		StorageKey getStoragekey() {
+			boolean err = false;
+			final StorageKey result = new MemoryStorageKey();
+			result.setString("name", name);
+			
+			if(current >= 0) {
+				result.setInt("active", current);
+			}
+			
+			StorageKey temp = result.getSubKey("completed");
+			for(final String s : completed.split(Pattern.quote(delimiter1))) {
+				if(!s.isEmpty()) {
+					final String[] split = s.split(Pattern.quote(delimiter2));
+					try {
+						temp.setInt(split[0].replaceAll("\\.", "#%#"), Integer.valueOf(split[1]));
+					}
+					catch (final Exception e) {
+						err = true;
+						if(QConfiguration.debug) {
+							Quester.log.warning("Error in completed '" + s + "'");
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+			
+			temp = result.getSubKey("quests");
+			for(final String s : progresses.split(Pattern.quote(delimiter1))) {
+				try {
+					if(!s.isEmpty()) {
+						final int pos = s.indexOf('|');
+						if(pos < 0) {
+							temp.setString(s, "");
+						}
+						else {
+							temp.setString(s.substring(0, pos), s.substring(pos + 1));
+						}
+					}
+				}
+				catch (final Exception e) {
+					err = true;
+					if(QConfiguration.debug) {
+						Quester.log.warning("Error in progress '" + s + "'");
+						e.printStackTrace();
+					}
+				}
+			}
+			
+			try {
+				result.setInt("points",
+						Integer.valueOf(reputation.split(Pattern.quote(delimiter2))[1]));
+			}
+			catch (final Exception e) {
+				err = true;
+				if(QConfiguration.debug) {
+					Quester.log.warning("Error in reputation '" + reputation + "'");
+				}
+			}
+			
+			if(err) {
+				Quester.log
+						.warning("Error occurred when loading " + name + "'s profile. Switch to debug mode for more details.");
+			}
+			
+			return result;
+		}
+		
+		String getInsertQuerry(final String tableName) {
+			if(insertQuerry == null) {
+				insertQuerry = String
+						.format("INSERT INTO `%s`(`name`, `completed`, `current`, `quests`, `reputation`) VALUES ('%s','%s',%d,'%s','%s')",
+								tableName, name.replaceAll("'", "\\\\'"),
+								completed.replaceAll("'", "\\\\'"), current, progresses,
+								reputation.replaceAll("'", "\\\\'"));
+			}
+			return insertQuerry;
+		}
+		
+		String getUpdateQuerry(final String tableName) {
+			if(updateQuerry == null) {
+				updateQuerry = String
+						.format("UPDATE `%s` SET `completed`='%s',`current`=%d,`quests`='%s',`reputation`='%s' WHERE `name`='%s'",
+								tableName, completed.replaceAll("'", "\\\\'"), current, progresses,
+								reputation.replaceAll("'", "\\\\'"), name.replaceAll("'", "\\\\'"));
+			}
+			return updateQuerry;
+		}
 	}
 }

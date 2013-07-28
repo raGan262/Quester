@@ -15,22 +15,28 @@ public class QConfiguration {
 	public static int saveInterval = 15;
 	public static boolean debug = false;
 	public static boolean useRank = true;
+	public static StorageType profileStorageType = StorageType.CONFIG;
+	
+	// MYSQL
+	public static String mysqlUrl = "jdbc:mysql://localhost:3306/minecraft?useUnicode=true&characterEncoding=utf-8";
+	public static String mysqlUser = "username";
+	public static String mysqlPass = "password";
 	
 	// OBJECTIVE SECTION
 	public static boolean ordOnlyCurrent = true;
 	
-		// BREAK
+	// BREAK
 	public static boolean brkNoDrops = false;
 	public static boolean brkSubOnPlace = true;
 	
-		// COLLECT
+	// COLLECT
 	public static boolean colRemPickup = true;
 	public static boolean colSubOnDrop = false;
 	
 	// QUEST SECTION
 	public static int maxQuests = 1;
 	
-		// MESSAGES
+	// MESSAGES
 	public static boolean progMsgStart = true;
 	public static boolean progMsgCancel = true;
 	public static boolean progMsgDone = true;
@@ -42,7 +48,7 @@ public class QConfiguration {
 	public static String locLabelHere = "here";
 	public static String locLabelPlayer = "player";
 	public static String locLabelBlock = "block";
-
+	
 	public static final String PERM_USE_NPC = "quester.use.npc";
 	public static final String PERM_USE_SIGN = "quester.use.sign";
 	public static final String PERM_USE_HELP = "quester.use.help";
@@ -62,21 +68,22 @@ public class QConfiguration {
 	private static QConfiguration instance = null;
 	private Storage storage = null;
 	
-	private QConfiguration(Quester plugin) {
-		File file = new File(plugin.getDataFolder(), "config.yml");
+	private QConfiguration(final Quester plugin) {
+		final File file = new File(plugin.getDataFolder(), "config.yml");
 		storage = new ConfigStorage(file, Quester.log, plugin.getResource(file.getName()));
 		storage.load();
 	}
 	
-	public static void createInstance(Quester quester) {
+	public static void createInstance(final Quester quester) {
 		instance = new QConfiguration(quester);
 	}
 	
-	private static void wrongConfig(String path, String def) {
-		Quester.log.info("Invalid or missing value in config: " + path.replace('.', ':') + ". Setting to default. (" + def + ")");
+	private static void wrongConfig(final String path, final String def) {
+		Quester.log
+				.info("Invalid or missing value in config: " + path.replace('.', ':') + ". Setting to default. (" + def + ")");
 	}
 	
-	public static StorageKey getConfigKey(String key) throws InstanceNotFoundException {
+	public static StorageKey getConfigKey(final String key) throws InstanceNotFoundException {
 		if(instance == null) {
 			throw new InstanceNotFoundException();
 		}
@@ -97,14 +104,14 @@ public class QConfiguration {
 		if(instance == null) {
 			throw new InstanceNotFoundException();
 		}
-		StorageKey mainKey = instance.storage.getKey("");
+		final StorageKey mainKey = instance.storage.getKey("");
 		String path, temp;
 		
 		// VERBOSE-LOGGING
 		path = "general.verbose-logging";
 		QConfiguration.verbose = mainKey.getBoolean(path, false);
 		mainKey.setBoolean(path, QConfiguration.verbose);
-
+		
 		// SAVE INTERVAL
 		path = "general.save-interval";
 		if(mainKey.getInt(path, -1) < 0) {
@@ -118,11 +125,65 @@ public class QConfiguration {
 		path = "general.debug-info";
 		QConfiguration.debug = mainKey.getBoolean(path);
 		mainKey.setBoolean(path, QConfiguration.debug);
-
-		// DEBUG INFO
+		
+		// USE RANK
 		path = "general.use-rank";
 		QConfiguration.useRank = mainKey.getBoolean(path);
 		mainKey.setBoolean(path, QConfiguration.useRank);
+		
+		// PROFILE STORAGE
+		path = "general.profile-storage";
+		temp = mainKey.getString(path, "");
+		StorageType type = StorageType.forName(temp);
+		if(type == null) {
+			type = StorageType.CONFIG;
+			mainKey.setString(path, "CONFIG");
+			wrongConfig(path, "CONFIG");
+		}
+		QConfiguration.profileStorageType = type;
+		mainKey.setString(path, profileStorageType.name());
+		
+		// MYSQL
+		path = "mysql.host";
+		temp = mainKey.getString(path, "");
+		if(temp.isEmpty()) {
+			mainKey.setString(path, "localhost");
+			wrongConfig(path, "localhost");
+		}
+		
+		path = "mysql.port";
+		final int tempInt = mainKey.getInt(path, -1);
+		if(tempInt < 0) {
+			mainKey.setInt(path, 3306);
+			wrongConfig(path, "3306");
+		}
+		
+		path = "mysql.database";
+		temp = mainKey.getString(path, "");
+		if(temp.isEmpty()) {
+			mainKey.setString(path, "minecraft");
+			wrongConfig(path, "minecraft");
+		}
+		QConfiguration.mysqlUrl = "jdbc:mysql://" + mainKey.getString("mysql.host") + ":" + mainKey
+				.getInt("mysql.port") + "/" + mainKey.getString("mysql.database") + "?useUnicode=true&characterEncoding=utf-8";
+		
+		path = "mysql.username";
+		temp = mainKey.getString(path, "");
+		if(temp.isEmpty()) {
+			mainKey.setString(path, "username");
+			wrongConfig(path, "username");
+		}
+		QConfiguration.mysqlUser = mainKey.getString(path, "username");
+		mainKey.setString(path, QConfiguration.mysqlUser);
+		
+		path = "mysql.password";
+		temp = mainKey.getString(path, "");
+		if(temp.isEmpty()) {
+			mainKey.setString(path, "password");
+			wrongConfig(path, "password");
+		}
+		QConfiguration.mysqlPass = mainKey.getString(path, "password");
+		mainKey.setString(path, QConfiguration.mysqlPass);
 		
 		// SHOW ONLY CURRENT
 		path = "objectives.show-only-current";
@@ -143,7 +204,7 @@ public class QConfiguration {
 		path = "objectives.collect.remove-on-pickup";
 		QConfiguration.colRemPickup = mainKey.getBoolean(path, true);
 		mainKey.setBoolean(path, QConfiguration.colRemPickup);
-				
+		
 		// COLLECT SUBTRACT ON DROP
 		path = "objectives.collect.subtract-on-drop";
 		QConfiguration.colSubOnDrop = mainKey.getBoolean(path, false);
@@ -174,7 +235,7 @@ public class QConfiguration {
 		path = "quests.messages.objective-show";
 		QConfiguration.progMsgObj = mainKey.getBoolean(path, true);
 		mainKey.setBoolean(path, QConfiguration.progMsgObj);
-	
+		
 		// COMMANDS
 		path = "commands.displayed-cmd";
 		temp = mainKey.getString(path, "");
@@ -229,5 +290,18 @@ public class QConfiguration {
 			throw new InstanceNotFoundException();
 		}
 		instance.storage.save();
+	}
+	
+	public static enum StorageType {
+		CONFIG, MYSQL, MEMORY;
+		
+		public static StorageType forName(final String name) {
+			try {
+				return valueOf(name.toUpperCase());
+			}
+			catch (final Exception e) {
+				return null;
+			}
+		}
 	}
 }

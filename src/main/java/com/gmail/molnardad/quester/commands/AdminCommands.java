@@ -21,28 +21,28 @@ import com.gmail.molnardad.quester.quests.QuestManager;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class AdminCommands {
-
+	
 	private Quester plugin = null;
 	private ProfileManager profMan = null;
 	private QuestManager qMan = null;
 	private QuestHolderManager holMan = null;
 	private LanguageManager langMan = null;
 	
-	public AdminCommands(Quester plugin) {
+	public AdminCommands(final Quester plugin) {
 		this.plugin = plugin;
-		this.profMan = plugin.getProfileManager();
-		this.qMan = plugin.getQuestManager();
-		this.holMan = plugin.getHolderManager();
-		this.langMan = plugin.getLanguageManager();
+		profMan = plugin.getProfileManager();
+		qMan = plugin.getQuestManager();
+		holMan = plugin.getHolderManager();
+		langMan = plugin.getLanguageManager();
 	}
 	
-	@QCommandLabels({"startsave"})
+	@QCommandLabels({ "startsave" })
 	@QCommand(
 			section = "Admin",
 			desc = "starts scheduled profile saving",
 			max = 0,
 			permission = QConfiguration.PERM_ADMIN)
-	public void startsave(QCommandContext context, CommandSender sender) {
+	public void startsave(final QCommandContext context, final CommandSender sender) {
 		if(QConfiguration.saveInterval == 0) {
 			sender.sendMessage(ChatColor.RED + context.getSenderLang().MSG_AUTOSAVE_DISABLED);
 			return;
@@ -50,45 +50,53 @@ public class AdminCommands {
 		if(plugin.startSaving()) {
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().MSG_AUTOSAVE_STARTED
 					.replaceAll("%interval", String.valueOf(QConfiguration.saveInterval)));
-		} else {
+		}
+		else {
 			sender.sendMessage(ChatColor.RED + context.getSenderLang().MSG_AUTOSAVE_RUNNING);
 		}
 	}
-
-	@QCommandLabels({"stopsave"})
+	
+	@QCommandLabels({ "stopsave" })
 	@QCommand(
 			section = "Admin",
 			desc = "stops scheduled profile saving",
 			max = 0,
 			permission = QConfiguration.PERM_ADMIN)
-	public void stopsave(QCommandContext context, CommandSender sender) {
+	public void stopsave(final QCommandContext context, final CommandSender sender) {
 		if(QConfiguration.saveInterval == 0) {
 			sender.sendMessage(ChatColor.RED + context.getSenderLang().MSG_AUTOSAVE_DISABLED);
 			return;
 		}
 		if(plugin.stopSaving()) {
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().MSG_AUTOSAVE_STOPPED);
-		} else {
+		}
+		else {
 			sender.sendMessage(ChatColor.RED + context.getSenderLang().MSG_AUTOSAVE_NOT_RUNNING);
 		}
 	}
 	
-	@QCommandLabels({"save"})
+	@QCommandLabels({ "save" })
 	@QCommand(
 			section = "Admin",
 			desc = "saves quests and profiles",
 			max = 0,
 			usage = "(-hpq)",
 			permission = QConfiguration.PERM_ADMIN)
-	public void save(QCommandContext context, CommandSender sender) {
+	public void save(final QCommandContext context, final CommandSender sender) {
 		boolean pro, que, hol;
 		pro = context.hasFlag('p');
 		que = context.hasFlag('q');
 		hol = context.hasFlag('h');
 		if(pro || que || hol) {
-			if(que) qMan.saveQuests();
-			if(pro) profMan.saveProfiles();
-			if(hol) holMan.saveHolders();
+			if(que) {
+				qMan.saveQuests();
+			}
+			if(pro) {
+				profMan.saveProfiles();
+			}
+			if(hol) {
+				holMan.saveHolders();
+			}
 		}
 		else {
 			profMan.saveProfiles();
@@ -99,21 +107,27 @@ public class AdminCommands {
 		sender.sendMessage(context.getSenderLang().MSG_DATA_SAVE);
 	}
 	
-	@QCommandLabels({"reload"})
+	@QCommandLabels({ "reload" })
 	@QCommand(
 			section = "Admin",
 			desc = "reloads quests, config and languages",
 			usage = "(-clq)",
 			permission = QConfiguration.PERM_ADMIN)
-	public void reload(QCommandContext context, CommandSender sender) {
+	public void reload(final QCommandContext context, final CommandSender sender) {
 		boolean con, que, lang;
 		con = context.hasFlag('c');
 		que = context.hasFlag('q');
 		lang = context.hasFlag('l');
 		if(con || que || lang) {
-			if(que) reloadQuests();
-			if(con) reloadData();
-			if(lang) langMan.reloadLangs();
+			if(que) {
+				reloadQuests();
+			}
+			if(con) {
+				reloadData();
+			}
+			if(lang) {
+				langMan.reloadLangs();
+			}
 		}
 		else {
 			reloadQuests();
@@ -122,21 +136,21 @@ public class AdminCommands {
 		}
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().MSG_DATA_RELOADED);
 	}
-
+	
 	// used above
 	private void reloadData() {
 		try {
 			QConfiguration.reloadData();
 		}
-		catch (InstanceNotFoundException e) {
+		catch (final InstanceNotFoundException e) {
 			Quester.log.info("Failed to reload config: No instance of QConfiguration.");
 		}
 	}
 	
 	private void reloadQuests() {
 		if(qMan.loadQuests()) {
-			for(PlayerProfile prof : profMan.getProfiles()) {
-				String[] unset = profMan.validateProgress(prof);
+			for(final PlayerProfile prof : profMan.getProfiles()) {
+				final String[] unset = profMan.validateProgress(prof);
 				Player player = null;
 				if(unset.length > 0 && (player = Bukkit.getServer().getPlayerExact(prof.getName())) != null) {
 					player.sendMessage(Quester.LABEL + langMan.getPlayerLang(player.getName()).MSG_Q_SOME_CANCELLED);
@@ -148,24 +162,24 @@ public class AdminCommands {
 			Quester.log.info("Failed to reload quests.");
 		}
 	}
-
-	@QCommandLabels({"version", "ver"})
+	
+	@QCommandLabels({ "version", "ver" })
 	@QCommand(
 			section = "Admin",
 			desc = "version info",
 			max = 0,
 			permission = QConfiguration.PERM_ADMIN)
-	public void version(QCommandContext context, CommandSender sender) {
-		sender.sendMessage(Quester.LABEL + ChatColor.GOLD + "version " + plugin.getDescription().getVersion());
+	public void version(final QCommandContext context, final CommandSender sender) {
+		sender.sendMessage(Quester.LABEL + ChatColor.GOLD + "version " + plugin.getDescription()
+				.getVersion());
 		sender.sendMessage(Quester.LABEL + plugin.getDescription().getWebsite());
-		sender.sendMessage(Quester.LABEL + ChatColor.GRAY + "made by " + plugin.getDescription().getAuthors().get(0));
+		sender.sendMessage(Quester.LABEL + ChatColor.GRAY + "made by " + plugin.getDescription()
+				.getAuthors().get(0));
 	}
 	
-	@QCommandLabels({"player"})
-	@QCommand(
-			section = "Admin",
-			desc = "player profile modification commands")
+	@QCommandLabels({ "player" })
+	@QCommand(section = "Admin", desc = "player profile modification commands")
 	@QNestedCommand(PlayerCommands.class)
-	public void player(QCommandContext context, CommandSender sender) {
+	public void player(final QCommandContext context, final CommandSender sender) {
 	}
 }

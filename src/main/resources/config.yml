@@ -2,6 +2,14 @@ general:
   verbose-logging: true
   save-interval: 15
   debug-info: false
+  use-rank: true
+  profile-storage: CONFIG
+mysql:
+  host: localhost
+  port: 3306
+  database: minecraft
+  username: username
+  password: password
 objectives:
   show-only-current: true
   break:
