@@ -2,6 +2,10 @@ package com.gmail.molnardad.quester;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Logger;
 
 import javax.management.InstanceNotFoundException;
@@ -126,10 +130,23 @@ public class Quester extends JavaPlugin {
 		commands.register(ModificationCommands.class);
 		
 		if(QConfiguration.profileStorageType == StorageType.MYSQL) {
+			Connection conn = null;
+			Statement stmt = null;
 			try {
 				DatabaseConnection.initialize(QConfiguration.mysqlUrl, QConfiguration.mysqlUser,
 						QConfiguration.mysqlPass);
 				Quester.log.info("Successfully connected to the database...");
+				conn = DatabaseConnection.getConnection();
+				final DatabaseMetaData dmd = conn.getMetaData();
+				if(!dmd.getTables(null, null, "quester-profiles", null).next()) {
+					Quester.log.info("Creating table quester-profiles...");
+					stmt = conn.createStatement();
+					stmt.execute("CREATE TABLE `quester-profiles` ( name VARCHAR(50) NOT NULL, completed TEXT, current SMALLINT(6), quests TEXT, reputation TEXT, PRIMARY KEY (name) );");
+					if(!dmd.getTables(null, null, "quester-profiles", null).next()) {
+						throw new SQLException("Table creation failed.");
+					}
+					Quester.log.info("Table created.");
+				}
 			}
 			catch (final Exception e) {
 				if(QConfiguration.debug) {
@@ -137,6 +154,20 @@ public class Quester extends JavaPlugin {
 				}
 				Quester.log.warning("Failed to connect to the database, falling back to config...");
 				QConfiguration.profileStorageType = StorageType.CONFIG;
+			}
+			finally {
+				if(conn != null) {
+					try {
+						conn.close();
+					}
+					catch (final SQLException ignore) {}
+				}
+				if(stmt != null) {
+					try {
+						stmt.close();
+					}
+					catch (final SQLException ignore) {}
+				}
 			}
 		}
 		
