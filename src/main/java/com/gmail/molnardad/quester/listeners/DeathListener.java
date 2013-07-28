@@ -70,7 +70,7 @@ public class DeathListener implements Listener {
 	    // PLAYER KILL OBJECTIVE
 	    Player killer = event.getEntity().getKiller();
 	    Player player = event.getEntity();
-	    if(!Util.isPlayer(player)) {
+	    if(!Util.isPlayer(player) || !Util.isPlayer(killer)) {
 	    	return;
 	    }
 	    if(killer != null ) {
