@@ -2,7 +2,6 @@ package com.gmail.molnardad.quester;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.logging.Logger;
 
 import javax.management.InstanceNotFoundException;
@@ -132,11 +131,12 @@ public class Quester extends JavaPlugin {
 						QConfiguration.mysqlPass);
 				Quester.log.info("Successfully connected to the database...");
 			}
-			catch (final ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-			catch (final SQLException e) {
-				e.printStackTrace();
+			catch (final Exception e) {
+				if(QConfiguration.debug) {
+					e.printStackTrace();
+				}
+				Quester.log.warning("Failed to connect to the database, falling back to config...");
+				QConfiguration.profileStorageType = StorageType.CONFIG;
 			}
 		}
 		
