@@ -9,11 +9,11 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("NPC")
 public final class NpcObjective extends Objective {
-
+	
 	private final int index;
 	private final boolean cancel;
 	
-	public NpcObjective(int id, boolean ccl) {
+	public NpcObjective(final int id, final boolean ccl) {
 		index = id;
 		cancel = ccl;
 	}
@@ -24,7 +24,7 @@ public final class NpcObjective extends Objective {
 	}
 	
 	@Override
-	protected String show(int progress) {
+	protected String show(final int progress) {
 		return "Interact with NPC ID " + index + ".";
 	}
 	
@@ -33,28 +33,25 @@ public final class NpcObjective extends Objective {
 		return index + "; CANCEL: " + cancel;
 	}
 	
-	@QCommand(
-			min = 1,
-			max = 1,
-			usage = "<id> (-c)")
-	public static Objective fromCommand(QCommandContext context) throws QCommandException {
-		int id = context.getInt(0);
-		boolean ccl = context.hasFlag('c');
+	@QCommand(min = 1, max = 1, usage = "<id> (-c)")
+	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
+		final int id = context.getInt(0);
+		final boolean ccl = context.hasFlag('c');
 		if(id < 0) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_BAD_ID);
 		}
 		return new NpcObjective(id, ccl);
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setInt("index", index);
 		if(cancel) {
 			key.setBoolean("cancel", cancel);
 		}
 	}
 	
-	protected static Objective load(StorageKey key) {
+	protected static Objective load(final StorageKey key) {
 		int id = -1;
 		boolean ccl = false;
 		id = key.getInt("index", -1);
@@ -65,9 +62,9 @@ public final class NpcObjective extends Objective {
 		return new NpcObjective(id, ccl);
 	}
 	
-	//Custom methods
+	// Custom methods
 	
-	public boolean checkNpc(int npc) {
+	public boolean checkNpc(final int npc) {
 		return npc == index;
 	}
 	

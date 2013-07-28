@@ -9,58 +9,55 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("CHAT")
 public final class ChatObjective extends Objective {
-
+	
 	private final String regex;
 	private final boolean inverted;
 	
-	public ChatObjective(String regex, boolean inverted) {
+	public ChatObjective(final String regex, final boolean inverted) {
 		this.regex = regex;
 		this.inverted = inverted;
 	}
-
+	
 	@Override
 	public int getTargetAmount() {
 		return 1;
 	}
 	
 	@Override
-	protected String show(int progress) {
-		String type = inverted ? "doesn't match" : "matches";
+	protected String show(final int progress) {
+		final String type = inverted ? "doesn't match" : "matches";
 		return "Say anything that " + type + " \"" + regex + "\".";
 	}
 	
 	@Override
 	protected String info() {
-		String flags = inverted ? " (-i)" : "";
-		return "\"" + regex +"\" " + flags;
+		final String flags = inverted ? " (-i)" : "";
+		return "\"" + regex + "\" " + flags;
 	}
 	
-	@QCommand(
-			min = 1,
-			max = 1,
-			usage = "<regex> (-i)")
-	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+	@QCommand(min = 1, max = 1, usage = "<regex> (-i)")
+	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
 		
 		return new ChatObjective(context.getString(0), context.hasFlag('i'));
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setString("regex", regex);
 		if(inverted) {
 			key.setBoolean("inverted", inverted);
 		}
 	}
 	
-	protected static Objective load(StorageKey key) {
-		String regex = key.getString("regex", null);
+	protected static Objective load(final StorageKey key) {
+		final String regex = key.getString("regex", null);
 		if(regex == null) {
 			return null;
 		}
 		return new ChatObjective(regex, key.getBoolean("inverted", false));
 	}
 	
-	public boolean matches(String message) {
+	public boolean matches(final String message) {
 		return message.matches(regex) != inverted;
 	}
 }

@@ -22,18 +22,18 @@ import org.bukkit.inventory.ItemStack;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestItemListener implements Listener {
-
-	private Map<String, ItemStack[]> items = new HashMap<String, ItemStack[]>();
+	
+	private final Map<String, ItemStack[]> items = new HashMap<String, ItemStack[]>();
 	
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onAction(PlayerInteractEvent event) {
+	public void onAction(final PlayerInteractEvent event) {
 		if(Util.isQuestItem(event.getItem())) {
 			event.setCancelled(true);
 		}
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onClick(InventoryClickEvent event) {
+	public void onClick(final InventoryClickEvent event) {
 		if(Util.isQuestItem(event.getCurrentItem())) {
 			if(!event.isShiftClick() || !event.getInventory().getType().equals(InventoryType.CRAFTING)) {
 				event.setCancelled(true);
@@ -42,19 +42,19 @@ public class QuestItemListener implements Listener {
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onDrop(PlayerDropItemEvent event) {
+	public void onDrop(final PlayerDropItemEvent event) {
 		if(Util.isQuestItem(event.getItemDrop().getItemStack())) {
 			event.setCancelled(true);
 		}
 	}
-
+	
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onDeath(PlayerDeathEvent event) {
+	public void onDeath(final PlayerDeathEvent event) {
 		if(Util.isPlayer(event.getEntity())) {
-			List<ItemStack> itms = new ArrayList<ItemStack>();
-			Iterator<ItemStack> it = event.getDrops().iterator();
+			final List<ItemStack> itms = new ArrayList<ItemStack>();
+			final Iterator<ItemStack> it = event.getDrops().iterator();
 			while(it.hasNext()) {
-				ItemStack i = it.next();
+				final ItemStack i = it.next();
 				if(Util.isQuestItem(i)) {
 					itms.add(i);
 					it.remove();
@@ -67,17 +67,17 @@ public class QuestItemListener implements Listener {
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onSpawn(PlayerRespawnEvent event) {
-		ItemStack[] itemList = items.get(event.getPlayer().getName());
+	public void onSpawn(final PlayerRespawnEvent event) {
+		final ItemStack[] itemList = items.get(event.getPlayer().getName());
 		if(itemList != null) {
-			Inventory inv = event.getPlayer().getInventory();
+			final Inventory inv = event.getPlayer().getInventory();
 			inv.addItem(itemList);
 			items.remove(event.getPlayer().getName());
 		}
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onPlace(BlockPlaceEvent event) {
+	public void onPlace(final BlockPlaceEvent event) {
 		if(Util.isQuestItem(event.getItemInHand())) {
 			event.setCancelled(true);
 		}

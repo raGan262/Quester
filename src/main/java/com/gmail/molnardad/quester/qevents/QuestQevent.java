@@ -15,46 +15,44 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("QUEST")
 public final class QuestQevent extends Qevent {
-
+	
 	private final int quest;
 	
-	public QuestQevent(int qst) {
-		this.quest = qst;
+	public QuestQevent(final int qst) {
+		quest = qst;
 	}
 	
 	@Override
 	public String info() {
 		return String.valueOf(quest);
 	}
-
+	
 	@Override
-	protected void run(Player player, Quester plugin) {
+	protected void run(final Player player, final Quester plugin) {
 		try {
 			plugin.getProfileManager().startQuest(player, quest, ActionSource.eventSource(this), plugin.getLanguageManager().getPlayerLang(player.getName()));
-		} catch (QuesterException e) {
+		}
+		catch (final QuesterException e) {
 			Quester.log.info("Event failed to give quest to " + player.getName() + ". Reason: " + ChatColor.stripColor(e.getMessage()));
 		}
 	}
-
-	@QCommand(
-			min = 1,
-			max = 1,
-			usage = "<quest ID>")
-	public static Qevent fromCommand(QCommandContext context) throws QCommandException {
-		int id = context.getInt(0);
+	
+	@QCommand(min = 1, max = 1, usage = "<quest ID>")
+	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
+		final int id = context.getInt(0);
 		if(id < 0) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_BAD_ID);
 		}
 		return new QuestQevent(id);
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setInt("quest", quest);
 	}
 	
-	protected static Qevent load(StorageKey key) {
-		int qst = key.getInt("quest", -1);
+	protected static Qevent load(final StorageKey key) {
+		final int qst = key.getInt("quest", -1);
 		if(qst < 0) {
 			return null;
 		}

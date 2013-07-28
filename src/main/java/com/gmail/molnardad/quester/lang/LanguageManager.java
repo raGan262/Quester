@@ -15,13 +15,13 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 
 public class LanguageManager {
 	
-	private Map<String, QuesterLang> languages = new HashMap<String, QuesterLang>();
-
-	public boolean hasLang(String name) {
+	private final Map<String, QuesterLang> languages = new HashMap<String, QuesterLang>();
+	
+	public boolean hasLang(final String name) {
 		return languages.get(name.toLowerCase()) != null;
 	}
 	
-	public QuesterLang getPlayerLang(String playerName) {
+	public QuesterLang getPlayerLang(final String playerName) {
 		// this will change
 		return getDefaultLang();
 	}
@@ -30,42 +30,45 @@ public class LanguageManager {
 		return languages.get("english");
 	}
 	
-	public QuesterLang getLang(String name) {
+	public QuesterLang getLang(final String name) {
 		if(!hasLang(name)) {
 			return null;
 		}
 		return languages.get(name);
 	}
 	
-	public boolean loadLang (String name, File file) {
+	public boolean loadLang(final String name, final File file) {
 		if(hasLang(name)) {
 			return false;
 		}
-		Storage storage = new ConfigStorage(file, Quester.log, null);
+		final Storage storage = new ConfigStorage(file, Quester.log, null);
 		storage.load();
-		StorageKey key = storage.getKey("");
-		QuesterLang lang = new QuesterLang(file);
+		final StorageKey key = storage.getKey("");
+		final QuesterLang lang = new QuesterLang(file);
 		Exception ex = null;
 		int eCount = 0;
-		for(Field f : lang.getClass().getFields()) {
+		for(final Field f : lang.getClass().getFields()) {
 			if(Modifier.isStatic(f.getModifiers())) {
 				continue;
 			}
-			String val = key.getString(f.getName(), "");
+			final String val = key.getString(f.getName(), "");
 			if(val.isEmpty()) {
 				try {
-					key.setString(f.getName(),((String)f.get(lang)).replaceAll("\\n", "%n"));
+					key.setString(f.getName(), ((String) f.get(lang)).replaceAll("\\n", "%n"));
 					if(QConfiguration.debug) {
 						Quester.log.info(f.getName() + " in " + file.getName() + " reset to default.");
 					}
-				} catch (Exception e) {
+				}
+				catch (final Exception e) {
 					ex = e;
 					eCount++;
 				}
-			} else {
+			}
+			else {
 				try {
-					f.set(lang, (String) val.replaceAll("%n", "\n"));
-				} catch (Exception e) {
+					f.set(lang, val.replaceAll("%n", "\n"));
+				}
+				catch (final Exception e) {
 					ex = e;
 					eCount++;
 				}
@@ -83,11 +86,11 @@ public class LanguageManager {
 		return true;
 	}
 	
-	public boolean reloadLang(String name) {
+	public boolean reloadLang(final String name) {
 		if(!hasLang(name)) {
 			return false;
 		}
-		File file = languages.get(name).getFile();
+		final File file = languages.get(name).getFile();
 		languages.remove(name);
 		loadLang(name, file);
 		return true;

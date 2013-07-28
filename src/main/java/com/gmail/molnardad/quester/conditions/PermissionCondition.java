@@ -16,17 +16,17 @@ public final class PermissionCondition extends Condition {
 	
 	private final String perm;
 	
-	public PermissionCondition(String perm) {
+	public PermissionCondition(final String perm) {
 		this.perm = perm;
 	}
-
+	
 	@Override
-	public boolean isMet(Player player, Quester plugin) {
+	public boolean isMet(final Player player, final Quester plugin) {
 		return Util.permCheck(player, perm, false, null);
 	}
 	
 	@Override
-	protected String parseDescription(String description) {
+	protected String parseDescription(final String description) {
 		return description.replaceAll("%perm", perm);
 	}
 	
@@ -40,27 +40,26 @@ public final class PermissionCondition extends Condition {
 		return perm;
 	}
 	
-	@QCommand(
-			min = 1,
-			max = 1,
-			usage = "<permission>")
-	public static Condition fromCommand(QCommandContext context) throws QCommandException {
-		String perm = context.getString(0);
+	@QCommand(min = 1, max = 1, usage = "<permission>")
+	public static Condition fromCommand(final QCommandContext context) throws QCommandException {
+		final String perm = context.getString(0);
 		return new PermissionCondition(perm);
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setString("permission", perm);
 	}
-
-	protected static Condition load(StorageKey key) {
+	
+	protected static Condition load(final StorageKey key) {
 		String perm;
 		
-		if(key.getString("permission") != null)
+		if(key.getString("permission") != null) {
 			perm = key.getString("permission");
-		else
+		}
+		else {
 			return null;
+		}
 		
 		return new PermissionCondition(perm);
 	}

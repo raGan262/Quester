@@ -7,8 +7,8 @@ public class PlayerCommands {
 	
 	ProfileManager profMan = null;
 	
-	public PlayerCommands(Quester plugin) {
-		this.profMan = plugin.getProfileManager();
+	public PlayerCommands(final Quester plugin) {
+		profMan = plugin.getProfileManager();
 	}
 	
 }

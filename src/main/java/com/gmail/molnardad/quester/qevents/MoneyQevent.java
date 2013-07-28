@@ -14,55 +14,53 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("MONEY")
 public final class MoneyQevent extends Qevent {
-
+	
 	private final double amount;
 	
-	public MoneyQevent(double amt) {
-		this.amount = amt;
+	public MoneyQevent(final double amt) {
+		amount = amt;
 	}
 	
 	@Override
 	public String info() {
 		return String.valueOf(amount);
 	}
-
+	
 	@Override
-	protected void run(Player player, Quester plugin) {
+	protected void run(final Player player, final Quester plugin) {
 		if(!Quester.vault) {
 			Quester.log.info("Failed process money event on " + player.getName() + ": Economy support disabled");
 			return;
 		}
 		EconomyResponse resp;
 		
-		if(amount >= 0){
+		if(amount >= 0) {
 			resp = Quester.econ.depositPlayer(player.getName(), amount);
-		} else {
+		}
+		else {
 			resp = Quester.econ.withdrawPlayer(player.getName(), -amount);
 		}
 		if(!resp.transactionSuccess()) {
 			Quester.log.info("Failed process money event on " + player.getName() + ": " + resp.errorMessage);
 		}
 	}
-
-	@QCommand(
-			min = 1,
-			max = 1,
-			usage = "<amount>")
-	public static Qevent fromCommand(QCommandContext context) throws QCommandException {
-		double amt = context.getDouble(0);
+	
+	@QCommand(min = 1, max = 1, usage = "<amount>")
+	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
+		final double amt = context.getDouble(0);
 		if(amt == 0.0D) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_NONZERO);
 		}
 		return new MoneyQevent(context.getDouble(0));
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setDouble("amount", amount);
 	}
 	
-	protected static Qevent load(StorageKey key) {
-		double amt = key.getDouble("amount", 0.0D);
+	protected static Qevent load(final StorageKey key) {
+		final double amt = key.getDouble("amount", 0.0D);
 		if(amt == 0) {
 			return null;
 		}

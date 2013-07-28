@@ -14,42 +14,39 @@ import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("DEATH")
 public final class DeathObjective extends Objective {
-
+	
 	private final Location location;
 	private final int amount;
 	private final int range;
 	
-	public DeathObjective(int amt, Location loc, int rng) {
+	public DeathObjective(final int amt, final Location loc, final int rng) {
 		amount = amt;
 		range = rng;
 		location = loc;
 	}
-
+	
 	@Override
 	public int getTargetAmount() {
 		return amount;
 	}
 	
 	@Override
-	protected String show(int progress) {
-		String locStr = location == null ? "anywhere " : String.format("max %d blocks from %.1f %.1f %.1f("+location.getWorld().getName()+") ", range, location.getX(), location.getY(), location.getZ());
-		return "Die " + locStr + String.valueOf(amount - progress)+"x.";
+	protected String show(final int progress) {
+		final String locStr = location == null ? "anywhere " : String.format("max %d blocks from %.1f %.1f %.1f(" + location.getWorld().getName() + ") ", range, location.getX(), location.getY(), location.getZ());
+		return "Die " + locStr + String.valueOf(amount - progress) + "x.";
 	}
 	
 	@Override
 	protected String info() {
-		String locStr = location == null ? "ANY" : String.format("%.1f %.1f %.1f("+location.getWorld().getName()+")", location.getX(), location.getY(), location.getZ());
-		return "LOC: " + locStr + "; AMT: "+ amount +"; RNG: "+ range;
+		final String locStr = location == null ? "ANY" : String.format("%.1f %.1f %.1f(" + location.getWorld().getName() + ")", location.getX(), location.getY(), location.getZ());
+		return "LOC: " + locStr + "; AMT: " + amount + "; RNG: " + range;
 	}
 	
-	@QCommand(
-			min = 1,
-			max = 3,
-			usage = "<amount> {[location]} [range]")
-	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+	@QCommand(min = 1, max = 3, usage = "<amount> {[location]} [range]")
+	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
 		Location loc = null;
 		int rng = 5;
-		int amt = Integer.parseInt(context.getString(0));
+		final int amt = Integer.parseInt(context.getString(0));
 		if(amt < 1) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
 		}
@@ -64,9 +61,9 @@ public final class DeathObjective extends Objective {
 		}
 		return new DeathObjective(amt, loc, rng);
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		if(location != null) {
 			key.setString("location", Util.serializeLocString(location));
 		}
@@ -78,7 +75,7 @@ public final class DeathObjective extends Objective {
 		}
 	}
 	
-	protected static Objective load(StorageKey key) {
+	protected static Objective load(final StorageKey key) {
 		Location loc = null;
 		int amt = 1, rng = 5;
 		loc = Util.deserializeLocString(key.getString("location", ""));
@@ -95,13 +92,13 @@ public final class DeathObjective extends Objective {
 	
 	// Custom methods
 	
-	public boolean checkDeath(Location loc) {
+	public boolean checkDeath(final Location loc) {
 		if(location == null) {
 			return true;
 		}
 		if(loc.getWorld().getName().equals(location.getWorld().getName())) {
 			return loc.distance(location) < range;
-		} 
+		}
 		return false;
 	}
 }

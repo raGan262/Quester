@@ -21,41 +21,40 @@ import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.Quest;
 
 public class DyeListener implements Listener {
-
-	private ProfileManager profMan;
 	
-	public DyeListener(Quester plugin) {
-		this.profMan = plugin.getProfileManager();
+	private final ProfileManager profMan;
+	
+	public DyeListener(final Quester plugin) {
+		profMan = plugin.getProfileManager();
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onEntityRightClick(PlayerInteractEntityEvent event) {
-	    Player player = event.getPlayer();
-    	Quest quest = profMan.getProfile(player.getName()).getQuest();
-	    if(quest != null) {
-	    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
-	    		return;
-	    	List<Objective> objs = quest.getObjectives();
-			Entity entity = event.getRightClicked();
-			ItemStack item = player.getItemInHand();
-	    	for(int i = 0; i < objs.size(); i++) {
-	    		if(objs.get(i).getType().equalsIgnoreCase("DYE")) {
-		    		if(!profMan.isObjectiveActive(player, i)){
-	    				continue;
-	    			}
-	    			DyeObjective obj = (DyeObjective)objs.get(i);
-	    			if(entity.getType() == EntityType.SHEEP) {
-    					Sheep sheep = (Sheep) entity;
-	    				if(item.getType() == Material.INK_SACK 
-	    						&& obj.checkDye(15 - item.getDurability())
-	    						&& sheep.getColor().getDyeData() != (15 - item.getDurability())) {
-	    					profMan.incProgress(player, ActionSource.listenerSource(event), i);
-	    					return;
-	    				}
-	    			}
-	    		}
-	    	}
-	    }
+	public void onEntityRightClick(final PlayerInteractEntityEvent event) {
+		final Player player = event.getPlayer();
+		final Quest quest = profMan.getProfile(player.getName()).getQuest();
+		if(quest != null) {
+			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
+				return;
+			}
+			final List<Objective> objs = quest.getObjectives();
+			final Entity entity = event.getRightClicked();
+			final ItemStack item = player.getItemInHand();
+			for(int i = 0; i < objs.size(); i++) {
+				if(objs.get(i).getType().equalsIgnoreCase("DYE")) {
+					if(!profMan.isObjectiveActive(player, i)) {
+						continue;
+					}
+					final DyeObjective obj = (DyeObjective) objs.get(i);
+					if(entity.getType() == EntityType.SHEEP) {
+						final Sheep sheep = (Sheep) entity;
+						if(item.getType() == Material.INK_SACK && obj.checkDye(15 - item.getDurability()) && sheep.getColor().getDyeData() != 15 - item.getDurability()) {
+							profMan.incProgress(player, ActionSource.listenerSource(event), i);
+							return;
+						}
+					}
+				}
+			}
+		}
 	}
 	
 }

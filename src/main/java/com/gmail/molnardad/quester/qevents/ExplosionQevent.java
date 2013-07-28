@@ -13,15 +13,15 @@ import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("EXPLOSION")
 public final class ExplosionQevent extends Qevent {
-
+	
 	private final Location location;
 	private final boolean damage;
 	private final int range;
 	
-	public ExplosionQevent(Location loc, int rng, boolean dmg) {
-		this.location = loc;
-		this.damage = dmg;
-		this.range = rng;
+	public ExplosionQevent(final Location loc, final int rng, final boolean dmg) {
+		location = loc;
+		damage = dmg;
+		range = rng;
 	}
 	
 	@Override
@@ -32,36 +32,37 @@ public final class ExplosionQevent extends Qevent {
 		}
 		return locStr + "; RNG: " + range + "; DMG: " + damage;
 	}
-
+	
 	@Override
-	protected void run(Player player, Quester plugin) {
+	protected void run(final Player player, final Quester plugin) {
 		Location loc;
-		if(location == null)
+		if(location == null) {
 			loc = Util.move(player.getLocation(), range);
-		else
+		}
+		else {
 			loc = Util.move(location, range);
+		}
 		
-		if(damage)
+		if(damage) {
 			loc.getWorld().createExplosion(loc, 4F);
-		else
+		}
+		else {
 			loc.getWorld().createExplosion(loc, 0F);
+		}
 	}
-
-	@QCommand(
-			min = 1,
-			max = 2,
-			usage = "{<location>} [range] (-d)")
-	public static Qevent fromCommand(QCommandContext context) {
-		Location loc = Util.getLoc(context.getPlayer(), context.getString(0));
+	
+	@QCommand(min = 1, max = 2, usage = "{<location>} [range] (-d)")
+	public static Qevent fromCommand(final QCommandContext context) {
+		final Location loc = Util.getLoc(context.getPlayer(), context.getString(0));
 		int range = 0;
 		if(context.length() > 1) {
 			range = context.getInt(1);
 		}
 		return new ExplosionQevent(loc, range, context.hasFlag('d'));
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		if(damage) {
 			key.setBoolean("damage", damage);
 		}
@@ -73,8 +74,8 @@ public final class ExplosionQevent extends Qevent {
 		}
 	}
 	
-	protected static Qevent load(StorageKey key) {
-		Location loc = Util.deserializeLocString(key.getString("location", ""));
+	protected static Qevent load(final StorageKey key) {
+		final Location loc = Util.deserializeLocString(key.getString("location", ""));
 		int rng = key.getInt("range", 0);
 		if(rng < 0) {
 			rng = 0;

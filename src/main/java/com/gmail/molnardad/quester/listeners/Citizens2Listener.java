@@ -37,29 +37,29 @@ public class Citizens2Listener implements Listener {
 	private LanguageManager langMan = null;
 	private ProfileManager profMan = null;
 	
-	public Citizens2Listener(Quester plugin) {
-		this.qm = plugin.getQuestManager();
-		this.langMan = plugin.getLanguageManager();
-		this.holMan = plugin.getHolderManager();
-		this.profMan = plugin.getProfileManager();
+	public Citizens2Listener(final Quester plugin) {
+		qm = plugin.getQuestManager();
+		langMan = plugin.getLanguageManager();
+		holMan = plugin.getHolderManager();
+		profMan = plugin.getProfileManager();
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onLeftClick(NPCLeftClickEvent event) {
+	public void onLeftClick(final NPCLeftClickEvent event) {
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
-			QuestHolder qh = holMan.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
-			Player player = event.getClicker();
-			QuesterLang lang = langMan.getPlayerLang(player.getName());
+			final QuestHolder qh = holMan.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
+			final Player player = event.getClicker();
+			final QuesterLang lang = langMan.getPlayerLang(player.getName());
 			if(!Util.permCheck(player, QConfiguration.PERM_USE_NPC, true, lang)) {
 				return;
 			}
 			// If player has perms and holds blaze rod
-			boolean isOp = Util.permCheck(player, QConfiguration.PERM_MODIFY, false, null);
+			final boolean isOp = Util.permCheck(player, QConfiguration.PERM_MODIFY, false, null);
 			if(isOp) {
 				if(player.getItemInHand().getTypeId() == 369) {
 					event.getNPC().getTrait(QuesterTrait.class).setHolderID(-1);
 					player.sendMessage(ChatColor.GREEN + lang.HOL_UNASSIGNED);
-				    return;
+					return;
 				}
 			}
 			if(qh == null) {
@@ -72,7 +72,7 @@ public class Citizens2Listener implements Listener {
 			}
 			qh.interact(player.getName());
 			
-			Quest quest = qm.getQuest(holMan.getOne(qh));
+			final Quest quest = qm.getQuest(holMan.getOne(qh));
 			if(quest != null) {
 				if(profMan.getProfile(player.getName()).hasQuest(quest)) {
 					return;
@@ -82,13 +82,14 @@ public class Citizens2Listener implements Listener {
 						qm.showQuest(player, quest.getName(), lang);
 						return;
 					}
-					catch (QuesterException ignore) {}
+					catch (final QuesterException ignore) {}
 				}
 			}
 			
 			try {
 				holMan.selectNext(player.getName(), qh, lang);
-			} catch (HolderException e) {
+			}
+			catch (final HolderException e) {
 				player.sendMessage(e.getMessage());
 				if(!isOp) {
 					return;
@@ -99,33 +100,35 @@ public class Citizens2Listener implements Listener {
 			player.sendMessage(Util.line(ChatColor.BLUE, event.getNPC().getName() + "'s quests", ChatColor.GOLD));
 			if(isOp) {
 				holMan.showQuestsModify(qh, player);
-			} else {
+			}
+			else {
 				holMan.showQuestsUse(qh, player);
 			}
 		}
 	}
-
+	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onRightClick(NPCRightClickEvent event) {
+	public void onRightClick(final NPCRightClickEvent event) {
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
-			QuestHolder qh = holMan.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
-			Player player = event.getClicker();
-			QuesterLang lang = langMan.getPlayerLang(player.getName());
+			final QuestHolder qh = holMan.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
+			final Player player = event.getClicker();
+			final QuesterLang lang = langMan.getPlayerLang(player.getName());
 			if(!Util.permCheck(player, QConfiguration.PERM_USE_NPC, true, lang)) {
 				return;
 			}
-			boolean isOP = Util.permCheck(player, QConfiguration.PERM_MODIFY, false, null);
+			final boolean isOP = Util.permCheck(player, QConfiguration.PERM_MODIFY, false, null);
 			// If player has perms and holds blaze rod
 			if(isOP) {
 				if(player.getItemInHand().getTypeId() == 369) {
-					int sel = profMan.getProfile(player.getName()).getHolderID();
-					if(sel < 0){
+					final int sel = profMan.getProfile(player.getName()).getHolderID();
+					if(sel < 0) {
 						player.sendMessage(ChatColor.RED + lang.ERROR_HOL_NOT_SELECTED);
-					} else {
+					}
+					else {
 						event.getNPC().getTrait(QuesterTrait.class).setHolderID(sel);
 						player.sendMessage(ChatColor.GREEN + lang.HOL_ASSIGNED);
 					}
-				    return;
+					return;
 				}
 			}
 			if(qh == null) {
@@ -137,11 +140,11 @@ public class Citizens2Listener implements Listener {
 				return;
 			}
 			qh.interact(player.getName());
-			List<Integer> qsts = qh.getQuests();
+			final List<Integer> qsts = qh.getQuests();
 			
-			Quest currentQuest = profMan.getProfile(player.getName()).getQuest();
+			final Quest currentQuest = profMan.getProfile(player.getName()).getQuest();
 			if(!player.isSneaking()) {
-				int questID = currentQuest == null ? -1 : currentQuest.getID();
+				final int questID = currentQuest == null ? -1 : currentQuest.getID();
 				// player has quest and quest giver does not accept this quest
 				if(questID >= 0 && !qsts.contains(questID)) {
 					player.sendMessage(ChatColor.RED + lang.ERROR_Q_NOT_HERE);
@@ -151,10 +154,12 @@ public class Citizens2Listener implements Listener {
 				if(questID >= 0 && qsts.contains(questID)) {
 					try {
 						profMan.complete(player, ActionSource.holderSource(qh), lang);
-					} catch (QuesterException e) {
+					}
+					catch (final QuesterException e) {
 						try {
 							profMan.showProgress(player, lang);
-						} catch (QuesterException f) {
+						}
+						catch (final QuesterException f) {
 							player.sendMessage(ChatColor.DARK_PURPLE + lang.ERROR_INTERESTING);
 						}
 					}
@@ -169,64 +174,68 @@ public class Citizens2Listener implements Listener {
 			if(qm.isQuestActive(selected)) {
 				try {
 					profMan.startQuest(player, qm.getQuest(selected), ActionSource.holderSource(qh), lang);
-				} catch (QuesterException e) {
+				}
+				catch (final QuesterException e) {
 					player.sendMessage(e.getMessage());
 				}
-			} else {
+			}
+			else {
 				player.sendMessage(ChatColor.RED + lang.ERROR_Q_NOT_SELECTED);
 			}
 		}
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onAnyClick(NPCRightClickEvent event) {
-		Player player = event.getClicker();
-    	Quest quest = profMan.getProfile(player.getName()).getQuest();
-	    if(quest != null) {
-	    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
-	    		return;
-	    	List<Objective> objs = quest.getObjectives();
-	    	for(int i = 0; i < objs.size(); i++) {
-	    		if(objs.get(i).getType().equalsIgnoreCase("NPC")) {
-		    		if(!profMan.isObjectiveActive(player, i)){
-	    				continue;
-	    			}
-	    			NpcObjective obj = (NpcObjective)objs.get(i);
-	    			if(obj.checkNpc(event.getNPC().getId())) {
-	    				profMan.incProgress(player, ActionSource.listenerSource(event), i);
-	    				if(obj.getCancel()) {
-	    					event.setCancelled(true);
-	    				}
-	    				return;
-	    			}
-	    		}
-	    	}
-	    }
+	public void onAnyClick(final NPCRightClickEvent event) {
+		final Player player = event.getClicker();
+		final Quest quest = profMan.getProfile(player.getName()).getQuest();
+		if(quest != null) {
+			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
+				return;
+			}
+			final List<Objective> objs = quest.getObjectives();
+			for(int i = 0; i < objs.size(); i++) {
+				if(objs.get(i).getType().equalsIgnoreCase("NPC")) {
+					if(!profMan.isObjectiveActive(player, i)) {
+						continue;
+					}
+					final NpcObjective obj = (NpcObjective) objs.get(i);
+					if(obj.checkNpc(event.getNPC().getId())) {
+						profMan.incProgress(player, ActionSource.listenerSource(event), i);
+						if(obj.getCancel()) {
+							event.setCancelled(true);
+						}
+						return;
+					}
+				}
+			}
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onNpcDeath(NPCDeathEvent event) {
-		Player player = event.getNPC().getBukkitEntity().getKiller();
+	public void onNpcDeath(final NPCDeathEvent event) {
+		final Player player = event.getNPC().getBukkitEntity().getKiller();
 		if(player == null) {
 			return;
 		}
-    	Quest quest = profMan.getProfile(player.getName()).getQuest();
-	    if(quest != null) {
-	    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
-	    		return;
-	    	List<Objective> objs = quest.getObjectives();
-	    	for(int i = 0; i < objs.size(); i++) {
-	    		if(objs.get(i).getType().equalsIgnoreCase("NPCKILL")) {
-		    		if(!profMan.isObjectiveActive(player, i)){
-	    				continue;
-	    			}
-	    			NpcKillObjective obj = (NpcKillObjective)objs.get(i);
-	    			if(obj.checkNpc(event.getNPC().getName())) {
-	    				profMan.incProgress(player, ActionSource.listenerSource(event), i);
-	    				return;
-	    			}
-	    		}
-	    	}
-	    }
+		final Quest quest = profMan.getProfile(player.getName()).getQuest();
+		if(quest != null) {
+			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
+				return;
+			}
+			final List<Objective> objs = quest.getObjectives();
+			for(int i = 0; i < objs.size(); i++) {
+				if(objs.get(i).getType().equalsIgnoreCase("NPCKILL")) {
+					if(!profMan.isObjectiveActive(player, i)) {
+						continue;
+					}
+					final NpcKillObjective obj = (NpcKillObjective) objs.get(i);
+					if(obj.checkNpc(event.getNPC().getName())) {
+						profMan.incProgress(player, ActionSource.listenerSource(event), i);
+						return;
+					}
+				}
+			}
+		}
 	}
 }

@@ -13,36 +13,34 @@ import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("CMD")
 public final class CommandQevent extends Qevent {
-
+	
 	private final String command;
 	
-	public CommandQevent(String cmd) {
-		this.command = cmd;
+	public CommandQevent(final String cmd) {
+		command = cmd;
 	}
 	
 	@Override
 	public String info() {
 		return "/" + command;
 	}
-
+	
 	@Override
-	protected void run(Player player, Quester plugin) {
+	protected void run(final Player player, final Quester plugin) {
 		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replace("%p", player.getName()));
 	}
 	
-	@QCommand(
-			min = 1,
-			usage = "<command>")
-	public static Qevent fromCommand(QCommandContext context) {
+	@QCommand(min = 1, usage = "<command>")
+	public static Qevent fromCommand(final QCommandContext context) {
 		return new CommandQevent(Util.implode(context.getArgs()));
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setString("command", command);
 	}
 	
-	protected static Qevent load(StorageKey key) {
+	protected static Qevent load(final StorageKey key) {
 		String cmd;
 		
 		cmd = key.getString("command");

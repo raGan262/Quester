@@ -9,12 +9,12 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("NPCKILL")
 public final class NpcKillObjective extends Objective {
-
+	
 	private final String name;
 	private final String strName;
 	private final int amount;
 	
-	public NpcKillObjective(String name, int amt) {
+	public NpcKillObjective(final String name, final int amt) {
 		this.name = name;
 		amount = amt;
 		strName = name == null ? "any NPC" : "NPC named " + name;
@@ -26,7 +26,7 @@ public final class NpcKillObjective extends Objective {
 	}
 	
 	@Override
-	protected String show(int progress) {
+	protected String show(final int progress) {
 		return "Kill " + strName + " - " + amount + "x";
 	}
 	
@@ -35,11 +35,8 @@ public final class NpcKillObjective extends Objective {
 		return (name == null ? "ANY" : name) + "; AMT: " + amount;
 	}
 	
-	@QCommand(
-			min = 1,
-			max = 2,
-			usage = "<name> [amount]")
-	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+	@QCommand(min = 1, max = 2, usage = "<name> [amount]")
+	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
 		int amt = 1;
 		String name = null;
 		if(!context.getString(0).equalsIgnoreCase("ANY")) {
@@ -53,16 +50,16 @@ public final class NpcKillObjective extends Objective {
 		}
 		return new NpcKillObjective(name, amt);
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setString("name", name);
 		if(amount > 1) {
 			key.setInt("amount", amount);
 		}
 	}
 	
-	protected static Objective load(StorageKey key) {
+	protected static Objective load(final StorageKey key) {
 		int amt = 1;
 		String nm = null;
 		amt = key.getInt("amount", 1);
@@ -73,9 +70,9 @@ public final class NpcKillObjective extends Objective {
 		return new NpcKillObjective(nm, amt);
 	}
 	
-	//Custom methods
+	// Custom methods
 	
-	public boolean checkNpc(String npcName) {
+	public boolean checkNpc(final String npcName) {
 		if(name == null) {
 			return true;
 		}

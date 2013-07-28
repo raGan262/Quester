@@ -30,35 +30,36 @@ import com.gmail.molnardad.quester.quests.QuestManager;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class SignListeners implements Listener {
-
+	
 	private QuestManager qm = null;
 	private QuestHolderManager holMan = null;
 	private LanguageManager langMan = null;
 	private ProfileManager profMan = null;
 	
-	public SignListeners(Quester plugin) {
-		this.qm = plugin.getQuestManager();
-		this.langMan = plugin.getLanguageManager();
-		this.holMan = plugin.getHolderManager();
-		this.profMan = plugin.getProfileManager();
+	public SignListeners(final Quester plugin) {
+		qm = plugin.getQuestManager();
+		langMan = plugin.getLanguageManager();
+		holMan = plugin.getHolderManager();
+		profMan = plugin.getProfileManager();
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onInteract(PlayerInteractEvent event) {
-		Player player = event.getPlayer();
+	public void onInteract(final PlayerInteractEvent event) {
+		final Player player = event.getPlayer();
 		if(event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			Block block = event.getClickedBlock();
-			QuesterSign qs = holMan.getSign(block.getLocation());
+			final Block block = event.getClickedBlock();
+			final QuesterSign qs = holMan.getSign(block.getLocation());
 			if(qs == null) {
 				return;
 			}
-			QuesterLang lang = langMan.getPlayerLang(player.getName());
+			final QuesterLang lang = langMan.getPlayerLang(player.getName());
 			if(block.getType().getId() != 63 && block.getType().getId() != 68) {
 				holMan.removeSign(block.getLocation());
 				player.sendMessage(Quester.LABEL + lang.SIGN_UNREGISTERED);
 				return;
-			} else { 
-				Sign sign = (Sign) block.getState();
+			}
+			else {
+				final Sign sign = (Sign) block.getState();
 				if(!sign.getLine(0).equals(ChatColor.BLUE + "[Quester]")) {
 					block.breakNaturally();
 					holMan.removeSign(block.getLocation());
@@ -73,17 +74,17 @@ public class SignListeners implements Listener {
 			if(player.isSneaking()) {
 				return;
 			}
-			boolean isOp = Util.permCheck(player, QConfiguration.PERM_MODIFY, false, null);
-
+			final boolean isOp = Util.permCheck(player, QConfiguration.PERM_MODIFY, false, null);
+			
 			event.setCancelled(true);
-			QuestHolder qh = holMan.getHolder(qs.getHolderID());
+			final QuestHolder qh = holMan.getHolder(qs.getHolderID());
 			if(event.getAction() == Action.LEFT_CLICK_BLOCK) {
 				
 				if(isOp) {
 					if(player.getItemInHand().getTypeId() == 369) {
 						qs.setHolderID(-1);
 						player.sendMessage(ChatColor.GREEN + lang.HOL_UNASSIGNED);
-					    return;
+						return;
 					}
 				}
 				
@@ -91,13 +92,13 @@ public class SignListeners implements Listener {
 					player.sendMessage(ChatColor.RED + lang.ERROR_HOL_NOT_ASSIGNED);
 					return;
 				}
-
+				
 				if(!qh.canInteract(player.getName())) {
 					player.sendMessage(ChatColor.RED + lang.ERROR_HOL_INTERACT);
 				}
 				qh.interact(player.getName());
-
-				Quest quest = qm.getQuest(holMan.getOne(qh));
+				
+				final Quest quest = qm.getQuest(holMan.getOne(qh));
 				if(quest != null) {
 					if(profMan.getProfile(player.getName()).hasQuest(quest)) {
 						return;
@@ -107,13 +108,14 @@ public class SignListeners implements Listener {
 							qm.showQuest(player, quest.getName(), lang);
 							return;
 						}
-						catch (QuesterException ignore) {}
+						catch (final QuesterException ignore) {}
 					}
 				}
 				
 				try {
 					holMan.selectNext(player.getName(), qh, lang);
-				} catch (HolderException e) {
+				}
+				catch (final HolderException e) {
 					player.sendMessage(e.getMessage());
 					if(!isOp) {
 						return;
@@ -124,22 +126,25 @@ public class SignListeners implements Listener {
 				player.sendMessage(Util.line(ChatColor.BLUE, lang.SIGN_HEADER, ChatColor.GOLD));
 				if(isOp) {
 					holMan.showQuestsModify(qh, player);
-				} else {
+				}
+				else {
 					holMan.showQuestsUse(qh, player);
 				}
 				
-			} else {
+			}
+			else {
 				
 				if(isOp) {
 					if(player.getItemInHand().getTypeId() == 369) {
-						int sel = profMan.getProfile(player.getName()).getHolderID();
-						if(sel < 0){
+						final int sel = profMan.getProfile(player.getName()).getHolderID();
+						if(sel < 0) {
 							player.sendMessage(ChatColor.RED + lang.ERROR_HOL_NOT_ASSIGNED);
-						} else {
+						}
+						else {
 							qs.setHolderID(sel);
 							player.sendMessage(ChatColor.GREEN + lang.HOL_ASSIGNED);
 						}
-					    return;
+						return;
 					}
 				}
 				if(qh == null) {
@@ -151,11 +156,11 @@ public class SignListeners implements Listener {
 					return;
 				}
 				qh.interact(player.getName());
-				List<Integer> qsts = qh.getQuests();
+				final List<Integer> qsts = qh.getQuests();
 				
-				Quest currentQuest = profMan.getProfile(player.getName()).getQuest();
+				final Quest currentQuest = profMan.getProfile(player.getName()).getQuest();
 				if(!player.isSneaking()) {
-					int questID = currentQuest == null ? -1 : currentQuest.getID();
+					final int questID = currentQuest == null ? -1 : currentQuest.getID();
 					// player has quest and quest giver does not accept this quest
 					if(questID >= 0 && !qsts.contains(questID)) {
 						player.sendMessage(ChatColor.RED + lang.ERROR_Q_NOT_HERE);
@@ -165,10 +170,12 @@ public class SignListeners implements Listener {
 					if(questID >= 0 && qsts.contains(questID)) {
 						try {
 							profMan.complete(player, ActionSource.holderSource(qh), lang);
-						} catch (QuesterException e) {
+						}
+						catch (final QuesterException e) {
 							try {
 								profMan.showProgress(player, lang);
-							} catch (QuesterException f) {
+							}
+							catch (final QuesterException f) {
 								player.sendMessage(ChatColor.DARK_PURPLE + lang.ERROR_INTERESTING);
 							}
 						}
@@ -183,10 +190,12 @@ public class SignListeners implements Listener {
 				if(qm.isQuestActive(selected)) {
 					try {
 						profMan.startQuest(player, qm.getQuestName(selected), ActionSource.holderSource(qh), lang);
-					} catch (QuesterException e) {
+					}
+					catch (final QuesterException e) {
 						player.sendMessage(e.getMessage());
 					}
-				} else {
+				}
+				else {
 					player.sendMessage(ChatColor.RED + lang.ERROR_Q_NOT_SELECTED);
 				}
 				
@@ -195,12 +204,12 @@ public class SignListeners implements Listener {
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onSignBreak(BlockBreakEvent event) {
-		Block block = event.getBlock();
+	public void onSignBreak(final BlockBreakEvent event) {
+		final Block block = event.getBlock();
 		if(block.getType().getId() == 63 || block.getType().getId() == 68) {
-			Sign sign = (Sign) block.getState();
+			final Sign sign = (Sign) block.getState();
 			if(holMan.getSign(sign.getLocation()) != null) {
-				QuesterLang lang = langMan.getPlayerLang(event.getPlayer().getName());
+				final QuesterLang lang = langMan.getPlayerLang(event.getPlayer().getName());
 				if(!event.getPlayer().isSneaking() || !Util.permCheck(event.getPlayer(), QConfiguration.PERM_MODIFY, false, null)) {
 					event.setCancelled(true);
 					return;
@@ -212,15 +221,15 @@ public class SignListeners implements Listener {
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onSignChange(SignChangeEvent event) {
-		Block block = event.getBlock();
+	public void onSignChange(final SignChangeEvent event) {
+		final Block block = event.getBlock();
 		if(event.getLine(0).equals("[Quester]")) {
-			QuesterLang lang = langMan.getPlayerLang(event.getPlayer().getName());
+			final QuesterLang lang = langMan.getPlayerLang(event.getPlayer().getName());
 			if(!Util.permCheck(event.getPlayer(), QConfiguration.PERM_MODIFY, true, lang)) {
 				block.breakNaturally();
 			}
 			event.setLine(0, ChatColor.BLUE + "[Quester]");
-			QuesterSign sign = new QuesterSign(block.getLocation());
+			final QuesterSign sign = new QuesterSign(block.getLocation());
 			holMan.addSign(sign);
 			event.getPlayer().sendMessage(Quester.LABEL + lang.SIGN_REGISTERED);;
 		}

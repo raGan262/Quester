@@ -14,33 +14,21 @@ public class ObjectiveDescCommands {
 	
 	QuestManager qMan = null;
 	
-	public ObjectiveDescCommands(Quester plugin) {
+	public ObjectiveDescCommands(final Quester plugin) {
 		qMan = plugin.getQuestManager();
 	}
 	
-	@QCommandLabels({"add", "a"})
-	@QCommand(
-			section = "QMod",
-			desc = "adds to objective description",
-			min = 2,
-			max = 2,
-			usage = "<objective ID> <description>")
-	public void add(QCommandContext context, CommandSender sender) throws QuesterException {
+	@QCommandLabels({ "add", "a" })
+	@QCommand(section = "QMod", desc = "adds to objective description", min = 2, max = 2, usage = "<objective ID> <description>")
+	public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.addObjectiveDescription(sender.getName(), context.getInt(0), context.getString(1), context.getSenderLang());
-		sender.sendMessage(ChatColor.GREEN
-				+ context.getSenderLang().OBJ_DESC_ADD.replaceAll("%id", context.getString(0)));
+		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().OBJ_DESC_ADD.replaceAll("%id", context.getString(0)));
 	}
 	
-	@QCommandLabels({"remove", "r"})
-	@QCommand(
-			section = "QMod",
-			desc = "removes objective description",
-			min = 1,
-			max = 1,
-			usage = "<objective ID>")
-	public void remove(QCommandContext context, CommandSender sender) throws QuesterException {
+	@QCommandLabels({ "remove", "r" })
+	@QCommand(section = "QMod", desc = "removes objective description", min = 1, max = 1, usage = "<objective ID>")
+	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.removeObjectiveDescription(sender.getName(), context.getInt(0), context.getSenderLang());
-		sender.sendMessage(ChatColor.GREEN
-				+ context.getSenderLang().OBJ_DESC_REMOVE.replaceAll("%id", context.getString(0)));
+		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().OBJ_DESC_REMOVE.replaceAll("%id", context.getString(0)));
 	}
 }

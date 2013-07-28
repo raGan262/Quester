@@ -17,17 +17,17 @@ import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("SPAWN")
 public final class SpawnQevent extends Qevent {
-
+	
 	private final Location location;
 	private final EntityType entity;
 	private final int range;
 	private final int amount;
 	
-	public SpawnQevent(Location loc, int rng, EntityType ent, int amt) {
-		this.location = loc;
-		this.range = rng;
-		this.entity = ent;
-		this.amount = amt;
+	public SpawnQevent(final Location loc, final int rng, final EntityType ent, final int amt) {
+		location = loc;
+		range = rng;
+		entity = ent;
+		amount = amt;
 	}
 	
 	@Override
@@ -38,27 +38,26 @@ public final class SpawnQevent extends Qevent {
 		}
 		return entity.getName() + "; AMT: " + amount + "; LOC: " + locStr + "; RNG: " + range;
 	}
-
+	
 	@Override
-	protected void run(Player player, Quester plugin) {
+	protected void run(final Player player, final Quester plugin) {
 		Location temp;
-		if(location == null)
+		if(location == null) {
 			temp = player.getLocation();
-		else
+		}
+		else {
 			temp = location;
+		}
 		for(int i = 0; i < amount; i++) {
 			temp.getWorld().spawnEntity(Util.move(temp, range), entity);
 		}
 	}
-
-	@QCommand(
-			min = 3,
-			max = 4,
-			usage = "{<entity>} <amount> {<location>} [range]")
-	public static Qevent fromCommand(QCommandContext context) throws QCommandException {
-		EntityType ent = parseEntity(context.getString(0));
-		int amt = context.getInt(1);
-		Location loc = Util.getLoc(context.getSender(), context.getString(2));
+	
+	@QCommand(min = 3, max = 4, usage = "{<entity>} <amount> {<location>} [range]")
+	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
+		final EntityType ent = parseEntity(context.getString(0));
+		final int amt = context.getInt(1);
+		final Location loc = Util.getLoc(context.getSender(), context.getString(2));
 		int rng = 0;
 		if(amt < 1) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
@@ -71,9 +70,9 @@ public final class SpawnQevent extends Qevent {
 		}
 		return new SpawnQevent(loc, rng, ent, amt);
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setInt("entity", entity.getTypeId());
 		if(amount != 1) {
 			key.setInt("amount", amount);
@@ -86,15 +85,16 @@ public final class SpawnQevent extends Qevent {
 		}
 	}
 	
-	protected static Qevent load(StorageKey key) {
+	protected static Qevent load(final StorageKey key) {
 		EntityType ent = null;
 		try {
 			ent = Util.parseEntity(key.getString("entity", ""));
-		} catch (Exception e) {
+		}
+		catch (final Exception e) {
 			return null;
 		}
 		
-		Location loc = Util.deserializeLocString(key.getString("location", ""));
+		final Location loc = Util.deserializeLocString(key.getString("location", ""));
 		
 		int rng = key.getInt("range", 0);
 		if(rng < 0) {

@@ -16,47 +16,46 @@ import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("EFFECT")
 public class EffectQevent extends Qevent {
-
+	
 	private final PotionEffect effect;
 	
-	public EffectQevent(PotionEffect eff) {
+	public EffectQevent(final PotionEffect eff) {
 		effect = eff;
-	}
-
-	@Override
-	public String info() {
-		return effect.getType().getName() + "; DUR: " + ((int)(effect.getDuration()/20)) + "s; AMP: " + effect.getAmplifier();
 	}
 	
 	@Override
-	protected void run(Player player, Quester plugin) {
+	public String info() {
+		return effect.getType().getName() + "; DUR: " + effect.getDuration() / 20 + "s; AMP: " + effect.getAmplifier();
+	}
+	
+	@Override
+	protected void run(final Player player, final Quester plugin) {
 		player.addPotionEffect(effect, true);
 	}
-
-	@QCommand(
-			min = 1,
-			max = 1,
-			usage = "{<potion effect>}")
-	public static Qevent fromCommand(QCommandContext context) {
-		PotionEffect eff = parseEffect(context.getString(0));
+	
+	@QCommand(min = 1, max = 1, usage = "{<potion effect>}")
+	public static Qevent fromCommand(final QCommandContext context) {
+		final PotionEffect eff = parseEffect(context.getString(0));
 		return new EffectQevent(eff);
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setString("effect", Util.serializeEffect(effect));
 	}
 	
-	protected static Qevent load(StorageKey key) {
+	protected static Qevent load(final StorageKey key) {
 		PotionEffect eff;
 		
-		if(key.getString("effect") != null)
+		if(key.getString("effect") != null) {
 			try {
 				eff = Util.parseEffect(key.getString("effect", ""));
-			} catch (IllegalArgumentException e) {
+			}
+			catch (final IllegalArgumentException e) {
 				Quester.log.severe("Error deserializing effect event: " + ChatColor.stripColor(e.getMessage()));
 				return null;
 			}
+		}
 		else {
 			return null;
 		}

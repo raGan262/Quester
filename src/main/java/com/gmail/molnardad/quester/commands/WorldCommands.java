@@ -17,27 +17,23 @@ public class WorldCommands {
 	
 	QuestManager qMan = null;
 	
-	public WorldCommands(Quester plugin) {
+	public WorldCommands(final Quester plugin) {
 		qMan = plugin.getQuestManager();
 	}
 	
-	@QCommandLabels({"add", "a"})
-	@QCommand(
-			section = "QMod",
-			desc = "adds quest world",
-			min = 1,
-			max = 1,
-			usage = "{<world>}")
-	public void set(QCommandContext context, CommandSender sender) throws QuesterException, QCommandException {
+	@QCommandLabels({ "add", "a" })
+	@QCommand(section = "QMod", desc = "adds quest world", min = 1, max = 1, usage = "{<world>}")
+	public void set(final QCommandContext context, final CommandSender sender) throws QuesterException, QCommandException {
 		World world = null;
 		if(context.getString(0).equalsIgnoreCase(QConfiguration.worldLabelThis)) {
 			if(context.getPlayer() != null) {
 				world = context.getPlayer().getWorld();
-			} else {
-				throw new QCommandException(context.getSenderLang()
-						.ERROR_CMD_WORLD_THIS.replaceAll("%this", QConfiguration.worldLabelThis));
 			}
-		} else {
+			else {
+				throw new QCommandException(context.getSenderLang().ERROR_CMD_WORLD_THIS.replaceAll("%this", QConfiguration.worldLabelThis));
+			}
+		}
+		else {
 			world = sender.getServer().getWorld(context.getString(0));
 		}
 		if(world == null) {
@@ -47,21 +43,16 @@ public class WorldCommands {
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_WORLD_ADDED);
 	}
 	
-	@QCommandLabels({"remove", "r"})
-	@QCommand(
-			section = "QMod",
-			desc = "removes quest world",
-			min = 1,
-			max = 1,
-			usage = "{<world>}")
-	public void remove(QCommandContext context, CommandSender sender) throws QuesterException, QCommandException {
+	@QCommandLabels({ "remove", "r" })
+	@QCommand(section = "QMod", desc = "removes quest world", min = 1, max = 1, usage = "{<world>}")
+	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException, QCommandException {
 		String worldName = context.getString(0);
 		if(context.getString(0).equalsIgnoreCase(QConfiguration.worldLabelThis)) {
 			if(context.getPlayer() != null) {
 				worldName = context.getPlayer().getWorld().getName();
-			} else {
-				throw new QCommandException(context.getSenderLang()
-						.ERROR_CMD_WORLD_THIS.replaceAll("%this", QConfiguration.worldLabelThis));
+			}
+			else {
+				throw new QCommandException(context.getSenderLang().ERROR_CMD_WORLD_THIS.replaceAll("%this", QConfiguration.worldLabelThis));
 			}
 		}
 		if(qMan.removeQuestWorld(sender.getName(), worldName, context.getSenderLang())) {

@@ -14,35 +14,36 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("CANCEL")
 public final class CancelQevent extends Qevent {
-
+	
 	// TODO option to choose which quest to cancel
-	public CancelQevent() {}
-
+	public CancelQevent() {
+	}
+	
 	@Override
 	protected String info() {
 		return "";
 	}
-
+	
 	@Override
-	protected void run(Player player, Quester plugin) {
+	protected void run(final Player player, final Quester plugin) {
 		try {
 			plugin.getProfileManager().cancelQuest(player, ActionSource.eventSource(this), plugin.getLanguageManager().getPlayerLang(player.getName()));
-		} catch (QuesterException e) {
+		}
+		catch (final QuesterException e) {
 			Quester.log.info("Event failed to cancel " + player.getName() + "'s quest. Reason: " + ChatColor.stripColor(e.getMessage()));
 		}
 	}
 	
-	@QCommand(
-			max = 0)
-	public static Qevent fromCommand(QCommandContext context) {
+	@QCommand(max = 0)
+	public static Qevent fromCommand(final QCommandContext context) {
 		return new CancelQevent();
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 	}
 	
-	protected static Qevent load(StorageKey key) {	
+	protected static Qevent load(final StorageKey key) {
 		return new CancelQevent();
 	}
 }

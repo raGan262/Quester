@@ -13,42 +13,42 @@ import com.gmail.molnardad.quester.utils.ExpManager;
 
 @QElement("EXP")
 public final class ExperienceCondition extends Condition {
-
+	
 	private final int amount;
 	private final boolean inverted;
 	private final boolean isLevel;
 	
-	public ExperienceCondition(int amount, boolean isLevel, boolean invert) {
+	public ExperienceCondition(final int amount, final boolean isLevel, final boolean invert) {
 		this.amount = amount;
-		this.inverted = invert;
+		inverted = invert;
 		this.isLevel = isLevel;
-	}
-
-	@Override
-	protected String parseDescription(String description) {
-		return description.replaceAll("%amt", amount+"");
 	}
 	
 	@Override
-	public boolean isMet(Player player, Quester plugin) {
-		ExpManager expMan = new ExpManager(player);
+	protected String parseDescription(final String description) {
+		return description.replaceAll("%amt", amount + "");
+	}
+	
+	@Override
+	public boolean isMet(final Player player, final Quester plugin) {
+		final ExpManager expMan = new ExpManager(player);
 		int value = expMan.getCurrentExp();
 		if(isLevel) {
 			value = expMan.getLevelForExp(value);
 		}
-		return (value < amount) == inverted;
+		return value < amount == inverted;
 	}
 	
 	@Override
 	public String show() {
-		String flag = inverted ? "Must have less than " : "Must have at least ";
-		String lvlpt = isLevel ? " experience levels." : " experience points.";
+		final String flag = inverted ? "Must have less than " : "Must have at least ";
+		final String lvlpt = isLevel ? " experience levels." : " experience points.";
 		return flag + amount + lvlpt;
 	}
 	
 	@Override
 	public String info() {
-		StringBuilder flag = new StringBuilder();
+		final StringBuilder flag = new StringBuilder();
 		if(inverted || isLevel) {
 			flag.append(" (-");
 			if(isLevel) {
@@ -62,20 +62,17 @@ public final class ExperienceCondition extends Condition {
 		return String.valueOf(amount) + flag.toString();
 	}
 	
-	@QCommand(
-			min = 1,
-			max = 1,
-			usage = "<amount> (-li)")
-	public static Condition fromCommand(QCommandContext context) throws QCommandException {
-			int amt = context.getInt(0);
-			if(amt < 1) {
-				throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
-			}
-			return new ExperienceCondition(amt,context.hasFlag('l'), context.hasFlag('i'));
+	@QCommand(min = 1, max = 1, usage = "<amount> (-li)")
+	public static Condition fromCommand(final QCommandContext context) throws QCommandException {
+		final int amt = context.getInt(0);
+		if(amt < 1) {
+			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
+		}
+		return new ExperienceCondition(amt, context.hasFlag('l'), context.hasFlag('i'));
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setInt("amount", amount);
 		if(inverted) {
 			key.setBoolean("inverted", inverted);
@@ -84,14 +81,14 @@ public final class ExperienceCondition extends Condition {
 			key.setBoolean("islevel", isLevel);
 		}
 	}
-
-	protected static Condition load(StorageKey key) {
+	
+	protected static Condition load(final StorageKey key) {
 		int amt;
 		
 		try {
 			amt = Integer.parseInt(key.getString("amount"));
 		}
-		catch (Exception e) {
+		catch (final Exception e) {
 			return null;
 		}
 		

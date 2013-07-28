@@ -12,10 +12,10 @@ import com.gmail.molnardad.quester.utils.ExpManager;
 
 @QElement("EXP")
 public final class ExpObjective extends Objective {
-
+	
 	private final int amount;
 	
-	public ExpObjective(int amt) {
+	public ExpObjective(final int amt) {
 		amount = amt;
 	}
 	
@@ -25,7 +25,7 @@ public final class ExpObjective extends Objective {
 	}
 	
 	@Override
-	protected String show(int progress) {
+	protected String show(final int progress) {
 		return "Have " + amount + " experience points on completion.";
 	}
 	
@@ -33,36 +33,33 @@ public final class ExpObjective extends Objective {
 	protected String info() {
 		return String.valueOf(amount);
 	}
-
+	
 	@Override
-	public boolean tryToComplete(Player player) {
-		int totalExp = new ExpManager(player).getCurrentExp();
+	public boolean tryToComplete(final Player player) {
+		final int totalExp = new ExpManager(player).getCurrentExp();
 		if(totalExp >= amount) {
-			ExpManager expMan = new ExpManager(player);
+			final ExpManager expMan = new ExpManager(player);
 			expMan.changeExp(-amount);
 			return true;
 		}
 		return false;
 	}
 	
-	@QCommand(
-			min = 1,
-			max = 1,
-			usage = "<amount>")
-	public static Objective fromCommand(QCommandContext context) throws QCommandException {
-		int amt = context.getInt(0);
+	@QCommand(min = 1, max = 1, usage = "<amount>")
+	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
+		final int amt = context.getInt(0);
 		if(amt < 1) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
 		}
 		return new ExpObjective(amt);
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setInt("amount", amount);
 	}
 	
-	protected static Objective load(StorageKey key) {
+	protected static Objective load(final StorageKey key) {
 		int amt = 0;
 		amt = key.getInt("amount", 0);
 		if(amt < 1) {
@@ -73,7 +70,7 @@ public final class ExpObjective extends Objective {
 	
 	// Custom methods
 	
-	public int takeExp(int amt) {
+	public int takeExp(final int amt) {
 		return amt - amount;
 	}
 }

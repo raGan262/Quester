@@ -6,11 +6,11 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class QuesterSign {
-
+	
 	private int holder = -1;
 	private final Location location;
 	
-	public QuesterSign(Location location) {
+	public QuesterSign(final Location location) {
 		this.location = location;
 	}
 	
@@ -22,28 +22,29 @@ public class QuesterSign {
 		return holder;
 	}
 	
-	public void setHolderID(int ID) {
+	public void setHolderID(final int ID) {
 		holder = ID;
-	} 
+	}
 	
-	public void serialize(StorageKey key) {
+	public void serialize(final StorageKey key) {
 		key.setString("location", Util.serializeLocString(location));
 		key.setInt("holder", holder);
 	}
 	
-	public static QuesterSign deserialize(StorageKey key) {
+	public static QuesterSign deserialize(final StorageKey key) {
 		Location loc;
 		QuesterSign sign = null;
 		
-		try{
+		try {
 			loc = Util.deserializeLocString(key.getString("location", ""));
 			if(loc == null) {
 				return null;
 			}
 			sign = new QuesterSign(loc);
-			sign.setHolderID(key.getInt("holder" , -1));
-		} catch (Exception ignore) {}
-			
+			sign.setHolderID(key.getInt("holder", -1));
+		}
+		catch (final Exception ignore) {}
+		
 		return sign;
 	}
 }

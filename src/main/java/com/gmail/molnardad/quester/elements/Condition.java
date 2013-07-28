@@ -21,17 +21,21 @@ public abstract class Condition extends Element {
 		}
 		return des;
 	}
-	public final void addDescription(String msg) {
-		this.desc += (" " + msg).trim();
+	
+	public final void addDescription(final String msg) {
+		desc += (" " + msg).trim();
 	}
 	
 	public final void removeDescription() {
-		this.desc = "";
+		desc = "";
 	}
 	
 	protected abstract String parseDescription(String description);
+	
 	protected abstract String show();
+	
 	protected abstract String info();
+	
 	public abstract boolean isMet(Player player, Quester plugin);
 	
 	public String inShow() {
@@ -44,15 +48,16 @@ public abstract class Condition extends Element {
 	public String inInfo() {
 		return getType() + ": " + info() + coloredDesc();
 	}
-
+	
+	@Override
 	public final String toString() {
 		return "Condition (type=" + getType() + ")";
 	}
 	
 	protected abstract void save(StorageKey key);
 	
-	public final void serialize(StorageKey key) throws SerializationException {
-		String type = getType();
+	public final void serialize(final StorageKey key) throws SerializationException {
+		final String type = getType();
 		if(type.isEmpty()) {
 			throw new SerializationException("Unknown type");
 		}
@@ -63,7 +68,7 @@ public abstract class Condition extends Element {
 		}
 	}
 	
-	public static final Condition deserialize(StorageKey key) {
+	public static final Condition deserialize(final StorageKey key) {
 		if(!key.hasSubKeys()) {
 			Quester.log.severe("Condition deserialization error: no subkeys");
 			return null;
@@ -81,10 +86,10 @@ public abstract class Condition extends Element {
 		if(key.getString("description") != null) {
 			des = key.getString("description");
 		}
-		Class<? extends Condition> c = ElementManager.getInstance().getConditionClass(type);
+		final Class<? extends Condition> c = ElementManager.getInstance().getConditionClass(type);
 		if(c != null) {
 			try {
-				Method load = c.getDeclaredMethod("load", StorageKey.class);
+				final Method load = c.getDeclaredMethod("load", StorageKey.class);
 				load.setAccessible(true);
 				con = (Condition) load.invoke(null, key);
 				if(con == null) {
@@ -93,7 +98,8 @@ public abstract class Condition extends Element {
 				if(des != null) {
 					con.addDescription(des);
 				}
-			} catch (Exception e) {
+			}
+			catch (final Exception e) {
 				Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Method load() missing or invalid. " + e.getClass().getName());
 				if(QConfiguration.debug) {
 					e.printStackTrace();
@@ -102,7 +108,7 @@ public abstract class Condition extends Element {
 			}
 		}
 		else {
-			Quester.log.severe("Unknown condition type: '" + type  + "'");
+			Quester.log.severe("Unknown condition type: '" + type + "'");
 		}
 		
 		return con;

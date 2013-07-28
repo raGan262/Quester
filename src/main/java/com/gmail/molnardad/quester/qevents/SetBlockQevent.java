@@ -17,53 +17,50 @@ import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("BLOCK")
 public final class SetBlockQevent extends Qevent {
-
+	
 	private final Location location;
 	public final int material;
 	public final byte data;
 	
-	public SetBlockQevent(int mat, int dat, Location loc) {
-		this.location = loc;
-		this.material = mat;
-		this.data = (byte) dat;
+	public SetBlockQevent(final int mat, final int dat, final Location loc) {
+		location = loc;
+		material = mat;
+		data = (byte) dat;
 	}
 	
 	@Override
 	public String info() {
 		return material + ":" + data + "; " + "; LOC: " + Util.displayLocation(location);
 	}
-
+	
 	@Override
-	protected void run(Player player, Quester plugin) {
+	protected void run(final Player player, final Quester plugin) {
 		location.getBlock().setTypeIdAndData(material, data, true);
 	}
-
-	@QCommand(
-			min = 2,
-			max = 2,
-			usage = "{<block>} {<location>}")
-	public static Qevent fromCommand(QCommandContext context) throws QCommandException {
-		int[] itm = parseItem(context.getString(0));
+	
+	@QCommand(min = 2, max = 2, usage = "{<block>} {<location>}")
+	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
+		final int[] itm = parseItem(context.getString(0));
 		if(itm[0] > 255) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_BLOCK_UNKNOWN);
 		}
-		int dat = itm[1] < 0 ? 0 : itm[1];
-		Location loc = getLoc(context.getPlayer(), context.getString(1));
+		final int dat = itm[1] < 0 ? 0 : itm[1];
+		final Location loc = getLoc(context.getPlayer(), context.getString(1));
 		return new SetBlockQevent(itm[0], dat, loc);
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setString("block", Util.serializeItem(material, data));
 		key.setString("location", Util.serializeLocString(location));
 		
 	}
 	
-	protected static Qevent load(StorageKey key) {
+	protected static Qevent load(final StorageKey key) {
 		int mat = 0, dat = 0;
 		Location loc = null;
 		try {
-			int[] itm = Util.parseItem(key.getString("block"));
+			final int[] itm = Util.parseItem(key.getString("block"));
 			mat = itm[0];
 			dat = itm[1];
 			if(dat < 0) {
@@ -73,7 +70,8 @@ public final class SetBlockQevent extends Qevent {
 			if(loc == null) {
 				return null;
 			}
-		} catch (Exception e) {
+		}
+		catch (final Exception e) {
 			return null;
 		}
 		

@@ -15,46 +15,46 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("TIME")
 public final class TimeCondition extends Condition {
-
+	
 	private final int from;
 	private final int to;
 	private final String world;
 	
-	public TimeCondition(int from, int to, String world) {
+	public TimeCondition(final int from, final int to, final String world) {
 		this.from = from;
 		this.to = to;
 		this.world = world;
 	}
-
+	
 	@Override
-	protected String parseDescription(String description) {
+	protected String parseDescription(final String description) {
 		return description.replaceAll("%from", String.valueOf(from)).replaceAll("%to", String.valueOf(to));
 	}
 	
 	@Override
-	public boolean isMet(Player player, Quester plugin) {
+	public boolean isMet(final Player player, final Quester plugin) {
 		World w;
 		if(world.isEmpty()) {
 			w = player.getWorld();
 		}
 		else {
-			w  = Bukkit.getWorld(world);
+			w = Bukkit.getWorld(world);
 			if(w == null) {
 				return false;
 			}
 		}
 		
 		if(from < to) {
-			return (w.getTime() > from && w.getTime() < to);
+			return w.getTime() > from && w.getTime() < to;
 		}
 		else {
-			return (w.getTime() > from || w.getTime() < to);
+			return w.getTime() > from || w.getTime() < to;
 		}
 	}
 	
 	@Override
 	public String show() {
-		String w = (world.isEmpty()) ? "" : " in world " + world;
+		final String w = world.isEmpty() ? "" : " in world " + world;
 		return "Time must be between " + from + " and " + to + " ticks" + w + ".";
 	}
 	
@@ -63,15 +63,12 @@ public final class TimeCondition extends Condition {
 		return from + "-" + to + "; WORLD: " + (world.isEmpty() ? "PLAYER" : world);
 	}
 	
-	@QCommand(
-			min = 1,
-			max = 2,
-			usage = "<from-to> {[world]}")
-	public static Condition fromCommand(QCommandContext context) throws QCommandException {
+	@QCommand(min = 1, max = 2, usage = "<from-to> {[world]}")
+	public static Condition fromCommand(final QCommandContext context) throws QCommandException {
 		int from;
 		int to;
 		String world = "";
-		String[] ss = context.getString(0).split("-");
+		final String[] ss = context.getString(0).split("-");
 		if(ss.length != 2) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_ARG_CANT_PARSE.replaceAll("%arg", context.getString(0)));
 		}
@@ -93,7 +90,7 @@ public final class TimeCondition extends Condition {
 				world = context.getPlayer().getWorld().getName();
 			}
 			else {
-				World x = Bukkit.getServer().getWorld(context.getString(1));
+				final World x = Bukkit.getServer().getWorld(context.getString(1));
 				if(x == null) {
 					throw new QCommandException(context.getSenderLang().ERROR_CMD_WORLD_INVALID);
 				}
@@ -102,9 +99,9 @@ public final class TimeCondition extends Condition {
 		}
 		return new TimeCondition(from, to, world);
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		if(from > 0) {
 			key.setInt("from", from);
 		}
@@ -115,12 +112,12 @@ public final class TimeCondition extends Condition {
 			key.setString("world", world);
 		}
 	}
-
-	protected static Condition load(StorageKey key) {
-		int from = key.getInt("from", 0);
-		int to = key.getInt("to", 0);
+	
+	protected static Condition load(final StorageKey key) {
+		final int from = key.getInt("from", 0);
+		final int to = key.getInt("to", 0);
 		String world = "";
-		World x = Bukkit.getServer().getWorld(key.getString("world", ""));
+		final World x = Bukkit.getServer().getWorld(key.getString("world", ""));
 		if(x != null) {
 			world = x.getName();
 		}

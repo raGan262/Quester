@@ -12,29 +12,26 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("POINT")
 public final class PointQevent extends Qevent {
-
+	
 	private final int amount;
 	
-	public PointQevent(int amt) {
-		this.amount = amt;
+	public PointQevent(final int amt) {
+		amount = amt;
 	}
 	
 	@Override
 	public String info() {
 		return String.valueOf(amount);
 	}
-
+	
 	@Override
-	protected void run(Player player, Quester plugin) {
+	protected void run(final Player player, final Quester plugin) {
 		plugin.getProfileManager().addPoints(player.getName(), amount);
 	}
-
-	@QCommand(
-			min = 1,
-			max = 1,
-			usage = "<amount>")
-	public static Qevent fromCommand(QCommandContext context) throws QCommandException {
-		int amt = context.getInt(0);
+	
+	@QCommand(min = 1, max = 1, usage = "<amount>")
+	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
+		final int amt = context.getInt(0);
 		if(amt == 0) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_NONZERO);
 		}
@@ -42,12 +39,12 @@ public final class PointQevent extends Qevent {
 	}
 	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setInt("amount", amount);
 	}
 	
-	protected static Qevent load(StorageKey key) {
-		int amt = key.getInt("amount", 0);
+	protected static Qevent load(final StorageKey key) {
+		final int amt = key.getInt("amount", 0);
 		if(amt == 0) {
 			return null;
 		}

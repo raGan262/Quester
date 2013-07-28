@@ -11,12 +11,13 @@ public class QuestCancelEvent extends QuesterEvent implements Cancellable {
 	
 	private static final HandlerList handlers = new HandlerList();
 	
+	@Override
 	public HandlerList getHandlers() {
-	    return handlers;
+		return handlers;
 	}
-	 
+	
 	public static HandlerList getHandlerList() {
-	    return handlers;
+		return handlers;
 	}
 	
 	private boolean cancelled = false;
@@ -24,7 +25,7 @@ public class QuestCancelEvent extends QuesterEvent implements Cancellable {
 	private final Quest quest;
 	private final ActionSource actionSource;
 	
-	public QuestCancelEvent(ActionSource actionSource, Player player, Quest quest) {
+	public QuestCancelEvent(final ActionSource actionSource, final Player player, final Quest quest) {
 		this.player = player;
 		this.quest = quest;
 		this.actionSource = actionSource;
@@ -41,14 +42,14 @@ public class QuestCancelEvent extends QuesterEvent implements Cancellable {
 	public Quest getQuest() {
 		return quest;
 	}
-
+	
 	@Override
 	public boolean isCancelled() {
 		return cancelled;
 	}
-
+	
 	@Override
-	public void setCancelled(boolean value) {
+	public void setCancelled(final boolean value) {
 		cancelled = false;
 	}
 	

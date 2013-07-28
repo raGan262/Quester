@@ -14,20 +14,20 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 public abstract class Objective extends Element {
-
+	
 	private String desc = "";
 	private boolean hidden = false;
-	private Set<Integer> prerequisites = new HashSet<Integer>();
+	private final Set<Integer> prerequisites = new HashSet<Integer>();
 	
 	public Set<Integer> getPrerequisites() {
 		return prerequisites;
 	}
 	
-	public void addPrerequisity(int newPre) {
+	public void addPrerequisity(final int newPre) {
 		prerequisites.add(newPre);
 	}
 	
-	public void removePrerequisity(int pre) {
+	public void removePrerequisity(final int pre) {
 		prerequisites.remove(pre);
 	}
 	
@@ -42,35 +42,37 @@ public abstract class Objective extends Element {
 		return des;
 	}
 	
-	public void addDescription(String msg) {
-		this.desc += (" " + msg).trim();
+	public void addDescription(final String msg) {
+		desc += (" " + msg).trim();
 	}
 	
 	public void removeDescription() {
-		this.desc = "";
+		desc = "";
 	}
 	
-	public void setHidden(boolean value) {
-		this.hidden = value;
+	public void setHidden(final boolean value) {
+		hidden = value;
 	}
 	
 	public boolean isHidden() {
-		return this.hidden;
+		return hidden;
 	}
 	
-	public final boolean isComplete(int progress) {
+	public final boolean isComplete(final int progress) {
 		return progress >= getTargetAmount();
 	}
 	
 	public abstract int getTargetAmount();
 	
-	protected String parseDescription(String description) {
+	protected String parseDescription(final String description) {
 		return description;
 	}
+	
 	protected abstract String show(int progress);
+	
 	protected abstract String info();
 	
-	public boolean tryToComplete(Player player) {
+	public boolean tryToComplete(final Player player) {
 		return false;
 	}
 	
@@ -78,12 +80,9 @@ public abstract class Objective extends Element {
 		return inShow(0);
 	}
 	
-	public String inShow(int progress) {
+	public String inShow(final int progress) {
 		if(!desc.isEmpty()) {
-			String partiallyParsed = desc
-					.replaceAll("%r", String.valueOf(getTargetAmount() - progress))
-					.replaceAll("%t", String.valueOf(getTargetAmount()))
-					.replaceAll("%a", String.valueOf(progress));
+			final String partiallyParsed = desc.replaceAll("%r", String.valueOf(getTargetAmount() - progress)).replaceAll("%t", String.valueOf(getTargetAmount())).replaceAll("%a", String.valueOf(progress));
 			return ChatColor.translateAlternateColorCodes('&', parseDescription(partiallyParsed));
 		}
 		return show(progress);
@@ -92,14 +91,16 @@ public abstract class Objective extends Element {
 	public String inInfo() {
 		return getType() + ": " + info() + coloredDesc();
 	}
-
+	
+	@Override
 	public final String toString() {
 		return "Objective (type=" + getType() + ")";
 	}
+	
 	protected abstract void save(StorageKey key);
 	
-	public final void serialize(StorageKey key) {
-		String type = getType();
+	public final void serialize(final StorageKey key) {
+		final String type = getType();
 		if(type.isEmpty()) {
 			throw new SerializationException("Unknown type");
 		}
@@ -116,7 +117,7 @@ public abstract class Objective extends Element {
 		}
 	}
 	
-	public static final Objective deserialize(StorageKey key) {
+	public static final Objective deserialize(final StorageKey key) {
 		if(!key.hasSubKeys()) {
 			Quester.log.severe("Objective deserialization error: no subkeys");
 			return null;
@@ -135,13 +136,13 @@ public abstract class Objective extends Element {
 		hid = key.getBoolean("hidden", false);
 		try {
 			prereq = Util.deserializePrerequisites(key.getString("prerequisites"));
-		} catch (Exception ignore) {}
+		}
+		catch (final Exception ignore) {}
 		
-
-		Class<? extends Objective> c = ElementManager.getInstance().getObjectiveClass(type);
+		final Class<? extends Objective> c = ElementManager.getInstance().getObjectiveClass(type);
 		if(c != null) {
 			try {
-				Method load = c.getDeclaredMethod("load", StorageKey.class);
+				final Method load = c.getDeclaredMethod("load", StorageKey.class);
 				load.setAccessible(true);
 				obj = (Objective) load.invoke(null, key);
 				if(obj == null) {
@@ -154,11 +155,12 @@ public abstract class Objective extends Element {
 					obj.setHidden(true);
 				}
 				if(!prereq.isEmpty()) {
-					for(int i : prereq) {
+					for(final int i : prereq) {
 						obj.addPrerequisity(i);
 					}
 				}
-			} catch (Exception e) {
+			}
+			catch (final Exception e) {
 				Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Method load() missing or invalid. " + e.getClass().getName());
 				if(QConfiguration.debug) {
 					e.printStackTrace();
@@ -167,7 +169,7 @@ public abstract class Objective extends Element {
 			}
 		}
 		else {
-			Quester.log.severe("Unknown objective type: '" + type  + "'");
+			Quester.log.severe("Unknown objective type: '" + type + "'");
 		}
 		
 		return obj;

@@ -18,15 +18,15 @@ public class ModifierCommands {
 	
 	QuestManager qMan = null;
 	
-	public ModifierCommands(Quester plugin) {
+	public ModifierCommands(final Quester plugin) {
 		qMan = plugin.getQuestManager();
 	}
 	
-	private QuestFlag[] getModifiers(String[] args) {
-		Set<QuestFlag> modifiers = new HashSet<QuestFlag>();
+	private QuestFlag[] getModifiers(final String[] args) {
+		final Set<QuestFlag> modifiers = new HashSet<QuestFlag>();
 		
-		for(int i=0; i<args.length; i++) {
-			QuestFlag flag = QuestFlag.getByName(args[i]);
+		for(int i = 0; i < args.length; i++) {
+			final QuestFlag flag = QuestFlag.getByName(args[i]);
 			if(flag != null && flag != QuestFlag.ACTIVE) {
 				modifiers.add(flag);
 			}
@@ -35,32 +35,23 @@ public class ModifierCommands {
 		return modifiers.toArray(new QuestFlag[0]);
 	}
 	
-	@QCommandLabels({"add", "a"})
-	@QCommand(
-			section = "QMod",
-			desc = "adds quest modifier",
-			min = 1,
-			usage = "<modifier1> ...")
-	public void add(QCommandContext context, CommandSender sender) throws QuesterException {
-		QuestFlag[] modArray = getModifiers(context.getArgs());
+	@QCommandLabels({ "add", "a" })
+	@QCommand(section = "QMod", desc = "adds quest modifier", min = 1, usage = "<modifier1> ...")
+	public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		final QuestFlag[] modArray = getModifiers(context.getArgs());
 		if(modArray.length < 1) {
 			sender.sendMessage(ChatColor.RED + context.getSenderLang().ERROR_MOD_UNKNOWN);
-			sender.sendMessage(ChatColor.RED + context.getSenderLang().USAGE_MOD_AVAIL
-					+ ChatColor.WHITE + QuestFlag.stringize(QuestFlag.values()));
+			sender.sendMessage(ChatColor.RED + context.getSenderLang().USAGE_MOD_AVAIL + ChatColor.WHITE + QuestFlag.stringize(QuestFlag.values()));
 			return;
 		}
 		qMan.addQuestFlag(sender.getName(), modArray, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_MOD_ADDED);
 	}
 	
-	@QCommandLabels({"remove", "r"})
-	@QCommand(
-			section = "QMod",
-			desc = "sets quest modifier",
-			min = 1,
-			usage = "<modifier1> ...")
-	public void set(QCommandContext context, CommandSender sender) throws QuesterException {
-		QuestFlag[] modArray = getModifiers(context.getArgs());
+	@QCommandLabels({ "remove", "r" })
+	@QCommand(section = "QMod", desc = "sets quest modifier", min = 1, usage = "<modifier1> ...")
+	public void set(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		final QuestFlag[] modArray = getModifiers(context.getArgs());
 		qMan.removeQuestFlag(sender.getName(), modArray, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_MOD_REMOVED);
 	}

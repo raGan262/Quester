@@ -14,29 +14,30 @@ import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("DYE")
 public final class DyeObjective extends Objective {
-
+	
 	private final int amount;
 	private final DyeColor color;
 	private final String colorName;
 	
-	public DyeObjective(int amt, DyeColor col) {
+	public DyeObjective(final int amt, final DyeColor col) {
 		amount = amt;
 		color = col;
 		if(col != null) {
 			colorName = " " + col.name().toLowerCase().replaceAll("_", " ");
-		} else {
+		}
+		else {
 			colorName = "";
 		}
 	}
-
+	
 	@Override
 	public int getTargetAmount() {
 		return amount;
 	}
 	
 	@Override
-	protected String show(int progress) {
-		return "Dye sheep" +  colorName + " - " + (amount - progress) + "x";
+	protected String show(final int progress) {
+		return "Dye sheep" + colorName + " - " + (amount - progress) + "x";
 	}
 	
 	@Override
@@ -44,12 +45,9 @@ public final class DyeObjective extends Objective {
 		return amount + "; COLOR:" + (colorName.isEmpty() ? " ANY" : colorName + "(" + (15 - color.getDyeData()) + ")");
 	}
 	
-	@QCommand(
-			min = 1,
-			max = 2,
-			usage = "<amount> {[color]}")
-	public static Objective fromCommand(QCommandContext context) throws QCommandException {
-		int id = context.getInt(0);
+	@QCommand(min = 1, max = 2, usage = "<amount> {[color]}")
+	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
+		final int id = context.getInt(0);
 		DyeColor col = null;
 		if(id < 0) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
@@ -62,9 +60,9 @@ public final class DyeObjective extends Objective {
 		}
 		return new DyeObjective(id, col);
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		if(amount > 1) {
 			key.setInt("amount", amount);
 		}
@@ -73,7 +71,7 @@ public final class DyeObjective extends Objective {
 		}
 	}
 	
-	protected static Objective load(StorageKey key) {
+	protected static Objective load(final StorageKey key) {
 		int amt = 1;
 		DyeColor col = null;
 		amt = key.getInt("amount", 1);
@@ -85,8 +83,8 @@ public final class DyeObjective extends Objective {
 	}
 	
 	// Custom methods
-
-	public boolean checkDye(int data) {
-		return (color == null) || (color.getDyeData() == data);
+	
+	public boolean checkDye(final int data) {
+		return color == null || color.getDyeData() == data;
 	}
 }

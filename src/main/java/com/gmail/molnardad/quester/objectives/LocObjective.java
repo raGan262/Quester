@@ -17,42 +17,39 @@ import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("LOCATION")
 public final class LocObjective extends Objective {
-
+	
 	private final Location location;
 	private final int range;
-
-	public LocObjective(Location loc, int rng) {
+	
+	public LocObjective(final Location loc, final int rng) {
 		location = loc;
 		range = rng;
 	}
-
+	
 	@Override
 	public int getTargetAmount() {
 		return 1;
 	}
-
+	
 	@Override
-	protected String show(int progress) {
-		String locStr = String.format("%d blocks close to %.1f %.1f %.1f("+location.getWorld().getName()+")", range, location.getX(), location.getY(), location.getZ());
+	protected String show(final int progress) {
+		final String locStr = String.format("%d blocks close to %.1f %.1f %.1f(" + location.getWorld().getName() + ")", range, location.getX(), location.getY(), location.getZ());
 		return "Come at least " + locStr + ".";
 	}
-
+	
 	@Override
 	protected String info() {
 		return Util.serializeLocString(location) + "; RNG: " + range;
 	}
-
-	@QCommand(
-			min = 1,
-			max = 2,
-			usage = "{<location>} [range]")
-	public static Objective fromCommand(QCommandContext context) throws QCommandException {
-		int rng = 3;			
-		Location loc = getLoc(context.getPlayer(), context.getString(0));
+	
+	@QCommand(min = 1, max = 2, usage = "{<location>} [range]")
+	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
+		int rng = 3;
+		final Location loc = getLoc(context.getPlayer(), context.getString(0));
 		if(loc == null) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_LOC_INVALID);
 		}
-		if(context.length() > 1){
+		if(context.length() > 1) {
 			rng = context.getInt(1);
 			if(rng < 1) {
 				throw new QCommandException(context.getSenderLang().ERROR_CMD_RANGE_INVALID);
@@ -60,17 +57,17 @@ public final class LocObjective extends Objective {
 		}
 		return new RegionObjective(new Region.Sphere(loc, rng), context.hasFlag('i'));
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setString("location", Util.serializeLocString(location));
 		if(range != 3) {
 			key.setInt("range", range);
 		}
 	}
-
-	protected static Objective load(StorageKey key) {
-		Location location = Util.deserializeLocString(key.getString("location", ""));
+	
+	protected static Objective load(final StorageKey key) {
+		final Location location = Util.deserializeLocString(key.getString("location", ""));
 		int range = 3;
 		if(location == null) {
 			return null;
@@ -79,17 +76,18 @@ public final class LocObjective extends Objective {
 		if(range < 1) {
 			range = 3;
 		}
-		Region region = new Region.Sphere(location, range);
+		final Region region = new Region.Sphere(location, range);
 		
 		return new RegionObjective(region, key.getBoolean("inverted", false));
 	}
-
-	//Custom methods
-
-	public boolean checkLocation(Location loc) {
+	
+	// Custom methods
+	
+	public boolean checkLocation(final Location loc) {
 		if(loc.getWorld().getName().equalsIgnoreCase(location.getWorld().getName())) {
-			return loc.distanceSquared(location) < range*range;
-		} else {
+			return loc.distanceSquared(location) < range * range;
+		}
+		else {
 			return false;
 		}
 	}

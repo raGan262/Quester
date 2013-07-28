@@ -13,12 +13,12 @@ public class QuesterTrait extends Trait {
 	}
 	
 	@Override
-	public void load(DataKey key) throws NPCLoadException {
+	public void load(final DataKey key) throws NPCLoadException {
 		holder = key.getInt("quester.holder", -1);
 	}
-
+	
 	@Override
-	public void save(DataKey key) {
+	public void save(final DataKey key) {
 		key.setInt("quester.holder", holder);
 	}
 	
@@ -26,7 +26,7 @@ public class QuesterTrait extends Trait {
 		return holder;
 	}
 	
-	public void setHolderID(int newID) {
+	public void setHolderID(final int newID) {
 		holder = newID;
 	}
 }

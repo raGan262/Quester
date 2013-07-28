@@ -15,68 +15,66 @@ import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("CRAFT")
 public final class CraftObjective extends Objective {
-
+	
 	private final Material material;
 	private final short data;
 	private final int amount;
 	
-	public CraftObjective(int amt, Material mat, int dat) {
+	public CraftObjective(final int amt, final Material mat, final int dat) {
 		material = mat;
 		amount = amt;
-		data = (short)dat;
+		data = (short) dat;
 	}
-
+	
 	@Override
 	public int getTargetAmount() {
 		return amount;
 	}
 	
 	@Override
-	protected String show(int progress) {
-		String datStr = data < 0 ? " " : " (data " + data + ") ";
-		String pcs = (amount - progress) == 1 ? " piece of " : " pieces of ";
-		String mat = material.getId() == 351 ? "dye" : material.name().toLowerCase();
+	protected String show(final int progress) {
+		final String datStr = data < 0 ? " " : " (data " + data + ") ";
+		final String pcs = amount - progress == 1 ? " piece of " : " pieces of ";
+		final String mat = material.getId() == 351 ? "dye" : material.name().toLowerCase();
 		return "Craft " + (amount - progress) + pcs + mat + datStr + ".";
 	}
 	
 	@Override
 	protected String info() {
-		String dataStr = (data < 0 ? "" : ":" + data);
-		return material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount;
+		final String dataStr = data < 0 ? "" : ":" + data;
+		return material.name() + "[" + material.getId() + dataStr + "]; AMT: " + amount;
 	}
 	
-	@QCommand(
-			min = 2,
-			max = 2,
-			usage = "{<item>} <amount>")
-	public static Objective fromCommand(QCommandContext context) throws QCommandException {
-		int[] itm = parseItem(context.getString(0));
-		Material mat = Material.getMaterial(itm[0]);
-		int dat = itm[1];
-		int amt = Integer.parseInt(context.getString(1));
+	@QCommand(min = 2, max = 2, usage = "{<item>} <amount>")
+	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
+		final int[] itm = parseItem(context.getString(0));
+		final Material mat = Material.getMaterial(itm[0]);
+		final int dat = itm[1];
+		final int amt = Integer.parseInt(context.getString(1));
 		if(amt < 1 || dat < -1) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_ITEM_NUMBERS);
 		}
 		return new CraftObjective(amt, mat, dat);
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setString("item", Util.serializeItem(material, data));
 		if(amount > 1) {
 			key.setInt("amount", amount);
 		}
 	}
 	
-	protected static Objective load(StorageKey key) {
+	protected static Objective load(final StorageKey key) {
 		Material mat;
 		int dat, amt = 1;
 		try {
-			int[] itm = Util.parseItem(key.getString("item", ""));
+			final int[] itm = Util.parseItem(key.getString("item", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
-		} catch (IllegalArgumentException e) {
-				return null;
+		}
+		catch (final IllegalArgumentException e) {
+			return null;
 		}
 		amt = key.getInt("amount", 1);
 		if(amt < 1) {
@@ -87,11 +85,13 @@ public final class CraftObjective extends Objective {
 	
 	// Custom methods
 	
-	public boolean check(ItemStack item) {
-		if(item.getTypeId() != material.getId())
+	public boolean check(final ItemStack item) {
+		if(item.getTypeId() != material.getId()) {
 			return false;
-		if(item.getDurability() != data && data >= 0)
+		}
+		if(item.getDurability() != data && data >= 0) {
 			return false;
+		}
 		return true;
 	}
 }

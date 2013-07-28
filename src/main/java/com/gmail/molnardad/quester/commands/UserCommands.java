@@ -22,31 +22,28 @@ import com.gmail.molnardad.quester.quests.QuestManager;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class UserCommands {
-
+	
 	private QuestManager qMan = null;
 	private ProfileManager profMan = null;
 	private Quester plugin = null;
 	
-	public UserCommands(Quester plugin) {
+	public UserCommands(final Quester plugin) {
 		qMan = plugin.getQuestManager();
 		profMan = plugin.getProfileManager();
 		this.plugin = plugin;
 	}
 	
-	@QCommandLabels({"help"})
-	@QCommand(
-			section = "User",
-			desc = "displays help",
-			usage = "[arg1] [arg2]...")
-	public void help(QCommandContext context, CommandSender sender) throws QuesterException {
-		Map<String, List<String>> cmds = plugin.getCommandManager().getHelp(context.getArgs(), sender);
-		QuesterLang lang = context.getSenderLang();
+	@QCommandLabels({ "help" })
+	@QCommand(section = "User", desc = "displays help", usage = "[arg1] [arg2]...")
+	public void help(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		final Map<String, List<String>> cmds = plugin.getCommandManager().getHelp(context.getArgs(), sender);
+		final QuesterLang lang = context.getSenderLang();
 		StringBuilder sb;
 		String key = "User";
 		if(cmds.containsKey(key)) {
 			sb = new StringBuilder();
 			sb.append(Util.line(ChatColor.BLUE, lang.HELP_SECTION_USE, ChatColor.GOLD)).append(ChatColor.RESET).append('\n');
-			for(String ss : cmds.get(key)) {
+			for(final String ss : cmds.get(key)) {
 				sb.append(ss).append(ChatColor.RESET).append('\n');
 			}
 			cmds.remove(key);
@@ -56,7 +53,7 @@ public class UserCommands {
 		if(cmds.containsKey(key)) {
 			sb = new StringBuilder();
 			sb.append(Util.line(ChatColor.BLUE, lang.HELP_SECTION_MODIFY, ChatColor.GOLD)).append(ChatColor.RESET).append('\n');
-			for(String ss : cmds.get(key)) {
+			for(final String ss : cmds.get(key)) {
 				sb.append(ss).append(ChatColor.RESET).append('\n');
 			}
 			cmds.remove(key);
@@ -66,7 +63,7 @@ public class UserCommands {
 		if(cmds.containsKey(key)) {
 			sb = new StringBuilder();
 			sb.append(Util.line(ChatColor.DARK_GRAY, lang.HELP_SECTION_MODIFY_SELECTED)).append(ChatColor.RESET).append('\n');
-			for(String ss : cmds.get(key)) {
+			for(final String ss : cmds.get(key)) {
 				sb.append(ss).append(ChatColor.RESET).append('\n');
 			}
 			cmds.remove(key);
@@ -76,7 +73,7 @@ public class UserCommands {
 		if(cmds.containsKey(key)) {
 			sb = new StringBuilder();
 			sb.append(Util.line(ChatColor.DARK_GRAY, lang.HELP_SECTION_MODIFY_HOLDER_SELECTED)).append(ChatColor.RESET).append('\n');
-			for(String ss : cmds.get(key)) {
+			for(final String ss : cmds.get(key)) {
 				sb.append(ss).append(ChatColor.RESET).append('\n');
 			}
 			cmds.remove(key);
@@ -86,30 +83,25 @@ public class UserCommands {
 		if(cmds.containsKey(key)) {
 			sb = new StringBuilder();
 			sb.append(Util.line(ChatColor.BLUE, lang.HELP_SECTION_ADMIN, ChatColor.GOLD)).append(ChatColor.RESET).append('\n');
-			for(String ss : cmds.get(key)) {
+			for(final String ss : cmds.get(key)) {
 				sb.append(ss).append(ChatColor.RESET).append('\n');
 			}
 			cmds.remove(key);
 			sender.sendMessage(sb.toString());
 		}
-		for(String s : cmds.keySet()) {
+		for(final String s : cmds.keySet()) {
 			sb = new StringBuilder();
 			sb.append(Util.line(ChatColor.BLUE, lang.HELP_SECTION_OTHER, ChatColor.GOLD)).append(ChatColor.RESET).append('\n');
-			for(String ss : cmds.get(s)) {
+			for(final String ss : cmds.get(s)) {
 				sb.append(ss).append(ChatColor.RESET).append('\n');
 			}
 			sender.sendMessage(sb.toString());
 		}
 	}
 	
-	@QCommandLabels({"show"})
-	@QCommand(
-			section = "User",
-			desc = "shows info about the quest",
-			max = 1,
-			usage = "\"[quest name]\"",
-			permission = QConfiguration.PERM_USE_SHOW)
-	public void show(QCommandContext context, CommandSender sender) throws QuesterException {
+	@QCommandLabels({ "show" })
+	@QCommand(section = "User", desc = "shows info about the quest", max = 1, usage = "\"[quest name]\"", permission = QConfiguration.PERM_USE_SHOW)
+	public void show(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		String quest = "";
 		if(context.length() > 0) {
 			quest = context.getString(0);
@@ -117,13 +109,9 @@ public class UserCommands {
 		qMan.showQuest(sender, quest, context.getSenderLang());
 	}
 	
-	@QCommandLabels({"list"})
-	@QCommand(
-			section = "User",
-			desc = "displays quest list",
-			max = 0,
-			permission = QConfiguration.PERM_USE_LIST)
-	public void list(QCommandContext context, CommandSender sender) {
+	@QCommandLabels({ "list" })
+	@QCommand(section = "User", desc = "displays quest list", max = 0, permission = QConfiguration.PERM_USE_LIST)
+	public void list(final QCommandContext context, final CommandSender sender) {
 		if(Util.permCheck(sender, QConfiguration.PERM_MODIFY, false, null)) {
 			qMan.showFullQuestList(sender, context.getSenderLang());
 		}
@@ -132,14 +120,9 @@ public class UserCommands {
 		}
 	}
 	
-	@QCommandLabels({"profile"})
-	@QCommand(
-			section = "User",
-			desc = "shows player's profile",
-			max = 1,
-			usage = "[player]",
-			permission = QConfiguration.PERM_USE_PROFILE)
-	public void profile(QCommandContext context, CommandSender sender) throws QuesterException {
+	@QCommandLabels({ "profile" })
+	@QCommand(section = "User", desc = "shows player's profile", max = 1, usage = "[player]", permission = QConfiguration.PERM_USE_PROFILE)
+	public void profile(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		if(Util.permCheck(sender, QConfiguration.PERM_ADMIN, false, null) && context.length() > 0) {
 			profMan.showProfile(sender, context.getString(0), context.getSenderLang());
 		}
@@ -148,19 +131,14 @@ public class UserCommands {
 		}
 	}
 	
-	@QCommandLabels({"start"})
-	@QCommand(
-			section = "User",
-			desc = "starts the quest",
-			max = 1,
-			usage = "\"[quest name]\"",
-			permission = QConfiguration.PERM_USE_START_RANDOM+"||"+QConfiguration.PERM_USE_START_PICK)
-	public void start(QCommandContext context, CommandSender sender) throws QuesterException, QCommandException {
+	@QCommandLabels({ "start" })
+	@QCommand(section = "User", desc = "starts the quest", max = 1, usage = "\"[quest name]\"", permission = QConfiguration.PERM_USE_START_RANDOM + "||" + QConfiguration.PERM_USE_START_PICK)
+	public void start(final QCommandContext context, final CommandSender sender) throws QuesterException, QCommandException {
 		if(context.getPlayer() == null) {
 			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);
 			return;
 		}
-		ActionSource as = ActionSource.commandSource(sender);
+		final ActionSource as = ActionSource.commandSource(sender);
 		if(context.length() == 0) {
 			if(Util.permCheck(sender, QConfiguration.PERM_USE_START_RANDOM, false, null)) {
 				profMan.startRandomQuest(context.getPlayer(), as, context.getSenderLang());
@@ -177,29 +155,20 @@ public class UserCommands {
 		}
 	}
 	
-	@QCommandLabels({"done"})
-	@QCommand(
-			section = "User",
-			desc = "completes current objective",
-			max = 0,
-			permission = QConfiguration.PERM_USE_DONE)
-	public void done(QCommandContext context, CommandSender sender) throws QuesterException {
+	@QCommandLabels({ "done" })
+	@QCommand(section = "User", desc = "completes current objective", max = 0, permission = QConfiguration.PERM_USE_DONE)
+	public void done(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		if(context.getPlayer() == null) {
 			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);
 			return;
 		}
-		ActionSource as = ActionSource.commandSource(sender);
+		final ActionSource as = ActionSource.commandSource(sender);
 		profMan.complete((Player) sender, as, context.getSenderLang());
 	}
-
-	@QCommandLabels({"cancel"})
-	@QCommand(
-			section = "User",
-			desc = "completes current objective",
-			max = 1,
-			usage = "[quest ID]",
-			permission = QConfiguration.PERM_USE_CANCEL)
-	public void cancel(QCommandContext context, CommandSender sender) throws QuesterException, QCommandException {
+	
+	@QCommandLabels({ "cancel" })
+	@QCommand(section = "User", desc = "completes current objective", max = 1, usage = "[quest ID]", permission = QConfiguration.PERM_USE_CANCEL)
+	public void cancel(final QCommandContext context, final CommandSender sender) throws QuesterException, QCommandException {
 		if(context.getPlayer() == null) {
 			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);
 			return;
@@ -208,36 +177,25 @@ public class UserCommands {
 		if(context.length() > 0) {
 			index = context.getInt(0);
 		}
-		ActionSource as = ActionSource.commandSource(sender);
+		final ActionSource as = ActionSource.commandSource(sender);
 		profMan.cancelQuest((Player) sender, index, as, context.getSenderLang());
 	}
 	
-	@QCommandLabels({"switch"})
-	@QCommand(
-			section = "User",
-			desc = "switches current quest",
-			max = 1,
-			min = 1,
-			usage = "<index>",
-			permission = QConfiguration.PERM_USE_SWITCH)
-	public void switch0(QCommandContext context, CommandSender sender) throws QuesterException, QCommandException {
+	@QCommandLabels({ "switch" })
+	@QCommand(section = "User", desc = "switches current quest", max = 1, min = 1, usage = "<index>", permission = QConfiguration.PERM_USE_SWITCH)
+	public void switch0(final QCommandContext context, final CommandSender sender) throws QuesterException, QCommandException {
 		if(context.getPlayer() == null) {
 			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);
 			return;
 		}
-		if (profMan.switchQuest(sender.getName(), context.getInt(0))) {
+		if(profMan.switchQuest(sender.getName(), context.getInt(0))) {
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_SWITCHED);
 		}
 	}
-
-	@QCommandLabels({"progress", "prog"})
-	@QCommand(
-			section = "User",
-			desc = "shows quest progress",
-			max = 1,
-			usage = "[index]",
-			permission = QConfiguration.PERM_USE_PROGRESS)
-	public void progress(QCommandContext context, CommandSender sender) throws QuesterException, QCommandException {
+	
+	@QCommandLabels({ "progress", "prog" })
+	@QCommand(section = "User", desc = "shows quest progress", max = 1, usage = "[index]", permission = QConfiguration.PERM_USE_PROGRESS)
+	public void progress(final QCommandContext context, final CommandSender sender) throws QuesterException, QCommandException {
 		if(context.getPlayer() == null) {
 			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);
 			return;
@@ -249,14 +207,9 @@ public class UserCommands {
 		profMan.showProgress((Player) sender, index, context.getSenderLang());
 	}
 	
-	@QCommandLabels({"quests"})
-	@QCommand(
-			section = "User",
-			desc = "shows player's quests",
-			max = 1,
-			usage = "[player]",
-			permission = QConfiguration.PERM_USE_QUESTS)
-	public void quests(QCommandContext context, CommandSender sender) throws QuesterException {
+	@QCommandLabels({ "quests" })
+	@QCommand(section = "User", desc = "shows player's quests", max = 1, usage = "[player]", permission = QConfiguration.PERM_USE_QUESTS)
+	public void quests(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		if(Util.permCheck(sender, QConfiguration.PERM_ADMIN, false, null) && context.length() > 0) {
 			profMan.showTakenQuests(sender, context.getString(0), context.getSenderLang());
 		}

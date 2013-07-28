@@ -21,21 +21,23 @@ import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("ITEM")
 public final class ItemObjective extends Objective {
-
+	
 	private final Material material;
 	private final short data;
 	private final int amount;
 	private final Map<Integer, Integer> enchants;
 	private final boolean questItem;
 	
-	public ItemObjective(Material mat, int amt, int dat, Map<Integer, Integer> enchs, boolean questItem) {
+	public ItemObjective(final Material mat, final int amt, final int dat, final Map<Integer, Integer> enchs, final boolean questItem) {
 		material = mat;
 		amount = amt;
-		data = (short)dat;
-		if(enchs != null)
-			this.enchants = enchs;
-		else
-			this.enchants = new HashMap<Integer, Integer>();
+		data = (short) dat;
+		if(enchs != null) {
+			enchants = enchs;
+		}
+		else {
+			enchants = new HashMap<Integer, Integer>();
+		}
 		this.questItem = questItem;
 	}
 	
@@ -45,15 +47,15 @@ public final class ItemObjective extends Objective {
 	}
 	
 	@Override
-	protected String show(int progress) {
-		String datStr = data < 0 ? " (any) " : " (data " + data + ") ";
-		String pcs = amount == 1 ? " piece of " : " pieces of ";
+	protected String show(final int progress) {
+		final String datStr = data < 0 ? " (any) " : " (data " + data + ") ";
+		final String pcs = amount == 1 ? " piece of " : " pieces of ";
 		String enchs = "\n -- Enchants:";
-		String mat = material.getId() == 351 ? "dye" : material.name().toLowerCase();
+		final String mat = material.getId() == 351 ? "dye" : material.name().toLowerCase();
 		if(enchants.isEmpty()) {
 			enchs = "";
 		}
-		for(Integer i : enchants.keySet()) {
+		for(final Integer i : enchants.keySet()) {
 			enchs = enchs + " " + Util.enchantName(i, enchants.get(i)) + ";";
 		}
 		return "Have " + amount + pcs + mat + datStr + "on completion." + enchs;
@@ -61,18 +63,18 @@ public final class ItemObjective extends Objective {
 	
 	@Override
 	protected String info() {
-		String dataStr = (data < 0 ? "" : ":" + data);
-		String itm = material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount + "; QST: " + questItem;
+		final String dataStr = data < 0 ? "" : ":" + data;
+		final String itm = material.name() + "[" + material.getId() + dataStr + "]; AMT: " + amount + "; QST: " + questItem;
 		String enchs = enchants.isEmpty() ? "" : "\n -- ENCH:";
-		for(Integer e : enchants.keySet()) {
+		for(final Integer e : enchants.keySet()) {
 			enchs = enchs + " " + Enchantment.getById(e).getName() + ":" + enchants.get(e);
 		}
 		return itm + enchs;
 	}
-
+	
 	@Override
-	public boolean tryToComplete(Player player) {
-		Inventory newInv = Util.createInventory(player);
+	public boolean tryToComplete(final Player player) {
+		final Inventory newInv = Util.createInventory(player);
 		if(takeInventory(newInv)) {
 			takeInventory(player.getInventory());
 			return true;
@@ -80,16 +82,13 @@ public final class ItemObjective extends Objective {
 		return false;
 	}
 	
-	@QCommand(
-			min = 1,
-			max = 3,
-			usage = "{<item>} [amount] {[enchants]} (-q)")
-	public static Objective fromCommand(QCommandContext context) {
+	@QCommand(min = 1, max = 3, usage = "{<item>} [amount] {[enchants]} (-q)")
+	public static Objective fromCommand(final QCommandContext context) {
 		Material mat = null;
 		int dat;
 		int amt = 1;
 		Map<Integer, Integer> enchs = null;
-		int[] itm = parseItem(context.getString(0), context.getSenderLang());
+		final int[] itm = parseItem(context.getString(0), context.getSenderLang());
 		mat = Material.getMaterial(itm[0]);
 		dat = itm[1];
 		if(context.length() > 1) {
@@ -107,9 +106,9 @@ public final class ItemObjective extends Objective {
 		
 		return new ItemObjective(mat, amt, dat, enchs, context.hasFlag('q'));
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setString("item", Util.serializeItem(material, data));
 		if(!enchants.isEmpty()) {
 			key.setString("enchants", Util.serializeEnchants(enchants));
@@ -122,13 +121,13 @@ public final class ItemObjective extends Objective {
 		}
 	}
 	
-	protected static Objective load(StorageKey key) {
+	protected static Objective load(final StorageKey key) {
 		Material mat = null;
 		int dat = -1, amt = 1;
 		Map<Integer, Integer> enchs = null;
 		boolean qi = false;
 		try {
-			int[] itm = Util.parseItem(key.getString("item", ""));
+			final int[] itm = Util.parseItem(key.getString("item", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
 			
@@ -138,51 +137,54 @@ public final class ItemObjective extends Objective {
 			}
 			try {
 				enchs = Util.parseEnchants(key.getString("enchants", ""));
-			} catch (IllegalArgumentException e) {
+			}
+			catch (final IllegalArgumentException e) {
 				enchs = null;
 			}
 			qi = key.getBoolean("questitem", false);
-		} catch (Exception e) {
+		}
+		catch (final Exception e) {
 			return null;
 		}
 		
 		return new ItemObjective(mat, amt, dat, enchs, qi);
 	}
 	
-	//Custom methods
+	// Custom methods
 	
-	public boolean takeInventory(Inventory inv) {
+	public boolean takeInventory(final Inventory inv) {
 		int remain = amount;
-		ItemStack[] contents = inv.getContents();
-		for (int i = 0; i <contents.length; i++) {
-	        if (contents[i] != null) {
-	        	if(questItem != Util.isQuestItem(contents[i])) {
-	        		continue;
-	        	}
-	        	boolean enchsOK = true;
-	        	for(Integer e : enchants.keySet()) {
-	        		if(enchants.get(e) != contents[i].getEnchantmentLevel(Enchantment.getById(e))) {
-	        			enchsOK = false;
-	        			break;
-	        		}
-	        	}
-	        	if(enchsOK) {
-		        	if (contents[i].getTypeId() == material.getId()) {
-		        		if(data < 0 || contents[i].getDurability() == data) {
-		        			if(remain >= contents[i].getAmount()) {
-		        				remain -= contents[i].getAmount();
-		        				contents[i] = null;
-		        				inv.clear(i);
-		        			} else {
-		        				contents[i].setAmount(contents[i].getAmount() - remain);
-		        				remain = 0;
-		        				break;
-		        			}
-		        		}
-		        	}
-	        	}
-	        }
-	    }
+		final ItemStack[] contents = inv.getContents();
+		for(int i = 0; i < contents.length; i++) {
+			if(contents[i] != null) {
+				if(questItem != Util.isQuestItem(contents[i])) {
+					continue;
+				}
+				boolean enchsOK = true;
+				for(final Integer e : enchants.keySet()) {
+					if(enchants.get(e) != contents[i].getEnchantmentLevel(Enchantment.getById(e))) {
+						enchsOK = false;
+						break;
+					}
+				}
+				if(enchsOK) {
+					if(contents[i].getTypeId() == material.getId()) {
+						if(data < 0 || contents[i].getDurability() == data) {
+							if(remain >= contents[i].getAmount()) {
+								remain -= contents[i].getAmount();
+								contents[i] = null;
+								inv.clear(i);
+							}
+							else {
+								contents[i].setAmount(contents[i].getAmount() - remain);
+								remain = 0;
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
 		return remain == 0;
 	}
 }

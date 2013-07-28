@@ -16,7 +16,7 @@ import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("DROP")
 public final class DropObjective extends Objective {
-
+	
 	private final Material material;
 	private final short data;
 	private final int amount;
@@ -25,46 +25,43 @@ public final class DropObjective extends Objective {
 	private final double range;
 	private final double range2;
 	
-	public DropObjective(int amt, Material mat, int dat, Location loc, double rng, boolean quest) {
-		this.amount = amt;
-		this.material = mat;
-		this.data = (short) dat;
-		this.questItem = quest;
-		this.location = loc;
-		this.range = rng;
-		this.range2 = rng*rng;
+	public DropObjective(final int amt, final Material mat, final int dat, final Location loc, final double rng, final boolean quest) {
+		amount = amt;
+		material = mat;
+		data = (short) dat;
+		questItem = quest;
+		location = loc;
+		range = rng;
+		range2 = rng * rng;
 	}
-
+	
 	@Override
 	public int getTargetAmount() {
 		return amount;
 	}
 	
 	@Override
-	protected String show(int progress) {
-		String datStr = data < 0 ? "" : " (data" + data + ")";
-		String spec = questItem ? " special" : "";
-		String locStr = location == null ? "" : " at " + Util.displayLocation(location);
-		return "Drop " + spec + material.name().toLowerCase().replace('_', ' ') + datStr + locStr +  " - " + progress + "/" + amount + ".";
+	protected String show(final int progress) {
+		final String datStr = data < 0 ? "" : " (data" + data + ")";
+		final String spec = questItem ? " special" : "";
+		final String locStr = location == null ? "" : " at " + Util.displayLocation(location);
+		return "Drop " + spec + material.name().toLowerCase().replace('_', ' ') + datStr + locStr + " - " + progress + "/" + amount + ".";
 	}
 	
 	@Override
 	protected String info() {
-		String dataStr = (data < 0 ? "" : ":" + data);
-		String locStr = location == null ? "" : "; LOC: " + Util.displayLocation(location) + "; RNG: " + range;
-		String flags = questItem ? " (-q)" : "";
-		return material.name() + "["+material.getId() + dataStr + "]; AMT: " + amount + locStr + flags;
+		final String dataStr = data < 0 ? "" : ":" + data;
+		final String locStr = location == null ? "" : "; LOC: " + Util.displayLocation(location) + "; RNG: " + range;
+		final String flags = questItem ? " (-q)" : "";
+		return material.name() + "[" + material.getId() + dataStr + "]; AMT: " + amount + locStr + flags;
 	}
 	
-	@QCommand(
-			min = 2,
-			max = 4,
-			usage = "{<item>} <amount> {[location]} [range] (-q)")
-	public static Objective fromCommand(QCommandContext context) throws QCommandException {
-		int[] itm = parseItem(context.getString(0));
-		Material mat = Material.getMaterial(itm[0]);
-		int dat = itm[1];
-		int amt = context.getInt(1);
+	@QCommand(min = 2, max = 4, usage = "{<item>} <amount> {[location]} [range] (-q)")
+	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
+		final int[] itm = parseItem(context.getString(0));
+		final Material mat = Material.getMaterial(itm[0]);
+		final int dat = itm[1];
+		final int amt = context.getInt(1);
 		if(amt < 1 || dat < -1) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_ITEM_NUMBERS);
 		}
@@ -81,9 +78,9 @@ public final class DropObjective extends Objective {
 		}
 		return new DropObjective(amt, mat, dat, loc, rng, context.hasFlag('q'));
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setString("item", Util.serializeItem(material, data));
 		key.setInt("amount", amount);
 		if(location != null) {
@@ -95,17 +92,18 @@ public final class DropObjective extends Objective {
 		}
 	}
 	
-	protected static Objective load(StorageKey key) {
+	protected static Objective load(final StorageKey key) {
 		Material mat;
 		int dat, amt;
 		Location loc = null;
 		double rng = 2.0;
 		try {
-			int[] itm = Util.parseItem(key.getString("item", ""));
+			final int[] itm = Util.parseItem(key.getString("item", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
-		} catch (IllegalArgumentException e) {
-				return null;
+		}
+		catch (final IllegalArgumentException e) {
+			return null;
 		}
 		amt = key.getInt("amount", 0);
 		if(amt < 1) {
@@ -123,14 +121,14 @@ public final class DropObjective extends Objective {
 	
 	// Custom methods
 	
-	public boolean isMatching(ItemStack item) {
+	public boolean isMatching(final ItemStack item) {
 		if(questItem != Util.isQuestItem(item)) {
 			return false;
 		}
 		return item.getType() == material && (data < 0 || item.getDurability() == data);
 	}
 	
-	public boolean isMatching(Location loc) {
+	public boolean isMatching(final Location loc) {
 		if(location == null) {
 			return true;
 		}

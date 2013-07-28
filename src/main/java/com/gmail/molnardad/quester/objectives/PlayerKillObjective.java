@@ -10,24 +10,24 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("PLAYERKILL")
 public final class PlayerKillObjective extends Objective {
-
+	
 	private final String playerName;
 	private final int amount;
 	private final boolean perm;
 	
-	public PlayerKillObjective(int amt, String name, boolean perm) {
+	public PlayerKillObjective(final int amt, final String name, final boolean perm) {
 		amount = amt;
 		playerName = name;
 		this.perm = perm;
 	}
-
+	
 	@Override
 	public int getTargetAmount() {
 		return amount;
 	}
-
+	
 	@Override
-	protected String show(int progress) {
+	protected String show(final int progress) {
 		String player = playerName.isEmpty() ? "any player" : "player named " + playerName;
 		if(perm) {
 			player = "player with permission " + playerName;
@@ -37,26 +37,23 @@ public final class PlayerKillObjective extends Objective {
 	
 	@Override
 	protected String info() {
-		String player = playerName.isEmpty() ? "ANY" : playerName;
+		final String player = playerName.isEmpty() ? "ANY" : playerName;
 		return player + "; AMT: " + amount + "; PERM: " + perm;
 	}
 	
-	@QCommand(
-			min = 1,
-			max = 2,
-			usage = "<amount> [player] (-p)")
-	public static Objective fromCommand(QCommandContext context) {
-		int amt = context.getInt(0);
-		boolean perm = context.hasFlag('p');
+	@QCommand(min = 1, max = 2, usage = "<amount> [player] (-p)")
+	public static Objective fromCommand(final QCommandContext context) {
+		final int amt = context.getInt(0);
+		final boolean perm = context.hasFlag('p');
 		String name = "";
 		if(context.length() > 1) {
 			name = context.getString(1);
 		}
 		return new PlayerKillObjective(amt, name, perm);
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		if(amount > 1) {
 			key.setInt("amount", amount);
 		}
@@ -68,7 +65,7 @@ public final class PlayerKillObjective extends Objective {
 		}
 	}
 	
-	protected static Objective load(StorageKey key) {
+	protected static Objective load(final StorageKey key) {
 		int amt = 1;
 		String name = "";
 		boolean prm = false;
@@ -81,9 +78,9 @@ public final class PlayerKillObjective extends Objective {
 		return new PlayerKillObjective(amt, name, prm);
 	}
 	
-	//Custom methods
+	// Custom methods
 	
-	public boolean checkPlayer(Player player) {
+	public boolean checkPlayer(final Player player) {
 		if(playerName.isEmpty()) {
 			return true;
 		}

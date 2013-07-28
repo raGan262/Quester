@@ -12,66 +12,63 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("POINT")
 public final class PointCondition extends Condition {
-
+	
 	private final int amount;
 	private final boolean inverted;
 	
-	public PointCondition(int amount, boolean invert) {
+	public PointCondition(final int amount, final boolean invert) {
 		this.amount = amount;
-		this.inverted = invert;
-	}
-
-	@Override
-	protected String parseDescription(String description) {
-		return description.replaceAll("%amt", amount+"");
+		inverted = invert;
 	}
 	
 	@Override
-	public boolean isMet(Player player, Quester plugin) {
-		return (plugin.getProfileManager().getProfile(player.getName()).getPoints() >= amount) != inverted;
+	protected String parseDescription(final String description) {
+		return description.replaceAll("%amt", amount + "");
+	}
+	
+	@Override
+	public boolean isMet(final Player player, final Quester plugin) {
+		return plugin.getProfileManager().getProfile(player.getName()).getPoints() >= amount != inverted;
 	}
 	
 	@Override
 	public String show() {
-		String flag = inverted ? "less than " : "at least ";
+		final String flag = inverted ? "less than " : "at least ";
 		return "Must have " + flag + amount + " quest points.";
 	}
 	
 	@Override
 	public String info() {
-		String flag = inverted ? " (-i)": "";
+		final String flag = inverted ? " (-i)" : "";
 		return String.valueOf(amount) + flag;
 	}
 	
-	@QCommand(
-			min = 1,
-			max = 1,
-			usage = "<amount> (-i)")
-	public static Condition fromCommand(QCommandContext context) throws QCommandException {
+	@QCommand(min = 1, max = 1, usage = "<amount> (-i)")
+	public static Condition fromCommand(final QCommandContext context) throws QCommandException {
 		try {
-			int amt = context.getInt(0);
+			final int amt = context.getInt(0);
 			return new PointCondition(amt, context.hasFlag('i'));
-			}
-		catch (NumberFormatException e) {
+		}
+		catch (final NumberFormatException e) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_GENERAL);
 		}
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setInt("amount", amount);
 		if(inverted) {
 			key.setBoolean("inverted", inverted);
 		}
 	}
-
-	protected static Condition load(StorageKey key) {
+	
+	protected static Condition load(final StorageKey key) {
 		int amt;
 		
 		try {
 			amt = Integer.parseInt(key.getString("amount"));
 		}
-		catch (Exception e) {
+		catch (final Exception e) {
 			return null;
 		}
 		

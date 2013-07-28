@@ -22,7 +22,7 @@ import com.gmail.molnardad.quester.lang.LanguageManager;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class CommandManager {
-
+	
 	Logger logger = null;
 	LanguageManager langMan = null;
 	
@@ -31,35 +31,35 @@ public class CommandManager {
 	Object[] arguments = null;
 	Class<?>[] classes = null;
 	
-	private Map<Method, Map<String, Method>> labels = new HashMap<Method, Map<String, Method>>();
-	private Map<Method, Map<String, Method>> aliases = new HashMap<Method, Map<String, Method>>();
-	private Map<Method, Object> instances = new HashMap<Method, Object>();
-	private Map<Method, QCommand> annotations = new HashMap<Method, QCommand>();
+	private final Map<Method, Map<String, Method>> labels = new HashMap<Method, Map<String, Method>>();
+	private final Map<Method, Map<String, Method>> aliases = new HashMap<Method, Map<String, Method>>();
+	private final Map<Method, Object> instances = new HashMap<Method, Object>();
+	private final Map<Method, QCommand> annotations = new HashMap<Method, QCommand>();
 	
-	public CommandManager(LanguageManager langMan, Logger logger, String displayedCommand, Object... arguments) {
+	public CommandManager(final LanguageManager langMan, final Logger logger, final String displayedCommand, final Object... arguments) {
 		this.logger = logger;
 		this.langMan = langMan;
 		this.displayedCommand = displayedCommand;
 		this.arguments = arguments;
 		classes = new Class<?>[arguments.length];
-		for(int i=0; i<arguments.length; i++) {
+		for(int i = 0; i < arguments.length; i++) {
 			classes[i] = arguments[i].getClass();
 		}
 	}
 	
-	public void setHelpCommand(String helpCommand) {
+	public void setHelpCommand(final String helpCommand) {
 		if(helpCommand != null) {
 			this.helpCommand = helpCommand;
 		}
 	}
 	
-	public void register(Class<?> clss) {
+	public void register(final Class<?> clss) {
 		registerMethods(null, clss);
 	}
 	
-	private void registerMethods(Method parent, Class<?> clss) {
-		Object instance = construct(clss);
-		for(Method method : clss.getMethods()) {
+	private void registerMethods(final Method parent, final Class<?> clss) {
+		final Object instance = construct(clss);
+		for(final Method method : clss.getMethods()) {
 			
 			if(!method.isAnnotationPresent(QCommand.class) || !method.isAnnotationPresent(QCommandLabels.class)) {
 				continue;
@@ -73,7 +73,7 @@ public class CommandManager {
 				instances.put(method, instance);
 			}
 			
-			QCommand qCmd = method.getAnnotation(QCommand.class);
+			final QCommand qCmd = method.getAnnotation(QCommand.class);
 			annotations.put(method, qCmd);
 			
 			if(labels.get(parent) == null) {
@@ -83,18 +83,18 @@ public class CommandManager {
 				aliases.put(parent, new HashMap<String, Method>());
 			}
 			
-			Map<String, Method> lblMap = labels.get(parent);
-			Map<String, Method> aliMap = aliases.get(parent);
+			final Map<String, Method> lblMap = labels.get(parent);
+			final Map<String, Method> aliMap = aliases.get(parent);
 			
-			QCommandLabels qCmdLbls = method.getAnnotation(QCommandLabels.class);
-			String[] aliases = qCmdLbls.value();
+			final QCommandLabels qCmdLbls = method.getAnnotation(QCommandLabels.class);
+			final String[] aliases = qCmdLbls.value();
 			lblMap.put(aliases[0].toLowerCase(), method);
 			for(int i = 1; i < aliases.length; i++) {
 				aliMap.put(aliases[i].toLowerCase(), method);
 			}
 			
 			if(method.isAnnotationPresent(QNestedCommand.class)) {
-				for(Class<?> iCls : method.getAnnotation(QNestedCommand.class).value()) {
+				for(final Class<?> iCls : method.getAnnotation(QNestedCommand.class).value()) {
 					registerMethods(method, iCls);
 				}
 			}
@@ -102,16 +102,16 @@ public class CommandManager {
 		}
 	}
 	
-	public void execute(String[] args, CommandSender sender) throws QCommandException, QuesterException {
+	public void execute(final String[] args, final CommandSender sender) throws QCommandException, QuesterException {
 		executeMethod(args, sender, null, 0);
 	}
 	
-	private void executeMethod(String[] args, CommandSender sender, Method parent, int level) throws QCommandException, QuesterException{
+	private void executeMethod(final String[] args, final CommandSender sender, final Method parent, int level) throws QCommandException, QuesterException {
 		
 		if(args.length <= level) {
 			throw new QUsageException("Not enough argmunents.", getUsage(args, level, parent));
 		}
-		String label = args[level].toLowerCase();
+		final String label = args[level].toLowerCase();
 		
 		boolean execute = false;
 		if(parent != null) {
@@ -123,38 +123,37 @@ public class CommandManager {
 			method = aliases.get(parent).get(label);
 		}
 		if(method == null) {
-			if(execute){
+			if(execute) {
 				method = parent;
 				level--;
 			}
 			else {
-				throw new QUsageException("Unknown argument: " + label, getUsage(args, level-1, parent));
+				throw new QUsageException("Unknown argument: " + label, getUsage(args, level - 1, parent));
 			}
 		}
-
+		
 		// check every permission for nested command
-		QCommand cmd = annotations.get(method);
+		final QCommand cmd = annotations.get(method);
 		if(sender == null || !Util.permCheck(sender, cmd.permission(), false, null)) {
 			throw new QPermissionException();
 		}
 		
 		if(method != parent && labels.get(method) != null) { // going deeper
-			int numArgs = args.length - level - 1;
+			final int numArgs = args.length - level - 1;
 			if(numArgs < 1) {
 				throw new QUsageException("Not enough argmunents.", getUsage(args, level, method));
 			}
-
-			executeMethod(args, sender, method, level+1);
+			
+			executeMethod(args, sender, method, level + 1);
 		}
 		else {
 			
+			final String[] parentArgs = new String[level + 1];
+			final String[] realArgs = new String[args.length - level - 1];
+			System.arraycopy(args, 0, parentArgs, 0, level + 1);
+			System.arraycopy(args, level + 1, realArgs, 0, args.length - level - 1);
 			
-			String[] parentArgs = new String[level+1];
-			String[] realArgs = new String[args.length - level - 1];
-			System.arraycopy(args, 0, parentArgs, 0, level+1);
-			System.arraycopy(args, level+1, realArgs, 0, args.length - level - 1);
-			
-			QCommandContext context = new QCommandContext(realArgs, parentArgs, sender, this, langMan.getPlayerLang(sender.getName()));
+			final QCommandContext context = new QCommandContext(realArgs, parentArgs, sender, this, langMan.getPlayerLang(sender.getName()));
 			
 			if(context.length() < cmd.min()) {
 				throw new QUsageException("Not enough argmunents.", getUsage(args, level, method));
@@ -168,15 +167,18 @@ public class CommandManager {
 		}
 	}
 	
-	private void invoke(Method method, Object... methodArgs) throws QCommandException, QuesterException, NumberFormatException {
+	private void invoke(final Method method, final Object... methodArgs) throws QCommandException, QuesterException, NumberFormatException {
 		Exception ex = null;
 		try {
 			method.invoke(instances.get(method), methodArgs);
-		} catch (IllegalAccessException e) {
+		}
+		catch (final IllegalAccessException e) {
 			ex = e;
-		} catch (IllegalArgumentException e) {
+		}
+		catch (final IllegalArgumentException e) {
 			ex = e;
-		} catch (InvocationTargetException e) {
+		}
+		catch (final InvocationTargetException e) {
 			if(e.getCause() instanceof QCommandException) {
 				throw (QCommandException) e.getCause();
 			}
@@ -198,10 +200,10 @@ public class CommandManager {
 		}
 	}
 	
-	public Map<String, List<String>> getHelp(String[] args, CommandSender sender) {
-		Map<String, List<String>> result = new HashMap<String, List<String>>();
+	public Map<String, List<String>> getHelp(final String[] args, final CommandSender sender) {
+		final Map<String, List<String>> result = new HashMap<String, List<String>>();
 		Method m = null;
-		for(String s : args) { 
+		for(final String s : args) {
 			if(labels.get(m).containsKey(s)) {
 				m = labels.get(m).get(s);
 			}
@@ -216,17 +218,17 @@ public class CommandManager {
 			}
 		}
 		QCommand anno = null;
-		Map<String, Method> lbls = labels.get(m);
+		final Map<String, Method> lbls = labels.get(m);
 		if(lbls != null) {
-			for(String s : lbls.keySet()) {
-				Method innerMethod = lbls.get(s);
+			for(final String s : lbls.keySet()) {
+				final Method innerMethod = lbls.get(s);
 				anno = annotations.get(innerMethod);
 				if(anno != null && Util.permCheck(sender, anno.permission(), false, null)) {
 					if(result.get(anno.section()) == null) {
 						result.put(anno.section(), new ArrayList<String>());
 					}
-					StringBuilder cmd = new StringBuilder();
-					String usage = anno.usage();
+					final StringBuilder cmd = new StringBuilder();
+					final String usage = anno.usage();
 					cmd.append(displayedCommand);
 					if(args.length > 0) {
 						cmd.append(' ').append(Util.implode(args));
@@ -247,8 +249,8 @@ public class CommandManager {
 					if(result.get(anno.section()) == null) {
 						result.put(anno.section(), new ArrayList<String>());
 					}
-					StringBuilder cmd = new StringBuilder();
-					String usage = anno.usage();
+					final StringBuilder cmd = new StringBuilder();
+					final String usage = anno.usage();
 					cmd.append(displayedCommand);
 					if(args.length > 0) {
 						cmd.append(' ').append(Util.implode(args));
@@ -264,9 +266,9 @@ public class CommandManager {
 		return result;
 	}
 	
-	public String getUsage(String[] args, int level, Method method) {
+	public String getUsage(final String[] args, final int level, final Method method) {
 		
-		StringBuilder usage = new StringBuilder();
+		final StringBuilder usage = new StringBuilder();
 		
 		usage.append(displayedCommand);
 		
@@ -274,14 +276,14 @@ public class CommandManager {
 			for(int i = 0; i <= level; i++) {
 				usage.append(' ').append(args[i]);
 			}
-			Map<String, Method> lbls = labels.get(method);
+			final Map<String, Method> lbls = labels.get(method);
 			if(lbls == null) {
 				usage.append(' ').append(annotations.get(method).usage());
 			}
 			else {
 				boolean first = true;
 				usage.append(" <");
-				for(String key : lbls.keySet()) {
+				for(final String key : lbls.keySet()) {
 					if(first) {
 						first = false;
 					}
@@ -300,15 +302,15 @@ public class CommandManager {
 		return usage.toString();
 	}
 	
-	public String getUsage(String[] args) {
-		StringBuilder usage = new StringBuilder();
+	public String getUsage(final String[] args) {
+		final StringBuilder usage = new StringBuilder();
 		usage.append(displayedCommand);
 		
 		Method method = null;
 		Method oldMethod = null;
 		
-		for(String arg : args) {
-			String lcArg = arg.toLowerCase();
+		for(final String arg : args) {
+			final String lcArg = arg.toLowerCase();
 			method = labels.get(oldMethod).get(lcArg);
 			if(method == null) {
 				method = aliases.get(oldMethod).get(lcArg);
@@ -325,10 +327,10 @@ public class CommandManager {
 			usage.append(' ').append(annotations.get(oldMethod).usage());
 		}
 		else {
-			Map<String, Method> lbls = labels.get(oldMethod);
+			final Map<String, Method> lbls = labels.get(oldMethod);
 			boolean first = true;
 			usage.append(" <");
-			for(String key : lbls.keySet()) {
+			for(final String key : lbls.keySet()) {
 				if(first) {
 					first = false;
 				}
@@ -342,23 +344,29 @@ public class CommandManager {
 		return usage.toString();
 	}
 	
-	private Object construct(Class<?> clss) {
+	private Object construct(final Class<?> clss) {
 		Exception ex = null;
 		try {
-			Constructor<?> constr = clss.getConstructor(classes);
+			final Constructor<?> constr = clss.getConstructor(classes);
 			constr.setAccessible(true);
 			return constr.newInstance(arguments);
-		} catch (NoSuchMethodException e) {
+		}
+		catch (final NoSuchMethodException e) {
 			ex = e;
-		} catch (SecurityException e) {
+		}
+		catch (final SecurityException e) {
 			ex = e;
-		} catch (InstantiationException e) {
+		}
+		catch (final InstantiationException e) {
 			ex = e;
-		} catch (IllegalAccessException e) {
+		}
+		catch (final IllegalAccessException e) {
 			ex = e;
-		} catch (IllegalArgumentException e) {
+		}
+		catch (final IllegalArgumentException e) {
 			ex = e;
-		} catch (InvocationTargetException e) {
+		}
+		catch (final InvocationTargetException e) {
 			ex = e;
 		}
 		if(ex != null) {

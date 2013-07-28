@@ -22,26 +22,25 @@ public class QeventCommands {
 	QuestManager qMan = null;
 	ElementManager eMan = null;
 	
-	public QeventCommands(Quester plugin) {
+	public QeventCommands(final Quester plugin) {
 		qMan = plugin.getQuestManager();
 		eMan = plugin.getElementManager();
 	}
 	
-	private Qevent getQevent(String type, String occassion,  QCommandContext subContext, QuesterLang lang) throws QeventException, QCommandException, QuesterException {
+	private Qevent getQevent(final String type, final String occassion, final QCommandContext subContext, final QuesterLang lang) throws QeventException, QCommandException, QuesterException {
 		int[] occasion;
 		try {
 			occasion = Util.deserializeOccasion(occassion, lang);
 		}
-		catch (IllegalArgumentException e) {
+		catch (final IllegalArgumentException e) {
 			throw new QCommandException(e.getMessage());
 		}
 		if(!eMan.isEvent(type)) {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.ERROR_EVT_NOT_EXIST);
-			subContext.getSender().sendMessage(ChatColor.RED + lang.EVT_LIST + ": "
-					+ ChatColor.WHITE + eMan.getEventList());
+			subContext.getSender().sendMessage(ChatColor.RED + lang.EVT_LIST + ": " + ChatColor.WHITE + eMan.getEventList());
 			throw new QeventException(lang.ERROR_EVT_NOT_EXIST);
 		}
-		Qevent evt = eMan.getEventFromCommand(type, subContext);
+		final Qevent evt = eMan.getEventFromCommand(type, subContext);
 		if(evt != null) {
 			evt.setOccasion(occasion[0], occasion[1]);
 		}
@@ -51,66 +50,49 @@ public class QeventCommands {
 		return evt;
 	}
 	
-	@QCommandLabels({"add", "a"})
-	@QCommand(
-			section = "QMod",
-			desc = "adds an event",
-			min = 2,
-			usage = "{<occasion>} <event type> [args]")
-	public void add(QCommandContext context, CommandSender sender) throws QCommandException, QuesterException {
-		QuesterLang lang = context.getSenderLang();
-		String type = context.getString(1);
+	@QCommandLabels({ "add", "a" })
+	@QCommand(section = "QMod", desc = "adds an event", min = 2, usage = "{<occasion>} <event type> [args]")
+	public void add(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+		final QuesterLang lang = context.getSenderLang();
+		final String type = context.getString(1);
 		Qevent qevent;
 		try {
 			qevent = getQevent(type, context.getString(0), context.getSubContext(2), lang);
 		}
-		catch (QeventException e) {
+		catch (final QeventException e) {
 			return;
 		}
 		qMan.addQuestQevent(sender.getName(), qevent, lang);
 		sender.sendMessage(ChatColor.GREEN + lang.EVT_ADD.replaceAll("%type", type.toUpperCase()));
 	}
 	
-	@QCommandLabels({"set", "s"})
-	@QCommand(
-			section = "QMod",
-			desc = "sets an event",
-			min = 3,
-			usage = "<evt ID> {<occasion>} <evt type> [args]")
-	public void set(QCommandContext context, CommandSender sender) throws QCommandException, QuesterException {
-		QuesterLang lang = context.getSenderLang();
-		String type = context.getString(2);
-		int qeventID = context.getInt(0);
+	@QCommandLabels({ "set", "s" })
+	@QCommand(section = "QMod", desc = "sets an event", min = 3, usage = "<evt ID> {<occasion>} <evt type> [args]")
+	public void set(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+		final QuesterLang lang = context.getSenderLang();
+		final String type = context.getString(2);
+		final int qeventID = context.getInt(0);
 		Qevent qevent;
 		try {
 			qevent = getQevent(type, context.getString(1), context.getSubContext(3), lang);
 		}
-		catch (QeventException e) {
+		catch (final QeventException e) {
 			return;
 		}
 		qMan.setQuestQevent(sender.getName(), qeventID, qevent, lang);
 		sender.sendMessage(ChatColor.GREEN + lang.EVT_SET.replaceAll("%type", type.toUpperCase()));
 	}
 	
-	@QCommandLabels({"remove", "r"})
-	@QCommand(
-			section = "QMod",
-			desc = "removes event",
-			min = 1,
-			max = 1,
-			usage = "<event ID>")
-	public void remove(QCommandContext context, CommandSender sender) throws QuesterException {
+	@QCommandLabels({ "remove", "r" })
+	@QCommand(section = "QMod", desc = "removes event", min = 1, max = 1, usage = "<event ID>")
+	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.removeQuestQevent(sender.getName(), context.getInt(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().EVT_REMOVE.replaceAll("%id", context.getString(0)));
 	}
 	
-	@QCommandLabels({"list", "l"})
-	@QCommand(
-			section = "QMod",
-			max = 0,
-			desc = "event list")
-	public void list(QCommandContext context, CommandSender sender) throws QuesterException {
-		sender.sendMessage(ChatColor.RED + context.getSenderLang().EVT_LIST + ": "
-				+ ChatColor.WHITE + eMan.getEventList());
+	@QCommandLabels({ "list", "l" })
+	@QCommand(section = "QMod", max = 0, desc = "event list")
+	public void list(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		sender.sendMessage(ChatColor.RED + context.getSenderLang().EVT_LIST + ": " + ChatColor.WHITE + eMan.getEventList());
 	}
 }

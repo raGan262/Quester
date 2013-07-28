@@ -19,7 +19,7 @@ public final class QuestCondition extends Condition {
 	private final boolean running;
 	private final boolean inverted;
 	
-	QuestCondition(String quest, int time, boolean running, boolean invert) {
+	QuestCondition(final String quest, final int time, final boolean running, final boolean invert) {
 		this.quest = quest;
 		if(running) {
 			this.time = 0;
@@ -28,17 +28,17 @@ public final class QuestCondition extends Condition {
 			this.time = time;
 		}
 		this.running = running;
-		this.inverted = invert;
+		inverted = invert;
 	}
 	
 	@Override
-	protected String parseDescription(String description) {
+	protected String parseDescription(final String description) {
 		return description.replaceAll("%qst", quest);
 	}
-
+	
 	@Override
-	public boolean isMet(Player player, Quester plugin) {	
-		PlayerProfile profile = plugin.getProfileManager().getProfile(player.getName());
+	public boolean isMet(final Player player, final Quester plugin) {
+		final PlayerProfile profile = plugin.getProfileManager().getProfile(player.getName());
 		if(running) {
 			return profile.hasQuest(quest) != inverted;
 		}
@@ -48,15 +48,15 @@ public final class QuestCondition extends Condition {
 		else {
 			// QUEST: elapsed < time
 			// QUESTNOT: elapsed >= time
-			return (((System.currentTimeMillis() / 1000) - profile.getCompletionTime(quest)) < time) != inverted;
+			return System.currentTimeMillis() / 1000 - profile.getCompletionTime(quest) < time != inverted;
 		}
 	}
 	
 	@Override
 	public String show() {
-		String type = inverted ? "not " : "";
-		String status = running ? "be doing" : "have done";
-		StringBuilder period = new StringBuilder();
+		final String type = inverted ? "not " : "";
+		final String status = running ? "be doing" : "have done";
+		final StringBuilder period = new StringBuilder();
 		if(!running && time != 0) {
 			if(inverted) {
 				period.append(" for ").append(time).append(" seconds.");
@@ -70,8 +70,8 @@ public final class QuestCondition extends Condition {
 	
 	@Override
 	public String info() {
-		String tm = (time > 0) ? "; TIME: " + time : "";
-		StringBuilder run = new StringBuilder();
+		final String tm = time > 0 ? "; TIME: " + time : "";
+		final StringBuilder run = new StringBuilder();
 		if(inverted || running) {
 			run.append(" (-");
 			if(running) {
@@ -85,21 +85,18 @@ public final class QuestCondition extends Condition {
 		return quest + tm + run;
 	}
 	
-	@QCommand(
-			min = 1,
-			max = 2,
-			usage = "<quest name> [time in seconds] (-ri)")
-	public static Condition fromCommand(QCommandContext context) throws QCommandException {
-		String qst = context.getString(0);
+	@QCommand(min = 1, max = 2, usage = "<quest name> [time in seconds] (-ri)")
+	public static Condition fromCommand(final QCommandContext context) throws QCommandException {
+		final String qst = context.getString(0);
 		int t = 0;
 		if(context.length() > 1) {
 			t = context.getInt(1, 0);
 		}
 		return new QuestCondition(qst, t, context.hasFlag('r'), context.hasFlag('i'));
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setString("quest", quest);
 		if(time != 0) {
 			key.setInt("time", time);
@@ -111,14 +108,14 @@ public final class QuestCondition extends Condition {
 			key.setBoolean("inverted", inverted);
 		}
 	}
-
-	protected static Condition load(StorageKey key) {
+	
+	protected static Condition load(final StorageKey key) {
 		String qst;
 		int time;
 		
 		if(key.getString("quest") != null) {
 			qst = key.getString("quest");
-		}	
+		}
 		else {
 			return null;
 		}

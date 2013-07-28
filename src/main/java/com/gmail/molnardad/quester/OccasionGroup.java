@@ -3,20 +3,20 @@ package com.gmail.molnardad.quester;
 import java.util.HashSet;
 
 public class OccasionGroup {
-
+	
 	private HashSet<Integer> occasions = null;
 	
 	public OccasionGroup() {
 		occasions = new HashSet<Integer>();
 	}
 	
-	public boolean add(int occasion) {
+	public boolean add(final int occasion) {
 		return occasions.add(occasion);
 	}
 	
-	public int add(int[] occasions) {
+	public int add(final int[] occasions) {
 		int result = 0;
-		for (int i=0; i<occasions.length; i++) {
+		for(int i = 0; i < occasions.length; i++) {
 			if(this.occasions.add(occasions[i])) {
 				result++;
 			}
@@ -24,13 +24,13 @@ public class OccasionGroup {
 		return result;
 	}
 	
-	public boolean remove(int occasion) {
+	public boolean remove(final int occasion) {
 		return occasions.remove(occasion);
 	}
 	
-	public int remove(int[] occasions) {
+	public int remove(final int[] occasions) {
 		int result = 0;
-		for (int i=0; i<occasions.length; i++) {
+		for(int i = 0; i < occasions.length; i++) {
 			if(this.occasions.remove(occasions[i])) {
 				result++;
 			}
@@ -38,7 +38,7 @@ public class OccasionGroup {
 		return result;
 	}
 	
-	public boolean contains(int occasion) {
+	public boolean contains(final int occasion) {
 		return occasions.contains(occasion);
 	}
 	
@@ -47,7 +47,7 @@ public class OccasionGroup {
 	}
 	
 	@Override
-	public boolean equals(Object occasionGroup) {
+	public boolean equals(final Object occasionGroup) {
 		if(this == occasionGroup) {
 			return true;
 		}
@@ -55,11 +55,11 @@ public class OccasionGroup {
 			return false;
 		}
 		if(occasionGroup instanceof OccasionGroup) {
-			OccasionGroup grp = (OccasionGroup) occasionGroup;
+			final OccasionGroup grp = (OccasionGroup) occasionGroup;
 			if(grp.size() != size()) {
 				return false;
 			}
-			for(int i : occasions) {
+			for(final int i : occasions) {
 				if(!grp.contains(i)) {
 					return false;
 				}

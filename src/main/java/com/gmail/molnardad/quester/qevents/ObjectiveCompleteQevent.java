@@ -18,31 +18,31 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("OBJCOM")
 public final class ObjectiveCompleteQevent extends Qevent {
-
+	
 	private final int objective;
 	private final boolean runEvents;
 	
-	public ObjectiveCompleteQevent(int obj, boolean runEvents) {
-		this.objective = obj;
+	public ObjectiveCompleteQevent(final int obj, final boolean runEvents) {
+		objective = obj;
 		this.runEvents = runEvents;
 	}
 	
 	@Override
 	public String info() {
-		String evts = runEvents ? " (-e)" : "";
+		final String evts = runEvents ? " (-e)" : "";
 		return String.valueOf(objective) + evts;
 	}
-
+	
 	@Override
-	protected void run(Player player, Quester plugin) {
+	protected void run(final Player player, final Quester plugin) {
 		try {
-			ProfileManager profMan = plugin.getProfileManager();
-			PlayerProfile prof = profMan.getProfile(player.getName());
-			int[] prog = prof.getProgress().getProgress();
+			final ProfileManager profMan = plugin.getProfileManager();
+			final PlayerProfile prof = profMan.getProfile(player.getName());
+			final int[] prog = prof.getProgress().getProgress();
 			if(objective >= 0 && objective < prog.length) {
-				int req = prof.getQuest().getObjective(objective).getTargetAmount();
+				final int req = prof.getQuest().getObjective(objective).getTargetAmount();
 				if(prog[objective] < req) {
-					ActionSource as = ActionSource.eventSource(this);
+					final ActionSource as = ActionSource.eventSource(this);
 					if(runEvents) {
 						profMan.incProgress(player, as, objective, req - prog[objective]);
 					}
@@ -54,36 +54,36 @@ public final class ObjectiveCompleteQevent extends Qevent {
 				else {
 					throw new ObjectiveException("Objective already complete");
 				}
-			} else {
-				throw new ObjectiveException("Objective index out of bounds."); // objective does not exist
 			}
-		} catch (QuesterException e) {
+			else {
+				throw new ObjectiveException("Objective index out of bounds."); // objective does
+																				// not exist
+			}
+		}
+		catch (final QuesterException e) {
 			Quester.log.info("Event failed to complete objective. Reason: " + ChatColor.stripColor(e.getMessage()));
 		}
 	}
-
-	@QCommand(
-			min = 1,
-			max = 1,
-			usage = "<objective ID> (-e)")
-	public static Qevent fromCommand(QCommandContext context) throws QCommandException {
-		int obj = context.getInt(0);
+	
+	@QCommand(min = 1, max = 1, usage = "<objective ID> (-e)")
+	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
+		final int obj = context.getInt(0);
 		if(obj < 0) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_BAD_ID);
 		}
 		return new ObjectiveCompleteQevent(obj, context.hasFlag('e'));
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setInt("objective", objective);
 		if(runEvents) {
 			key.setBoolean("runevents", runEvents);
 		}
 	}
 	
-	protected static Qevent load(StorageKey key) {
-		int obj = key.getInt("objective", -1);
+	protected static Qevent load(final StorageKey key) {
+		final int obj = key.getInt("objective", -1);
 		if(obj < 0) {
 			return null;
 		}

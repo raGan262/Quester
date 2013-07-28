@@ -13,51 +13,46 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("SLOT")
 public final class SlotCondition extends Condition {
-
+	
 	private final int amount;
 	
-	private SlotCondition(int amt) {
-		this.amount = amt;
-	}
-
-	@Override
-	public boolean isMet(Player player, Quester plugin) {
-        int amt = 0;
-        ItemStack[] contents = player.getInventory().getContents();
-       
-        for (ItemStack i : contents) {
-        	if(i == null) {
-        		amt++;
-        	}
-        }
-       
-        return (amt >= amount);
+	private SlotCondition(final int amt) {
+		amount = amt;
 	}
 	
-
-
 	@Override
-	protected String parseDescription(String description) {
+	public boolean isMet(final Player player, final Quester plugin) {
+		int amt = 0;
+		final ItemStack[] contents = player.getInventory().getContents();
+		
+		for(final ItemStack i : contents) {
+			if(i == null) {
+				amt++;
+			}
+		}
+		
+		return amt >= amount;
+	}
+	
+	@Override
+	protected String parseDescription(final String description) {
 		return description.replaceAll("%amt", String.valueOf(amount));
 	}
 	
 	@Override
 	protected String show() {
-		String slot = amount == 1 ? "slot" : "slots";
-		return "Must have at least " + amount + " inventory " + slot +" empty.";
+		final String slot = amount == 1 ? "slot" : "slots";
+		return "Must have at least " + amount + " inventory " + slot + " empty.";
 	}
-
+	
 	@Override
 	protected String info() {
 		return String.valueOf(amount);
 	}
 	
-	@QCommand(
-			min = 1,
-			max = 1,
-			usage = "<amount>")
-	public static Condition fromCommand(QCommandContext context) throws QCommandException {
-		int amt = context.getInt(0);
+	@QCommand(min = 1, max = 1, usage = "<amount>")
+	public static Condition fromCommand(final QCommandContext context) throws QCommandException {
+		final int amt = context.getInt(0);
 		if(amt < 1) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
 		}
@@ -65,12 +60,12 @@ public final class SlotCondition extends Condition {
 	}
 	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setInt("amount", amount);
 	}
-
-	protected static Condition load(StorageKey key) {
-		int amt = key.getInt("amount", 0);
+	
+	protected static Condition load(final StorageKey key) {
+		final int amt = key.getInt("amount", 0);
 		if(amt < 1) {
 			return null;
 		}

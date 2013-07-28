@@ -17,10 +17,10 @@ import com.gmail.molnardad.quester.utils.Region;
 
 @QElement("WORLD")
 public final class WorldObjective extends Objective {
-
+	
 	private final String worldName;
 	
-	public WorldObjective(String worldName) {
+	public WorldObjective(final String worldName) {
 		this.worldName = worldName;
 	}
 	
@@ -30,7 +30,7 @@ public final class WorldObjective extends Objective {
 	}
 	
 	@Override
-	protected String show(int progress) {
+	protected String show(final int progress) {
 		return "Visit world '" + worldName + "'.";
 	}
 	
@@ -39,22 +39,20 @@ public final class WorldObjective extends Objective {
 		return worldName;
 	}
 	
-	@QCommand(
-			min = 1,
-			max = 1,
-			usage = "{<world>}")
-	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+	@QCommand(min = 1, max = 1, usage = "{<world>}")
+	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
 		World world = null;
-		String label = QConfiguration.worldLabelThis;
+		final String label = QConfiguration.worldLabelThis;
 		if(context.getString(0).equalsIgnoreCase(label)) {
-			Player player = context.getPlayer();
+			final Player player = context.getPlayer();
 			if(player != null) {
 				world = player.getWorld();
-			} else {
-				throw new QCommandException(context.getSenderLang().ERROR_CMD_WORLD_THIS
-						.replaceAll("%this", label));
 			}
-		} else {
+			else {
+				throw new QCommandException(context.getSenderLang().ERROR_CMD_WORLD_THIS.replaceAll("%this", label));
+			}
+		}
+		else {
 			world = Bukkit.getServer().getWorld(context.getString(0));
 		}
 		if(world == null) {
@@ -62,13 +60,13 @@ public final class WorldObjective extends Objective {
 		}
 		return new RegionObjective(new Region.World(world.getName()), context.hasFlag('i'));
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setString("world", worldName);
 	}
 	
-	protected static Objective load(StorageKey key) {
+	protected static Objective load(final StorageKey key) {
 		String world = null;
 		world = key.getString("world", null);
 		if(world == null) {
@@ -77,9 +75,9 @@ public final class WorldObjective extends Objective {
 		return new RegionObjective(new Region.World(world), key.getBoolean("inverted", false));
 	}
 	
-	//Custom methods
+	// Custom methods
 	
-	public boolean checkWorld(String wName) {
+	public boolean checkWorld(final String wName) {
 		return wName.equalsIgnoreCase(worldName);
 	}
 }

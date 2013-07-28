@@ -14,39 +14,36 @@ import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("SHEAR")
 public final class ShearObjective extends Objective {
-
+	
 	private final DyeColor color;
 	private final int amount;
-
-	public ShearObjective(int amt, DyeColor col) {
+	
+	public ShearObjective(final int amt, final DyeColor col) {
 		amount = amt;
 		color = col;
 	}
-
+	
 	@Override
 	public int getTargetAmount() {
 		return amount;
 	}
-
+	
 	@Override
-	protected String show(int progress) {
-		String strCol = (color == null) ? "any" : color.name().replace('_', ' ').toLowerCase() ;
+	protected String show(final int progress) {
+		final String strCol = color == null ? "any" : color.name().replace('_', ' ').toLowerCase();
 		return "Shear " + strCol + " sheep - " + (amount - progress) + "x";
 	}
 	
 	@Override
 	protected String info() {
-		String strCol = (color == null) ? "ANY" : color.name() ;
+		final String strCol = color == null ? "ANY" : color.name();
 		return strCol + "; AMT: " + amount;
 	}
 	
-	@QCommand(
-			min = 1,
-			max = 2,
-			usage = "<amount> {[color]}")
-	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+	@QCommand(min = 1, max = 2, usage = "<amount> {[color]}")
+	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
 		DyeColor col = null;
-		int amt = context.getInt(0);
+		final int amt = context.getInt(0);
 		if(amt < 1) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
 		}
@@ -58,9 +55,9 @@ public final class ShearObjective extends Objective {
 		}
 		return new ShearObjective(amt, col);
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		if(color != null) {
 			key.setString("color", Util.serializeColor(color));
 		}
@@ -69,7 +66,7 @@ public final class ShearObjective extends Objective {
 		}
 	}
 	
-	protected static Objective load(StorageKey key) {
+	protected static Objective load(final StorageKey key) {
 		int amt = 1;
 		DyeColor col = null;
 		col = Util.parseColor(key.getString("color", ""));
@@ -80,11 +77,11 @@ public final class ShearObjective extends Objective {
 		return new ShearObjective(amt, col);
 	}
 	
-	//Custom methods
+	// Custom methods
 	
-	public boolean check(DyeColor col) {
+	public boolean check(final DyeColor col) {
 		if(col == color || color == null) {
-			return true;	
+			return true;
 		}
 		return false;
 	}

@@ -11,12 +11,13 @@ public class ObjectiveCompleteEvent extends QuesterEvent implements Cancellable 
 	
 	private static final HandlerList handlers = new HandlerList();
 	
+	@Override
 	public HandlerList getHandlers() {
-	    return handlers;
+		return handlers;
 	}
-	 
+	
 	public static HandlerList getHandlerList() {
-	    return handlers;
+		return handlers;
 	}
 	
 	private boolean cancelled = false;
@@ -25,7 +26,7 @@ public class ObjectiveCompleteEvent extends QuesterEvent implements Cancellable 
 	private final ActionSource actionSource;
 	private final int objectiveID;
 	
-	public ObjectiveCompleteEvent(ActionSource actionSource, Player player, Quest quest, int objectiveID) {
+	public ObjectiveCompleteEvent(final ActionSource actionSource, final Player player, final Quest quest, final int objectiveID) {
 		this.player = player;
 		this.quest = quest;
 		this.actionSource = actionSource;
@@ -47,14 +48,14 @@ public class ObjectiveCompleteEvent extends QuesterEvent implements Cancellable 
 	public int getObjectiveID() {
 		return objectiveID;
 	}
-
+	
 	@Override
 	public boolean isCancelled() {
 		return cancelled;
 	}
-
+	
 	@Override
-	public void setCancelled(boolean value) {
+	public void setCancelled(final boolean value) {
 		cancelled = false;
 	}
 	

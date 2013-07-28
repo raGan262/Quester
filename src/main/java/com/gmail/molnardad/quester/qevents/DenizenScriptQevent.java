@@ -23,12 +23,12 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("DSCRIPT")
 public final class DenizenScriptQevent extends Qevent {
-
+	
 	private final String script;
 	private final int npc;
-	private final Map<String,String> context;
+	private final Map<String, String> context;
 	
-	public DenizenScriptQevent(String script, int npc, Map<String, String> context) {
+	public DenizenScriptQevent(final String script, final int npc, final Map<String, String> context) {
 		this.script = script;
 		this.npc = npc;
 		this.context = context;
@@ -36,10 +36,10 @@ public final class DenizenScriptQevent extends Qevent {
 	
 	@Override
 	public String info() {
-		String npcStr = (npc >= 0) ? npc+"" : "none";
-		StringBuilder csb = new StringBuilder();
+		final String npcStr = npc >= 0 ? npc + "" : "none";
+		final StringBuilder csb = new StringBuilder();
 		if(context != null) {
-			for(String ck : context.keySet()) {
+			for(final String ck : context.keySet()) {
 				csb.append(", ").append(ck).append(':').append(context.get(ck));
 			}
 		}
@@ -48,12 +48,12 @@ public final class DenizenScriptQevent extends Qevent {
 		}
 		return script + "; NPC: " + npcStr + "; CONT: " + csb.toString();
 	}
-
+	
 	@Override
-	protected void run(Player player, Quester plugin) {
+	protected void run(final Player player, final Quester plugin) {
 		try {
 			if(Quester.denizen) {
-				Denizen den = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+				final Denizen den = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 				if(den == null) {
 					throw new CustomException("Denizen plugin not found.");
 				}
@@ -61,9 +61,9 @@ public final class DenizenScriptQevent extends Qevent {
 					dNPC denNpc = null;
 					try {
 						denNpc = den.getNPCRegistry().getDenizen(CitizensAPI.getNPCRegistry().getById(npc));
-					} 
-					catch (Exception ignore) {}
-					TaskScriptContainer taskScript = ScriptRegistry.getScriptContainerAs(script, TaskScriptContainer.class);
+					}
+					catch (final Exception ignore) {}
+					final TaskScriptContainer taskScript = ScriptRegistry.getScriptContainerAs(script, TaskScriptContainer.class);
 					if(npc >= 0 && denNpc == null) {
 						throw new CustomException("Couldn't resolve DENIZEN npc.");
 					}
@@ -72,24 +72,22 @@ public final class DenizenScriptQevent extends Qevent {
 					}
 				}
 			}
-		} 
-		catch (Exception e) {
+		}
+		catch (final Exception e) {
 			Quester.log.warning("Failed to run DSCRIPT event. Info: " + e.getMessage());
 		}
 	}
-
-	@QCommand(
-			min = 1,
-			usage = "<script> [npc ID] [context key:value]...")
-	public static Qevent fromCommand(QCommandContext context) throws QCommandException {
-		String script = context.getString(0);
+	
+	@QCommand(min = 1, usage = "<script> [npc ID] [context key:value]...")
+	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
+		final String script = context.getString(0);
 		int npc = -1;
 		Map<String, String> cont = null;
 		if(context.length() > 1) {
 			npc = context.getInt(1);
 			if(context.length() > 2) {
 				String[] ss;
-				for(int i=2; i<context.length(); i++) {
+				for(int i = 2; i < context.length(); i++) {
 					cont = new HashMap<String, String>();
 					ss = context.getString(i).split(":");
 					if(ss.length != 2) {
@@ -101,22 +99,22 @@ public final class DenizenScriptQevent extends Qevent {
 		}
 		return new DenizenScriptQevent(script, npc, cont);
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setString("script", script);
 		if(npc >= 0) {
 			key.setInt("npc", npc);
 		}
 		if(context != null) {
-			StorageKey subKey = key.getSubKey("context");
-			for(String s : context.keySet()) {
+			final StorageKey subKey = key.getSubKey("context");
+			for(final String s : context.keySet()) {
 				subKey.setString(s, context.get(s));
 			}
 		}
 	}
 	
-	protected static Qevent load(StorageKey key) {
+	protected static Qevent load(final StorageKey key) {
 		String scrpt;
 		int npc;
 		Map<String, String> context = null;
@@ -128,7 +126,7 @@ public final class DenizenScriptQevent extends Qevent {
 		if(key.getSubKey("context").hasSubKeys()) {
 			context = new HashMap<String, String>();
 			String s = null;
-			for(StorageKey k : key.getSubKey("context").getSubKeys()) {
+			for(final StorageKey k : key.getSubKey("context").getSubKeys()) {
 				s = k.getString("", null);
 				if(s != null) {
 					context.put(k.getName(), s);

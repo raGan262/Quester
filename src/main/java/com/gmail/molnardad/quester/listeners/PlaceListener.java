@@ -19,60 +19,61 @@ import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.Quest;
 
 public class PlaceListener implements Listener {
-
-	private ProfileManager profMan;
 	
-	public PlaceListener(Quester plugin) {
-		this.profMan = plugin.getProfileManager();
+	private final ProfileManager profMan;
+	
+	public PlaceListener(final Quester plugin) {
+		profMan = plugin.getProfileManager();
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onBreak(BlockPlaceEvent event) {
-	    Player player = event.getPlayer();
-    	Quest quest = profMan.getProfile(player.getName()).getQuest();
-	    if(quest != null) {
-	    	if(!quest.allowedWorld(player.getWorld().getName().toLowerCase()))
-	    		return;
-	    	List<Objective> objs = quest.getObjectives();
-			Block block = event.getBlock();
-	    	if(QConfiguration.brkSubOnPlace) {
-		    	for(int i = 0; i < objs.size(); i++) {
-		    		// check if Objective is type BREAK
-		    		if(objs.get(i).getType().equalsIgnoreCase("BREAK")) {
-		    			if(!profMan.isObjectiveActive(player, i)){
-		    				continue;
-		    			}
-			    		BreakObjective obj = (BreakObjective)objs.get(i);
-		    			// compare block ID
-		    			if(block.getTypeId() == obj.getMaterial().getId()) {
-		    				// if DATA >= 0 compare
-		    				if(obj.getData() < 0 || obj.getData() == block.getData()) {
-		    					profMan.incProgress(player, ActionSource.listenerSource(event), i, -1);
-		    					break;
-		    				}
-		    			}
-		    		}
-		    	}
-	    	}
-	    	for(int i = 0; i < objs.size(); i++) {
-	    		// check if Objective is type PLACE
-	    		if(objs.get(i).getType().equalsIgnoreCase("PLACE")) {
-	    			if(!profMan.isObjectiveActive(player, i)){
-	    				continue;
-	    			}
-		    		PlaceObjective obj = (PlaceObjective)objs.get(i);
-	    			// compare block ID
-	    			if(block.getTypeId() == obj.getMaterial().getId()) {
-	    				// if DATA >= 0 compare
-	    				if(obj.getData() < 0 || obj.getData() == block.getData()) {
-	    					profMan.incProgress(player, ActionSource.listenerSource(event), i);
-	    					return;
-	    				}
-	    			}
-	    		}
-	    	}
-	    	
-	    }
+	public void onBreak(final BlockPlaceEvent event) {
+		final Player player = event.getPlayer();
+		final Quest quest = profMan.getProfile(player.getName()).getQuest();
+		if(quest != null) {
+			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
+				return;
+			}
+			final List<Objective> objs = quest.getObjectives();
+			final Block block = event.getBlock();
+			if(QConfiguration.brkSubOnPlace) {
+				for(int i = 0; i < objs.size(); i++) {
+					// check if Objective is type BREAK
+					if(objs.get(i).getType().equalsIgnoreCase("BREAK")) {
+						if(!profMan.isObjectiveActive(player, i)) {
+							continue;
+						}
+						final BreakObjective obj = (BreakObjective) objs.get(i);
+						// compare block ID
+						if(block.getTypeId() == obj.getMaterial().getId()) {
+							// if DATA >= 0 compare
+							if(obj.getData() < 0 || obj.getData() == block.getData()) {
+								profMan.incProgress(player, ActionSource.listenerSource(event), i, -1);
+								break;
+							}
+						}
+					}
+				}
+			}
+			for(int i = 0; i < objs.size(); i++) {
+				// check if Objective is type PLACE
+				if(objs.get(i).getType().equalsIgnoreCase("PLACE")) {
+					if(!profMan.isObjectiveActive(player, i)) {
+						continue;
+					}
+					final PlaceObjective obj = (PlaceObjective) objs.get(i);
+					// compare block ID
+					if(block.getTypeId() == obj.getMaterial().getId()) {
+						// if DATA >= 0 compare
+						if(obj.getData() < 0 || obj.getData() == block.getData()) {
+							profMan.incProgress(player, ActionSource.listenerSource(event), i);
+							return;
+						}
+					}
+				}
+			}
+			
+		}
 	}
 	
 }

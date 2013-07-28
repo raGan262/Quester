@@ -36,79 +36,81 @@ public class Util {
 	private static Random randGen = new Random();
 	
 	// LINE
-	public static String line(ChatColor lineColor) {
+	public static String line(final ChatColor lineColor) {
 		return line(lineColor, "", lineColor);
 	}
 	
-	public static String line(ChatColor lineColor, String label) {
+	public static String line(final ChatColor lineColor, final String label) {
 		return line(lineColor, label, lineColor);
 	}
 	
-	public static String line(ChatColor lineColor, String label, ChatColor labelColor) {
+	public static String line(final ChatColor lineColor, final String label, final ChatColor labelColor) {
 		String temp;
 		if(!label.isEmpty()) {
 			temp = "[" + labelColor + label.trim() + lineColor + "]";
-		} else {
+		}
+		else {
 			temp = "" + lineColor + lineColor;
 		}
-		String line1 = "-------------------------".substring((int) Math.ceil((temp.trim().length()-2)/2));
-		String line2 = "-------------------------".substring((int) Math.floor((temp.trim().length()-2)/2));
+		final String line1 = "-------------------------".substring((int) Math.ceil((temp.trim().length() - 2) / 2));
+		final String line2 = "-------------------------".substring((int) Math.floor((temp.trim().length() - 2) / 2));
 		return lineColor + line1 + temp + line2;
 	}
 	
-	public static Location getLoc(CommandSender sender, String arg) throws IllegalArgumentException {
+	public static Location getLoc(final CommandSender sender, final String arg) throws IllegalArgumentException {
 		return getLoc(sender, arg, new QuesterLang(null));
 	}
 	
-	public static Location getLoc(CommandSender sender, String arg, QuesterLang lang) throws IllegalArgumentException {
+	public static Location getLoc(final CommandSender sender, final String arg, final QuesterLang lang) throws IllegalArgumentException {
 		
-		String args[] = arg.split(";");
+		final String args[] = arg.split(";");
 		Location loc;
-		if(args.length < 1)
+		if(args.length < 1) {
 			throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_INVALID);
+		}
 		
 		if(args[0].equalsIgnoreCase(QConfiguration.locLabelHere)) {
 			if(sender instanceof Player) {
 				return ((Player) sender).getLocation();
 			}
 			else {
-				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_HERE
-						.replaceAll("%here", QConfiguration.locLabelHere));
+				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_HERE.replaceAll("%here", QConfiguration.locLabelHere));
 			}
 		}
 		else if(args[0].equalsIgnoreCase(QConfiguration.locLabelBlock)) {
 			if(sender instanceof Player) {
-				Block block = ((Player) sender).getTargetBlock(null, 5);
+				final Block block = ((Player) sender).getTargetBlock(null, 5);
 				if(block == null) {
 					throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_NOBLOCK);
 				}
 				return block.getLocation();
 			}
 			else {
-				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_BLOCK
-						.replaceAll("%block", QConfiguration.locLabelBlock));
+				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_BLOCK.replaceAll("%block", QConfiguration.locLabelBlock));
 			}
 		}
 		else if(args[0].equalsIgnoreCase(QConfiguration.locLabelPlayer)) {
 			return null;
 		}
 		
-		if(args.length > 3){
+		if(args.length > 3) {
 			double x, y, z;
 			try {
 				x = Double.parseDouble(args[0]);
 				y = Double.parseDouble(args[1]);
 				z = Double.parseDouble(args[2]);
-			} catch (NumberFormatException e) {
+			}
+			catch (final NumberFormatException e) {
 				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_COORDS_INVALID);
 			}
 			if(y < 0) {
 				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_COORDS_INVALID);
 			}
 			if(sender instanceof Player && args[3].equalsIgnoreCase(QConfiguration.worldLabelThis)) {
-				loc = new Location(((Player)sender).getWorld(), x, y, z);
-			} else {
-				World world = Bukkit.getServer().getWorld(args[3]);
+				loc = new Location(((Player) sender).getWorld(), x, y, z);
+			}
+			else {
+				final World world = Bukkit.getServer().getWorld(args[3]);
 				if(world == null) {
 					throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_WORLD_INVALID);
 				}
@@ -120,28 +122,30 @@ public class Util {
 		throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_INVALID);
 	}
 	
-	public static String implode(String[] strs) {
+	public static String implode(final String[] strs) {
 		return implode(strs, ' ', 0);
 	}
 	
-	public static String implode(String[] strs, char glue) {
+	public static String implode(final String[] strs, final char glue) {
 		return implode(strs, glue, 0);
 	}
 	
-	public static String implode(String[] strs, int start) {
+	public static String implode(final String[] strs, final int start) {
 		return implode(strs, ' ', start);
 	}
 	
-	public static String implode(String[] strs, char glue, int start) {
-		StringBuilder result = new StringBuilder();
+	public static String implode(final String[] strs, final char glue, final int start) {
+		final StringBuilder result = new StringBuilder();
 		String gl = " ";
-		if(glue != ' ')
+		if(glue != ' ') {
 			gl = glue + gl;
+		}
 		boolean first = true;
 		for(int i = start; i < strs.length; i++) {
 			if(first) {
 				first = false;
-			} else {
+			}
+			else {
 				result.append(gl);
 			}
 			result.append(strs[i]);
@@ -149,15 +153,15 @@ public class Util {
 		return result.toString();
 	}
 	
-	
-	//whatever
-	public static String implodeInt(int[] ints, String glue) {
-		StringBuilder result = new StringBuilder();
+	// whatever
+	public static String implodeInt(final int[] ints, final String glue) {
+		final StringBuilder result = new StringBuilder();
 		boolean first = true;
 		for(int i = 0; i < ints.length; i++) {
 			if(first) {
 				first = false;
-			} else {
+			}
+			else {
 				result.append(glue);
 			}
 			result.append(ints[i]);
@@ -165,13 +169,14 @@ public class Util {
 		return result.toString();
 	}
 	
-	public static String implodeInt(Integer[] ints, String glue) {
-		StringBuilder result = new StringBuilder();
+	public static String implodeInt(final Integer[] ints, final String glue) {
+		final StringBuilder result = new StringBuilder();
 		boolean first = true;
 		for(int i = 0; i < ints.length; i++) {
 			if(first) {
 				first = false;
-			} else {
+			}
+			else {
 				result.append(glue);
 			}
 			result.append(ints[i]);
@@ -179,51 +184,55 @@ public class Util {
 		return result.toString();
 	}
 	
-	public static boolean permCheck(CommandSender sender, String perm, boolean message, QuesterLang lang) {
+	public static boolean permCheck(final CommandSender sender, final String perm, final boolean message, final QuesterLang lang) {
 		if(perm.isEmpty()) {
 			return true;
 		}
 		if(sender.isOp() || sender.hasPermission(QConfiguration.PERM_ADMIN)) {
 			return true;
 		}
-		for(String s : perm.split("\\|\\|")) {
+		for(final String s : perm.split("\\|\\|")) {
 			Quester.log.info(s);
 			if(sender.hasPermission(s)) {
 				return true;
 			}
 		}
-		if(message)
+		if(message) {
 			sender.sendMessage(ChatColor.RED + lang.MSG_PERMS);
+		}
 		return false;
 	}
 	
-	public static String serializeEnchants(Map<Integer, Integer> enchs) {
+	public static String serializeEnchants(final Map<Integer, Integer> enchs) {
 		String result = "";
 		boolean first = true;
-		for(int key : enchs.keySet()) {
-			if(!first)
+		for(final int key : enchs.keySet()) {
+			if(!first) {
 				result += ",";
-			else
+			}
+			else {
 				first = false;
+			}
 			result += key + ":" + enchs.get(key);
 		}
-		if(result.isEmpty())
+		if(result.isEmpty()) {
 			return null;
+		}
 		return result;
 	}
 	
-	public static Map<Integer, Integer> parseEnchants(String arg) throws IllegalArgumentException {
+	public static Map<Integer, Integer> parseEnchants(final String arg) throws IllegalArgumentException {
 		return parseEnchants(arg, new QuesterLang(null));
 	}
 	
-	public static Map<Integer, Integer> parseEnchants(String arg, QuesterLang lang) throws IllegalArgumentException {
+	public static Map<Integer, Integer> parseEnchants(final String arg, final QuesterLang lang) throws IllegalArgumentException {
 		
-		Map<Integer, Integer> enchs = new HashMap<Integer, Integer>();
-		String[] args = arg.split(",");
+		final Map<Integer, Integer> enchs = new HashMap<Integer, Integer>();
+		final String[] args = arg.split(",");
 		for(int i = 0; i < args.length; i++) {
 			Enchantment en = null;
 			int lvl = 0;
-			String[] s = args[i].split(":");
+			final String[] s = args[i].split(":");
 			if(s.length != 2) {
 				throw new IllegalArgumentException(lang.ERROR_CMD_ENCH_INVALID);
 			}
@@ -231,8 +240,9 @@ public class Util {
 			if(en == null) {
 				en = Enchantment.getById(Integer.parseInt(s[0]));
 			}
-			if(en == null)
+			if(en == null) {
 				throw new IllegalArgumentException(lang.ERROR_CMD_ENCH_INVALID);
+			}
 			lvl = Integer.parseInt(s[1]);
 			if(lvl < 1) {
 				throw new IllegalArgumentException(lang.ERROR_CMD_ENCH_LEVEL);
@@ -240,94 +250,105 @@ public class Util {
 			
 			enchs.put(en.getId(), lvl);
 		}
-			
+		
 		return enchs;
 	}
 	
-	public static String serializeItem(Material mat, int data) {
-		if(mat == null)
+	public static String serializeItem(final Material mat, final int data) {
+		if(mat == null) {
 			return null;
+		}
 		
 		return serializeItem(mat.getId(), data);
 	}
 	
-	public static String serializeItem(int mat, int data) {
+	public static String serializeItem(final int mat, final int data) {
 		String str = "";
-		if(data >= 0)
-			str = ":" + (short)data;
-		return (mat + str);
+		if(data >= 0) {
+			str = ":" + (short) data;
+		}
+		return mat + str;
 	}
 	
-	public static int[] parseItem(String arg) throws IllegalArgumentException {
+	public static int[] parseItem(final String arg) throws IllegalArgumentException {
 		return parseItem(arg, new QuesterLang(null));
 	}
 	
-	public static int[] parseItem(String arg, QuesterLang lang) throws IllegalArgumentException {
+	public static int[] parseItem(final String arg, final QuesterLang lang) throws IllegalArgumentException {
 		
-		int[] itm = new int[2];
-		String[] s = arg.split(":");
+		final int[] itm = new int[2];
+		final String[] s = arg.split(":");
 		if(s.length > 2) {
 			throw new IllegalArgumentException(lang.ERROR_CMD_ITEM_UNKNOWN);
 		}
-		Material mat = Material.getMaterial(s[0].toUpperCase());
+		final Material mat = Material.getMaterial(s[0].toUpperCase());
 		if(mat == null) {
 			try {
 				itm[0] = Integer.parseInt(s[0]);
-			} catch (NumberFormatException e) {
+			}
+			catch (final NumberFormatException e) {
 				throw new IllegalArgumentException(lang.ERROR_CMD_ITEM_UNKNOWN);
 			}
-			if(Material.getMaterial(itm[0]) == null)
+			if(Material.getMaterial(itm[0]) == null) {
 				throw new IllegalArgumentException(lang.ERROR_CMD_ITEM_UNKNOWN);
-		} else {
+			}
+		}
+		else {
 			itm[0] = mat.getId();
 		}
 		if(s.length < 2) {
 			itm[1] = -1;
-		} else {
+		}
+		else {
 			try {
 				itm[1] = Integer.parseInt(s[1]);
-			} catch (NumberFormatException e) {
+			}
+			catch (final NumberFormatException e) {
 				throw new IllegalArgumentException(lang.ERROR_CMD_ITEM_UNKNOWN);
 			}
 		}
 		return itm;
 	}
 	
-	public static String serializeColor(DyeColor col) {
-		if(col == null)
+	public static String serializeColor(final DyeColor col) {
+		if(col == null) {
 			return null;
+		}
 		return "" + col.getDyeData();
 	}
 	
-	public static DyeColor parseColor(String arg) {
+	public static DyeColor parseColor(final String arg) {
 		DyeColor col = null;
 		try {
 			col = DyeColor.valueOf(arg.toUpperCase());
-		} catch (Exception ignore) {}
+		}
+		catch (final Exception ignore) {}
 		if(col == null) {
 			try {
 				col = DyeColor.getByDyeData(Byte.parseByte(arg));
-			} catch (NumberFormatException ignore) {}
+			}
+			catch (final NumberFormatException ignore) {}
 		}
 		return col;
 	}
 	
-	public static String serializeEffect(PotionEffect eff) {
-		if(eff == null)
+	public static String serializeEffect(final PotionEffect eff) {
+		if(eff == null) {
 			return null;
-		return eff.getType().getId() + ";" + eff.getDuration()/20.0 + ";" + eff.getAmplifier();
+		}
+		return eff.getType().getId() + ";" + eff.getDuration() / 20.0 + ";" + eff.getAmplifier();
 	}
 	
-	public static PotionEffect parseEffect(String arg) throws IllegalArgumentException {
+	public static PotionEffect parseEffect(final String arg) throws IllegalArgumentException {
 		return parseEffect(arg, new QuesterLang(null));
 	}
 	
-	public static PotionEffect parseEffect(String arg, QuesterLang lang) throws IllegalArgumentException {
+	public static PotionEffect parseEffect(final String arg, final QuesterLang lang) throws IllegalArgumentException {
 		
 		PotionEffectType type = null;
-		double dur = 0; 
+		double dur = 0;
 		int amp = 0;
-		String[] s = arg.split(";");
+		final String[] s = arg.split(";");
 		if(s.length > 3 || s.length < 2) {
 			throw new IllegalArgumentException(lang.ERROR_CMD_EFFECT_UNKNOWN + "1");
 		}
@@ -335,117 +356,157 @@ public class Util {
 		if(type == null) {
 			try {
 				type = PotionEffectType.getById(Integer.parseInt(s[0]));
-			} catch (NumberFormatException e) {
+			}
+			catch (final NumberFormatException e) {
 				throw new IllegalArgumentException(lang.ERROR_CMD_EFFECT_UNKNOWN + "2");
 			}
-			if(type == null)
+			if(type == null) {
 				throw new IllegalArgumentException(lang.ERROR_CMD_EFFECT_UNKNOWN + "3");
+			}
 		}
 		try {
 			dur = Double.parseDouble(s[1]);
-			if(dur < 1)
+			if(dur < 1) {
 				throw new NumberFormatException();
+			}
 			dur *= 20;
-		} catch (NumberFormatException e) {
+		}
+		catch (final NumberFormatException e) {
 			throw new IllegalArgumentException(lang.ERROR_CMD_EFFECT_DURATION);
 		}
 		try {
 			if(s.length > 2) {
 				amp = Integer.parseInt(s[2]);
-				if(amp < 0)
+				if(amp < 0) {
 					throw new NumberFormatException();
+				}
 			}
-		} catch (NumberFormatException e) {
+		}
+		catch (final NumberFormatException e) {
 			throw new IllegalArgumentException(lang.ERROR_CMD_EFFECT_AMPLIFIER);
 		}
-		return new PotionEffect(type, (int)dur, amp);
+		return new PotionEffect(type, (int) dur, amp);
 	}
 	
-	public static String enchantName(int id, int lvl) {
+	public static String enchantName(final int id, final int lvl) {
 		String result = "Unknown";
 		switch(id) {
-			case 0 : result = "Protection";
-					break;
-			case 1 : result = "Fire Protection";
-					break;
-			case 2 : result = "Feather Falling";
-					break;
-			case 3 : result = "Blast Protection";
-					break;
-			case 4 : result = "Projectile Protection";
-					break;
-			case 5 : result = "Respiration";
-					break;
-			case 6 : result = "Aqua Affinity";
-					break;
-			case 7 : result = "Thorns";
-					break;
-			case 16 : result = "Sharpness";
-					break;
-			case 17 : result = "Smite";
-					break;
-			case 18 : result = "Bane of Arthropods";
-					break;
-			case 19 : result = "Knockback";
-					break;
-			case 20 : result = "Fire Aspect";
-					break;
-			case 21 : result = "Looting";
-					break;
-			case 32 : result = "Efficiency";
-					break;
-			case 33 : result = "Silk Touch";
-					break;
-			case 34 : result = "Unbreaking";
-					break;
-			case 35 : result = "Fortune";
-					break;
-			case 48 : result = "Power";
-					break;
-			case 49 : result = "Punch";
-					break;
-			case 50 : result = "Flame";
-					break;
-			case 51 : result = "Infinity";
-					break;
-		} 
+			case 0:
+				result = "Protection";
+				break;
+			case 1:
+				result = "Fire Protection";
+				break;
+			case 2:
+				result = "Feather Falling";
+				break;
+			case 3:
+				result = "Blast Protection";
+				break;
+			case 4:
+				result = "Projectile Protection";
+				break;
+			case 5:
+				result = "Respiration";
+				break;
+			case 6:
+				result = "Aqua Affinity";
+				break;
+			case 7:
+				result = "Thorns";
+				break;
+			case 16:
+				result = "Sharpness";
+				break;
+			case 17:
+				result = "Smite";
+				break;
+			case 18:
+				result = "Bane of Arthropods";
+				break;
+			case 19:
+				result = "Knockback";
+				break;
+			case 20:
+				result = "Fire Aspect";
+				break;
+			case 21:
+				result = "Looting";
+				break;
+			case 32:
+				result = "Efficiency";
+				break;
+			case 33:
+				result = "Silk Touch";
+				break;
+			case 34:
+				result = "Unbreaking";
+				break;
+			case 35:
+				result = "Fortune";
+				break;
+			case 48:
+				result = "Power";
+				break;
+			case 49:
+				result = "Punch";
+				break;
+			case 50:
+				result = "Flame";
+				break;
+			case 51:
+				result = "Infinity";
+				break;
+		}
 		switch(lvl) {
-			case 1 : result = result + " I";
-					break;
-			case 2 : result = result + " II";
-					break;
-			case 3 : result = result + " III";
-					break;
-			case 4 : result = result + " IV";
-					break;
-			case 5 : result = result + " V";
-					break;
-			case 6 : result = result + " VI";
-					break;
-			case 7 : result = result + " VII";
-					break;
-			case 8 : result = result + " VIII";
-					break;
-			case 9 : result = result + " IX";
-					break;
-			case 10 : result = result + " X";
-					break;
-			default : result = result + " " + lvl;
+			case 1:
+				result = result + " I";
+				break;
+			case 2:
+				result = result + " II";
+				break;
+			case 3:
+				result = result + " III";
+				break;
+			case 4:
+				result = result + " IV";
+				break;
+			case 5:
+				result = result + " V";
+				break;
+			case 6:
+				result = result + " VI";
+				break;
+			case 7:
+				result = result + " VII";
+				break;
+			case 8:
+				result = result + " VIII";
+				break;
+			case 9:
+				result = result + " IX";
+				break;
+			case 10:
+				result = result + " X";
+				break;
+			default:
+				result = result + " " + lvl;
 		}
 		return result;
 	}
 	
-	public static String serializeEntity(EntityType ent) {
-		if(ent == null)
+	public static String serializeEntity(final EntityType ent) {
+		if(ent == null) {
 			return null;
+		}
 		return "" + ent.getTypeId();
 	}
 	
-	public static EntityType parseEntity(String arg) throws IllegalArgumentException {
+	public static EntityType parseEntity(final String arg) throws IllegalArgumentException {
 		return parseEntity(arg, new QuesterLang(null));
 	}
 	
-	public static EntityType parseEntity(String arg, QuesterLang lang) throws IllegalArgumentException {
+	public static EntityType parseEntity(final String arg, final QuesterLang lang) throws IllegalArgumentException {
 		EntityType ent = EntityType.fromName(arg.toUpperCase());
 		if(ent == null) {
 			ent = EntityType.fromId(Integer.parseInt(arg));
@@ -456,38 +517,39 @@ public class Util {
 		return ent;
 	}
 	
-	public static Sound parseSound(String arg) {
+	public static Sound parseSound(final String arg) {
 		Sound sound = null;
 		try {
 			sound = Sound.valueOf(arg.toUpperCase());
 		}
-		catch (Exception ignore) {}
+		catch (final Exception ignore) {}
 		return sound;
 	}
 	
-	public static Set<Integer> parsePrerequisites(String[] args, int from) {
-		Set<Integer> result = new HashSet<Integer>();
-		for(int i=from; i < args.length; i++) {
+	public static Set<Integer> parsePrerequisites(final String[] args, final int from) {
+		final Set<Integer> result = new HashSet<Integer>();
+		for(int i = from; i < args.length; i++) {
 			try {
 				result.add(Integer.parseInt(args[i]));
-			} catch (Exception ignore) {}
+			}
+			catch (final Exception ignore) {}
 		}
 		return result;
 	}
 	
-	public static Set<Integer> deserializePrerequisites(String arg) throws NumberFormatException {
-		Set<Integer> result = new HashSet<Integer>();
-		String[] args = arg.split(";");
-		for(int i=0; i < args.length; i++) {
+	public static Set<Integer> deserializePrerequisites(final String arg) throws NumberFormatException {
+		final Set<Integer> result = new HashSet<Integer>();
+		final String[] args = arg.split(";");
+		for(int i = 0; i < args.length; i++) {
 			result.add(Integer.parseInt(args[i]));
 		}
 		return result;
 	}
 	
-	public static String serializePrerequisites(Set<Integer> prereq, String glue) {
+	public static String serializePrerequisites(final Set<Integer> prereq, final String glue) {
 		String result = "";
 		boolean first = true;
-		for(int i : prereq) {
+		for(final int i : prereq) {
 			if(first) {
 				result += i;
 				first = false;
@@ -499,31 +561,32 @@ public class Util {
 		return result;
 	}
 	
-	public static String serializePrerequisites(Set<Integer> prereq) {
+	public static String serializePrerequisites(final Set<Integer> prereq) {
 		return serializePrerequisites(prereq, ";");
 	}
 	
-	public static int[] deserializeOccasion(String arg, QuesterLang lang) throws IllegalArgumentException{
-		int[] arr = new int[2];
+	public static int[] deserializeOccasion(final String arg, final QuesterLang lang) throws IllegalArgumentException {
+		final int[] arr = new int[2];
 		arr[0] = -4;
 		arr[1] = 0;
-		String[] s = arg.split(":");
+		final String[] s = arg.split(":");
 		if(s.length > 2 || s.length < 1) {
 			throw new IllegalArgumentException(lang.ERROR_CMD_OCC_INCORRECT_FORM);
 		}
 		try {
 			arr[0] = Integer.parseInt(s[0]);
 		}
-		catch (NumberFormatException ignore) {}
+		catch (final NumberFormatException ignore) {}
 		if(s.length > 1) {
 			arr[1] = Integer.parseInt(s[1]);
 		}
-		if(arr[0] < -3 || arr[1] < 0)
+		if(arr[0] < -3 || arr[1] < 0) {
 			throw new IllegalArgumentException(lang.ERROR_CMD_OCC_INCORRECT);
+		}
 		return arr;
-	} 
+	}
 	
-	public static String serializeOccasion(int occ, int del) {
+	public static String serializeOccasion(final int occ, final int del) {
 		if(del != 0) {
 			return occ + ":" + del;
 		}
@@ -532,9 +595,9 @@ public class Util {
 		}
 	}
 	
-	public static int parseAction(String arg) {
+	public static int parseAction(final String arg) {
 		try {
-			int i = Integer.parseInt(arg);
+			final int i = Integer.parseInt(arg);
 			if(i < 0 || i > 3) {
 				return 0;
 			}
@@ -542,7 +605,7 @@ public class Util {
 				return i;
 			}
 		}
-		catch (NumberFormatException ignore) {}
+		catch (final NumberFormatException ignore) {}
 		if(arg.equalsIgnoreCase("left")) {
 			return 1;
 		}
@@ -555,7 +618,7 @@ public class Util {
 		return 0;
 	}
 	
-	public static String flagArgument(char flag, String arg) {
+	public static String flagArgument(final char flag, final String arg) {
 		if(arg.startsWith(flag + ":") && arg.length() > 2) {
 			return arg.substring(2);
 		}
@@ -564,71 +627,76 @@ public class Util {
 		}
 	}
 	
-	public static boolean isQuestItem(ItemStack item) {
+	public static boolean isQuestItem(final ItemStack item) {
 		try {
-			List<String> lore = item.getItemMeta().getLore();
-			return ChatColor.stripColor(lore.get(0)).equalsIgnoreCase("Quest Item")
-					|| ChatColor.stripColor(lore.get(lore.size()-1)).equalsIgnoreCase("Quest Item");
+			final List<String> lore = item.getItemMeta().getLore();
+			return ChatColor.stripColor(lore.get(0)).equalsIgnoreCase("Quest Item") || ChatColor.stripColor(lore.get(lore.size() - 1)).equalsIgnoreCase("Quest Item");
 		}
-		catch (Exception e) {
+		catch (final Exception e) {
 			return false;
 		}
 	}
 	
-	public static boolean isPlayer(Player player) {
+	public static boolean isPlayer(final Player player) {
 		return !player.hasMetadata("NPC");
 	}
 	
 	// LOCATION SERIALIZATION
 	
-	public static String displayLocation(Location loc) {
+	public static String displayLocation(final Location loc) {
 		String str = "";
 		
-		if(loc == null)
+		if(loc == null) {
 			return null;
+		}
 		
 		str = String.format(Locale.ENGLISH, "%.1f;%.1f;%.1f;%s", loc.getX(), loc.getY(), loc.getZ(), loc.getWorld().getName());
 		
 		return str;
 	}
 	
-	public static String serializeLocString(Location loc) {
+	public static String serializeLocString(final Location loc) {
 		String str = "";
 		
-		if(loc == null)
+		if(loc == null) {
 			return null;
+		}
 		
 		str = String.format(Locale.ENGLISH, "%.2f;%.2f;%.2f;%s;%.2f;%.2f;", loc.getX(), loc.getY(), loc.getZ(), loc.getWorld().getName(), loc.getYaw(), loc.getPitch());
 		
 		return str;
 	}
 	
-	public static Location deserializeLocString(String str) {
+	public static Location deserializeLocString(final String str) {
 		double x, y, z;
 		float yaw = 0;
 		float pitch = 0;
 		World world = null;
 		Location loc = null;
 		
-		String[] split = str.split(";");
+		final String[] split = str.split(";");
 		
-		if(str.length() < 4) 
+		if(str.length() < 4) {
 			return null;
-		
+		}
 		
 		try {
 			x = Double.parseDouble(split[0]);
 			y = Double.parseDouble(split[1]);
 			z = Double.parseDouble(split[2]);
 			world = Bukkit.getWorld(split[3]);
-			if(world == null)
+			if(world == null) {
 				throw new IllegalArgumentException();
-			if(split.length > 4)
+			}
+			if(split.length > 4) {
 				yaw = Float.parseFloat(split[4]);
-			if(split.length > 5)
+			}
+			if(split.length > 5) {
 				pitch = Float.parseFloat(split[5]);
+			}
 			loc = new Location(world, x, y, z, yaw, pitch);
-		} catch (Exception e) {
+		}
+		catch (final Exception e) {
 			if(QConfiguration.debug) {
 				Quester.log.severe("Error when deserializing location.");
 			}
@@ -639,36 +707,37 @@ public class Util {
 	
 	// MOVE LOCATION
 	
-	public static Location move(Location loc, double d) {
-		if(d == 0)
+	public static Location move(final Location loc, final double d) {
+		if(d == 0) {
 			return loc;
-		Location newLoc = loc.clone();
-		Vector v = new Vector(randGen.nextDouble()*d*2 - d, 0, randGen.nextDouble()*d*2 - d);
+		}
+		final Location newLoc = loc.clone();
+		final Vector v = new Vector(randGen.nextDouble() * d * 2 - d, 0, randGen.nextDouble() * d * 2 - d);
 		newLoc.add(v);
 		
 		return newLoc;
 	}
-
+	
 	// MOVE LIST UNIT
 	
-	public static <T> void moveListUnit(List<T> list, int which, int where) {
-		T temp = list.get(which);
-		int increment = (which > where ? -1 : 1);
-		for(int i = which; i != where; i+=increment) {
-			list.set(i, list.get(i+increment));
+	public static <T> void moveListUnit(final List<T> list, final int which, final int where) {
+		final T temp = list.get(which);
+		final int increment = which > where ? -1 : 1;
+		for(int i = which; i != where; i += increment) {
+			list.set(i, list.get(i + increment));
 		}
 		list.set(where, temp);
 	}
 	
 	// INVENTORY
-
-	public static Inventory createInventory(Player player) {
+	
+	public static Inventory createInventory(final Player player) {
 		
-		Inventory inv = Bukkit.getServer().createInventory(null, InventoryType.PLAYER);
-		ItemStack[] contents = player.getInventory().getContents();
+		final Inventory inv = Bukkit.getServer().createInventory(null, InventoryType.PLAYER);
+		final ItemStack[] contents = player.getInventory().getContents();
 		
-		for(int i = 0; i < contents.length; i++){
-			if(contents[i] != null){
+		for(int i = 0; i < contents.length; i++) {
+			if(contents[i] != null) {
 				inv.setItem(i, contents[i].clone());
 			}
 		}

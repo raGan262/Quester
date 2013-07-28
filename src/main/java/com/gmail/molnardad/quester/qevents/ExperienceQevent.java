@@ -13,26 +13,26 @@ import com.gmail.molnardad.quester.utils.ExpManager;
 
 @QElement("EXP")
 public final class ExperienceQevent extends Qevent {
-
+	
 	private final int amount;
 	private final boolean isLevel;
 	
-	public ExperienceQevent(int amt, boolean isLevel) {
-		this.amount = amt;
+	public ExperienceQevent(final int amt, final boolean isLevel) {
+		amount = amt;
 		this.isLevel = isLevel;
 	}
 	
 	@Override
 	public String info() {
-		String lvl = isLevel ? " (-l)" : "";
+		final String lvl = isLevel ? " (-l)" : "";
 		return String.valueOf(amount) + lvl;
 	}
-
+	
 	@Override
-	protected void run(Player player, Quester plugin) {
- 		ExpManager expMan = new ExpManager(player);
+	protected void run(final Player player, final Quester plugin) {
+		final ExpManager expMan = new ExpManager(player);
 		if(isLevel) {
-			int lvl = expMan.getLevelForExp(expMan.getCurrentExp());
+			final int lvl = expMan.getLevelForExp(expMan.getCurrentExp());
 			if(lvl <= -amount) {
 				expMan.setExp(0);
 			}
@@ -44,13 +44,10 @@ public final class ExperienceQevent extends Qevent {
 			expMan.changeExp(amount);
 		}
 	}
-
-	@QCommand(
-			min = 1,
-			max = 1,
-			usage = "<amount> (-l)")
-	public static Qevent fromCommand(QCommandContext context) throws QCommandException {
-		int amt = context.getInt(0);
+	
+	@QCommand(min = 1, max = 1, usage = "<amount> (-l)")
+	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
+		final int amt = context.getInt(0);
 		if(amt == 0) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_NONZERO);
 		}
@@ -58,15 +55,15 @@ public final class ExperienceQevent extends Qevent {
 	}
 	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setInt("amount", amount);
 		if(isLevel) {
 			key.setBoolean("islevel", isLevel);
 		}
 	}
 	
-	protected static Qevent load(StorageKey key) {
-		int amt = key.getInt("amount", 0);
+	protected static Qevent load(final StorageKey key) {
+		final int amt = key.getInt("amount", 0);
 		if(amt == 0) {
 			return null;
 		}

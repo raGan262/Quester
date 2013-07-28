@@ -26,21 +26,21 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestHolderManager {
-
+	
 	private ProfileManager profMan = null;
 	private QuestManager qMan = null;
 	
 	private Storage holderStorage = null;
 	
-	private Map<Integer, QuestHolder> holderIds = new HashMap<Integer, QuestHolder>();
-	private Map<Location, QuesterSign> signs = new HashMap<Location, QuesterSign>();
+	private final Map<Integer, QuestHolder> holderIds = new HashMap<Integer, QuestHolder>();
+	private final Map<Location, QuesterSign> signs = new HashMap<Location, QuesterSign>();
 	
 	private int holderID = -1;
 	
-	public QuestHolderManager(Quester plugin) {
-		this.qMan = plugin.getQuestManager();
-		this.profMan = plugin.getProfileManager();
-		File file = new File(plugin.getDataFolder(), "holders.yml");
+	public QuestHolderManager(final Quester plugin) {
+		qMan = plugin.getQuestManager();
+		profMan = plugin.getProfileManager();
+		final File file = new File(plugin.getDataFolder(), "holders.yml");
 		holderStorage = new ConfigStorage(file, Quester.log, null);
 	}
 	
@@ -48,11 +48,11 @@ public class QuestHolderManager {
 		return holderIds;
 	}
 	
-	public QuestHolder getHolder(int ID) {
+	public QuestHolder getHolder(final int ID) {
 		return holderIds.get(ID);
 	}
 	
-	public int getLastHolderID(){
+	public int getLastHolderID() {
 		return holderID;
 	}
 	
@@ -61,84 +61,85 @@ public class QuestHolderManager {
 		return holderID;
 	}
 	
-	public void setHolderID(int newID) {
+	public void setHolderID(final int newID) {
 		holderID = newID;
 	}
 	
 	public void adjustHolderID() {
 		int newID = -1;
-		for(int i : holderIds.keySet()) {
-			if(i > newID)
+		for(final int i : holderIds.keySet()) {
+			if(i > newID) {
 				newID = i;
+			}
 		}
 		holderID = newID;
 	}
 	
 	// SIGN MANIPULATION
 	
-	public QuesterSign getSign(Location loc) {
+	public QuesterSign getSign(final Location loc) {
 		return signs.get(loc);
 	}
 	
-	public void addSign(QuesterSign sign) {
+	public void addSign(final QuesterSign sign) {
 		if(sign != null && sign.getLocation() != null) {
 			signs.put(sign.getLocation(), sign);
 		}
 	}
 	
-	public boolean removeSign(Location location) {
+	public boolean removeSign(final Location location) {
 		return signs.remove(location) != null;
 	}
 	
 	// HOLDER MANIPULATION
 	
-	public int createHolder(String name) {
-		QuestHolder qh = new QuestHolder(name);
-		int id = getNewHolderID();
+	public int createHolder(final String name) {
+		final QuestHolder qh = new QuestHolder(name);
+		final int id = getNewHolderID();
 		holderIds.put(id, qh);
 		return id;
 	}
 	
-	public void removeHolder(int ID) {
+	public void removeHolder(final int ID) {
 		holderIds.remove(ID);
 	}
 	
-	public void addHolderQuest(String issuer, int questID, QuesterLang lang) throws QuesterException {
-		QuestHolder qh = getHolder(profMan.getProfile(issuer).getHolderID());
+	public void addHolderQuest(final String issuer, final int questID, final QuesterLang lang) throws QuesterException {
+		final QuestHolder qh = getHolder(profMan.getProfile(issuer).getHolderID());
 		if(qh == null) {
 			throw new HolderException(lang.ERROR_HOL_NOT_EXIST);
 		}
 		qh.addQuest(questID);
 	}
 	
-	public void removeHolderQuest(String issuer, int questID, QuesterLang lang) throws QuesterException {
-		QuestHolder qh = getHolder(profMan.getProfile(issuer).getHolderID());
+	public void removeHolderQuest(final String issuer, final int questID, final QuesterLang lang) throws QuesterException {
+		final QuestHolder qh = getHolder(profMan.getProfile(issuer).getHolderID());
 		if(qh == null) {
 			throw new HolderException(lang.ERROR_HOL_NOT_EXIST);
 		}
 		qh.removeQuest(questID);
 	}
 	
-	public void moveHolderQuest(String issuer, int which, int where, QuesterLang lang) throws QuesterException {
-		QuestHolder qh = getHolder(profMan.getProfile(issuer).getHolderID());
+	public void moveHolderQuest(final String issuer, final int which, final int where, final QuesterLang lang) throws QuesterException {
+		final QuestHolder qh = getHolder(profMan.getProfile(issuer).getHolderID());
 		if(qh == null) {
 			throw new HolderException(lang.ERROR_HOL_NOT_SELECTED);
 		}
 		try {
 			qh.moveQuest(which, where);
 		}
-		catch (IndexOutOfBoundsException e) {
+		catch (final IndexOutOfBoundsException e) {
 			throw new CustomException(lang.ERROR_CMD_ID_OUT_OF_BOUNDS);
 		}
 	}
 	
-	public int getOne(QuestHolder holder) {
+	public int getOne(final QuestHolder holder) {
 		int one = -1;
-		List<Integer> heldQuests = holder.getQuests();
+		final List<Integer> heldQuests = holder.getQuests();
 		if(heldQuests.isEmpty()) {
 			return -1;
 		}
-		for(int q : heldQuests) {
+		for(final int q : heldQuests) {
 			if(qMan.isQuestActive(q)) {
 				if(one >= 0) {
 					return -1;
@@ -151,11 +152,11 @@ public class QuestHolderManager {
 		return one;
 	}
 	
-	public boolean selectNext(String selecter, QuestHolder holder, QuesterLang lang) throws HolderException {
+	public boolean selectNext(final String selecter, final QuestHolder holder, final QuesterLang lang) throws HolderException {
 		if(holder == null) {
 			return false;
 		}
-		List<Integer> heldQuests = holder.getQuests();
+		final List<Integer> heldQuests = holder.getQuests();
 		if(heldQuests.isEmpty()) {
 			throw new HolderException(lang.ERROR_Q_NONE);
 		}
@@ -166,17 +167,20 @@ public class QuestHolderManager {
 			}
 		}
 		int i = holder.getSelected(selecter);
-		int selected = i;
+		final int selected = i;
 		boolean notChosen = true;
 		while(notChosen) {
-			if(i < heldQuests.size()-1)
+			if(i < heldQuests.size() - 1) {
 				i++;
-			else
+			}
+			else {
 				i = 0;
+			}
 			if(qMan.isQuestActive(heldQuests.get(i))) {
 				holder.setSelected(selecter, i);
 				notChosen = false;
-			} else if(i == selected) {
+			}
+			else if(i == selected) {
 				throw new HolderException(lang.ERROR_Q_NONE_ACTIVE);
 			}
 		}
@@ -184,91 +188,92 @@ public class QuestHolderManager {
 	}
 	
 	public void checkHolders() {
-		for(QuestHolder hol : holderIds.values()) {
+		for(final QuestHolder hol : holderIds.values()) {
 			checkQuests(hol);
 		}
 	}
 	
-	private void checkQuests(QuestHolder holder) {
+	private void checkQuests(final QuestHolder holder) {
 		if(holder == null) {
 			return;
 		}
-		Iterator<Integer> iterator = holder.getQuests().iterator();
+		final Iterator<Integer> iterator = holder.getQuests().iterator();
 		while(iterator.hasNext()) {
 			if(!qMan.isQuest(iterator.next())) {
 				iterator.remove();
 			}
 		}
 	}
-
-	public void showHolderList(CommandSender sender, QuesterLang lang) {
+	
+	public void showHolderList(final CommandSender sender, final QuesterLang lang) {
 		sender.sendMessage(Util.line(ChatColor.BLUE, lang.INFO_HOLDER_LIST, ChatColor.GOLD));
-		for(int id : getHolders().keySet()){
+		for(final int id : getHolders().keySet()) {
 			sender.sendMessage(ChatColor.BLUE + "[" + id + "]" + ChatColor.GOLD + " " + getHolder(id).getName());
 		}
 	}
-
-	public void showHolderInfo(CommandSender sender, int holderID, QuesterLang lang) throws QuesterException {
+	
+	public void showHolderInfo(final CommandSender sender, final int holderID, final QuesterLang lang) throws QuesterException {
 		QuestHolder qh;
 		int id;
 		if(holderID < 0) {
 			id = profMan.getProfile(sender.getName()).getHolderID();
-		} else {
+		}
+		else {
 			id = holderID;
 		}
 		qh = getHolder(id);
 		if(qh == null) {
-			if(holderID < 0)
+			if(holderID < 0) {
 				throw new HolderException(lang.ERROR_HOL_NOT_SELECTED);
-			else
+			}
+			else {
 				throw new HolderException(lang.ERROR_HOL_NOT_EXIST);
+			}
 		}
 		sender.sendMessage(ChatColor.GOLD + "Holder ID: " + ChatColor.RESET + id);
 		showQuestsModify(qh, sender);
 	}
 	
-	public boolean showQuestsUse(QuestHolder holder, Player player) {
+	public boolean showQuestsUse(final QuestHolder holder, final Player player) {
 		if(holder == null) {
 			return false;
 		}
-		List<Integer> heldQuests = holder.getQuests();
-		int selected = holder.getSelected(player.getName());
-		for(int i=0; i<heldQuests.size(); i++) {
+		final List<Integer> heldQuests = holder.getQuests();
+		final int selected = holder.getSelected(player.getName());
+		for(int i = 0; i < heldQuests.size(); i++) {
 			if(qMan.isQuestActive(heldQuests.get(i))) {
-				player.sendMessage((i == selected ? ChatColor.GREEN : ChatColor.BLUE) + " - "
-						+ qMan.getQuestName(heldQuests.get(i)));
+				player.sendMessage((i == selected ? ChatColor.GREEN : ChatColor.BLUE) + " - " + qMan.getQuestName(heldQuests.get(i)));
 			}
 		}
 		return true;
 	}
 	
-	public boolean showQuestsModify(QuestHolder holder, CommandSender sender){
+	public boolean showQuestsModify(final QuestHolder holder, final CommandSender sender) {
 		if(holder == null) {
 			return false;
 		}
 		sender.sendMessage(ChatColor.GOLD + "Holder name: " + ChatColor.RESET + holder.getName());
-		List<Integer> heldQuests = holder.getQuests();
-		int selected = holder.getSelected(sender.getName());
-		for(int i=0; i<heldQuests.size(); i++) {
-			ChatColor col = qMan.isQuestActive(heldQuests.get(i)) ? ChatColor.BLUE : ChatColor.RED;
+		final List<Integer> heldQuests = holder.getQuests();
+		final int selected = holder.getSelected(sender.getName());
+		for(int i = 0; i < heldQuests.size(); i++) {
+			final ChatColor col = qMan.isQuestActive(heldQuests.get(i)) ? ChatColor.BLUE : ChatColor.RED;
 			
-			sender.sendMessage(i + ". " + (i == selected ? ChatColor.GREEN : ChatColor.BLUE) + "["
-					+ heldQuests.get(i) + "] " + col + qMan.getQuestName(heldQuests.get(i)));
+			sender.sendMessage(i + ". " + (i == selected ? ChatColor.GREEN : ChatColor.BLUE) + "[" + heldQuests.get(i) + "] " + col + qMan.getQuestName(heldQuests.get(i)));
 		}
 		return true;
 	}
-
+	
 	public void saveHolders() {
-		StorageKey pKey = holderStorage.getKey("");
+		final StorageKey pKey = holderStorage.getKey("");
 		pKey.removeKey("holders");
 		pKey.removeKey("signs");
-		StorageKey holKey = pKey.getSubKey("holders");
-		for(int i : holderIds.keySet()) {
+		final StorageKey holKey = pKey.getSubKey("holders");
+		for(final int i : holderIds.keySet()) {
 			holderIds.get(i).serialize(holKey.getSubKey(String.valueOf(i)));
 		}
-		StorageKey signKey = pKey.getSubKey("signs");
+		final StorageKey signKey = pKey.getSubKey("signs");
 		int i = 0;
-		for(QuesterSign sign : signs.values()) {
+		for(final QuesterSign sign : signs.values()) {
 			sign.serialize(signKey.getSubKey(String.valueOf(i)));
 			i++;
 		}
@@ -278,23 +283,25 @@ public class QuestHolderManager {
 	public void loadHolders() {
 		// HOLDERS
 		holderStorage.load();
-		StorageKey holderKey = holderStorage.getKey("holders");
+		final StorageKey holderKey = holderStorage.getKey("holders");
 		QuestHolder qh;
 		if(holderKey.hasSubKeys()) {
-			for(StorageKey subKey : holderKey.getSubKeys()) {
+			for(final StorageKey subKey : holderKey.getSubKeys()) {
 				try {
-					int id = Integer.parseInt(subKey.getName());
+					final int id = Integer.parseInt(subKey.getName());
 					qh = QuestHolder.deserialize(subKey);
-					if(qh == null){
+					if(qh == null) {
 						throw new InvalidKeyException();
 					}
 					if(holderIds.get(id) != null) {
 						Quester.log.info("Duplicate holder index: '" + subKey.getName() + "'");
 					}
 					holderIds.put(id, qh);
-				} catch (NumberFormatException e) {
+				}
+				catch (final NumberFormatException e) {
 					Quester.log.info("Not numeric holder index: '" + subKey.getName() + "'");
-				} catch (Exception e) {
+				}
+				catch (final Exception e) {
 					Quester.log.info("Invalid holder: '" + subKey.getName() + "'");
 				}
 			}
@@ -302,9 +309,9 @@ public class QuestHolderManager {
 		adjustHolderID();
 		
 		// SIGNS
-		StorageKey signKey = holderStorage.getKey("signs");
-		for(StorageKey k : signKey.getSubKeys()) {
-			QuesterSign sign = QuesterSign.deserialize(k);
+		final StorageKey signKey = holderStorage.getKey("signs");
+		for(final StorageKey k : signKey.getSubKeys()) {
+			final QuesterSign sign = QuesterSign.deserialize(k);
 			if(sign == null) {
 				Quester.log.info("Failed to deserialize sign under key '" + k.getName() + "'");
 				continue;

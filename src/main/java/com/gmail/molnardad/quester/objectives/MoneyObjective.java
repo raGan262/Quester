@@ -12,10 +12,10 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("MONEY")
 public final class MoneyObjective extends Objective {
-
+	
 	private final double amount;
 	
-	public MoneyObjective(double amt) {
+	public MoneyObjective(final double amt) {
 		amount = amt;
 	}
 	
@@ -25,7 +25,7 @@ public final class MoneyObjective extends Objective {
 	}
 	
 	@Override
-	protected String show(int progress) {
+	protected String show(final int progress) {
 		if(Quester.vault) {
 			return "Get " + amount + " " + Quester.econ.currencyNamePlural();
 		}
@@ -38,13 +38,13 @@ public final class MoneyObjective extends Objective {
 	protected String info() {
 		return String.valueOf(amount);
 	}
-
+	
 	@Override
-	public boolean tryToComplete(Player player) {
+	public boolean tryToComplete(final Player player) {
 		if(!Quester.vault) {
 			return true;
 		}
-		double money = Quester.econ.getBalance(player.getName());
+		final double money = Quester.econ.getBalance(player.getName());
 		if(money >= amount) {
 			if(Quester.vault) {
 				Quester.econ.withdrawPlayer(player.getName(), amount);
@@ -54,21 +54,18 @@ public final class MoneyObjective extends Objective {
 		return false;
 	}
 	
-	@QCommand(
-			min = 1,
-			max = 1,
-			usage = "<amount>")
-	public static Objective fromCommand(QCommandContext context) throws QCommandException {
-		double amt = context.getDouble(0);
+	@QCommand(min = 1, max = 1, usage = "<amount>")
+	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
+		final double amt = context.getDouble(0);
 		return new MoneyObjective(amt);
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setDouble("amount", amount);
 	}
 	
-	protected static Objective load(StorageKey key) {
+	protected static Objective load(final StorageKey key) {
 		double amt = 0;
 		amt = key.getDouble("amount", 0);
 		if(amt <= 0) {
@@ -77,9 +74,9 @@ public final class MoneyObjective extends Objective {
 		return new MoneyObjective(amt);
 	}
 	
-	//Custom methods
+	// Custom methods
 	
-	public double takeMoney(double amt) {
+	public double takeMoney(final double amt) {
 		return amt - amount;
 	}
 }

@@ -15,17 +15,17 @@ import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("SOUND")
 public final class SoundQevent extends Qevent {
-
+	
 	private final Location location;
 	private final Sound sound;
 	private final float volume;
 	private final float pitch;
 	
-	public SoundQevent(Location loc, Sound snd, float vol, float pit) {
-		this.location = loc;
-		this.sound = snd;
-		this.volume = vol;
-		this.pitch = pit;
+	public SoundQevent(final Location loc, final Sound snd, final float vol, final float pit) {
+		location = loc;
+		sound = snd;
+		volume = vol;
+		pitch = pit;
 	}
 	
 	@Override
@@ -36,24 +36,23 @@ public final class SoundQevent extends Qevent {
 		}
 		return sound.name() + "; LOC: " + locStr + "; VOL: " + volume + "; PIT: " + pitch;
 	}
-
+	
 	@Override
-	protected void run(Player player, Quester plugin) {
+	protected void run(final Player player, final Quester plugin) {
 		Location temp;
-		if(location == null)
+		if(location == null) {
 			temp = player.getLocation();
-		else
+		}
+		else {
 			temp = location;
+		}
 		temp.getWorld().playSound(temp, sound, volume, pitch);
 	}
-
-	@QCommand(
-			min = 2,
-			max = 4,
-			usage = "{<sound>} {<location>} [volume] [pitch]")
-	public static Qevent fromCommand(QCommandContext context) throws QCommandException {
-		Sound snd = Util.parseSound(context.getString(0));
-		Location loc = Util.getLoc(context.getPlayer(), context.getString(1));
+	
+	@QCommand(min = 2, max = 4, usage = "{<sound>} {<location>} [volume] [pitch]")
+	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
+		final Sound snd = Util.parseSound(context.getString(0));
+		final Location loc = Util.getLoc(context.getPlayer(), context.getString(1));
 		float vol = 1F;
 		float pit = 1F;
 		if(context.length() > 2) {
@@ -67,9 +66,9 @@ public final class SoundQevent extends Qevent {
 		}
 		return new SoundQevent(loc, snd, vol, pit);
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setString("sound", sound.name());
 		if(location != null) {
 			key.setString("location", Util.serializeLocString(location));
@@ -82,12 +81,12 @@ public final class SoundQevent extends Qevent {
 		}
 	}
 	
-	protected static Qevent load(StorageKey key) {
-		Sound snd = Util.parseSound(key.getString("sound", ""));
+	protected static Qevent load(final StorageKey key) {
+		final Sound snd = Util.parseSound(key.getString("sound", ""));
 		if(snd == null) {
 			return null;
 		}
-		Location loc = Util.deserializeLocString(key.getString("location", ""));
+		final Location loc = Util.deserializeLocString(key.getString("location", ""));
 		float vol = (float) key.getDouble("volume", 1F);
 		float pit = (float) key.getDouble("pitch", 1F);
 		if(vol < 0F) {

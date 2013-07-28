@@ -9,29 +9,29 @@ import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("BOSS")
 public final class BossObjective extends Objective {
-
+	
 	private final int amount;
 	private final String name;
 	
-	public BossObjective(String boss, int amt) {
+	public BossObjective(final String boss, final int amt) {
 		amount = amt;
 		name = boss;
 	}
 	
-	public boolean nameCheck(String boss) {
+	public boolean nameCheck(final String boss) {
 		if(name.isEmpty()) {
 			return true;
 		}
 		return name.equalsIgnoreCase(boss);
 	}
-
+	
 	@Override
 	public int getTargetAmount() {
 		return amount;
 	}
 	
 	@Override
-	protected String show(int progress) {
+	protected String show(final int progress) {
 		return "Kill boss named " + name + " - " + (amount - progress) + "x";
 	}
 	
@@ -40,11 +40,8 @@ public final class BossObjective extends Objective {
 		return name + "; AMT: " + amount;
 	}
 	
-	@QCommand(
-			min = 1,
-			max = 2,
-			usage = "<name> [amount]")
-	public static Objective fromCommand(QCommandContext context) throws QCommandException {
+	@QCommand(min = 1, max = 2, usage = "<name> [amount]")
+	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
 		int amt = 1;
 		String boss = context.getString(0);
 		if(boss.equalsIgnoreCase("ANY")) {
@@ -58,14 +55,14 @@ public final class BossObjective extends Objective {
 		}
 		return new BossObjective(boss, amt);
 	}
-
+	
 	@Override
-	protected void save(StorageKey key) {
+	protected void save(final StorageKey key) {
 		key.setInt("amount", amount);
 		key.setString("boss", name);
 	}
 	
-	protected static Objective load(StorageKey key) {
+	protected static Objective load(final StorageKey key) {
 		int amt = 0;
 		String boss = "";
 		boss = key.getString("boss", "");
