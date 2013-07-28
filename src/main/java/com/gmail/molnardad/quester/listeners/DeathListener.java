@@ -42,7 +42,8 @@ public class DeathListener implements Listener {
 			// DEATH CHECK
 			if(quest.hasFlag(QuestFlag.DEATHCANCEL)) {
 				try {
-					profMan.cancelQuest(player, ActionSource.listenerSource(event), langMan.getPlayerLang(player.getName()));
+					profMan.cancelQuest(player, ActionSource.listenerSource(event),
+							langMan.getPlayerLang(player.getName()));
 				}
 				catch (final QuesterException e) {}
 				return;

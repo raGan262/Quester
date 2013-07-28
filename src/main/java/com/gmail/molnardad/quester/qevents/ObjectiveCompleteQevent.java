@@ -48,7 +48,8 @@ public final class ObjectiveCompleteQevent extends Qevent {
 					}
 					else {
 						profMan.setProgress(player.getName(), objective, req);
-						profMan.complete(player, as, plugin.getLanguageManager().getPlayerLang(player.getName()), false);
+						profMan.complete(player, as,
+								plugin.getLanguageManager().getPlayerLang(player.getName()), false);
 					}
 				}
 				else {
@@ -61,7 +62,8 @@ public final class ObjectiveCompleteQevent extends Qevent {
 			}
 		}
 		catch (final QuesterException e) {
-			Quester.log.info("Event failed to complete objective. Reason: " + ChatColor.stripColor(e.getMessage()));
+			Quester.log.info("Event failed to complete objective. Reason: " + ChatColor
+					.stripColor(e.getMessage()));
 		}
 	}
 	

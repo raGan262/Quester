@@ -189,7 +189,8 @@ public class SignListeners implements Listener {
 				// player doesn't have quest
 				if(qm.isQuestActive(selected)) {
 					try {
-						profMan.startQuest(player, qm.getQuestName(selected), ActionSource.holderSource(qh), lang);
+						profMan.startQuest(player, qm.getQuestName(selected),
+								ActionSource.holderSource(qh), lang);
 					}
 					catch (final QuesterException e) {
 						player.sendMessage(e.getMessage());
@@ -210,7 +211,8 @@ public class SignListeners implements Listener {
 			final Sign sign = (Sign) block.getState();
 			if(holMan.getSign(sign.getLocation()) != null) {
 				final QuesterLang lang = langMan.getPlayerLang(event.getPlayer().getName());
-				if(!event.getPlayer().isSneaking() || !Util.permCheck(event.getPlayer(), QConfiguration.PERM_MODIFY, false, null)) {
+				if(!event.getPlayer().isSneaking() || !Util.permCheck(event.getPlayer(),
+						QConfiguration.PERM_MODIFY, false, null)) {
 					event.setCancelled(true);
 					return;
 				}

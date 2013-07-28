@@ -47,7 +47,8 @@ public class Citizens2Listener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onLeftClick(final NPCLeftClickEvent event) {
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
-			final QuestHolder qh = holMan.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
+			final QuestHolder qh = holMan.getHolder(event.getNPC().getTrait(QuesterTrait.class)
+					.getHolderID());
 			final Player player = event.getClicker();
 			final QuesterLang lang = langMan.getPlayerLang(player.getName());
 			if(!Util.permCheck(player, QConfiguration.PERM_USE_NPC, true, lang)) {
@@ -97,7 +98,8 @@ public class Citizens2Listener implements Listener {
 				
 			}
 			
-			player.sendMessage(Util.line(ChatColor.BLUE, event.getNPC().getName() + "'s quests", ChatColor.GOLD));
+			player.sendMessage(Util.line(ChatColor.BLUE, event.getNPC().getName() + "'s quests",
+					ChatColor.GOLD));
 			if(isOp) {
 				holMan.showQuestsModify(qh, player);
 			}
@@ -110,7 +112,8 @@ public class Citizens2Listener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onRightClick(final NPCRightClickEvent event) {
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
-			final QuestHolder qh = holMan.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
+			final QuestHolder qh = holMan.getHolder(event.getNPC().getTrait(QuesterTrait.class)
+					.getHolderID());
 			final Player player = event.getClicker();
 			final QuesterLang lang = langMan.getPlayerLang(player.getName());
 			if(!Util.permCheck(player, QConfiguration.PERM_USE_NPC, true, lang)) {
@@ -173,7 +176,8 @@ public class Citizens2Listener implements Listener {
 			// player doesn't have quest
 			if(qm.isQuestActive(selected)) {
 				try {
-					profMan.startQuest(player, qm.getQuest(selected), ActionSource.holderSource(qh), lang);
+					profMan.startQuest(player, qm.getQuest(selected),
+							ActionSource.holderSource(qh), lang);
 				}
 				catch (final QuesterException e) {
 					player.sendMessage(e.getMessage());

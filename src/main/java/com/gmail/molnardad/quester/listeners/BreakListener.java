@@ -50,7 +50,8 @@ public class BreakListener implements Listener {
 						passed = id == obj.getMaterial().getId();
 					}
 					else {
-						passed = id == Material.GLOWING_REDSTONE_ORE.getId() || id == Material.REDSTONE_ORE.getId();
+						passed = id == Material.GLOWING_REDSTONE_ORE.getId() || id == Material.REDSTONE_ORE
+								.getId();
 					}
 					if(passed && obj.checkHand(player.getItemInHand().getTypeId())) {
 						// if DATA >= 0 compare

@@ -122,6 +122,7 @@ public final class QuestCondition extends Condition {
 		
 		time = key.getInt("time");
 		
-		return new QuestCondition(qst, time, key.getBoolean("running", false), key.getBoolean("inverted", false));
+		return new QuestCondition(qst, time, key.getBoolean("running", false), key.getBoolean(
+				"inverted", false));
 	}
 }

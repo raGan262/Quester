@@ -30,7 +30,9 @@ public class WorldCommands {
 				world = context.getPlayer().getWorld();
 			}
 			else {
-				throw new QCommandException(context.getSenderLang().ERROR_CMD_WORLD_THIS.replaceAll("%this", QConfiguration.worldLabelThis));
+				throw new QCommandException(
+						context.getSenderLang().ERROR_CMD_WORLD_THIS.replaceAll("%this",
+								QConfiguration.worldLabelThis));
 			}
 		}
 		else {
@@ -52,7 +54,9 @@ public class WorldCommands {
 				worldName = context.getPlayer().getWorld().getName();
 			}
 			else {
-				throw new QCommandException(context.getSenderLang().ERROR_CMD_WORLD_THIS.replaceAll("%this", QConfiguration.worldLabelThis));
+				throw new QCommandException(
+						context.getSenderLang().ERROR_CMD_WORLD_THIS.replaceAll("%this",
+								QConfiguration.worldLabelThis));
 			}
 		}
 		if(qMan.removeQuestWorld(sender.getName(), worldName, context.getSenderLang())) {

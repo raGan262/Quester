@@ -30,10 +30,13 @@ public final class QuestQevent extends Qevent {
 	@Override
 	protected void run(final Player player, final Quester plugin) {
 		try {
-			plugin.getProfileManager().startQuest(player, quest, ActionSource.eventSource(this), plugin.getLanguageManager().getPlayerLang(player.getName()));
+			plugin.getProfileManager().startQuest(player, quest, ActionSource.eventSource(this),
+					plugin.getLanguageManager().getPlayerLang(player.getName()));
 		}
 		catch (final QuesterException e) {
-			Quester.log.info("Event failed to give quest to " + player.getName() + ". Reason: " + ChatColor.stripColor(e.getMessage()));
+			Quester.log
+					.info("Event failed to give quest to " + player.getName() + ". Reason: " + ChatColor
+							.stripColor(e.getMessage()));
 		}
 	}
 	

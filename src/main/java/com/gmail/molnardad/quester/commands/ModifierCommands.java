@@ -41,7 +41,8 @@ public class ModifierCommands {
 		final QuestFlag[] modArray = getModifiers(context.getArgs());
 		if(modArray.length < 1) {
 			sender.sendMessage(ChatColor.RED + context.getSenderLang().ERROR_MOD_UNKNOWN);
-			sender.sendMessage(ChatColor.RED + context.getSenderLang().USAGE_MOD_AVAIL + ChatColor.WHITE + QuestFlag.stringize(QuestFlag.values()));
+			sender.sendMessage(ChatColor.RED + context.getSenderLang().USAGE_MOD_AVAIL + ChatColor.WHITE + QuestFlag
+					.stringize(QuestFlag.values()));
 			return;
 		}
 		qMan.addQuestFlag(sender.getName(), modArray, context.getSenderLang());

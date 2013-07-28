@@ -82,7 +82,10 @@ public abstract class Objective extends Element {
 	
 	public String inShow(final int progress) {
 		if(!desc.isEmpty()) {
-			final String partiallyParsed = desc.replaceAll("%r", String.valueOf(getTargetAmount() - progress)).replaceAll("%t", String.valueOf(getTargetAmount())).replaceAll("%a", String.valueOf(progress));
+			final String partiallyParsed = desc
+					.replaceAll("%r", String.valueOf(getTargetAmount() - progress))
+					.replaceAll("%t", String.valueOf(getTargetAmount()))
+					.replaceAll("%a", String.valueOf(progress));
 			return ChatColor.translateAlternateColorCodes('&', parseDescription(partiallyParsed));
 		}
 		return show(progress);
@@ -161,7 +164,9 @@ public abstract class Objective extends Element {
 				}
 			}
 			catch (final Exception e) {
-				Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Method load() missing or invalid. " + e.getClass().getName());
+				Quester.log
+						.severe("Error when deserializing " + c.getSimpleName() + ". Method load() missing or invalid. " + e
+								.getClass().getName());
 				if(QConfiguration.debug) {
 					e.printStackTrace();
 				}

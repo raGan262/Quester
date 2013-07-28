@@ -44,7 +44,8 @@ public class DropListener implements Listener {
 			final List<Objective> objs = quest.getObjectives();
 			for(int i = 0; i < objs.size(); i++) {
 				// check if Objective is type COLLECT
-				if(QConfiguration.colSubOnDrop && collectObj && objs.get(i).getType().equalsIgnoreCase("COLLECT")) {
+				if(QConfiguration.colSubOnDrop && collectObj && objs.get(i).getType()
+						.equalsIgnoreCase("COLLECT")) {
 					if(!profMan.isObjectiveActive(player, i)) {
 						continue;
 					}
@@ -52,7 +53,8 @@ public class DropListener implements Listener {
 					final ItemStack item = event.getItemDrop().getItemStack();
 					if(item.getTypeId() == obj.getMaterial().getId()) {
 						if(obj.getData() < 0 || obj.getData() == item.getDurability()) {
-							profMan.incProgress(player, ActionSource.listenerSource(event), i, -item.getAmount());
+							profMan.incProgress(player, ActionSource.listenerSource(event), i,
+									-item.getAmount());
 							collectObj = false;
 						}
 					}
@@ -63,7 +65,8 @@ public class DropListener implements Listener {
 					}
 					final DropObjective obj = (DropObjective) objs.get(i);
 					if(obj.isMatching(event.getItemDrop().getItemStack())) {
-						new DropTask(event.getItemDrop(), obj, player, i).runTaskTimer(plugin, 20L, 10L);
+						new DropTask(event.getItemDrop(), obj, player, i).runTaskTimer(plugin, 20L,
+								10L);
 						dropObj = false;
 					}
 				}
@@ -98,7 +101,8 @@ public class DropListener implements Listener {
 			}
 			if(vel.lengthSquared() < 0.001D) {
 				if(obj.isMatching(item.getLocation().getBlock().getLocation())) {
-					profMan.incProgress(player, ActionSource.otherSource(null), id, item.getItemStack().getAmount());
+					profMan.incProgress(player, ActionSource.otherSource(null), id, item
+							.getItemStack().getAmount());
 				}
 				cancel();
 			}

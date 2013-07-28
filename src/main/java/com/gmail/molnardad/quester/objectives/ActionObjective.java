@@ -62,9 +62,11 @@ public final class ActionObjective extends Objective {
 			blockStr = " pressure plate";
 		}
 		final String datStr = blockData < 0 ? "" : "(data" + blockData + ")";
-		final String handStr = inHand == null ? "" : inHand.getId() == 0 ? " with empty hand " : " with " + inHand.name().toLowerCase().replace('_', ' ') + " in hand";
+		final String handStr = inHand == null ? "" : inHand.getId() == 0 ? " with empty hand " : " with " + inHand
+				.name().toLowerCase().replace('_', ' ') + " in hand";
 		final String handDatStr = inHandData < 0 ? "" : "(data" + inHandData + ")";
-		final String locStr = location == null ? "" : " " + range + " blocks close to " + Util.displayLocation(location);
+		final String locStr = location == null ? "" : " " + range + " blocks close to " + Util
+				.displayLocation(location);
 		return clickStr + blockStr + datStr + handStr + handDatStr + locStr + ".";
 	}
 	
@@ -75,7 +77,8 @@ public final class ActionObjective extends Objective {
 		final String handDatStr = inHandData < 0 ? "" : ":" + inHandData;
 		final String handStr = inHand == null ? "ANY" : inHand.name() + "[" + inHand.getId() + handDatStr + "]";
 		final String clickStr = click == 1 ? "LEFT" : click == 2 ? "RIGHT" : click == 3 ? "PUSH" : "ALL";
-		return clickStr + "; BLOCK: " + blockStr + "; HAND: " + handStr + "; LOC: " + Util.displayLocation(location) + "; RNG: " + range;
+		return clickStr + "; BLOCK: " + blockStr + "; HAND: " + handStr + "; LOC: " + Util
+				.displayLocation(location) + "; RNG: " + range;
 	}
 	
 	@QCommand(min = 1, max = 5, usage = "{<click>} {[block]} {[item]} {[location]} [range]")

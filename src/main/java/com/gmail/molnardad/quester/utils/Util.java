@@ -52,8 +52,10 @@ public class Util {
 		else {
 			temp = "" + lineColor + lineColor;
 		}
-		final String line1 = "-------------------------".substring((int) Math.ceil((temp.trim().length() - 2) / 2));
-		final String line2 = "-------------------------".substring((int) Math.floor((temp.trim().length() - 2) / 2));
+		final String line1 = "-------------------------".substring((int) Math.ceil((temp.trim()
+				.length() - 2) / 2));
+		final String line2 = "-------------------------".substring((int) Math.floor((temp.trim()
+				.length() - 2) / 2));
 		return lineColor + line1 + temp + line2;
 	}
 	
@@ -74,7 +76,9 @@ public class Util {
 				return ((Player) sender).getLocation();
 			}
 			else {
-				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_HERE.replaceAll("%here", QConfiguration.locLabelHere));
+				throw new IllegalArgumentException(
+						ChatColor.RED + lang.ERROR_CMD_LOC_HERE.replaceAll("%here",
+								QConfiguration.locLabelHere));
 			}
 		}
 		else if(args[0].equalsIgnoreCase(QConfiguration.locLabelBlock)) {
@@ -86,7 +90,9 @@ public class Util {
 				return block.getLocation();
 			}
 			else {
-				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_BLOCK.replaceAll("%block", QConfiguration.locLabelBlock));
+				throw new IllegalArgumentException(
+						ChatColor.RED + lang.ERROR_CMD_LOC_BLOCK.replaceAll("%block",
+								QConfiguration.locLabelBlock));
 			}
 		}
 		else if(args[0].equalsIgnoreCase(QConfiguration.locLabelPlayer)) {
@@ -630,7 +636,8 @@ public class Util {
 	public static boolean isQuestItem(final ItemStack item) {
 		try {
 			final List<String> lore = item.getItemMeta().getLore();
-			return ChatColor.stripColor(lore.get(0)).equalsIgnoreCase("Quest Item") || ChatColor.stripColor(lore.get(lore.size() - 1)).equalsIgnoreCase("Quest Item");
+			return ChatColor.stripColor(lore.get(0)).equalsIgnoreCase("Quest Item") || ChatColor
+					.stripColor(lore.get(lore.size() - 1)).equalsIgnoreCase("Quest Item");
 		}
 		catch (final Exception e) {
 			return false;
@@ -650,7 +657,8 @@ public class Util {
 			return null;
 		}
 		
-		str = String.format(Locale.ENGLISH, "%.1f;%.1f;%.1f;%s", loc.getX(), loc.getY(), loc.getZ(), loc.getWorld().getName());
+		str = String.format(Locale.ENGLISH, "%.1f;%.1f;%.1f;%s", loc.getX(), loc.getY(),
+				loc.getZ(), loc.getWorld().getName());
 		
 		return str;
 	}
@@ -662,7 +670,8 @@ public class Util {
 			return null;
 		}
 		
-		str = String.format(Locale.ENGLISH, "%.2f;%.2f;%.2f;%s;%.2f;%.2f;", loc.getX(), loc.getY(), loc.getZ(), loc.getWorld().getName(), loc.getYaw(), loc.getPitch());
+		str = String.format(Locale.ENGLISH, "%.2f;%.2f;%.2f;%s;%.2f;%.2f;", loc.getX(), loc.getY(),
+				loc.getZ(), loc.getWorld().getName(), loc.getYaw(), loc.getPitch());
 		
 		return str;
 	}
@@ -712,7 +721,8 @@ public class Util {
 			return loc;
 		}
 		final Location newLoc = loc.clone();
-		final Vector v = new Vector(randGen.nextDouble() * d * 2 - d, 0, randGen.nextDouble() * d * 2 - d);
+		final Vector v = new Vector(randGen.nextDouble() * d * 2 - d, 0,
+				randGen.nextDouble() * d * 2 - d);
 		newLoc.add(v);
 		
 		return newLoc;

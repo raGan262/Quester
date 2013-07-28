@@ -100,7 +100,9 @@ public abstract class Condition extends Element {
 				}
 			}
 			catch (final Exception e) {
-				Quester.log.severe("Error when deserializing " + c.getSimpleName() + ". Method load() missing or invalid. " + e.getClass().getName());
+				Quester.log
+						.severe("Error when deserializing " + c.getSimpleName() + ". Method load() missing or invalid. " + e
+								.getClass().getName());
 				if(QConfiguration.debug) {
 					e.printStackTrace();
 				}

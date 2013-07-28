@@ -22,14 +22,20 @@ public class LocationCommands {
 	}
 	
 	@QCommandLabels({ "set", "s" })
-	@QCommand(section = "QMod", desc = "sets quest location", min = 2, max = 2, usage = "{<location>} <range>")
+	@QCommand(
+			section = "QMod",
+			desc = "sets quest location",
+			min = 2,
+			max = 2,
+			usage = "{<location>} <range>")
 	public void set(final QCommandContext context, final CommandSender sender) throws QuesterException, QCommandException {
 		try {
 			final int range = context.getInt(1);
 			if(range < 1) {
 				throw new NumberFormatException();
 			}
-			qMan.setQuestLocation(sender.getName(), getLoc(sender, context.getString(0)), range, context.getSenderLang());
+			qMan.setQuestLocation(sender.getName(), getLoc(sender, context.getString(0)), range,
+					context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_LOC_SET);
 		}
 		catch (final NumberFormatException e) {

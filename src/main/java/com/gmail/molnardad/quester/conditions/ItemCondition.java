@@ -57,7 +57,8 @@ public final class ItemCondition extends Condition {
 	
 	@Override
 	protected String parseDescription(final String description) {
-		return description.replaceAll("%amt", amount + "").replaceAll("%data", data + "").replaceAll("%id", material.getId() + "");
+		return description.replaceAll("%amt", amount + "").replaceAll("%data", data + "")
+				.replaceAll("%id", material.getId() + "");
 	}
 	
 	@Override

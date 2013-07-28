@@ -25,7 +25,8 @@ public class EffectQevent extends Qevent {
 	
 	@Override
 	public String info() {
-		return effect.getType().getName() + "; DUR: " + effect.getDuration() / 20 + "s; AMP: " + effect.getAmplifier();
+		return effect.getType().getName() + "; DUR: " + effect.getDuration() / 20 + "s; AMP: " + effect
+				.getAmplifier();
 	}
 	
 	@Override
@@ -52,7 +53,8 @@ public class EffectQevent extends Qevent {
 				eff = Util.parseEffect(key.getString("effect", ""));
 			}
 			catch (final IllegalArgumentException e) {
-				Quester.log.severe("Error deserializing effect event: " + ChatColor.stripColor(e.getMessage()));
+				Quester.log.severe("Error deserializing effect event: " + ChatColor.stripColor(e
+						.getMessage()));
 				return null;
 			}
 		}

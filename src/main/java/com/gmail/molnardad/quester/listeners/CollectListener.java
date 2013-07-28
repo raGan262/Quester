@@ -38,7 +38,8 @@ public class CollectListener implements Listener {
 			}
 			final List<Objective> objs = quest.getObjectives();
 			for(int i = 0; i < objs.size(); i++) {
-				final int[] progress = profMan.getProfile(player.getName()).getProgress().getProgress();
+				final int[] progress = profMan.getProfile(player.getName()).getProgress()
+						.getProgress();
 				// check if Objective is type COLLECT
 				if(objs.get(i).getType().equalsIgnoreCase("COLLECT")) {
 					if(!profMan.isObjectiveActive(player, i)) {
@@ -50,7 +51,8 @@ public class CollectListener implements Listener {
 					if(item.getTypeId() == obj.getMaterial().getId()) {
 						// if DATA >= 0 compare
 						if(obj.getData() < 0 || obj.getData() == item.getDurability()) {
-							final int rem = event.getRemaining(); // amount not picked up (full inventory)
+							final int rem = event.getRemaining(); // amount not picked up (full
+																	// inventory)
 							int req = obj.getTargetAmount() - progress[i]; // amount required by
 																			// objective
 							if(req < 0) { // can't be less than 0
@@ -61,12 +63,8 @@ public class CollectListener implements Listener {
 							if(more < 0) { // can't be less than 0
 								more = 0;
 							}
-							profMan.incProgress(player, ActionSource.listenerSource(event), i, item.getAmount()); // increase
-																													// by
-																													// amount
-																													// actually
-																													// picked
-																													// up
+							profMan.incProgress(player, ActionSource.listenerSource(event), i,
+									item.getAmount());
 							if(QConfiguration.colRemPickup) {
 								final Location loc = event.getItem().getLocation();
 								event.getItem().remove();

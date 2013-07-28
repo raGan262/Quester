@@ -29,10 +29,12 @@ public final class ToggleQevent extends Qevent {
 	@Override
 	protected void run(final Player player, final Quester plugin) {
 		try {
-			plugin.getQuestManager().toggleQuest(quest, plugin.getLanguageManager().getPlayerLang(player.getName()));
+			plugin.getQuestManager().toggleQuest(quest,
+					plugin.getLanguageManager().getPlayerLang(player.getName()));
 		}
 		catch (final QuesterException e) {
-			Quester.log.info("Event failed to toggle quest. Reason: " + ChatColor.stripColor(e.getMessage()));
+			Quester.log.info("Event failed to toggle quest. Reason: " + ChatColor.stripColor(e
+					.getMessage()));
 		}
 	}
 	

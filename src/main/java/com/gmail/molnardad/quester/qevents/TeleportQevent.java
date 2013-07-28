@@ -41,7 +41,8 @@ public final class TeleportQevent extends Qevent {
 	
 	@QCommand(min = 1, max = 1, usage = "{<location>}")
 	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
-		final Location loc = Util.getLoc(context.getPlayer(), context.getString(0), context.getSenderLang());
+		final Location loc = Util.getLoc(context.getPlayer(), context.getString(0),
+				context.getSenderLang());
 		if(loc == null) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_LOC_INVALID);
 		}

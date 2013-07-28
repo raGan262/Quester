@@ -92,6 +92,7 @@ public final class ExperienceCondition extends Condition {
 			return null;
 		}
 		
-		return new ExperienceCondition(amt, key.getBoolean("islevel", false), key.getBoolean("inverted", false));
+		return new ExperienceCondition(amt, key.getBoolean("islevel", false), key.getBoolean(
+				"inverted", false));
 	}
 }

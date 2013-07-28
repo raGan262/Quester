@@ -42,7 +42,8 @@ public final class DyeObjective extends Objective {
 	
 	@Override
 	protected String info() {
-		return amount + "; COLOR:" + (colorName.isEmpty() ? " ANY" : colorName + "(" + (15 - color.getDyeData()) + ")");
+		return amount + "; COLOR:" + (colorName.isEmpty() ? " ANY" : colorName + "(" + (15 - color
+				.getDyeData()) + ")");
 	}
 	
 	@QCommand(min = 1, max = 2, usage = "<amount> {[color]}")

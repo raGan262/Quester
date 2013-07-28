@@ -85,7 +85,8 @@ public final class ItemQevent extends Qevent {
 			final ItemStack[] contents = inv.getContents();
 			for(int i = 0; i < contents.length; i++) {
 				final ItemStack is = contents[i];
-				if(is != null && is.getTypeId() == material.getId() && Util.isQuestItem(is) == quest && (data < 0 || is.getDurability() == data) && checkEnchants(is)) {
+				if(is != null && is.getTypeId() == material.getId() && Util.isQuestItem(is) == quest && (data < 0 || is
+						.getDurability() == data) && checkEnchants(is)) {
 					if(is.getAmount() <= toRemove) {
 						toRemove -= is.getAmount();
 						contents[i] = null;
@@ -236,6 +237,7 @@ public final class ItemQevent extends Qevent {
 		}
 		catch (final IllegalArgumentException ignore) {}
 		
-		return new ItemQevent(mat, dat, amt, enchs, key.getBoolean("inverted", false), key.getBoolean("quest", false));
+		return new ItemQevent(mat, dat, amt, enchs, key.getBoolean("inverted", false),
+				key.getBoolean("quest", false));
 	}
 }

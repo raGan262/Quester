@@ -27,7 +27,8 @@ public final class CommandQevent extends Qevent {
 	
 	@Override
 	protected void run(final Player player, final Quester plugin) {
-		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replace("%p", player.getName()));
+		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),
+				command.replace("%p", player.getName()));
 	}
 	
 	@QCommand(min = 1, usage = "<command>")

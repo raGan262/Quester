@@ -34,7 +34,8 @@ public abstract class Region {
 				return new Cuboid(Util.getLoc(sender, strs[1]), Util.getLoc(sender, strs[2]));
 			}
 			else if(strs[0].equalsIgnoreCase("WORLD")) {
-				if(sender instanceof Player && strs[1].equalsIgnoreCase(QConfiguration.worldLabelThis)) {
+				if(sender instanceof Player && strs[1]
+						.equalsIgnoreCase(QConfiguration.worldLabelThis)) {
 					strs[1] = ((Player) sender).getWorld().getName();
 				}
 				return new World(strs[1]);
@@ -133,8 +134,10 @@ public abstract class Region {
 			if(loc1.getWorld().getUID() != loc2.getWorld().getUID()) {
 				throw new IllegalArgumentException("Locations must be within the same world.");
 			}
-			min = new Location(loc1.getWorld(), Math.min(loc1.getX(), loc2.getX()), Math.min(loc1.getY(), loc2.getY()), Math.min(loc1.getZ(), loc2.getZ()));
-			max = new Location(loc1.getWorld(), Math.max(loc1.getX(), loc2.getX()), Math.max(loc1.getY(), loc2.getY()), Math.max(loc1.getZ(), loc2.getZ()));
+			min = new Location(loc1.getWorld(), Math.min(loc1.getX(), loc2.getX()), Math.min(
+					loc1.getY(), loc2.getY()), Math.min(loc1.getZ(), loc2.getZ()));
+			max = new Location(loc1.getWorld(), Math.max(loc1.getX(), loc2.getX()), Math.max(
+					loc1.getY(), loc2.getY()), Math.max(loc1.getZ(), loc2.getZ()));
 		}
 		
 		@Override
@@ -148,7 +151,9 @@ public abstract class Region {
 				return false;
 			}
 			
-			return min.getX() <= location.getX() && min.getY() <= location.getY() && min.getZ() <= location.getZ() && max.getX() >= location.getX() && max.getY() >= location.getY() && max.getZ() >= location.getZ();
+			return min.getX() <= location.getX() && min.getY() <= location.getY() && min.getZ() <= location
+					.getZ() && max.getX() >= location.getX() && max.getY() >= location.getY() && max
+					.getZ() >= location.getZ();
 		}
 		
 		@Override

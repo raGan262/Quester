@@ -57,11 +57,13 @@ public class CraftSmeltListener implements Listener {
 							// how many results can be crafted
 							final int count = getCraftedAmount(event.getInventory());
 							// how many results can fit into inventory
-							final int spc = (int) Math.floor(getInvSpace(player.getInventory(), item, count) / item.getAmount());
+							final int spc = (int) Math.floor(getInvSpace(player.getInventory(),
+									item, count) / item.getAmount());
 							// actual crafted amount
 							final int amtCrafted = Math.min(spc, count);
 							if(amtCrafted > 0) {
-								profMan.incProgress(player, ActionSource.listenerSource(event), i, item.getAmount() * amtCrafted);
+								profMan.incProgress(player, ActionSource.listenerSource(event), i,
+										item.getAmount() * amtCrafted);
 								return;
 							}
 						}
@@ -69,7 +71,8 @@ public class CraftSmeltListener implements Listener {
 					else {
 						final ItemStack inHand = event.getCursor();
 						if(obj.check(item) && checkHand(inHand, item)) {
-							profMan.incProgress(player, ActionSource.listenerSource(event), i, item.getAmount());
+							profMan.incProgress(player, ActionSource.listenerSource(event), i,
+									item.getAmount());
 							return;
 						}
 					}
@@ -105,7 +108,8 @@ public class CraftSmeltListener implements Listener {
 						if(obj.check(item)) {
 							final int spc = getInvSpace(player.getInventory(), item, 1);
 							if(spc != 0) {
-								profMan.incProgress(player, ActionSource.listenerSource(event), i, Math.min(item.getAmount(), spc));
+								profMan.incProgress(player, ActionSource.listenerSource(event), i,
+										Math.min(item.getAmount(), spc));
 								return;
 							}
 						}
@@ -113,7 +117,8 @@ public class CraftSmeltListener implements Listener {
 					else {
 						final ItemStack inHand = event.getCursor();
 						if(obj.check(item) && checkHand(inHand, item)) {
-							profMan.incProgress(player, ActionSource.listenerSource(event), i, item.getAmount());
+							profMan.incProgress(player, ActionSource.listenerSource(event), i,
+									item.getAmount());
 							return;
 						}
 					}

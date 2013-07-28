@@ -49,7 +49,8 @@ public final class WorldObjective extends Objective {
 				world = player.getWorld();
 			}
 			else {
-				throw new QCommandException(context.getSenderLang().ERROR_CMD_WORLD_THIS.replaceAll("%this", label));
+				throw new QCommandException(
+						context.getSenderLang().ERROR_CMD_WORLD_THIS.replaceAll("%this", label));
 			}
 		}
 		else {

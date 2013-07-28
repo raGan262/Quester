@@ -208,7 +208,8 @@ public class QuestHolderManager {
 	public void showHolderList(final CommandSender sender, final QuesterLang lang) {
 		sender.sendMessage(Util.line(ChatColor.BLUE, lang.INFO_HOLDER_LIST, ChatColor.GOLD));
 		for(final int id : getHolders().keySet()) {
-			sender.sendMessage(ChatColor.BLUE + "[" + id + "]" + ChatColor.GOLD + " " + getHolder(id).getName());
+			sender.sendMessage(ChatColor.BLUE + "[" + id + "]" + ChatColor.GOLD + " " + getHolder(
+					id).getName());
 		}
 	}
 	
@@ -242,7 +243,8 @@ public class QuestHolderManager {
 		final int selected = holder.getSelected(player.getName());
 		for(int i = 0; i < heldQuests.size(); i++) {
 			if(qMan.isQuestActive(heldQuests.get(i))) {
-				player.sendMessage((i == selected ? ChatColor.GREEN : ChatColor.BLUE) + " - " + qMan.getQuestName(heldQuests.get(i)));
+				player.sendMessage((i == selected ? ChatColor.GREEN : ChatColor.BLUE) + " - " + qMan
+						.getQuestName(heldQuests.get(i)));
 			}
 		}
 		return true;
@@ -258,7 +260,8 @@ public class QuestHolderManager {
 		for(int i = 0; i < heldQuests.size(); i++) {
 			final ChatColor col = qMan.isQuestActive(heldQuests.get(i)) ? ChatColor.BLUE : ChatColor.RED;
 			
-			sender.sendMessage(i + ". " + (i == selected ? ChatColor.GREEN : ChatColor.BLUE) + "[" + heldQuests.get(i) + "] " + col + qMan.getQuestName(heldQuests.get(i)));
+			sender.sendMessage(i + ". " + (i == selected ? ChatColor.GREEN : ChatColor.BLUE) + "[" + heldQuests
+					.get(i) + "] " + col + qMan.getQuestName(heldQuests.get(i)));
 		}
 		return true;
 	}

@@ -37,23 +37,39 @@ public class HolderCommands {
 	}
 	
 	@QCommandLabels({ "add", "a" })
-	@QCommand(section = "HMod", desc = "adds quest to holder", min = 1, max = 1, usage = "<quest ID>")
+	@QCommand(
+			section = "HMod",
+			desc = "adds quest to holder",
+			min = 1,
+			max = 1,
+			usage = "<quest ID>")
 	public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		holMan.addHolderQuest(sender.getName(), context.getInt(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().HOL_Q_ADDED);
 	}
 	
 	@QCommandLabels({ "remove", "r" })
-	@QCommand(section = "HMod", desc = "removes quest from holder", min = 1, max = 1, usage = "<quest ID>")
+	@QCommand(
+			section = "HMod",
+			desc = "removes quest from holder",
+			min = 1,
+			max = 1,
+			usage = "<quest ID>")
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		holMan.removeHolderQuest(sender.getName(), context.getInt(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().HOL_Q_REMOVED);
 	}
 	
 	@QCommandLabels({ "move", "m" })
-	@QCommand(section = "HMod", desc = "moves quest in holder", min = 2, max = 2, usage = "<from> <to>")
+	@QCommand(
+			section = "HMod",
+			desc = "moves quest in holder",
+			min = 2,
+			max = 2,
+			usage = "<from> <to>")
 	public void move(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		holMan.moveHolderQuest(sender.getName(), context.getInt(0), context.getInt(1), context.getSenderLang());
+		holMan.moveHolderQuest(sender.getName(), context.getInt(0), context.getInt(1),
+				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().HOL_Q_MOVED);
 	}
 	
@@ -64,7 +80,12 @@ public class HolderCommands {
 	}
 	
 	@QCommandLabels({ "info", "i" })
-	@QCommand(section = "Mod", desc = "shows info about holder", min = 0, max = 1, usage = "[holder ID]")
+	@QCommand(
+			section = "Mod",
+			desc = "shows info about holder",
+			min = 0,
+			max = 1,
+			usage = "[holder ID]")
 	public void info(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		int id = -1;
 		if(context.length() > 0) {

@@ -35,7 +35,8 @@ public final class BreakObjective extends Objective {
 	@Override
 	protected String show(final int progress) {
 		final String datStr = data < 0 ? " " : " of given type(" + data + ") ";
-		final String hand = inHand < 0 ? " " : inHand == 0 ? "with empty hand " : "with " + Material.getMaterial(inHand).name().toLowerCase().replace('_', ' ') + " ";
+		final String hand = inHand < 0 ? " " : inHand == 0 ? "with empty hand " : "with " + Material
+				.getMaterial(inHand).name().toLowerCase().replace('_', ' ') + " ";
 		return "Break " + material.name().toLowerCase().replace('_', ' ') + datStr + hand + "- " + (amount - progress) + "x.";
 	}
 	

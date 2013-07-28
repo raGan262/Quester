@@ -19,7 +19,12 @@ public class DescCommands {
 	}
 	
 	@QCommandLabels({ "set", "s" })
-	@QCommand(section = "QMod", desc = "sets quest description", min = 0, max = 1, usage = "[new description]")
+	@QCommand(
+			section = "QMod",
+			desc = "sets quest description",
+			min = 0,
+			max = 1,
+			usage = "[new description]")
 	public void set(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		String desc = "";
 		if(context.length() > 0) {
@@ -30,7 +35,12 @@ public class DescCommands {
 	}
 	
 	@QCommandLabels({ "add", "a" })
-	@QCommand(section = "QMod", desc = "adds to quest description", min = 1, max = 1, usage = "<description to add>")
+	@QCommand(
+			section = "QMod",
+			desc = "adds to quest description",
+			min = 1,
+			max = 1,
+			usage = "<description to add>")
 	public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.addQuestDescription(sender.getName(), context.getString(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_DESC_SET);

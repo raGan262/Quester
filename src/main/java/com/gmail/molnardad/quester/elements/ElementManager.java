@@ -150,7 +150,8 @@ public class ElementManager {
 			String parent;
 			if(context.length() < ei.command.min()) {
 				parent = getParentArgs(context.getParentArgs());
-				throw new QUsageException(context.getSenderLang().ERROR_CMD_ARGS_NOT_ENOUGH, parent + ei.usage);
+				throw new QUsageException(context.getSenderLang().ERROR_CMD_ARGS_NOT_ENOUGH,
+						parent + ei.usage);
 			}
 			if(!(ei.command.max() < 0) && context.length() > ei.command.max()) {
 				parent = getParentArgs(context.getParentArgs());
@@ -210,8 +211,10 @@ public class ElementManager {
 		}
 		try {
 			final Method load = clss.getDeclaredMethod("load", StorageKey.class);
-			if(!Modifier.isStatic(load.getModifiers()) || !Modifier.isProtected(load.getModifiers())) {
-				throw new ElementException("Incorrect load method modifiers, expected \"protected static\".");
+			if(!Modifier.isStatic(load.getModifiers()) || !Modifier
+					.isProtected(load.getModifiers())) {
+				throw new ElementException(
+						"Incorrect load method modifiers, expected \"protected static\".");
 			}
 			if(clss.getSuperclass() == Condition.class) {
 				if(load.getReturnType() != Condition.class) {

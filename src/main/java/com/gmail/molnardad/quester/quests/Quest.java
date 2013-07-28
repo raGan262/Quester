@@ -78,7 +78,8 @@ public class Quest {
 	}
 	
 	public String getDescription(final String playerName) {
-		return ChatColor.translateAlternateColorCodes('&', description).replaceAll("%p", playerName);
+		return ChatColor.translateAlternateColorCodes('&', description)
+				.replaceAll("%p", playerName);
 	}
 	
 	void setDescription(final String newDescription) {
@@ -326,7 +327,8 @@ public class Quest {
 			}
 			
 			if(key.getRaw("worlds") instanceof List) {
-				final List<String> strs = (List<String>) key.getRaw("worlds", new ArrayList<String>());
+				final List<String> strs = (List<String>) key.getRaw("worlds",
+						new ArrayList<String>());
 				for(final String s : strs) {
 					if(s != null) {
 						quest.addWorld(s);
@@ -344,7 +346,9 @@ public class Quest {
 						quest.addObjective(obj);
 					}
 					else {
-						Quester.log.severe("Error occured when deserializing objective ID " + i + " in quest '" + quest.getName() + "'.");
+						Quester.log
+								.severe("Error occured when deserializing objective ID " + i + " in quest '" + quest
+										.getName() + "'.");
 					}
 				}
 			}
@@ -359,7 +363,9 @@ public class Quest {
 						quest.addCondition(con);
 					}
 					else {
-						Quester.log.severe("Error occured when deserializing condition ID " + i + " in quest '" + quest.getName() + "'.");
+						Quester.log
+								.severe("Error occured when deserializing condition ID " + i + " in quest '" + quest
+										.getName() + "'.");
 					}
 				}
 			}
@@ -374,7 +380,9 @@ public class Quest {
 						quest.addQevent(qvt);
 					}
 					else {
-						Quester.log.severe("Error occured when deserializing event ID:" + i + " in quest '" + quest.getName() + "'.");
+						Quester.log
+								.severe("Error occured when deserializing event ID:" + i + " in quest '" + quest
+										.getName() + "'.");
 					}
 				}
 			}
