@@ -12,7 +12,7 @@ import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.utils.Util;
 
 public final class ActionObjective extends Objective {
-
+	
 	public static final String TYPE = "ACTION";
 	private final Material block;
 	private final int blockData;
@@ -22,7 +22,7 @@ public final class ActionObjective extends Objective {
 	private final Location location;
 	private final int range;
 	
-	public ActionObjective(Material blck, int blckdat, Material hnd, int hnddat, int clck, Location loc, int rng) {
+	public ActionObjective(final Material blck, final int blckdat, final Material hnd, final int hnddat, final int clck, final Location loc, final int rng) {
 		block = blck;
 		if(block == null) {
 			blockData = -1;
@@ -37,7 +37,7 @@ public final class ActionObjective extends Objective {
 		else {
 			inHandData = hnddat;
 		}
-		click = (byte)clck;
+		click = (byte) clck;
 		location = loc;
 		range = rng;
 	}
@@ -47,9 +47,12 @@ public final class ActionObjective extends Objective {
 		return TYPE;
 	}
 	
-	public boolean checkBlock(Block blck) {
+	public boolean checkBlock(final Block blck) {
 		if(block == null) {
 			return true;
+		}
+		if(blck == null) {
+			return false;
 		}
 		if(block.getId() == blck.getTypeId()) {
 			if(blockData == blck.getData() || blockData < 0) {
@@ -59,7 +62,7 @@ public final class ActionObjective extends Objective {
 		return false;
 	}
 	
-	public boolean checkHand(ItemStack hand) {
+	public boolean checkHand(final ItemStack hand) {
 		if(inHand == null) {
 			return true;
 		}
@@ -74,7 +77,7 @@ public final class ActionObjective extends Objective {
 		return false;
 	}
 	
-	public boolean checkLocation(Location loc) {
+	public boolean checkLocation(final Location loc) {
 		if(location == null) {
 			return true;
 		}
@@ -86,47 +89,50 @@ public final class ActionObjective extends Objective {
 		}
 	}
 	
-	public boolean checkClick(Action act) {
+	public boolean checkClick(final Action act) {
 		if(click == 0) {
 			return true;
 		}
-		if((click == 1 && (act == Action.LEFT_CLICK_AIR || act == Action.LEFT_CLICK_BLOCK)) || 
-				(click == 2 && (act == Action.RIGHT_CLICK_AIR || act == Action.RIGHT_CLICK_BLOCK)) || 
-				(click == 3 && (act == Action.PHYSICAL))) {
+		if(click == 1 && (act == Action.LEFT_CLICK_AIR || act == Action.LEFT_CLICK_BLOCK) || click == 2 && (act == Action.RIGHT_CLICK_AIR || act == Action.RIGHT_CLICK_BLOCK) || click == 3 && act == Action.PHYSICAL) {
 			return true;
 		}
 		return false;
 	}
 	
 	@Override
-	public String progress(int progress) {
+	public String progress(final int progress) {
 		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', desc).replaceAll("%r", String.valueOf(1 - progress)).replaceAll("%t", String.valueOf(1));
+			return ChatColor.translateAlternateColorCodes('&', desc)
+					.replaceAll("%r", String.valueOf(1 - progress))
+					.replaceAll("%t", String.valueOf(1));
 		}
-		String clickStr = click == 1 ? "Left-click" : click == 2 ? "Right-click" : click == 3 ? "Walk on" : "Click";
-		String blockStr = (block == null) ? "" : " " + block.name().toLowerCase().replace('_', ' ');
+		final String clickStr = click == 1 ? "Left-click" : click == 2 ? "Right-click" : click == 3 ? "Walk on" : "Click";
+		String blockStr = block == null ? "" : " " + block.name().toLowerCase().replace('_', ' ');
 		if(blockStr.isEmpty() && click == 3) {
 			blockStr = " pressure plate";
 		}
-		String datStr = blockData < 0 ? "" : "(data" + blockData + ")";
-		String handStr = (inHand == null) ? "" : (inHand.getId() == 0) ? " with empty hand " : " with " + inHand.name().toLowerCase().replace('_', ' ') + " in hand";
-		String handDatStr = inHandData < 0 ? "" : "(data" + inHandData + ")";
-		String locStr = location == null ? "" : " " + range + " blocks close to " + Util.displayLocation(location);
+		final String datStr = blockData < 0 ? "" : "(data" + blockData + ")";
+		final String handStr = inHand == null ? "" : inHand.getId() == 0 ? " with empty hand " : " with " + inHand
+				.name().toLowerCase().replace('_', ' ') + " in hand";
+		final String handDatStr = inHandData < 0 ? "" : "(data" + inHandData + ")";
+		final String locStr = location == null ? "" : " " + range + " blocks close to " + Util
+				.displayLocation(location);
 		return clickStr + blockStr + datStr + handStr + handDatStr + locStr + ".";
 	}
 	
 	@Override
 	public String toString() {
-		String datStr = blockData < 0 ? "" : ":" + blockData;
-		String blockStr = block == null ? "ANY" : block.name() + "[" + block.getId() + datStr + "]";
-		String handDatStr = inHandData < 0 ? "" : ":" + inHandData;
-		String handStr = inHand == null ? "ANY" : inHand.name() + "[" + inHand.getId() + handDatStr + "]";
-		String clickStr = click == 1 ? "LEFT" : click == 2 ? "RIGHT" : click == 3 ? "PUSH" : "ALL";
-		return TYPE + ": " + clickStr + "; BLOCK: " + blockStr + "; HAND: " + handStr + "; LOC: " + Util.displayLocation(location) + "; RNG: " + range + coloredDesc();
+		final String datStr = blockData < 0 ? "" : ":" + blockData;
+		final String blockStr = block == null ? "ANY" : block.name() + "[" + block.getId() + datStr + "]";
+		final String handDatStr = inHandData < 0 ? "" : ":" + inHandData;
+		final String handStr = inHand == null ? "ANY" : inHand.name() + "[" + inHand.getId() + handDatStr + "]";
+		final String clickStr = click == 1 ? "LEFT" : click == 2 ? "RIGHT" : click == 3 ? "PUSH" : "ALL";
+		return TYPE + ": " + clickStr + "; BLOCK: " + blockStr + "; HAND: " + handStr + "; LOC: " + Util
+				.displayLocation(location) + "; RNG: " + range + coloredDesc();
 	}
-
+	
 	@Override
-	public void serialize(ConfigurationSection section) {
+	public void serialize(final ConfigurationSection section) {
 		super.serialize(section, TYPE);
 		
 		if(block != null) {
@@ -146,7 +152,7 @@ public final class ActionObjective extends Objective {
 		}
 	}
 	
-	public static Objective deser(ConfigurationSection section) {
+	public static Objective deser(final ConfigurationSection section) {
 		Material mat = null, hnd = null;
 		Location loc = null;
 		int dat = -1, hdat = -1, rng = 0, clck = 0;
@@ -155,12 +161,14 @@ public final class ActionObjective extends Objective {
 			itm = Util.parseItem(section.getString("block", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
-		} catch (QuesterException ignore) {}
+		}
+		catch (final QuesterException ignore) {}
 		try {
 			itm = Util.parseItem(section.getString("hand", ""));
 			hnd = Material.getMaterial(itm[0]);
 			hdat = itm[1];
-		} catch (QuesterException ignore) {}
+		}
+		catch (final QuesterException ignore) {}
 		clck = section.getInt("click", 0);
 		loc = Util.deserializeLocString(section.getString("location", ""));
 		rng = section.getInt("range", 0);
