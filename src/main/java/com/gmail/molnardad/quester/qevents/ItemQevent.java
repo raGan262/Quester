@@ -58,7 +58,8 @@ public final class ItemQevent extends Qevent {
 	
 	@Override
 	public String info() {
-		final String itm = material.name() + "[" + material.getId() + ":" + data + "]; AMT: " + amount;
+		final String itm =
+				material.name() + "[" + material.getId() + ":" + data + "]; AMT: " + amount;
 		String enchs = enchants.isEmpty() ? "" : "\n -- ENCH:";
 		for(final Integer e : enchants.keySet()) {
 			enchs = enchs + " " + Enchantment.getById(e).getName() + ":" + enchants.get(e);
@@ -85,8 +86,9 @@ public final class ItemQevent extends Qevent {
 			final ItemStack[] contents = inv.getContents();
 			for(int i = 0; i < contents.length; i++) {
 				final ItemStack is = contents[i];
-				if(is != null && is.getTypeId() == material.getId() && Util.isQuestItem(is) == quest && (data < 0 || is
-						.getDurability() == data) && checkEnchants(is)) {
+				if(is != null && is.getTypeId() == material.getId()
+						&& Util.isQuestItem(is) == quest
+						&& (data < 0 || is.getDurability() == data) && checkEnchants(is)) {
 					if(is.getAmount() <= toRemove) {
 						toRemove -= is.getAmount();
 						contents[i] = null;
@@ -175,9 +177,6 @@ public final class ItemQevent extends Qevent {
 		final int[] itm = parseItem(context.getString(0), context.getSenderLang());
 		mat = Material.getMaterial(itm[0]);
 		dat = itm[1];
-		if(dat < 0) {
-			dat = 0;
-		}
 		if(context.length() > 1) {
 			amt = context.getInt(1);
 			if(context.length() > 2) {
@@ -213,14 +212,11 @@ public final class ItemQevent extends Qevent {
 	
 	protected static Qevent load(final StorageKey key) {
 		Material mat = null;
-		int dat = 0;
+		int dat;
 		try {
 			final int[] itm = Util.parseItem(key.getString("item", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
-			if(dat < 0) {
-				dat = 0;
-			}
 		}
 		catch (final Exception e) {
 			return null;
