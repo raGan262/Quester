@@ -31,8 +31,8 @@ public class ObjectiveCommands {
 		if(!eMan.isObjective(type)) {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.ERROR_OBJ_NOT_EXIST);
 			subContext.getSender().sendMessage(
-					ChatColor.RED + lang.OBJ_LIST + ": " + ChatColor.WHITE + eMan
-							.getObjectiveList());
+					ChatColor.RED + lang.OBJ_LIST + ": " + ChatColor.WHITE
+							+ eMan.getObjectiveList());
 			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
 		}
 		final Objective obj = eMan.getObjectiveFromCommand(type, subContext);
@@ -95,15 +95,15 @@ public class ObjectiveCommands {
 			usage = "<objective ID>")
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.removeQuestObjective(sender.getName(), context.getInt(0), context.getSenderLang());
-		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().OBJ_REMOVE.replaceAll("%id",
-				context.getString(0)));
+		sender.sendMessage(ChatColor.GREEN
+				+ context.getSenderLang().OBJ_REMOVE.replaceAll("%id", context.getString(0)));
 	}
 	
 	@QCommandLabels({ "list", "l" })
 	@QCommand(section = "QMod", max = 0, desc = "objective list")
 	public void list(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		sender.sendMessage(ChatColor.RED + context.getSenderLang().OBJ_LIST + ": " + ChatColor.WHITE + eMan
-				.getObjectiveList());
+		sender.sendMessage(ChatColor.RED + context.getSenderLang().OBJ_LIST + ": "
+				+ ChatColor.WHITE + eMan.getObjectiveList());
 	}
 	
 	@QCommandLabels({ "swap" })
@@ -116,8 +116,9 @@ public class ObjectiveCommands {
 	public void swap(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.swapQuestObjectives(sender.getName(), context.getInt(0), context.getInt(1),
 				context.getSenderLang());
-		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().OBJ_SWAP.replaceAll("%id1",
-				context.getString(0)).replaceAll("%id2", context.getString(1)));
+		sender.sendMessage(ChatColor.GREEN
+				+ context.getSenderLang().OBJ_SWAP.replaceAll("%id1", context.getString(0))
+						.replaceAll("%id2", context.getString(1)));
 	}
 	
 	@QCommandLabels({ "move" })
@@ -130,8 +131,9 @@ public class ObjectiveCommands {
 	public void move(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.moveQuestObjective(sender.getName(), context.getInt(0), context.getInt(1),
 				context.getSenderLang());
-		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().OBJ_MOVE.replaceAll("%id1",
-				context.getString(0)).replaceAll("%id2", context.getString(1)));
+		sender.sendMessage(ChatColor.GREEN
+				+ context.getSenderLang().OBJ_MOVE.replaceAll("%id1", context.getString(0))
+						.replaceAll("%id2", context.getString(1)));
 	}
 	
 	@QCommandLabels({ "desc" })

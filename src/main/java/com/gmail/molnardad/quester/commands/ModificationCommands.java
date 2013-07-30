@@ -65,8 +65,9 @@ public class ModificationCommands {
 			usage = "<quest ID>",
 			permission = QConfiguration.PERM_MODIFY)
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		final String name = qMan.removeQuest(sender.getName(), context.getInt(0),
-				context.getSenderLang()).getName();
+		final String name =
+				qMan.removeQuest(sender.getName(), context.getInt(0), context.getSenderLang())
+						.getName();
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_REMOVED);
 		if(QConfiguration.verbose) {
 			Quester.log.info(sender.getName() + " removed quest '" + name + "'.");
@@ -83,8 +84,8 @@ public class ModificationCommands {
 			permission = QConfiguration.PERM_MODIFY)
 	public void name(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.changeQuestName(sender.getName(), context.getString(0), context.getSenderLang());
-		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_RENAMED.replaceAll("%q",
-				context.getString(0)));
+		sender.sendMessage(ChatColor.GREEN
+				+ context.getSenderLang().Q_RENAMED.replaceAll("%q", context.getString(0)));
 	}
 	
 	@QCommandLabels({ "toggle" })

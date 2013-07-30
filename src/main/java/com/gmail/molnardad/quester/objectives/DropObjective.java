@@ -45,15 +45,19 @@ public final class DropObjective extends Objective {
 		final String datStr = data < 0 ? "" : " (data" + data + ")";
 		final String spec = questItem ? " special" : "";
 		final String locStr = location == null ? "" : " at " + Util.displayLocation(location);
-		return "Drop " + spec + material.name().toLowerCase().replace('_', ' ') + datStr + locStr + " - " + progress + "/" + amount + ".";
+		return "Drop " + spec + material.name().toLowerCase().replace('_', ' ') + datStr + locStr
+				+ " - " + progress + "/" + amount + ".";
 	}
 	
 	@Override
 	protected String info() {
 		final String dataStr = data < 0 ? "" : ":" + data;
-		final String locStr = location == null ? "" : "; LOC: " + Util.displayLocation(location) + "; RNG: " + range;
+		final String locStr =
+				location == null ? "" : "; LOC: " + Util.displayLocation(location) + "; RNG: "
+						+ range;
 		final String flags = questItem ? " (-q)" : "";
-		return material.name() + "[" + material.getId() + dataStr + "]; AMT: " + amount + locStr + flags;
+		return material.name() + "[" + material.getId() + dataStr + "]; AMT: " + amount + locStr
+				+ flags;
 	}
 	
 	@QCommand(min = 2, max = 4, usage = "{<item>} <amount> {[location]} [range] (-q)")

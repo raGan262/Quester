@@ -79,8 +79,8 @@ public abstract class Qevent extends Element {
 						Qevent.this.run(player, plugin);
 					}
 					catch (final Exception e) {
-						Quester.log
-								.warning(getType() + " event external exception. [" + occasion + ":" + delay + "]");
+						Quester.log.warning(getType() + " event external exception. [" + occasion
+								+ ":" + delay + "]");
 						e.printStackTrace();
 					}
 				}
@@ -91,8 +91,8 @@ public abstract class Qevent extends Element {
 				Qevent.this.run(player, plugin);
 			}
 			catch (final Exception e) {
-				Quester.log
-						.warning(getType() + " event external exception. [" + occasion + ":" + delay + "]");
+				Quester.log.warning(getType() + " event external exception. [" + occasion + ":"
+						+ delay + "]");
 				e.printStackTrace();
 			}
 		}
@@ -144,9 +144,8 @@ public abstract class Qevent extends Element {
 				qev.delay = del;
 			}
 			catch (final Exception e) {
-				Quester.log
-						.severe("Error when deserializing " + c.getSimpleName() + ". Method load() missing or invalid. " + e
-								.getClass().getName());
+				Quester.log.severe("Error when deserializing " + c.getSimpleName()
+						+ ". Method load() missing or invalid. " + e.getClass().getName());
 				if(QConfiguration.debug) {
 					e.printStackTrace();
 				}

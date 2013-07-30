@@ -257,16 +257,17 @@ public class ProfileManager {
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		if(event.isCancelled()) {
 			if(QConfiguration.verbose) {
-				Quester.log.info("QuestStart event cancelled. (" + player.getName() + "; '" + quest
-						.getName() + "')");
+				Quester.log.info("QuestStart event cancelled. (" + player.getName() + "; '"
+						+ quest.getName() + "')");
 			}
 			return;
 		}
 		
 		assignQuest(playerName, quest);
 		if(QConfiguration.progMsgStart) {
-			player.sendMessage(Quester.LABEL + lang.MSG_Q_STARTED.replaceAll("%q",
-					ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
+			player.sendMessage(Quester.LABEL
+					+ lang.MSG_Q_STARTED.replaceAll("%q", ChatColor.GOLD + quest.getName()
+							+ ChatColor.BLUE));
 		}
 		final String description = quest.getDescription(playerName);
 		if(!description.isEmpty() && !quest.hasFlag(QuestFlag.NODESC)) {
@@ -286,8 +287,9 @@ public class ProfileManager {
 		Collection<Quest> allQuests = qMan.getQuests();
 		final ArrayList<Quest> chosenQuests = new ArrayList<Quest>();
 		for(final Quest quest : allQuests) {
-			if(quest.hasFlag(QuestFlag.ACTIVE) && !quest.hasFlag(QuestFlag.HIDDEN) && !getProfile(
-					player.getName()).hasQuest(quest) && qMan.areConditionsMet(player, quest, lang)) {
+			if(quest.hasFlag(QuestFlag.ACTIVE) && !quest.hasFlag(QuestFlag.HIDDEN)
+					&& !getProfile(player.getName()).hasQuest(quest)
+					&& qMan.areConditionsMet(player, quest, lang)) {
 				chosenQuests.add(quest);
 			}
 		}
@@ -331,8 +333,9 @@ public class ProfileManager {
 		
 		unassignQuest(player.getName(), index);
 		if(QConfiguration.progMsgCancel) {
-			player.sendMessage(Quester.LABEL + lang.MSG_Q_CANCELLED.replaceAll("%q",
-					ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
+			player.sendMessage(Quester.LABEL
+					+ lang.MSG_Q_CANCELLED.replaceAll("%q", ChatColor.GOLD + quest.getName()
+							+ ChatColor.BLUE));
 		}
 		if(QConfiguration.verbose) {
 			Quester.log.info(player.getName() + " cancelled quest '" + quest.getName() + "'.");
@@ -403,8 +406,9 @@ public class ProfileManager {
 		unassignQuest(player.getName());
 		addCompletedQuest(player.getName(), quest.getName());
 		if(QConfiguration.progMsgDone) {
-			player.sendMessage(Quester.LABEL + lang.MSG_Q_COMPLETED.replaceAll("%q",
-					ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
+			player.sendMessage(Quester.LABEL
+					+ lang.MSG_Q_COMPLETED.replaceAll("%q", ChatColor.GOLD + quest.getName()
+							+ ChatColor.BLUE));
 		}
 		if(QConfiguration.verbose) {
 			Quester.log.info(player.getName() + " completed quest '" + quest.getName() + "'.");
@@ -453,8 +457,8 @@ public class ProfileManager {
 				player.sendMessage(Quester.LABEL + lang.MSG_OBJ_COMPLETED);
 			}
 			/* ObjectiveCompleteEvent */
-			final ObjectiveCompleteEvent event = new ObjectiveCompleteEvent(as, player, q,
-					objectiveId);
+			final ObjectiveCompleteEvent event =
+					new ObjectiveCompleteEvent(as, player, q, objectiveId);
 			Bukkit.getServer().getPluginManager().callEvent(event);
 			
 			for(final Qevent qv : q.getQevents()) {
@@ -509,14 +513,14 @@ public class ProfileManager {
 		}
 		final PlayerProfile prof = getProfile(name);
 		sender.sendMessage(ChatColor.BLUE + lang.INFO_NAME + ": " + ChatColor.GOLD + prof.getName());
-		sender.sendMessage(ChatColor.BLUE + lang.INFO_PROFILE_POINTS + ": " + ChatColor.WHITE + prof
-				.getPoints());
+		sender.sendMessage(ChatColor.BLUE + lang.INFO_PROFILE_POINTS + ": " + ChatColor.WHITE
+				+ prof.getPoints());
 		if(QConfiguration.useRank) {
-			sender.sendMessage(ChatColor.BLUE + lang.INFO_PROFILE_RANK + ": " + ChatColor.GOLD + prof
-					.getRank());
+			sender.sendMessage(ChatColor.BLUE + lang.INFO_PROFILE_RANK + ": " + ChatColor.GOLD
+					+ prof.getRank());
 		}
-		sender.sendMessage(ChatColor.BLUE + lang.INFO_PROFILE_COMPLETED + ": " + ChatColor.WHITE + Util
-				.implode(prof.getCompletedQuests(), ','));
+		sender.sendMessage(ChatColor.BLUE + lang.INFO_PROFILE_COMPLETED + ": " + ChatColor.WHITE
+				+ Util.implode(prof.getCompletedQuests(), ','));
 		
 	}
 	
@@ -540,8 +544,8 @@ public class ProfileManager {
 		quest = progress.getQuest();
 		
 		if(!quest.hasFlag(QuestFlag.HIDDENOBJS)) {
-			player.sendMessage(lang.INFO_PROGRESS.replaceAll("%q",
-					ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
+			player.sendMessage(lang.INFO_PROGRESS.replaceAll("%q", ChatColor.GOLD + quest.getName()
+					+ ChatColor.BLUE));
 			final List<Objective> objs = quest.getObjectives();
 			for(int i = 0; i < objs.size(); i++) {
 				if(!objs.get(i).isHidden()) {
@@ -549,11 +553,12 @@ public class ProfileManager {
 						player.sendMessage(ChatColor.GREEN + " - " + lang.INFO_PROGRESS_COMPLETED);
 					}
 					else {
-						final boolean active = progress.getObjectiveStatus(i) == ObjectiveStatus.ACTIVE;
+						final boolean active =
+								progress.getObjectiveStatus(i) == ObjectiveStatus.ACTIVE;
 						if(active || !QConfiguration.ordOnlyCurrent) {
 							final ChatColor col = active ? ChatColor.YELLOW : ChatColor.RED;
-							player.sendMessage(col + " - " + objs.get(i).inShow(
-									progress.getProgress()[i]));
+							player.sendMessage(col + " - "
+									+ objs.get(i).inShow(progress.getProgress()[i]));
 						}
 					}
 				}
@@ -574,12 +579,14 @@ public class ProfileManager {
 			return;
 		}
 		final PlayerProfile prof = getProfile(name);
-		sender.sendMessage(ChatColor.BLUE + (sender.getName().equalsIgnoreCase(name) ? lang.INFO_QUESTS + ": " : lang.INFO_QUESTS_OTHER
-				.replaceAll("%p", prof.getName()) + ": ") + "(" + lang.INFO_LIMIT + ": " + QConfiguration.maxQuests + ")");
+		sender.sendMessage(ChatColor.BLUE
+				+ (sender.getName().equalsIgnoreCase(name) ? lang.INFO_QUESTS + ": "
+						: lang.INFO_QUESTS_OTHER.replaceAll("%p", prof.getName()) + ": ") + "("
+				+ lang.INFO_LIMIT + ": " + QConfiguration.maxQuests + ")");
 		final int current = prof.getQuestProgressIndex();
 		for(int i = 0; i < prof.getQuestAmount(); i++) {
-			sender.sendMessage("[" + i + "] " + (current == i ? ChatColor.GREEN : ChatColor.YELLOW) + prof
-					.getProgress(i).getQuest().getName());
+			sender.sendMessage("[" + i + "] " + (current == i ? ChatColor.GREEN : ChatColor.YELLOW)
+					+ prof.getProgress(i).getQuest().getName());
 		}
 		
 	}
@@ -665,7 +672,8 @@ public class ProfileManager {
 					if(QConfiguration.debug) {
 						Quester.log.info("Loading profiles...");
 					}
-					final List<SerializedPlayerProfile> serps = new ArrayList<PlayerProfile.SerializedPlayerProfile>();
+					final List<SerializedPlayerProfile> serps =
+							new ArrayList<PlayerProfile.SerializedPlayerProfile>();
 					conn = DatabaseConnection.getConnection();
 					stmt = conn.prepareStatement("SELECT * FROM `quester-profiles`");
 					rs = stmt.executeQuery();
@@ -686,8 +694,8 @@ public class ProfileManager {
 						public void run() {
 							int count = 0;
 							for(final SerializedPlayerProfile sp : serps) {
-								final PlayerProfile prof = PlayerProfile.deserialize(
-										sp.getStoragekey(), qMan);
+								final PlayerProfile prof =
+										PlayerProfile.deserialize(sp.getStoragekey(), qMan);
 								if(prof != null) {
 									updateRank(prof);
 									profiles.put(prof.getName().toLowerCase(), prof);
@@ -765,7 +773,8 @@ public class ProfileManager {
 	}
 	
 	private void saveToDatabase(final boolean async) {
-		final List<SerializedPlayerProfile> serps = new ArrayList<PlayerProfile.SerializedPlayerProfile>();
+		final List<SerializedPlayerProfile> serps =
+				new ArrayList<PlayerProfile.SerializedPlayerProfile>();
 		
 		for(final PlayerProfile prof : profiles.values()) {
 			serps.add(new PlayerProfile.SerializedPlayerProfile(prof));
@@ -794,9 +803,10 @@ public class ProfileManager {
 						final boolean isStored = stored.contains(sp.name);
 						try {
 							if(!isStored || sp.changed) { // only save if it has changed, or is not stored
-								stmt = conn.prepareStatement(isStored ? sp
-										.getUpdateQuerry("quester-profiles") : sp
-										.getInsertQuerry("quester-profiles"));
+								stmt =
+										conn.prepareStatement(isStored ? sp
+												.getUpdateQuerry("quester-profiles") : sp
+												.getInsertQuerry("quester-profiles"));
 								stmt.execute();
 								stmt.close();
 								saved++;

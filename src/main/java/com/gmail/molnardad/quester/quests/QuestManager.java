@@ -184,7 +184,8 @@ public class QuestManager {
 				profMan.unassignQuest(prof.getName(), prof.getQuestProgressIndex(quest));
 				final Player player = Bukkit.getServer().getPlayerExact(prof.getName());
 				if(player != null) {
-					player.sendMessage(Quester.LABEL + langMan.getPlayerLang(player.getName()).MSG_Q_DEACTIVATED);
+					player.sendMessage(Quester.LABEL
+							+ langMan.getPlayerLang(player.getName()).MSG_Q_DEACTIVATED);
 				}
 			}
 		}
@@ -526,7 +527,8 @@ public class QuestManager {
 		sender.sendMessage(ChatColor.BLUE + lang.INFO_NAME + ": " + ChatColor.GOLD + qst.getName());
 		final String string = qst.getDescription(sender.getName());
 		if(!string.isEmpty()) {
-			sender.sendMessage(ChatColor.BLUE + lang.INFO_DESCRIPTION + ": " + ChatColor.WHITE + string);
+			sender.sendMessage(ChatColor.BLUE + lang.INFO_DESCRIPTION + ": " + ChatColor.WHITE
+					+ string);
 		}
 		final List<Condition> cons = qst.getConditions();
 		if(!cons.isEmpty()) {
@@ -543,7 +545,8 @@ public class QuestManager {
 			final List<Objective> objs = qst.getObjectives();
 			sender.sendMessage(ChatColor.BLUE + lang.INFO_OBJECTIVES + ":");
 			for(int i = 0; i < objs.size(); i++) {
-				if(!objs.get(i).isHidden() && (objs.get(i).getPrerequisites().isEmpty() || !QConfiguration.ordOnlyCurrent)) {
+				if(!objs.get(i).isHidden()
+						&& (objs.get(i).getPrerequisites().isEmpty() || !QConfiguration.ordOnlyCurrent)) {
 					sender.sendMessage(ChatColor.WHITE + " - " + objs.get(i).inShow(0));
 				}
 			}
@@ -569,23 +572,24 @@ public class QuestManager {
 		
 		sender.sendMessage(Util.line(ChatColor.BLUE, lang.INFO_QUEST_INFO, ChatColor.GOLD));
 		
-		sender.sendMessage(ChatColor.BLUE + lang.INFO_NAME + ": " + "[" + quest.getID() + "]" + ChatColor.GOLD + quest
-				.getName());
+		sender.sendMessage(ChatColor.BLUE + lang.INFO_NAME + ": " + "[" + quest.getID() + "]"
+				+ ChatColor.GOLD + quest.getName());
 		String string = quest.getDescription(sender.getName());
 		if(!string.isEmpty()) {
-			sender.sendMessage(ChatColor.BLUE + lang.INFO_DESCRIPTION + ": " + ChatColor.WHITE + string);
+			sender.sendMessage(ChatColor.BLUE + lang.INFO_DESCRIPTION + ": " + ChatColor.WHITE
+					+ string);
 		}
 		if(quest.hasLocation()) {
-			sender.sendMessage(ChatColor.BLUE + lang.INFO_LOCATION + ": " + ChatColor.WHITE + Util
-					.displayLocation(quest.getLocation()));
+			sender.sendMessage(ChatColor.BLUE + lang.INFO_LOCATION + ": " + ChatColor.WHITE
+					+ Util.displayLocation(quest.getLocation()));
 		}
 		string = QuestFlag.stringize(quest.getFlags());
 		if(!string.isEmpty()) {
 			sender.sendMessage(ChatColor.BLUE + lang.INFO_FLAGS + ": " + ChatColor.WHITE + string);
 		}
 		if(!quest.getWorlds().isEmpty()) {
-			sender.sendMessage(ChatColor.BLUE + lang.INFO_WORLDS + ": " + ChatColor.WHITE + quest
-					.getWorldNames());
+			sender.sendMessage(ChatColor.BLUE + lang.INFO_WORLDS + ": " + ChatColor.WHITE
+					+ quest.getWorldNames());
 		}
 		int i;
 		final Map<Integer, Map<Integer, Qevent>> qmap = quest.getQeventMap();
@@ -639,8 +643,8 @@ public class QuestManager {
 					if(prof.hasQuest(quest)) {
 						color = ChatColor.YELLOW;
 					}
-					else if(prof.isCompleted(quest.getName()) && !quest
-							.hasFlag(QuestFlag.REPEATABLE)) {
+					else if(prof.isCompleted(quest.getName())
+							&& !quest.hasFlag(QuestFlag.REPEATABLE)) {
 						color = ChatColor.GREEN;
 					}
 					else if(areConditionsMet(player, quest, lang)) {
@@ -664,7 +668,8 @@ public class QuestManager {
 		for(final int i : getQuestIds()) {
 			q = getQuest(i);
 			final ChatColor color = q.hasFlag(QuestFlag.ACTIVE) ? ChatColor.GREEN : ChatColor.RED;
-			final ChatColor color2 = q.hasFlag(QuestFlag.HIDDEN) ? ChatColor.YELLOW : ChatColor.BLUE;
+			final ChatColor color2 =
+					q.hasFlag(QuestFlag.HIDDEN) ? ChatColor.YELLOW : ChatColor.BLUE;
 			sender.sendMessage(color2 + "[" + q.getID() + "]" + color + q.getName());
 		}
 	}
@@ -725,13 +730,13 @@ public class QuestManager {
 						quest.setName(name);
 						lastGeneric++;
 					}
-					Quester.log
-							.severe("Duplicate quest name in quest " + questKey.getName() + " detected, generated new name '" + name + "'.");
+					Quester.log.severe("Duplicate quest name in quest " + questKey.getName()
+							+ " detected, generated new name '" + name + "'.");
 				}
 				if(quest.hasID()) {
 					if(quests.get(quest.getID()) != null) { // duplicate ID
-						Quester.log
-								.severe("Duplicate quest ID in quest " + questKey.getName() + " detected, new ID will be assigned.");
+						Quester.log.severe("Duplicate quest ID in quest " + questKey.getName()
+								+ " detected, new ID will be assigned.");
 						quest.setID(-1);
 						onHold.add(quest);
 					}

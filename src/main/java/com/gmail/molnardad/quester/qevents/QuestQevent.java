@@ -34,9 +34,8 @@ public final class QuestQevent extends Qevent {
 					plugin.getLanguageManager().getPlayerLang(player.getName()));
 		}
 		catch (final QuesterException e) {
-			Quester.log
-					.info("Event failed to give quest to " + player.getName() + ". Reason: " + ChatColor
-							.stripColor(e.getMessage()));
+			Quester.log.info("Event failed to give quest to " + player.getName() + ". Reason: "
+					+ ChatColor.stripColor(e.getMessage()));
 		}
 	}
 	

@@ -31,8 +31,10 @@ public class CommandManager {
 	Object[] arguments = null;
 	Class<?>[] classes = null;
 	
-	private final Map<Method, Map<String, Method>> labels = new HashMap<Method, Map<String, Method>>();
-	private final Map<Method, Map<String, Method>> aliases = new HashMap<Method, Map<String, Method>>();
+	private final Map<Method, Map<String, Method>> labels =
+			new HashMap<Method, Map<String, Method>>();
+	private final Map<Method, Map<String, Method>> aliases =
+			new HashMap<Method, Map<String, Method>>();
 	private final Map<Method, Object> instances = new HashMap<Method, Object>();
 	private final Map<Method, QCommand> annotations = new HashMap<Method, QCommand>();
 	
@@ -61,14 +63,14 @@ public class CommandManager {
 		final Object instance = construct(clss);
 		for(final Method method : clss.getMethods()) {
 			
-			if(!method.isAnnotationPresent(QCommand.class) || !method
-					.isAnnotationPresent(QCommandLabels.class)) {
+			if(!method.isAnnotationPresent(QCommand.class)
+					|| !method.isAnnotationPresent(QCommandLabels.class)) {
 				continue;
 			}
 			
 			if(instance == null && !Modifier.isStatic(method.getModifiers())) {
-				logger.warning("Failed to register command:" + "" + method.getName() + "() in " + clss
-						.getCanonicalName());
+				logger.warning("Failed to register command:" + "" + method.getName() + "() in "
+						+ clss.getCanonicalName());
 				continue;
 			}
 			else {
@@ -156,8 +158,9 @@ public class CommandManager {
 			System.arraycopy(args, 0, parentArgs, 0, level + 1);
 			System.arraycopy(args, level + 1, realArgs, 0, args.length - level - 1);
 			
-			final QCommandContext context = new QCommandContext(realArgs, parentArgs, sender, this,
-					langMan.getPlayerLang(sender.getName()));
+			final QCommandContext context =
+					new QCommandContext(realArgs, parentArgs, sender, this,
+							langMan.getPlayerLang(sender.getName()));
 			
 			if(context.length() < cmd.min()) {
 				throw new QUsageException("Not enough argmunents.", getUsage(args, level, method));

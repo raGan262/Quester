@@ -31,7 +31,8 @@ import com.gmail.molnardad.quester.Quester;
  */
 public class DatabaseConnection {
 	
-	private static Vector<DatabaseConnection.MyConnection> connections = new Vector<DatabaseConnection.MyConnection>();
+	private static Vector<DatabaseConnection.MyConnection> connections =
+			new Vector<DatabaseConnection.MyConnection>();
 	private static String url, user, pass;
 	private static volatile boolean isValid = false;
 	
@@ -101,8 +102,8 @@ public class DatabaseConnection {
 		// Test connection
 		@SuppressWarnings("resource")
 		// it is closed, really....
-		final MyConnection c = new MyConnection(
-				DriverManager.getConnection(url, username, password));
+		final MyConnection c =
+				new MyConnection(DriverManager.getConnection(url, username, password));
 		if(!c.isValid()) {
 			c.closeQuietly();
 			throw new SQLException("Failed to establish a valid connection.");

@@ -64,7 +64,9 @@ public final class ItemObjective extends Objective {
 	@Override
 	protected String info() {
 		final String dataStr = data < 0 ? "" : ":" + data;
-		final String itm = material.name() + "[" + material.getId() + dataStr + "]; AMT: " + amount + "; QST: " + questItem;
+		final String itm =
+				material.name() + "[" + material.getId() + dataStr + "]; AMT: " + amount
+						+ "; QST: " + questItem;
 		String enchs = enchants.isEmpty() ? "" : "\n -- ENCH:";
 		for(final Integer e : enchants.keySet()) {
 			enchs = enchs + " " + Enchantment.getById(e).getName() + ":" + enchants.get(e);

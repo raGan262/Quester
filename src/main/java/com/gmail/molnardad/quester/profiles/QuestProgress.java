@@ -151,8 +151,8 @@ public class QuestProgress {
 		}
 		catch (final Exception e) {
 			if(QConfiguration.verbose) {
-				Quester.log
-						.info("Invalid or missing progress for quest '" + key.getName() + "' in profile.");
+				Quester.log.info("Invalid or missing progress for quest '" + key.getName()
+						+ "' in profile.");
 			}
 			if(QConfiguration.debug) {
 				e.printStackTrace();

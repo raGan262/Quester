@@ -33,8 +33,8 @@ public final class ToggleQevent extends Qevent {
 					plugin.getLanguageManager().getPlayerLang(player.getName()));
 		}
 		catch (final QuesterException e) {
-			Quester.log.info("Event failed to toggle quest. Reason: " + ChatColor.stripColor(e
-					.getMessage()));
+			Quester.log.info("Event failed to toggle quest. Reason: "
+					+ ChatColor.stripColor(e.getMessage()));
 		}
 	}
 	

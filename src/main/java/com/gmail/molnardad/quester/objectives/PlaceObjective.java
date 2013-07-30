@@ -33,7 +33,8 @@ public final class PlaceObjective extends Objective {
 	@Override
 	protected String show(final int progress) {
 		final String datStr = data < 0 ? " " : " (data " + data + ") ";
-		return "Place " + material.name().toLowerCase().replace('_', ' ') + datStr + "- " + (amount - progress) + "x.";
+		return "Place " + material.name().toLowerCase().replace('_', ' ') + datStr + "- "
+				+ (amount - progress) + "x.";
 	}
 	
 	@Override

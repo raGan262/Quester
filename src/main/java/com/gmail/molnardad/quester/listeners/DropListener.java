@@ -44,8 +44,8 @@ public class DropListener implements Listener {
 			final List<Objective> objs = quest.getObjectives();
 			for(int i = 0; i < objs.size(); i++) {
 				// check if Objective is type COLLECT
-				if(QConfiguration.colSubOnDrop && collectObj && objs.get(i).getType()
-						.equalsIgnoreCase("COLLECT")) {
+				if(QConfiguration.colSubOnDrop && collectObj
+						&& objs.get(i).getType().equalsIgnoreCase("COLLECT")) {
 					if(!profMan.isObjectiveActive(player, i)) {
 						continue;
 					}

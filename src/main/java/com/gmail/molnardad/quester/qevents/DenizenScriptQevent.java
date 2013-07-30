@@ -60,12 +60,13 @@ public final class DenizenScriptQevent extends Qevent {
 				else {
 					dNPC denNpc = null;
 					try {
-						denNpc = den.getNPCRegistry().getDenizen(
-								CitizensAPI.getNPCRegistry().getById(npc));
+						denNpc =
+								den.getNPCRegistry().getDenizen(
+										CitizensAPI.getNPCRegistry().getById(npc));
 					}
 					catch (final Exception ignore) {}
-					final TaskScriptContainer taskScript = ScriptRegistry.getScriptContainerAs(
-							script, TaskScriptContainer.class);
+					final TaskScriptContainer taskScript =
+							ScriptRegistry.getScriptContainerAs(script, TaskScriptContainer.class);
 					if(npc >= 0 && denNpc == null) {
 						throw new CustomException("Couldn't resolve DENIZEN npc.");
 					}

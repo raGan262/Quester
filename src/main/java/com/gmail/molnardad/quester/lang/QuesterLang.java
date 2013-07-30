@@ -143,7 +143,8 @@ public class QuesterLang {
 	public String ERROR_CMD_ITEM_NUMBERS = "Amount must be > 0. Data must be >= 0.";
 	public String ERROR_CMD_ENCH_LEVEL = "Enchantment level must be > 0.";
 	public String ERROR_CMD_ENCH_INVALID = "Invalid enchantment.";
-	public String ERROR_CMD_ENCH_CANT = "One or more enchantments cannot be applied to specified item.";
+	public String ERROR_CMD_ENCH_CANT =
+			"One or more enchantments cannot be applied to specified item.";
 	public String ERROR_CMD_EFFECT_UNKNOWN = "Unknown effect.";
 	public String ERROR_CMD_EFFECT_DURATION = "Duration must be positive number.";
 	public String ERROR_CMD_EFFECT_AMPLIFIER = "Amplifier must be non-negative number.";
@@ -201,7 +202,8 @@ public class QuesterLang {
 	public String ERROR_REW_CANT_DO = "Not enough space to recieve quest rewards.";
 	public String ERROR_EVT_NOT_EXIST = "Event does not exist.";
 	public String ERROR_WHY = "Why would you want to do this ?";
-	public String ERROR_INTERESTING = "Interesting error, you should definitely notify Quester developer.";
+	public String ERROR_INTERESTING =
+			"Interesting error, you should definitely notify Quester developer.";
 	
 	private File file = null;
 	

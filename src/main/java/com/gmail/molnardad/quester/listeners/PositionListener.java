@@ -59,8 +59,8 @@ public class PositionListener implements Runnable {
 					final Quest qst = qMan.getQuest(ID);
 					final Location loc2 = qMan.questLocations.get(ID);
 					if(loc2.getWorld().getName().equals(loc.getWorld().getName())) {
-						if(loc2.distanceSquared(loc) <= qst.getRange() * qst.getRange() && qst
-								.hasFlag(QuestFlag.ACTIVE)) {
+						if(loc2.distanceSquared(loc) <= qst.getRange() * qst.getRange()
+								&& qst.hasFlag(QuestFlag.ACTIVE)) {
 							try {
 								profMan.startQuest(player, qst.getName(),
 										ActionSource.otherSource(null),

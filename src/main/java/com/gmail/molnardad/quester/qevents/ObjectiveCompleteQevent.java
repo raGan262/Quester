@@ -62,8 +62,8 @@ public final class ObjectiveCompleteQevent extends Qevent {
 			}
 		}
 		catch (final QuesterException e) {
-			Quester.log.info("Event failed to complete objective. Reason: " + ChatColor
-					.stripColor(e.getMessage()));
+			Quester.log.info("Event failed to complete objective. Reason: "
+					+ ChatColor.stripColor(e.getMessage()));
 		}
 	}
 	

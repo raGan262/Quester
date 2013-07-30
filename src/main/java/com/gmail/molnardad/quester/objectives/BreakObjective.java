@@ -35,15 +35,18 @@ public final class BreakObjective extends Objective {
 	@Override
 	protected String show(final int progress) {
 		final String datStr = data < 0 ? " " : " of given type(" + data + ") ";
-		final String hand = inHand < 0 ? " " : inHand == 0 ? "with empty hand " : "with " + Material
-				.getMaterial(inHand).name().toLowerCase().replace('_', ' ') + " ";
-		return "Break " + material.name().toLowerCase().replace('_', ' ') + datStr + hand + "- " + (amount - progress) + "x.";
+		final String hand =
+				inHand < 0 ? " " : inHand == 0 ? "with empty hand " : "with "
+						+ Material.getMaterial(inHand).name().toLowerCase().replace('_', ' ') + " ";
+		return "Break " + material.name().toLowerCase().replace('_', ' ') + datStr + hand + "- "
+				+ (amount - progress) + "x.";
 	}
 	
 	@Override
 	protected String info() {
 		final String dataStr = data < 0 ? "" : ":" + data;
-		return material.name() + "[" + material.getId() + dataStr + "]; AMT: " + amount + "; HND: " + inHand;
+		return material.name() + "[" + material.getId() + dataStr + "]; AMT: " + amount + "; HND: "
+				+ inHand;
 	}
 	
 	@QCommand(min = 2, max = 3, usage = "{<item>} <amount> [hand]")

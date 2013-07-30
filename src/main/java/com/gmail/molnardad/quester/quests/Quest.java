@@ -190,7 +190,8 @@ public class Quest {
 	}
 	
 	public Map<Integer, Map<Integer, Qevent>> getQeventMap(final String type) {
-		final Map<Integer, Map<Integer, Qevent>> result = new HashMap<Integer, Map<Integer, Qevent>>();
+		final Map<Integer, Map<Integer, Qevent>> result =
+				new HashMap<Integer, Map<Integer, Qevent>>();
 		Qevent q = null;
 		int occ = 0;
 		for(int i = 0; i < qevents.size(); i++) {
@@ -327,8 +328,8 @@ public class Quest {
 			}
 			
 			if(key.getRaw("worlds") instanceof List) {
-				final List<String> strs = (List<String>) key.getRaw("worlds",
-						new ArrayList<String>());
+				final List<String> strs =
+						(List<String>) key.getRaw("worlds", new ArrayList<String>());
 				for(final String s : strs) {
 					if(s != null) {
 						quest.addWorld(s);
@@ -346,9 +347,8 @@ public class Quest {
 						quest.addObjective(obj);
 					}
 					else {
-						Quester.log
-								.severe("Error occured when deserializing objective ID " + i + " in quest '" + quest
-										.getName() + "'.");
+						Quester.log.severe("Error occured when deserializing objective ID " + i
+								+ " in quest '" + quest.getName() + "'.");
 					}
 				}
 			}
@@ -363,9 +363,8 @@ public class Quest {
 						quest.addCondition(con);
 					}
 					else {
-						Quester.log
-								.severe("Error occured when deserializing condition ID " + i + " in quest '" + quest
-										.getName() + "'.");
+						Quester.log.severe("Error occured when deserializing condition ID " + i
+								+ " in quest '" + quest.getName() + "'.");
 					}
 				}
 			}
@@ -380,9 +379,8 @@ public class Quest {
 						quest.addQevent(qvt);
 					}
 					else {
-						Quester.log
-								.severe("Error occured when deserializing event ID:" + i + " in quest '" + quest
-										.getName() + "'.");
+						Quester.log.severe("Error occured when deserializing event ID:" + i
+								+ " in quest '" + quest.getName() + "'.");
 					}
 				}
 			}

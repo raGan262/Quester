@@ -51,13 +51,14 @@ public final class EnchantObjective extends Objective {
 		for(final Integer i : enchants.keySet()) {
 			enchs = enchs + " " + Util.enchantName(i, enchants.get(i)) + ";";
 		}
-		return "Enchant " + (amount - progress) + pcs + (material == null ? "any item" : material
-				.name()) + "." + enchs;
+		return "Enchant " + (amount - progress) + pcs
+				+ (material == null ? "any item" : material.name()) + "." + enchs;
 	}
 	
 	@Override
 	protected String info() {
-		final String mat = material == null ? "ANY ITEM" : material.name() + "[" + material.getId() + "]";
+		final String mat =
+				material == null ? "ANY ITEM" : material.name() + "[" + material.getId() + "]";
 		final String itm = mat + "; AMT: " + amount;
 		String enchs = enchants.isEmpty() ? "" : "\n -- ENCH:";
 		for(final Integer e : enchants.keySet()) {

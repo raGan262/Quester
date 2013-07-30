@@ -205,8 +205,8 @@ public class ExpManager {
 		final Player player = getPlayer();
 		
 		final int lvl = player.getLevel();
-		final int cur = getXpForLevel(lvl) + Math.round(xpRequiredForNextLevel[lvl] * player
-				.getExp());
+		final int cur =
+				getXpForLevel(lvl) + Math.round(xpRequiredForNextLevel[lvl] * player.getExp());
 		return cur;
 	}
 	
@@ -219,8 +219,8 @@ public class ExpManager {
 		final Player player = getPlayer();
 		
 		final int lvl = player.getLevel();
-		final double cur = getXpForLevel(lvl) + (double) (xpRequiredForNextLevel[lvl] * player
-				.getExp());
+		final double cur =
+				getXpForLevel(lvl) + (double) (xpRequiredForNextLevel[lvl] * player.getExp());
 		return cur;
 	}
 	
@@ -261,8 +261,8 @@ public class ExpManager {
 			// need to extend the lookup tables
 			final int newMax = calculateLevelForExp(exp) * 2;
 			if(newMax > hardMaxLevel) {
-				throw new IllegalArgumentException(
-						"Level for exp " + exp + " > hard max level " + hardMaxLevel);
+				throw new IllegalArgumentException("Level for exp " + exp + " > hard max level "
+						+ hardMaxLevel);
 			}
 			initLookupTables(newMax);
 		}
@@ -296,8 +296,8 @@ public class ExpManager {
 	 */
 	public int getXpForLevel(final int level) {
 		if(level > hardMaxLevel) {
-			throw new IllegalArgumentException(
-					"Level " + level + " > hard max level " + hardMaxLevel);
+			throw new IllegalArgumentException("Level " + level + " > hard max level "
+					+ hardMaxLevel);
 		}
 		
 		if(level >= xpTotalToReachLevel.length) {

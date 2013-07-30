@@ -57,8 +57,10 @@ public class CraftSmeltListener implements Listener {
 							// how many results can be crafted
 							final int count = getCraftedAmount(event.getInventory());
 							// how many results can fit into inventory
-							final int spc = (int) Math.floor(getInvSpace(player.getInventory(),
-									item, count) / item.getAmount());
+							final int spc =
+									(int) Math
+											.floor(getInvSpace(player.getInventory(), item, count)
+													/ item.getAmount());
 							// actual crafted amount
 							final int amtCrafted = Math.min(spc, count);
 							if(amtCrafted > 0) {

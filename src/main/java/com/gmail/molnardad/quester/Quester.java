@@ -67,7 +67,8 @@ public class Quester extends JavaPlugin {
 	public static boolean vault = false;
 	public static boolean denizen = false;
 	
-	public static final String LABEL = ChatColor.BLUE + "[" + ChatColor.GOLD + "Quester" + ChatColor.BLUE + "] ";
+	public static final String LABEL = ChatColor.BLUE + "[" + ChatColor.GOLD + "Quester"
+			+ ChatColor.BLUE + "] ";
 	
 	@Override
 	public void onEnable() {
@@ -211,8 +212,8 @@ public class Quester extends JavaPlugin {
 	
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
-		if(label.equalsIgnoreCase("q") || label.equalsIgnoreCase("quest") || label
-				.equalsIgnoreCase("quester")) {
+		if(label.equalsIgnoreCase("q") || label.equalsIgnoreCase("quest")
+				|| label.equalsIgnoreCase("quester")) {
 			try {
 				commands.execute(args, sender);
 			}
@@ -222,8 +223,9 @@ public class Quester extends JavaPlugin {
 			catch (final QCommandException e) {
 				if(e instanceof QUsageException) {
 					sender.sendMessage(ChatColor.RED + e.getMessage());
-					sender.sendMessage(ChatColor.RED + langs.getPlayerLang(sender.getName()).USAGE_LABEL + ((QUsageException) e)
-							.getUsage());
+					sender.sendMessage(ChatColor.RED
+							+ langs.getPlayerLang(sender.getName()).USAGE_LABEL
+							+ ((QUsageException) e).getUsage());
 				}
 				else if(e instanceof QPermissionException) {
 					sender.sendMessage(ChatColor.RED + langs.getDefaultLang().MSG_PERMS);
@@ -233,8 +235,8 @@ public class Quester extends JavaPlugin {
 				}
 			}
 			catch (final NumberFormatException e) {
-				sender.sendMessage(ChatColor.RED + "Number expected, but " + e.getMessage()
-						.replaceFirst(".+ \"", "\"") + " found. ");
+				sender.sendMessage(ChatColor.RED + "Number expected, but "
+						+ e.getMessage().replaceFirst(".+ \"", "\"") + " found. ");
 			}
 			catch (final IllegalArgumentException e) {
 				sender.sendMessage(ChatColor.RED + "Invalid argument: '" + e.getMessage() + "'");
@@ -273,8 +275,8 @@ public class Quester extends JavaPlugin {
 			log.info("Vault not found, economy support disabled.");
 			return false;
 		}
-		final RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager()
-				.getRegistration(Economy.class);
+		final RegisteredServiceProvider<Economy> rsp =
+				getServer().getServicesManager().getRegistration(Economy.class);
 		if(rsp == null) {
 			log.info("Economy plugin not found, economy support disabled.");
 			return false;
@@ -455,8 +457,8 @@ public class Quester extends JavaPlugin {
 				elements.register(clss);
 			}
 			catch (final ElementException e) {
-				log.warning("(" + clss.getSimpleName() + ") Failed to register quester element: " + e
-						.getMessage());
+				log.warning("(" + clss.getSimpleName() + ") Failed to register quester element: "
+						+ e.getMessage());
 			}
 		}
 	}
@@ -464,8 +466,8 @@ public class Quester extends JavaPlugin {
 	public boolean startSaving() {
 		if(saveID == 0) {
 			if(QConfiguration.saveInterval > 0) {
-				saveID = getServer().getScheduler()
-						.scheduleSyncRepeatingTask(this, new Runnable() {
+				saveID =
+						getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 							
 							@Override
 							public void run() {

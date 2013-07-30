@@ -46,8 +46,9 @@ public class ProfileListener implements Listener {
 				try {
 					final SerializedPlayerProfile serp;
 					conn = DatabaseConnection.getConnection();
-					stmt = conn
-							.prepareStatement("SELECT * FROM `quester-profiles` WHERE `name`='" + playerName + "'");
+					stmt =
+							conn.prepareStatement("SELECT * FROM `quester-profiles` WHERE `name`='"
+									+ playerName + "'");
 					rs = stmt.executeQuery();
 					if(rs.next()) {
 						serp = new SerializedPlayerProfile(rs);
@@ -60,8 +61,8 @@ public class ProfileListener implements Listener {
 						
 						@Override
 						public void run() {
-							final PlayerProfile prof = PlayerProfile.deserialize(
-									serp.getStoragekey(), qMan);
+							final PlayerProfile prof =
+									PlayerProfile.deserialize(serp.getStoragekey(), qMan);
 							if(prof != null) {
 								profMan.loadProfile(prof);
 							}
@@ -112,8 +113,8 @@ public class ProfileListener implements Listener {
 			return;
 		}
 		final String playerName = event.getPlayer().getName();
-		final SerializedPlayerProfile serp = new SerializedPlayerProfile(
-				profMan.getProfile(playerName));
+		final SerializedPlayerProfile serp =
+				new SerializedPlayerProfile(profMan.getProfile(playerName));
 		
 		final Runnable saveTask = new Runnable() {
 			
@@ -125,16 +126,18 @@ public class ProfileListener implements Listener {
 				try {
 					final boolean stored;
 					conn = DatabaseConnection.getConnection();
-					stmt = conn
-							.prepareStatement("SELECT * FROM `quester-profiles` WHERE `name`='" + playerName + "'");
+					stmt =
+							conn.prepareStatement("SELECT * FROM `quester-profiles` WHERE `name`='"
+									+ playerName + "'");
 					rs = stmt.executeQuery();
 					stored = rs.next();
 					rs.close();
 					stmt.close();
 					if(!stored || serp.changed) { // only save if it has changed, or is not stored
-						stmt = conn.prepareStatement(stored ? serp
-								.getUpdateQuerry("quester-profiles") : serp
-								.getInsertQuerry("quester-profiles"));
+						stmt =
+								conn.prepareStatement(stored ? serp
+										.getUpdateQuerry("quester-profiles") : serp
+										.getInsertQuerry("quester-profiles"));
 						stmt.execute();
 					}
 				}

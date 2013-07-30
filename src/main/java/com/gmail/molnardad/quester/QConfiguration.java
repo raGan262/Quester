@@ -18,7 +18,8 @@ public class QConfiguration {
 	public static StorageType profileStorageType = StorageType.CONFIG;
 	
 	// MYSQL
-	public static String mysqlUrl = "jdbc:mysql://localhost:3306/minecraft?useUnicode=true&characterEncoding=utf-8";
+	public static String mysqlUrl =
+			"jdbc:mysql://localhost:3306/minecraft?useUnicode=true&characterEncoding=utf-8";
 	public static String mysqlUser = "username";
 	public static String mysqlPass = "password";
 	
@@ -79,8 +80,8 @@ public class QConfiguration {
 	}
 	
 	private static void wrongConfig(final String path, final String def) {
-		Quester.log
-				.info("Invalid or missing value in config: " + path.replace('.', ':') + ". Setting to default. (" + def + ")");
+		Quester.log.info("Invalid or missing value in config: " + path.replace('.', ':')
+				+ ". Setting to default. (" + def + ")");
 	}
 	
 	public static StorageKey getConfigKey(final String key) throws InstanceNotFoundException {
@@ -164,8 +165,10 @@ public class QConfiguration {
 			mainKey.setString(path, "minecraft");
 			wrongConfig(path, "minecraft");
 		}
-		QConfiguration.mysqlUrl = "jdbc:mysql://" + mainKey.getString("mysql.host") + ":" + mainKey
-				.getInt("mysql.port") + "/" + mainKey.getString("mysql.database") + "?useUnicode=true&characterEncoding=utf-8";
+		QConfiguration.mysqlUrl =
+				"jdbc:mysql://" + mainKey.getString("mysql.host") + ":"
+						+ mainKey.getInt("mysql.port") + "/" + mainKey.getString("mysql.database")
+						+ "?useUnicode=true&characterEncoding=utf-8";
 		
 		path = "mysql.username";
 		temp = mainKey.getString(path, "");

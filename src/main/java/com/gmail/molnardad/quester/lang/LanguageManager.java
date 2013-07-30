@@ -56,8 +56,8 @@ public class LanguageManager {
 				try {
 					key.setString(f.getName(), ((String) f.get(lang)).replaceAll("\\n", "%n"));
 					if(QConfiguration.debug) {
-						Quester.log
-								.info(f.getName() + " in " + file.getName() + " reset to default.");
+						Quester.log.info(f.getName() + " in " + file.getName()
+								+ " reset to default.");
 					}
 				}
 				catch (final Exception e) {
@@ -76,8 +76,8 @@ public class LanguageManager {
 			}
 		}
 		if(ex != null) {
-			Quester.log.info(eCount + " error(s) occured while loading strings from file " + file
-					.getName() + ".");
+			Quester.log.info(eCount + " error(s) occured while loading strings from file "
+					+ file.getName() + ".");
 			if(QConfiguration.debug) {
 				Quester.log.info("Last error:");
 				ex.printStackTrace();

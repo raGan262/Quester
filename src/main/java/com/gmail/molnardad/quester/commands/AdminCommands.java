@@ -48,8 +48,9 @@ public class AdminCommands {
 			return;
 		}
 		if(plugin.startSaving()) {
-			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().MSG_AUTOSAVE_STARTED
-					.replaceAll("%interval", String.valueOf(QConfiguration.saveInterval)));
+			sender.sendMessage(ChatColor.GREEN
+					+ context.getSenderLang().MSG_AUTOSAVE_STARTED.replaceAll("%interval",
+							String.valueOf(QConfiguration.saveInterval)));
 		}
 		else {
 			sender.sendMessage(ChatColor.RED + context.getSenderLang().MSG_AUTOSAVE_RUNNING);
@@ -152,8 +153,10 @@ public class AdminCommands {
 			for(final PlayerProfile prof : profMan.getProfiles()) {
 				final String[] unset = profMan.validateProgress(prof);
 				Player player = null;
-				if(unset.length > 0 && (player = Bukkit.getServer().getPlayerExact(prof.getName())) != null) {
-					player.sendMessage(Quester.LABEL + langMan.getPlayerLang(player.getName()).MSG_Q_SOME_CANCELLED);
+				if(unset.length > 0
+						&& (player = Bukkit.getServer().getPlayerExact(prof.getName())) != null) {
+					player.sendMessage(Quester.LABEL
+							+ langMan.getPlayerLang(player.getName()).MSG_Q_SOME_CANCELLED);
 					player.sendMessage(Quester.LABEL + ChatColor.WHITE + Util.implode(unset, ','));
 				}
 			}
@@ -170,11 +173,11 @@ public class AdminCommands {
 			max = 0,
 			permission = QConfiguration.PERM_ADMIN)
 	public void version(final QCommandContext context, final CommandSender sender) {
-		sender.sendMessage(Quester.LABEL + ChatColor.GOLD + "version " + plugin.getDescription()
-				.getVersion());
+		sender.sendMessage(Quester.LABEL + ChatColor.GOLD + "version "
+				+ plugin.getDescription().getVersion());
 		sender.sendMessage(Quester.LABEL + plugin.getDescription().getWebsite());
-		sender.sendMessage(Quester.LABEL + ChatColor.GRAY + "made by " + plugin.getDescription()
-				.getAuthors().get(0));
+		sender.sendMessage(Quester.LABEL + ChatColor.GRAY + "made by "
+				+ plugin.getDescription().getAuthors().get(0));
 	}
 	
 	@QCommandLabels({ "player" })

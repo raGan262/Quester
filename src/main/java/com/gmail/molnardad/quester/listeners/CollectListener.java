@@ -38,8 +38,8 @@ public class CollectListener implements Listener {
 			}
 			final List<Objective> objs = quest.getObjectives();
 			for(int i = 0; i < objs.size(); i++) {
-				final int[] progress = profMan.getProfile(player.getName()).getProgress()
-						.getProgress();
+				final int[] progress =
+						profMan.getProfile(player.getName()).getProgress().getProgress();
 				// check if Objective is type COLLECT
 				if(objs.get(i).getType().equalsIgnoreCase("COLLECT")) {
 					if(!profMan.isObjectiveActive(player, i)) {

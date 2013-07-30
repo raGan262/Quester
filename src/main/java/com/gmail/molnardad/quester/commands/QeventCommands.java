@@ -96,14 +96,14 @@ public class QeventCommands {
 	@QCommand(section = "QMod", desc = "removes event", min = 1, max = 1, usage = "<event ID>")
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.removeQuestQevent(sender.getName(), context.getInt(0), context.getSenderLang());
-		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().EVT_REMOVE.replaceAll("%id",
-				context.getString(0)));
+		sender.sendMessage(ChatColor.GREEN
+				+ context.getSenderLang().EVT_REMOVE.replaceAll("%id", context.getString(0)));
 	}
 	
 	@QCommandLabels({ "list", "l" })
 	@QCommand(section = "QMod", max = 0, desc = "event list")
 	public void list(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		sender.sendMessage(ChatColor.RED + context.getSenderLang().EVT_LIST + ": " + ChatColor.WHITE + eMan
-				.getEventList());
+		sender.sendMessage(ChatColor.RED + context.getSenderLang().EVT_LIST + ": "
+				+ ChatColor.WHITE + eMan.getEventList());
 	}
 }

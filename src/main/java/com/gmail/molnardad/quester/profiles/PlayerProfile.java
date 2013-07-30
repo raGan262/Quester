@@ -462,8 +462,8 @@ public class PlayerProfile {
 			}
 			
 			if(err) {
-				Quester.log
-						.warning("Error occurred when loading " + name + "'s profile. Switch to debug mode for more details.");
+				Quester.log.warning("Error occurred when loading " + name
+						+ "'s profile. Switch to debug mode for more details.");
 			}
 			
 			return result;
@@ -471,8 +471,9 @@ public class PlayerProfile {
 		
 		String getInsertQuerry(final String tableName) {
 			if(insertQuerry == null) {
-				insertQuerry = String
-						.format("INSERT INTO `%s`(`name`, `completed`, `current`, `quests`, `reputation`) VALUES ('%s','%s',%d,'%s','%s')",
+				insertQuerry =
+						String.format(
+								"INSERT INTO `%s`(`name`, `completed`, `current`, `quests`, `reputation`) VALUES ('%s','%s',%d,'%s','%s')",
 								tableName, name.replaceAll("'", "\\\\'"),
 								completed.replaceAll("'", "\\\\'"), current, progresses,
 								reputation.replaceAll("'", "\\\\'"));
@@ -482,8 +483,9 @@ public class PlayerProfile {
 		
 		String getUpdateQuerry(final String tableName) {
 			if(updateQuerry == null) {
-				updateQuerry = String
-						.format("UPDATE `%s` SET `completed`='%s',`current`=%d,`quests`='%s',`reputation`='%s' WHERE `name`='%s'",
+				updateQuerry =
+						String.format(
+								"UPDATE `%s` SET `completed`='%s',`current`=%d,`quests`='%s',`reputation`='%s' WHERE `name`='%s'",
 								tableName, completed.replaceAll("'", "\\\\'"), current, progresses,
 								reputation.replaceAll("'", "\\\\'"), name.replaceAll("'", "\\\\'"));
 			}

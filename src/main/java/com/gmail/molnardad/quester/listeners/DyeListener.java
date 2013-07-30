@@ -47,9 +47,9 @@ public class DyeListener implements Listener {
 					final DyeObjective obj = (DyeObjective) objs.get(i);
 					if(entity.getType() == EntityType.SHEEP) {
 						final Sheep sheep = (Sheep) entity;
-						if(item.getType() == Material.INK_SACK && obj.checkDye(15 - item
-								.getDurability()) && sheep.getColor().getDyeData() != 15 - item
-								.getDurability()) {
+						if(item.getType() == Material.INK_SACK
+								&& obj.checkDye(15 - item.getDurability())
+								&& sheep.getColor().getDyeData() != 15 - item.getDurability()) {
 							profMan.incProgress(player, ActionSource.listenerSource(event), i);
 							return;
 						}

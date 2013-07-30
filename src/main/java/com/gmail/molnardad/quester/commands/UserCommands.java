@@ -36,8 +36,8 @@ public class UserCommands {
 	@QCommandLabels({ "help" })
 	@QCommand(section = "User", desc = "displays help", usage = "[arg1] [arg2]...")
 	public void help(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		final Map<String, List<String>> cmds = plugin.getCommandManager().getHelp(
-				context.getArgs(), sender);
+		final Map<String, List<String>> cmds =
+				plugin.getCommandManager().getHelp(context.getArgs(), sender);
 		final QuesterLang lang = context.getSenderLang();
 		StringBuilder sb;
 		String key = "User";
@@ -158,7 +158,8 @@ public class UserCommands {
 			desc = "starts the quest",
 			max = 1,
 			usage = "\"[quest name]\"",
-			permission = QConfiguration.PERM_USE_START_RANDOM + "||" + QConfiguration.PERM_USE_START_PICK)
+			permission = QConfiguration.PERM_USE_START_RANDOM + "||"
+					+ QConfiguration.PERM_USE_START_PICK)
 	public void start(final QCommandContext context, final CommandSender sender) throws QuesterException, QCommandException {
 		if(context.getPlayer() == null) {
 			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);

@@ -32,8 +32,8 @@ public class ConditionCommands {
 		if(!eMan.isCondition(type)) {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.ERROR_CON_NOT_EXIST);
 			subContext.getSender().sendMessage(
-					ChatColor.RED + lang.CON_LIST + ": " + ChatColor.WHITE + eMan
-							.getConditionList());
+					ChatColor.RED + lang.CON_LIST + ": " + ChatColor.WHITE
+							+ eMan.getConditionList());
 			throw new ConditionException(lang.ERROR_CON_NOT_EXIST);
 		}
 		final Condition con = eMan.getConditionFromCommand(type, subContext);
@@ -93,8 +93,8 @@ public class ConditionCommands {
 			usage = "<condition ID>")
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.removeQuestCondition(sender.getName(), context.getInt(0), context.getSenderLang());
-		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().CON_REMOVE.replaceAll("%id",
-				context.getString(0)));
+		sender.sendMessage(ChatColor.GREEN
+				+ context.getSenderLang().CON_REMOVE.replaceAll("%id", context.getString(0)));
 	}
 	
 	@QCommandLabels({ "desc" })
@@ -106,7 +106,7 @@ public class ConditionCommands {
 	@QCommandLabels({ "list", "l" })
 	@QCommand(section = "QMod", max = 0, desc = "condition list")
 	public void list(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		sender.sendMessage(ChatColor.RED + context.getSenderLang().CON_LIST + ": " + ChatColor.WHITE + eMan
-				.getConditionList());
+		sender.sendMessage(ChatColor.RED + context.getSenderLang().CON_LIST + ": "
+				+ ChatColor.WHITE + eMan.getConditionList());
 	}
 }

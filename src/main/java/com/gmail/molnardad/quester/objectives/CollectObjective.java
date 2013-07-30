@@ -33,7 +33,8 @@ public final class CollectObjective extends Objective {
 	@Override
 	protected String show(final int progress) {
 		final String datStr = data < 0 ? " " : " of given type(" + data + ") ";
-		return "Collect " + material.name().toLowerCase().replace('_', ' ') + datStr + "- " + (amount - progress) + "x.";
+		return "Collect " + material.name().toLowerCase().replace('_', ' ') + datStr + "- "
+				+ (amount - progress) + "x.";
 	}
 	
 	@Override

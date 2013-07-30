@@ -27,9 +27,12 @@ public class ElementManager {
 	
 	private static ElementManager instance = null;
 	
-	private final Map<String, ElementInfo<Condition>> conditions = new HashMap<String, ElementInfo<Condition>>();
-	private final Map<String, ElementInfo<Objective>> objectives = new HashMap<String, ElementInfo<Objective>>();
-	private final Map<String, ElementInfo<Qevent>> events = new HashMap<String, ElementInfo<Qevent>>();
+	private final Map<String, ElementInfo<Condition>> conditions =
+			new HashMap<String, ElementInfo<Condition>>();
+	private final Map<String, ElementInfo<Objective>> objectives =
+			new HashMap<String, ElementInfo<Objective>>();
+	private final Map<String, ElementInfo<Qevent>> events =
+			new HashMap<String, ElementInfo<Qevent>>();
 	
 	public static ElementManager getInstance() {
 		return instance;
@@ -150,8 +153,8 @@ public class ElementManager {
 			String parent;
 			if(context.length() < ei.command.min()) {
 				parent = getParentArgs(context.getParentArgs());
-				throw new QUsageException(context.getSenderLang().ERROR_CMD_ARGS_NOT_ENOUGH,
-						parent + ei.usage);
+				throw new QUsageException(context.getSenderLang().ERROR_CMD_ARGS_NOT_ENOUGH, parent
+						+ ei.usage);
 			}
 			if(!(ei.command.max() < 0) && context.length() > ei.command.max()) {
 				parent = getParentArgs(context.getParentArgs());
@@ -211,8 +214,8 @@ public class ElementManager {
 		}
 		try {
 			final Method load = clss.getDeclaredMethod("load", StorageKey.class);
-			if(!Modifier.isStatic(load.getModifiers()) || !Modifier
-					.isProtected(load.getModifiers())) {
+			if(!Modifier.isStatic(load.getModifiers())
+					|| !Modifier.isProtected(load.getModifiers())) {
 				throw new ElementException(
 						"Incorrect load method modifiers, expected \"protected static\".");
 			}

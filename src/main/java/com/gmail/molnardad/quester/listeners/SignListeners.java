@@ -46,7 +46,8 @@ public class SignListeners implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onInteract(final PlayerInteractEvent event) {
 		final Player player = event.getPlayer();
-		if(event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+		if(event.getAction() == Action.LEFT_CLICK_BLOCK
+				|| event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			final Block block = event.getClickedBlock();
 			final QuesterSign qs = holMan.getSign(block.getLocation());
 			if(qs == null) {
@@ -211,8 +212,9 @@ public class SignListeners implements Listener {
 			final Sign sign = (Sign) block.getState();
 			if(holMan.getSign(sign.getLocation()) != null) {
 				final QuesterLang lang = langMan.getPlayerLang(event.getPlayer().getName());
-				if(!event.getPlayer().isSneaking() || !Util.permCheck(event.getPlayer(),
-						QConfiguration.PERM_MODIFY, false, null)) {
+				if(!event.getPlayer().isSneaking()
+						|| !Util.permCheck(event.getPlayer(), QConfiguration.PERM_MODIFY, false,
+								null)) {
 					event.setCancelled(true);
 					return;
 				}

@@ -47,8 +47,8 @@ public class ActionListener implements Listener {
 							continue;
 						}
 					}
-					if(obj.checkClick(event.getAction()) && obj.checkBlock(block) && obj
-							.checkHand(item)) {
+					if(obj.checkClick(event.getAction()) && obj.checkBlock(block)
+							&& obj.checkHand(item)) {
 						profMan.incProgress(player, ActionSource.listenerSource(event), i);
 						return;
 					}

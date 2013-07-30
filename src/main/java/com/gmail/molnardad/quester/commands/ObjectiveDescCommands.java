@@ -28,8 +28,8 @@ public class ObjectiveDescCommands {
 	public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.addObjectiveDescription(sender.getName(), context.getInt(0), context.getString(1),
 				context.getSenderLang());
-		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().OBJ_DESC_ADD.replaceAll("%id",
-				context.getString(0)));
+		sender.sendMessage(ChatColor.GREEN
+				+ context.getSenderLang().OBJ_DESC_ADD.replaceAll("%id", context.getString(0)));
 	}
 	
 	@QCommandLabels({ "remove", "r" })
@@ -42,7 +42,7 @@ public class ObjectiveDescCommands {
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.removeObjectiveDescription(sender.getName(), context.getInt(0),
 				context.getSenderLang());
-		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().OBJ_DESC_REMOVE.replaceAll(
-				"%id", context.getString(0)));
+		sender.sendMessage(ChatColor.GREEN
+				+ context.getSenderLang().OBJ_DESC_REMOVE.replaceAll("%id", context.getString(0)));
 	}
 }

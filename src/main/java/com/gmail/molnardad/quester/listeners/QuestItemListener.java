@@ -35,8 +35,8 @@ public class QuestItemListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onClick(final InventoryClickEvent event) {
 		if(Util.isQuestItem(event.getCurrentItem())) {
-			if(!event.isShiftClick() || !event.getInventory().getType()
-					.equals(InventoryType.CRAFTING)) {
+			if(!event.isShiftClick()
+					|| !event.getInventory().getType().equals(InventoryType.CRAFTING)) {
 				event.setCancelled(true);
 			}
 		}
