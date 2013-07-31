@@ -21,7 +21,8 @@ public class QCommandContext {
 	private final Set<Character> flags;
 	private final QuesterLang lang;
 	
-	// valueFlags will be added once it is needed :)
+	//	map valueFlags will be added once it is needed :)
+	//	private final Map<String, String> valueFlags;
 	
 	private QCommandContext(final String[] args, final String[] parentArgs, final CommandSender sender, final CommandManager cMan, final Set<Character> flags, final QuesterLang lang) {
 		this.args = args;
@@ -68,7 +69,7 @@ public class QCommandContext {
 				}
 			}
 		}
-		for(i = 1; i < args.length; ++i) {
+		for(i = 0; i < args.length; ++i) {
 			if(args[i].length() == 0) {
 				continue;
 			}
