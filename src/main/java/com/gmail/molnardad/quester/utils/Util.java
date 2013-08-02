@@ -199,7 +199,6 @@ public class Util {
 			return true;
 		}
 		for(final String s : perm.split("\\|\\|")) {
-			Quester.log.info(s);
 			if(sender.hasPermission(s)) {
 				return true;
 			}
