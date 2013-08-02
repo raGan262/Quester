@@ -45,13 +45,10 @@ public class PlaceListener implements Listener {
 						}
 						final BreakObjective obj = (BreakObjective) objs.get(i);
 						// compare block ID
-						if(block.getTypeId() == obj.getMaterial().getId()) {
-							// if DATA >= 0 compare
-							if(obj.getData() < 0 || obj.getData() == block.getData()) {
-								profMan.incProgress(player, ActionSource.listenerSource(event), i,
-										-1);
-								break;
-							}
+						if(obj.checkBlock(event.getBlock())) {
+							profMan.incProgress(player, ActionSource.listenerSource(event), i,
+									-1);
+							break;
 						}
 					}
 				}

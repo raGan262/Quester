@@ -3,6 +3,7 @@ package com.gmail.molnardad.quester.objectives;
 import static com.gmail.molnardad.quester.utils.Util.parseItem;
 
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
@@ -34,30 +35,38 @@ public final class BreakObjective extends Objective {
 	
 	@Override
 	protected String show(final int progress) {
-		final String datStr = data < 0 ? " " : " of given type(" + data + ") ";
+		final String matStr =
+				material == null ? "any block" : material.name().toLowerCase().replace('_', ' ');
+		final String datStr = data < 0 ? "" : " of given type(" + data + ")";
 		final String hand =
 				inHand < 0 ? " " : inHand == 0 ? "with empty hand " : "with "
 						+ Material.getMaterial(inHand).name().toLowerCase().replace('_', ' ') + " ";
-		return "Break " + material.name().toLowerCase().replace('_', ' ') + datStr + hand + "- "
-				+ (amount - progress) + "x.";
+		return "Break " + matStr + datStr + hand + "- " + (amount - progress) + "x.";
 	}
 	
 	@Override
 	protected String info() {
 		final String dataStr = data < 0 ? "" : ":" + data;
-		return material.name() + "[" + material.getId() + dataStr + "]; AMT: " + amount + "; HND: "
-				+ inHand;
+		final String matStr =
+				material == null ? "ANY" : material.name() + "[" + material.getId() + dataStr + "]";
+		return matStr + "; AMT: " + amount + "; HND: " + inHand;
 	}
 	
-	@QCommand(min = 2, max = 3, usage = "{<item>} <amount> [hand]")
+	@QCommand(min = 2, max = 3, usage = "{<block>} <amount> [hand]")
 	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
 		int hnd = -1;
-		int[] itm = parseItem(context.getString(0));
-		final Material mat = Material.getMaterial(itm[0]);
-		final byte dat = (byte) itm[1];
-		if(mat.getId() > 255) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_BLOCK_UNKNOWN);
+		int[] itm;
+		Material mat = null;
+		byte dat = -1;
+		if(!context.getString(0).equalsIgnoreCase("ANY")) {
+			itm = parseItem(context.getString(0));
+			mat = Material.getMaterial(itm[0]);
+			dat = (byte) itm[1];
+			if(mat.getId() > 255) {
+				throw new QCommandException(context.getSenderLang().ERROR_CMD_BLOCK_UNKNOWN);
+			}
 		}
+		
 		final int amt = Integer.parseInt(context.getString(1));
 		if(amt < 1 || dat < -1) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_ITEM_NUMBERS);
@@ -71,7 +80,9 @@ public final class BreakObjective extends Objective {
 	
 	@Override
 	protected void save(final StorageKey key) {
-		key.setString("block", Util.serializeItem(material, data));
+		if(material != null) {
+			key.setString("block", Util.serializeItem(material, data));
+		}
 		if(amount > 1) {
 			key.setInt("amount", amount);
 		}
@@ -81,16 +92,19 @@ public final class BreakObjective extends Objective {
 	}
 	
 	protected static Objective load(final StorageKey key) {
-		Material mat;
-		int dat, amt;
+		Material mat = null;
+		int dat = -1, amt;
 		int hnd = -1;
-		try {
-			final int[] itm = Util.parseItem(key.getString("block", ""));
-			mat = Material.getMaterial(itm[0]);
-			dat = itm[1];
-		}
-		catch (final IllegalArgumentException e) {
-			return null;
+		final String blockString = key.getString("block");
+		if(blockString != null) {
+			try {
+				final int[] itm = Util.parseItem(blockString);
+				mat = Material.getMaterial(itm[0]);
+				dat = itm[1];
+			}
+			catch (final IllegalArgumentException e) {
+				return null;
+			}
 		}
 		amt = key.getInt("amount", 1);
 		if(amt < 1) {
@@ -105,12 +119,19 @@ public final class BreakObjective extends Objective {
 	
 	// Custom methods
 	
-	public Material getMaterial() {
-		return material;
-	}
-	
-	public byte getData() {
-		return data;
+	public boolean checkBlock(final Block block) {
+		if(material == null) {
+			return true;
+		}
+		if(data >= 0 && block.getData() != data) {
+			return false;
+		}
+		// special case when mining redstone
+		if(material == Material.REDSTONE_ORE) {
+			return block.getType() == Material.REDSTONE_ORE
+					|| block.getType() == Material.GLOWING_REDSTONE_ORE;
+		}
+		return material == block.getType();
 	}
 	
 	public boolean checkHand(final int itm) {

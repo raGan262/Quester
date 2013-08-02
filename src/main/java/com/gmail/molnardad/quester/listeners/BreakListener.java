@@ -43,26 +43,12 @@ public class BreakListener implements Listener {
 					}
 					final BreakObjective obj = (BreakObjective) objs.get(i);
 					final Block block = event.getBlock();
-					// compare block ID && check for redstone
-					boolean passed;
-					final int id = block.getTypeId();
-					if(id != Material.REDSTONE_ORE.getId()) {
-						passed = id == obj.getMaterial().getId();
-					}
-					else {
-						passed =
-								id == Material.GLOWING_REDSTONE_ORE.getId()
-										|| id == Material.REDSTONE_ORE.getId();
-					}
-					if(passed && obj.checkHand(player.getItemInHand().getTypeId())) {
-						// if DATA >= 0 compare
-						if(obj.getData() < 0 || obj.getData() == block.getData()) {
-							if(QConfiguration.brkNoDrops) {
-								block.setType(Material.AIR);
-							}
-							profMan.incProgress(player, ActionSource.listenerSource(event), i);
-							return;
+					if(obj.checkBlock(block) && obj.checkHand(player.getItemInHand().getTypeId())) {
+						if(QConfiguration.brkNoDrops) {
+							block.setType(Material.AIR);
 						}
+						profMan.incProgress(player, ActionSource.listenerSource(event), i);
+						return;
 					}
 				}
 			}

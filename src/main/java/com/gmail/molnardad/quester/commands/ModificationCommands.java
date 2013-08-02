@@ -13,6 +13,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.QuestManager;
+import com.gmail.molnardad.quester.utils.Ql;
 
 public class ModificationCommands {
 	
@@ -51,9 +52,7 @@ public class ModificationCommands {
 	public void create(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.createQuest(sender.getName(), context.getString(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_CREATED);
-		if(QConfiguration.verbose) {
-			Quester.log.info(sender.getName() + " created quest '" + context.getString(0) + "'.");
-		}
+		Ql.verbose(sender.getName() + " created quest '" + context.getString(0) + "'.");
 	}
 	
 	@QCommandLabels({ "remove", "r" })
@@ -69,9 +68,7 @@ public class ModificationCommands {
 				qMan.removeQuest(sender.getName(), context.getInt(0), context.getSenderLang())
 						.getName();
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_REMOVED);
-		if(QConfiguration.verbose) {
-			Quester.log.info(sender.getName() + " removed quest '" + name + "'.");
-		}
+		Ql.verbose(sender.getName() + " removed quest '" + name + "'.");
 	}
 	
 	@QCommandLabels({ "name" })
