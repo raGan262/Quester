@@ -6,16 +6,22 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
-import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.Ql;
 
 public class LanguageManager {
 	
 	private final Map<String, QuesterLang> languages = new HashMap<String, QuesterLang>();
+	private final Logger logger;
+	
+	public LanguageManager(final Quester plugin) {
+		logger = plugin.getLogger();
+	}
 	
 	public boolean hasLang(final String name) {
 		return languages.get(name.toLowerCase()) != null;
@@ -41,7 +47,7 @@ public class LanguageManager {
 		if(hasLang(name)) {
 			return false;
 		}
-		final Storage storage = new ConfigStorage(file, Quester.log, null);
+		final Storage storage = new ConfigStorage(file, logger, null);
 		storage.load();
 		final StorageKey key = storage.getKey("");
 		final QuesterLang lang = new QuesterLang(file);
@@ -55,10 +61,7 @@ public class LanguageManager {
 			if(val.isEmpty()) {
 				try {
 					key.setString(f.getName(), ((String) f.get(lang)).replaceAll("\\n", "%n"));
-					if(QConfiguration.debug) {
-						Quester.log.info(f.getName() + " in " + file.getName()
-								+ " reset to default.");
-					}
+					Ql.debug(f.getName() + " in " + file.getName() + " reset to default.");
 				}
 				catch (final Exception e) {
 					ex = e;
@@ -76,12 +79,9 @@ public class LanguageManager {
 			}
 		}
 		if(ex != null) {
-			Quester.log.info(eCount + " error(s) occured while loading strings from file "
+			Ql.warning(eCount + " error(s) occured while loading strings from file "
 					+ file.getName() + ".");
-			if(QConfiguration.debug) {
-				Quester.log.info("Last error:");
-				ex.printStackTrace();
-			}
+			Ql.debug("Last error:", ex);
 		}
 		languages.put(name.toLowerCase(), lang);
 		storage.save();

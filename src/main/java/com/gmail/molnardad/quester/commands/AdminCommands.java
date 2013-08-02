@@ -18,6 +18,7 @@ import com.gmail.molnardad.quester.lang.LanguageManager;
 import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.QuestManager;
+import com.gmail.molnardad.quester.utils.Ql;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class AdminCommands {
@@ -144,7 +145,7 @@ public class AdminCommands {
 			QConfiguration.reloadData();
 		}
 		catch (final InstanceNotFoundException e) {
-			Quester.log.info("Failed to reload config: No instance of QConfiguration.");
+			Ql.info("Failed to reload config: No instance of QConfiguration.");
 		}
 	}
 	
@@ -162,7 +163,7 @@ public class AdminCommands {
 			}
 		}
 		else {
-			Quester.log.info("Failed to reload quests.");
+			Ql.info("Failed to reload quests.");
 		}
 	}
 	

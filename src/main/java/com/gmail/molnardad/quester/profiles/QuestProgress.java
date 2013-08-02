@@ -3,11 +3,10 @@ package com.gmail.molnardad.quester.profiles;
 import java.util.Arrays;
 import java.util.List;
 
-import com.gmail.molnardad.quester.QConfiguration;
-import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.quests.Quest;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.Ql;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestProgress {
@@ -150,13 +149,8 @@ public class QuestProgress {
 			}
 		}
 		catch (final Exception e) {
-			if(QConfiguration.verbose) {
-				Quester.log.info("Invalid or missing progress for quest '" + key.getName()
-						+ "' in profile.");
-			}
-			if(QConfiguration.debug) {
-				e.printStackTrace();
-			}
+			Ql.info("Invalid or missing progress for quest '" + key.getName() + "' in profile.");
+			Ql.debug("Exception", e);
 			return null;
 		}
 		

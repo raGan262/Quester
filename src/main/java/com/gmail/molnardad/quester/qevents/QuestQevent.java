@@ -12,6 +12,7 @@ import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.Ql;
 
 @QElement("QUEST")
 public final class QuestQevent extends Qevent {
@@ -34,7 +35,7 @@ public final class QuestQevent extends Qevent {
 					plugin.getLanguageManager().getPlayerLang(player.getName()));
 		}
 		catch (final QuesterException e) {
-			Quester.log.info("Event failed to give quest to " + player.getName() + ". Reason: "
+			Ql.warning("Event failed to give quest to " + player.getName() + ". Reason: "
 					+ ChatColor.stripColor(e.getMessage()));
 		}
 	}

@@ -11,6 +11,7 @@ import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.Ql;
 
 @QElement("TOGGLE")
 public final class ToggleQevent extends Qevent {
@@ -33,7 +34,7 @@ public final class ToggleQevent extends Qevent {
 					plugin.getLanguageManager().getPlayerLang(player.getName()));
 		}
 		catch (final QuesterException e) {
-			Quester.log.info("Event failed to toggle quest. Reason: "
+			Ql.warning("Event failed to toggle quest. Reason: "
 					+ ChatColor.stripColor(e.getMessage()));
 		}
 	}

@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QPermissionException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QUsageException;
@@ -200,10 +200,7 @@ public class CommandManager {
 			}
 		}
 		if(ex != null) {
-			logger.warning("Failed to execute command.");
-			if(QConfiguration.debug) {
-				ex.printStackTrace();
-			}
+			logger.log(Level.SEVERE, "Failed to execute command.", ex);
 		}
 	}
 	
@@ -377,10 +374,8 @@ public class CommandManager {
 			ex = e;
 		}
 		if(ex != null) {
-			if(QConfiguration.debug) {
-				logger.info("Instantiating class '" + clss.getCanonicalName() + " failed.");
-				ex.printStackTrace();
-			}
+			logger.log(Level.SEVERE,
+					"Instantiating class '" + clss.getCanonicalName() + " failed.", ex);
 		}
 		return null;
 	}

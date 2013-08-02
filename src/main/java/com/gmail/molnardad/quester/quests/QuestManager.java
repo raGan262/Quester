@@ -29,6 +29,7 @@ import com.gmail.molnardad.quester.profiles.QuestProgress;
 import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.Ql;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestManager {
@@ -48,7 +49,7 @@ public class QuestManager {
 		langMan = plugin.getLanguageManager();
 		this.plugin = plugin;
 		final File file = new File(plugin.getDataFolder(), "quests.yml");
-		questStorage = new ConfigStorage(file, Quester.log, null);
+		questStorage = new ConfigStorage(file, plugin.getLogger(), null);
 	}
 	
 	public void setProfileManager(final ProfileManager profMan) {
@@ -713,16 +714,13 @@ public class QuestManager {
 		int lastGeneric = 0;
 		for(final StorageKey questKey : storage.getKey("").getSubKeys()) {
 			if(questKey.hasSubKeys()) {
-				if(QConfiguration.debug) {
-					Quester.log.info("Deserializing quest " + questKey.getName() + ".");
-				}
+				Ql.debug("Deserializing quest " + questKey.getName() + ".");
 				final Quest quest = Quest.deserialize(questKey);
 				if(quest == null) {
-					Quester.log.severe("Quest " + questKey.getName() + " corrupted.");
+					Ql.severe("Quest " + questKey.getName() + " corrupted.");
 					continue;
 				}
-				if(questNames.containsKey(quest.getName().toLowerCase())) { // duplicate name,
-																			// generating new one
+				if(questNames.containsKey(quest.getName().toLowerCase())) { // duplicate name, generating new one
 					quest.setName("");
 					String name = "";
 					while(questNames.containsKey(quest.getName()) || quest.getName().isEmpty()) {
@@ -730,12 +728,12 @@ public class QuestManager {
 						quest.setName(name);
 						lastGeneric++;
 					}
-					Quester.log.severe("Duplicate quest name in quest " + questKey.getName()
+					Ql.severe("Duplicate quest name in quest " + questKey.getName()
 							+ " detected, generated new name '" + name + "'.");
 				}
 				if(quest.hasID()) {
 					if(quests.get(quest.getID()) != null) { // duplicate ID
-						Quester.log.severe("Duplicate quest ID in quest " + questKey.getName()
+						Ql.severe("Duplicate quest ID in quest " + questKey.getName()
 								+ " detected, new ID will be assigned.");
 						quest.setID(-1);
 						onHold.add(quest);
@@ -753,20 +751,20 @@ public class QuestManager {
 				}
 				for(int i = 0; i < quest.getObjectives().size(); i++) {
 					if(quest.getObjective(i) == null) {
-						Quester.log.info("Objective " + i + " is invalid.");
+						Ql.info("Objective " + i + " is invalid.");
 						quest.removeObjective(i);
 						quest.removeFlag(QuestFlag.ACTIVE);
 					}
 				}
 				for(int i = 0; i < quest.getConditions().size(); i++) {
 					if(quest.getCondition(i) == null) {
-						Quester.log.info("Condition " + i + " is invalid.");
+						Ql.info("Condition " + i + " is invalid.");
 						quest.removeCondition(i);
 					}
 				}
 				for(int i = 0; i < quest.getQevents().size(); i++) {
 					if(quest.getQevent(i) == null) {
-						Quester.log.info("Event " + i + " is invalid.");
+						Ql.info("Event " + i + " is invalid.");
 						quest.removeQevent(i);
 					}
 				}
@@ -781,9 +779,7 @@ public class QuestManager {
 				questLocations.put(q.getID(), q.getLocation());
 			}
 		}
-		if(QConfiguration.verbose) {
-			Quester.log.info(quests.size() + " quests loaded.");
-		}
+		Ql.verbose(quests.size() + " quests loaded.");
 		return true;
 	}
 }

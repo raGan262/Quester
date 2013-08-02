@@ -10,12 +10,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import com.gmail.molnardad.quester.QConfiguration;
-import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.quests.Quest;
 import com.gmail.molnardad.quester.quests.QuestManager;
 import com.gmail.molnardad.quester.storage.MemoryStorageKey;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.Ql;
 
 public class PlayerProfile {
 	
@@ -277,9 +276,7 @@ public class PlayerProfile {
 			prof = new PlayerProfile(key.getString("name"));
 		}
 		else {
-			if(QConfiguration.verbose) {
-				Quester.log.info("Profile name not found.");
-			}
+			Ql.verbose("Profile name not found.");
 			return null;
 		}
 		
@@ -331,7 +328,7 @@ public class PlayerProfile {
 				}
 				final QuestProgress prog = QuestProgress.deserialize(subKey, quest);
 				if(prog == null) {
-					Quester.log.info("Invalid quest progress in profile '" + prof.getName() + "'.");
+					Ql.info("Invalid quest progress in profile '" + prof.getName() + "'.");
 				}
 				else {
 					prof.addQuestProgress(prog);
@@ -420,10 +417,7 @@ public class PlayerProfile {
 					}
 					catch (final Exception e) {
 						err = true;
-						if(QConfiguration.debug) {
-							Quester.log.warning("Error in completed '" + s + "'");
-							e.printStackTrace();
-						}
+						Ql.debug("Error in completed '" + s + "'", e);
 					}
 				}
 			}
@@ -443,10 +437,7 @@ public class PlayerProfile {
 				}
 				catch (final Exception e) {
 					err = true;
-					if(QConfiguration.debug) {
-						Quester.log.warning("Error in progress '" + s + "'");
-						e.printStackTrace();
-					}
+					Ql.debug("Error in progress '" + s + "'", e);
 				}
 			}
 			
@@ -456,13 +447,11 @@ public class PlayerProfile {
 			}
 			catch (final Exception e) {
 				err = true;
-				if(QConfiguration.debug) {
-					Quester.log.warning("Error in reputation '" + reputation + "'");
-				}
+				Ql.debug("Error in reputation '" + reputation + "'", e);
 			}
 			
 			if(err) {
-				Quester.log.warning("Error occurred when loading " + name
+				Ql.warning("Error occurred when loading " + name
 						+ "'s profile. Switch to debug mode for more details.");
 			}
 			

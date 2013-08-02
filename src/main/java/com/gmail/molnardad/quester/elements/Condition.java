@@ -6,9 +6,9 @@ import org.apache.commons.lang.SerializationException;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.Ql;
 
 public abstract class Condition extends Element {
 	
@@ -70,7 +70,7 @@ public abstract class Condition extends Element {
 	
 	public static final Condition deserialize(final StorageKey key) {
 		if(!key.hasSubKeys()) {
-			Quester.log.severe("Condition deserialization error: no subkeys");
+			Ql.severe("Condition deserialization error: no subkeys");
 			return null;
 		}
 		Condition con = null;
@@ -80,7 +80,7 @@ public abstract class Condition extends Element {
 			type = key.getString("type");
 		}
 		else {
-			Quester.log.severe("Condition type missing.");
+			Ql.severe("Condition type missing.");
 			return null;
 		}
 		if(key.getString("description") != null) {
@@ -100,16 +100,14 @@ public abstract class Condition extends Element {
 				}
 			}
 			catch (final Exception e) {
-				Quester.log.severe("Error when deserializing " + c.getSimpleName()
+				Ql.severe("Error when deserializing " + c.getSimpleName()
 						+ ". Method load() missing or invalid. " + e.getClass().getName());
-				if(QConfiguration.debug) {
-					e.printStackTrace();
-				}
+				Ql.debug("Exception follows", e);
 				return null;
 			}
 		}
 		else {
-			Quester.log.severe("Unknown condition type: '" + type + "'");
+			Ql.severe("Unknown condition type: '" + type + "'");
 		}
 		
 		return con;

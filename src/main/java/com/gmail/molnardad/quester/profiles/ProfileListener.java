@@ -17,6 +17,7 @@ import com.gmail.molnardad.quester.QConfiguration.StorageType;
 import com.gmail.molnardad.quester.profiles.PlayerProfile.SerializedPlayerProfile;
 import com.gmail.molnardad.quester.quests.QuestManager;
 import com.gmail.molnardad.quester.utils.DatabaseConnection;
+import com.gmail.molnardad.quester.utils.Ql;
 
 public class ProfileListener implements Listener {
 	
@@ -67,7 +68,7 @@ public class ProfileListener implements Listener {
 								profMan.loadProfile(prof);
 							}
 							else {
-								Quester.log.info("Invalid profile '" + serp.name + "'");
+								Ql.info("Invalid profile '" + serp.name + "'");
 							}
 						}
 					};
@@ -75,10 +76,8 @@ public class ProfileListener implements Listener {
 					Bukkit.getScheduler().runTask(plugin, deserialization);
 				}
 				catch (final SQLException e) {
-					Quester.log.info("Failed to fetch " + playerName + "'s profile from database.");
-					if(QConfiguration.debug) {
-						e.printStackTrace();
-					}
+					Ql.info("Failed to fetch " + playerName + "'s profile from database.");
+					Ql.debug("Exception", e);
 					return;
 				}
 				finally {
@@ -142,10 +141,8 @@ public class ProfileListener implements Listener {
 					}
 				}
 				catch (final SQLException e) {
-					Quester.log.info("Failed to save " + playerName + "'s profile to database.");
-					if(QConfiguration.debug) {
-						e.printStackTrace();
-					}
+					Ql.warning("Failed to save " + playerName + "'s profile to database.");
+					Ql.debug("Exception", e);
 					return;
 				}
 				finally {

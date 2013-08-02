@@ -22,9 +22,6 @@ import java.util.Properties;
 import java.util.Vector;
 import java.util.concurrent.Executor;
 
-import com.gmail.molnardad.quester.QConfiguration;
-import com.gmail.molnardad.quester.Quester;
-
 /*
  * This class was heavily inspired by LogBlock's connection pool class and various other mysql
  * libraries/classes on bukkit forums.
@@ -53,18 +50,14 @@ public class DatabaseConnection {
 			final MyConnection conn = conns.nextElement();
 			if(conn.use()) {
 				if(conn.isValid()) {
-					if(QConfiguration.debug) {
-						Quester.log.info("Found good connection, fetching that.");
-					}
+					Ql.debug("Found good connection, fetching that.");
 					return conn;
 				}
 				connections.remove(conn);
 				conn.closeQuietly();
 			}
 		}
-		if(QConfiguration.debug) {
-			Quester.log.info("Creating new connection to fetch.");
-		}
+		Ql.debug("Creating new connection to fetch.");
 		final MyConnection conn = new MyConnection(DriverManager.getConnection(url, user, pass));
 		conn.use();
 		if(!conn.isValid()) {
@@ -82,9 +75,7 @@ public class DatabaseConnection {
 			connections.remove(conn);
 			conn.closeQuietly();
 		}
-		if(QConfiguration.debug) {
-			Quester.log.info("Connections closed.");
-		}
+		Ql.debug("Connections closed.");
 	}
 	
 	public static synchronized void initialize(final String url, final String username, final String password) throws ClassNotFoundException, SQLException {

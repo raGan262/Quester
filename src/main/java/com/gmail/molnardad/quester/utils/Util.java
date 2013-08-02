@@ -28,7 +28,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.gmail.molnardad.quester.QConfiguration;
-import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.lang.QuesterLang;
 
 public class Util {
@@ -710,9 +709,7 @@ public class Util {
 			loc = new Location(world, x, y, z, yaw, pitch);
 		}
 		catch (final Exception e) {
-			if(QConfiguration.debug) {
-				Quester.log.severe("Error when deserializing location.");
-			}
+			Ql.debug("Error when deserializing location.", e);
 		}
 		
 		return loc;

@@ -47,6 +47,7 @@ import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.CaseAgnosticSet;
 import com.gmail.molnardad.quester.utils.DatabaseConnection;
+import com.gmail.molnardad.quester.utils.Ql;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class ProfileManager {
@@ -66,14 +67,14 @@ public class ProfileManager {
 		qMan = plugin.getQuestManager();
 		langMan = plugin.getLanguageManager();
 		final File file = new File(plugin.getDataFolder(), "profiles.yml");
-		profileStorage = new ConfigStorage(file, Quester.log, null);
+		profileStorage = new ConfigStorage(file, plugin.getLogger(), null);
 	}
 	
 	private PlayerProfile createProfile(final String playerName) {
 		final PlayerProfile prof = new PlayerProfile(playerName);
 		final Player player = Bukkit.getPlayerExact(playerName);
 		if(player == null || !Util.isPlayer(player)) {
-			Quester.log.warning("Smeone/Something tried to get profile of a non-player.");
+			Ql.warning("Smeone/Something tried to get profile of a non-player.");
 			new CustomException("Contact Quester author and show him this exception.")
 					.printStackTrace();
 		}
@@ -256,10 +257,8 @@ public class ProfileManager {
 		final QuestStartEvent event = new QuestStartEvent(as, player, quest);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		if(event.isCancelled()) {
-			if(QConfiguration.verbose) {
-				Quester.log.info("QuestStart event cancelled. (" + player.getName() + "; '"
-						+ quest.getName() + "')");
-			}
+			Ql.verbose("QuestStart event cancelled. (" + player.getName() + "; '" + quest.getName()
+					+ "')");
 			return;
 		}
 		
@@ -273,9 +272,7 @@ public class ProfileManager {
 		if(!description.isEmpty() && !quest.hasFlag(QuestFlag.NODESC)) {
 			player.sendMessage(description);
 		}
-		if(QConfiguration.verbose) {
-			Quester.log.info(playerName + " started quest '" + quest.getName() + "'.");
-		}
+		Ql.verbose(playerName + " started quest '" + quest.getName() + "'.");
 		for(final Qevent qv : quest.getQevents()) {
 			if(qv.getOccasion() == -1) {
 				qv.execute(player, plugin);
@@ -337,9 +334,7 @@ public class ProfileManager {
 					+ lang.MSG_Q_CANCELLED.replaceAll("%q", ChatColor.GOLD + quest.getName()
 							+ ChatColor.BLUE));
 		}
-		if(QConfiguration.verbose) {
-			Quester.log.info(player.getName() + " cancelled quest '" + quest.getName() + "'.");
-		}
+		Ql.verbose(player.getName() + " cancelled quest '" + quest.getName() + "'.");
 		for(final Qevent qv : quest.getQevents()) {
 			if(qv.getOccasion() == -2) {
 				qv.execute(player, plugin);
@@ -410,9 +405,7 @@ public class ProfileManager {
 					+ lang.MSG_Q_COMPLETED.replaceAll("%q", ChatColor.GOLD + quest.getName()
 							+ ChatColor.BLUE));
 		}
-		if(QConfiguration.verbose) {
-			Quester.log.info(player.getName() + " completed quest '" + quest.getName() + "'.");
-		}
+		Ql.verbose(player.getName() + " completed quest '" + quest.getName() + "'.");
 		/* QuestCompleteEvent */
 		final QuestCompleteEvent event = new QuestCompleteEvent(as, player, quest);
 		Bukkit.getServer().getPluginManager().callEvent(event);
@@ -602,7 +595,7 @@ public class ProfileManager {
 			rankKey = QConfiguration.getConfigKey("ranks");
 		}
 		catch (final InstanceNotFoundException e) {
-			Quester.log.severe("DataManager instance exception occured while acessing ranks.");
+			Ql.severe("DataManager instance exception occured while acessing ranks.");
 		}
 		if(rankKey != null) {
 			for(final StorageKey subKey : rankKey.getSubKeys()) {
@@ -614,7 +607,7 @@ public class ProfileManager {
 			rankKey.setInt("Default-Rank", 0);
 			rankMap.put(0, "Default-Rank");
 			sortedList.add(0);
-			Quester.log.info("No ranks found. Added default rank.");
+			Ql.info("No ranks found. Added default rank.");
 			try {
 				QConfiguration.saveData();
 			}
@@ -650,12 +643,10 @@ public class ProfileManager {
 						loadProfile(prof);
 					}
 					else {
-						Quester.log.info("Invalid key in profiles.yml: " + subKey.getName());
+						Ql.info("Invalid key in profiles.yml: " + subKey.getName());
 					}
 				}
-				if(QConfiguration.verbose) {
-					Quester.log.info(profiles.size() + " profiles loaded.");
-				}
+				Ql.verbose(profiles.size() + " profiles loaded.");
 			}
 		}
 	}
@@ -669,9 +660,7 @@ public class ProfileManager {
 				PreparedStatement stmt = null;
 				ResultSet rs = null;
 				try {
-					if(QConfiguration.debug) {
-						Quester.log.info("Loading profiles...");
-					}
+					Ql.debug("Loading profiles...");
 					final List<SerializedPlayerProfile> serps =
 							new ArrayList<PlayerProfile.SerializedPlayerProfile>();
 					conn = DatabaseConnection.getConnection();
@@ -685,9 +674,7 @@ public class ProfileManager {
 					}
 					rs.close();
 					stmt.close();
-					if(QConfiguration.debug) {
-						Quester.log.info("Loaded " + serps.size() + " profiles.");
-					}
+					Ql.debug("Loaded " + serps.size() + " profiles.");
 					final Runnable deserialization = new Runnable() {
 						
 						@Override
@@ -702,12 +689,10 @@ public class ProfileManager {
 									count++;
 								}
 								else {
-									Quester.log.info("Invalid profile '" + sp.name + "'");
+									Ql.info("Invalid profile '" + sp.name + "'");
 								}
 							}
-							if(QConfiguration.debug) {
-								Quester.log.info("Deserialized " + count + " profiles.");
-							}
+							Ql.debug("Deserialized " + count + " profiles.");
 						}
 					};
 					

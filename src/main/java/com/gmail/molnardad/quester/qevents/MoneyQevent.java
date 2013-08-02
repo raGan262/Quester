@@ -11,6 +11,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.Ql;
 
 @QElement("MONEY")
 public final class MoneyQevent extends Qevent {
@@ -29,7 +30,7 @@ public final class MoneyQevent extends Qevent {
 	@Override
 	protected void run(final Player player, final Quester plugin) {
 		if(!Quester.vault) {
-			Quester.log.info("Failed process money event on " + player.getName()
+			Ql.warning("Failed process money event on " + player.getName()
 					+ ": Economy support disabled");
 			return;
 		}
@@ -42,7 +43,7 @@ public final class MoneyQevent extends Qevent {
 			resp = Quester.econ.withdrawPlayer(player.getName(), -amount);
 		}
 		if(!resp.transactionSuccess()) {
-			Quester.log.info("Failed process money event on " + player.getName() + ": "
+			Ql.warning("Failed process money event on " + player.getName() + ": "
 					+ resp.errorMessage);
 		}
 	}

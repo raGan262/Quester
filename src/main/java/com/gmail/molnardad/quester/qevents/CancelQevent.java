@@ -11,6 +11,7 @@ import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.Ql;
 
 @QElement("CANCEL")
 public final class CancelQevent extends Qevent {
@@ -31,7 +32,7 @@ public final class CancelQevent extends Qevent {
 					plugin.getLanguageManager().getPlayerLang(player.getName()));
 		}
 		catch (final QuesterException e) {
-			Quester.log.info("Event failed to cancel " + player.getName() + "'s quest. Reason: "
+			Ql.info("Event failed to cancel " + player.getName() + "'s quest. Reason: "
 					+ ChatColor.stripColor(e.getMessage()));
 		}
 	}

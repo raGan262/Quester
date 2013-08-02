@@ -12,6 +12,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.Ql;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("EFFECT")
@@ -53,7 +54,7 @@ public class EffectQevent extends Qevent {
 				eff = Util.parseEffect(key.getString("effect", ""));
 			}
 			catch (final IllegalArgumentException e) {
-				Quester.log.severe("Error deserializing effect event: "
+				Ql.severe("Error deserializing effect event: "
 						+ ChatColor.stripColor(e.getMessage()));
 				return null;
 			}

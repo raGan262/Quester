@@ -20,6 +20,7 @@ import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.CustomException;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.Ql;
 
 @QElement("DSCRIPT")
 public final class DenizenScriptQevent extends Qevent {
@@ -77,7 +78,7 @@ public final class DenizenScriptQevent extends Qevent {
 			}
 		}
 		catch (final Exception e) {
-			Quester.log.warning("Failed to run DSCRIPT event. Info: " + e.getMessage());
+			Ql.warning("Failed to run DSCRIPT event. Info: " + e.getMessage());
 		}
 	}
 	

@@ -6,8 +6,6 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Logger;
-
 import javax.management.InstanceNotFoundException;
 
 import net.citizensnpcs.api.CitizensAPI;
@@ -41,6 +39,7 @@ import com.gmail.molnardad.quester.qevents.*;
 import com.gmail.molnardad.quester.quests.QuestManager;
 import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.DatabaseConnection;
+import com.gmail.molnardad.quester.utils.Ql;
 import com.gmail.molnardad.quester.elements.Element;
 import com.gmail.molnardad.quester.elements.ElementManager;
 import com.gmail.molnardad.quester.exceptions.*;
@@ -49,7 +48,6 @@ import com.gmail.molnardad.quester.holder.QuesterTrait;
 
 public class Quester extends JavaPlugin {
 	
-	public static Logger log = null;
 	public static Economy econ = null;
 	
 	private LanguageManager langs = null;
@@ -73,27 +71,27 @@ public class Quester extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		
-		log = getLogger();
+		Ql.init(this);
 		
 		QConfiguration.createInstance(this);
 		try {
 			QConfiguration.loadData();
 		}
 		catch (final InstanceNotFoundException e1) {
-			log.severe("DataManager instance exception. Disabling quester...");
+			Ql.severe("DataManager instance exception. Disabling quester...");
 			getPluginLoader().disablePlugin(this);
 			return;
 		}
 		
 		// Managers
-		langs = new LanguageManager();
+		langs = new LanguageManager(this);
 		elements = new ElementManager();
 		ElementManager.setInstance(elements);
 		quests = new QuestManager(this);
 		profiles = new ProfileManager(this);
 		quests.setProfileManager(profiles); // loading conflicts...
 		holders = new QuestHolderManager(this);
-		commands = new CommandManager(langs, log, QConfiguration.displayedCmd, this);
+		commands = new CommandManager(langs, getLogger(), QConfiguration.displayedCmd, this);
 		
 		loadLocal();
 		registerElements();
@@ -111,17 +109,17 @@ public class Quester extends JavaPlugin {
 		}
 		
 		if(setupEconomy()) {
-			log.info("Vault found and hooked...");
+			Ql.info("Vault found and hooked...");
 		}
 		
 		if(setupCitizens()) {
-			log.info("Citizens 2 found and hooked...");
+			Ql.info("Citizens 2 found and hooked...");
 		}
 		if(setupDenizen()) {
-			log.info("Denizen found and hooked...");
+			Ql.info("Denizen found and hooked...");
 		}
 		if(setupEpicBoss()) {
-			log.info("EpicBoss found and hooked...");
+			Ql.info("EpicBoss found and hooked...");
 		}
 		
 		setupListeners();
@@ -136,24 +134,22 @@ public class Quester extends JavaPlugin {
 			try {
 				DatabaseConnection.initialize(QConfiguration.mysqlUrl, QConfiguration.mysqlUser,
 						QConfiguration.mysqlPass);
-				Quester.log.info("Successfully connected to the database...");
+				Ql.info("Successfully connected to the database...");
 				conn = DatabaseConnection.getConnection();
 				final DatabaseMetaData dmd = conn.getMetaData();
 				if(!dmd.getTables(null, null, "quester-profiles", null).next()) {
-					Quester.log.info("Creating table quester-profiles...");
+					Ql.verbose("Creating table quester-profiles...");
 					stmt = conn.createStatement();
 					stmt.execute("CREATE TABLE `quester-profiles` ( name VARCHAR(50) NOT NULL, completed TEXT, current SMALLINT(6), quests TEXT, reputation TEXT, PRIMARY KEY (name) );");
 					if(!dmd.getTables(null, null, "quester-profiles", null).next()) {
 						throw new SQLException("Table creation failed.");
 					}
-					Quester.log.info("Table created.");
+					Ql.verbose("Table created.");
 				}
 			}
 			catch (final Exception e) {
-				if(QConfiguration.debug) {
-					e.printStackTrace();
-				}
-				Quester.log.warning("Failed to connect to the database, falling back to config...");
+				Ql.severe("Failed to connect to the database, falling back to config...");
+				Ql.debug("Error report: ", e);
 				QConfiguration.profileStorageType = StorageType.CONFIG;
 			}
 			finally {
@@ -181,7 +177,7 @@ public class Quester extends JavaPlugin {
 				
 			}
 		}, 1L) == -1) {
-			Quester.log.severe("Failed to schedule loading task. Disabling Quester...");
+			Ql.severe("Failed to schedule loading task. Disabling Quester...");
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
@@ -197,12 +193,9 @@ public class Quester extends JavaPlugin {
 			quests.saveQuests();
 			profiles.saveProfiles(QConfiguration.profileStorageType, false);
 			holders.saveHolders();
-			if(QConfiguration.verbose) {
-				log.info("Quester data saved.");
-			}
+			Ql.verbose("Quester data saved.");
 		}
 		DatabaseConnection.close();
-		log = null;
 		econ = null;
 		citizens2 = false;
 		epicboss = false;
@@ -272,13 +265,13 @@ public class Quester extends JavaPlugin {
 	
 	private boolean setupEconomy() {
 		if(getServer().getPluginManager().getPlugin("Vault") == null) {
-			log.info("Vault not found, economy support disabled.");
+			Ql.warning("Vault not found, economy support disabled.");
 			return false;
 		}
 		final RegisteredServiceProvider<Economy> rsp =
 				getServer().getServicesManager().getRegistration(Economy.class);
 		if(rsp == null) {
-			log.info("Economy plugin not found, economy support disabled.");
+			Ql.warning("Economy plugin not found, economy support disabled.");
 			return false;
 		}
 		econ = rsp.getProvider();
@@ -317,7 +310,7 @@ public class Quester extends JavaPlugin {
 				denizen = false;
 			}
 			if(!denizen) {
-				log.info("Incorrect denizen version found. Supported version is 0.8.8 or newer.");
+				Ql.warning("Incorrect denizen version found. Supported version is 0.8.8 or newer.");
 			}
 		}
 		return denizen;
@@ -325,7 +318,8 @@ public class Quester extends JavaPlugin {
 	
 	private void loadLocal() {
 		if(langs == null) {
-			log.info("Failed to load languages: LanguageManager null");
+			Ql.warning("Failed to load languages: LanguageManager null");
+			return;
 		}
 		langs.loadLang("english", new File(getDataFolder(), "langEN.yml"));
 		int i = 1;
@@ -341,21 +335,22 @@ public class Quester extends JavaPlugin {
 			}
 		}
 		catch (final InstanceNotFoundException e) {
-			log.severe("DataManager instance exception occured while loading languages.");
+			Ql.severe("DataManager instance exception occured while loading languages.");
 		}
-		log.info("Languages loaded. (" + i + ")");
+		Ql.info(i + " languages loaded.");
 	}
 	
 	public void reloadLocal() {
 		if(langs == null) {
-			log.info("Failed to reload languages: LanguageManager null");
+			Ql.warning("Failed to reload languages: LanguageManager null");
+			return;
 		}
 		int i = 0;
 		for(final String lang : langs.getLangSet()) {
 			langs.reloadLang(lang);
 			i++;
 		}
-		log.info("Languages reloaded. (" + i + ")");
+		Ql.info(i + " languages loaded.");
 	}
 	
 	private void setupListeners() {
@@ -457,7 +452,7 @@ public class Quester extends JavaPlugin {
 				elements.register(clss);
 			}
 			catch (final ElementException e) {
-				log.warning("(" + clss.getSimpleName() + ") Failed to register quester element: "
+				Ql.warning("(" + clss.getSimpleName() + ") Failed to register quester element: "
 						+ e.getMessage());
 			}
 		}

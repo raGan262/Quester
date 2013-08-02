@@ -12,7 +12,6 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.exceptions.CustomException;
 import com.gmail.molnardad.quester.exceptions.HolderException;
@@ -23,6 +22,7 @@ import com.gmail.molnardad.quester.quests.QuestManager;
 import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.Ql;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestHolderManager {
@@ -41,7 +41,7 @@ public class QuestHolderManager {
 		qMan = plugin.getQuestManager();
 		profMan = plugin.getProfileManager();
 		final File file = new File(plugin.getDataFolder(), "holders.yml");
-		holderStorage = new ConfigStorage(file, Quester.log, null);
+		holderStorage = new ConfigStorage(file, plugin.getLogger(), null);
 	}
 	
 	public Map<Integer, QuestHolder> getHolders() {
@@ -298,15 +298,15 @@ public class QuestHolderManager {
 						throw new InvalidKeyException();
 					}
 					if(holderIds.get(id) != null) {
-						Quester.log.info("Duplicate holder index: '" + subKey.getName() + "'");
+						Ql.info("Duplicate holder index: '" + subKey.getName() + "'");
 					}
 					holderIds.put(id, qh);
 				}
 				catch (final NumberFormatException e) {
-					Quester.log.info("Not numeric holder index: '" + subKey.getName() + "'");
+					Ql.info("Not numeric holder index: '" + subKey.getName() + "'");
 				}
 				catch (final Exception e) {
-					Quester.log.info("Invalid holder: '" + subKey.getName() + "'");
+					Ql.info("Invalid holder: '" + subKey.getName() + "'");
 				}
 			}
 		}
@@ -317,15 +317,12 @@ public class QuestHolderManager {
 		for(final StorageKey k : signKey.getSubKeys()) {
 			final QuesterSign sign = QuesterSign.deserialize(k);
 			if(sign == null) {
-				Quester.log.info("Failed to deserialize sign under key '" + k.getName() + "'");
+				Ql.info("Failed to deserialize sign under key '" + k.getName() + "'");
 				continue;
 			}
 			signs.put(sign.getLocation(), sign);
 		}
-		
-		if(QConfiguration.verbose) {
-			Quester.log.info(holderIds.size() + " holders loaded.");
-			Quester.log.info(signs.size() + " signs loaded.");
-		}
+		Ql.verbose(holderIds.size() + " holders loaded.");
+		Ql.verbose(signs.size() + " signs loaded.");
 	}
 }

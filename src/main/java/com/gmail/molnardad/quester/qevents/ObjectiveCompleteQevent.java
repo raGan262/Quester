@@ -15,6 +15,7 @@ import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.Ql;
 
 @QElement("OBJCOM")
 public final class ObjectiveCompleteQevent extends Qevent {
@@ -62,7 +63,7 @@ public final class ObjectiveCompleteQevent extends Qevent {
 			}
 		}
 		catch (final QuesterException e) {
-			Quester.log.info("Event failed to complete objective. Reason: "
+			Ql.warning("Event failed to complete objective. Reason: "
 					+ ChatColor.stripColor(e.getMessage()));
 		}
 	}

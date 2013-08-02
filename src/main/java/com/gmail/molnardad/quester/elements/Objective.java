@@ -8,9 +8,8 @@ import org.apache.commons.lang.SerializationException;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import com.gmail.molnardad.quester.QConfiguration;
-import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.Ql;
 import com.gmail.molnardad.quester.utils.Util;
 
 public abstract class Objective extends Element {
@@ -122,7 +121,7 @@ public abstract class Objective extends Element {
 	
 	public static final Objective deserialize(final StorageKey key) {
 		if(!key.hasSubKeys()) {
-			Quester.log.severe("Objective deserialization error: no subkeys");
+			Ql.severe("Objective deserialization error: no subkeys");
 			return null;
 		}
 		Objective obj = null;
@@ -132,7 +131,7 @@ public abstract class Objective extends Element {
 		
 		type = key.getString("type");
 		if(type == null) {
-			Quester.log.severe("Objective type missing.");
+			Ql.severe("Objective type missing.");
 			return null;
 		}
 		des = key.getString("description", null);
@@ -164,16 +163,14 @@ public abstract class Objective extends Element {
 				}
 			}
 			catch (final Exception e) {
-				Quester.log.severe("Error when deserializing " + c.getSimpleName()
+				Ql.severe("Error when deserializing " + c.getSimpleName()
 						+ ". Method load() missing or invalid. " + e.getClass().getName());
-				if(QConfiguration.debug) {
-					e.printStackTrace();
-				}
+				Ql.debug("Exception follows", e);
 				return null;
 			}
 		}
 		else {
-			Quester.log.severe("Unknown objective type: '" + type + "'");
+			Ql.severe("Unknown objective type: '" + type + "'");
 		}
 		
 		return obj;

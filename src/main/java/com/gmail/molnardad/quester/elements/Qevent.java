@@ -7,9 +7,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.Ql;
 
 public abstract class Qevent extends Element {
 	
@@ -79,9 +79,9 @@ public abstract class Qevent extends Element {
 						Qevent.this.run(player, plugin);
 					}
 					catch (final Exception e) {
-						Quester.log.warning(getType() + " event external exception. [" + occasion
-								+ ":" + delay + "]");
-						e.printStackTrace();
+						Ql.warning(getType() + " event external exception. [" + occasion + ":"
+								+ delay + "]");
+						Ql.debug("Exception", e);
 					}
 				}
 			}.runTaskLater(plugin, delay * 20);
@@ -91,9 +91,9 @@ public abstract class Qevent extends Element {
 				Qevent.this.run(player, plugin);
 			}
 			catch (final Exception e) {
-				Quester.log.warning(getType() + " event external exception. [" + occasion + ":"
-						+ delay + "]");
-				e.printStackTrace();
+				Ql.warning(getType() + " event external exception. [" + occasion + ":" + delay
+						+ "]");
+				Ql.debug("Exception", e);
 			}
 		}
 	}
@@ -118,7 +118,7 @@ public abstract class Qevent extends Element {
 	
 	public static final Qevent deserialize(final StorageKey key) {
 		if(!key.hasSubKeys()) {
-			Quester.log.severe("Qevent deserialization error: no sybkeys.");
+			Ql.severe("Qevent deserialization error: no sybkeys.");
 			return null;
 		}
 		Qevent qev = null;
@@ -128,7 +128,7 @@ public abstract class Qevent extends Element {
 		del = key.getInt("delay", 0);
 		type = key.getString("type");
 		if(type == null) {
-			Quester.log.severe("Event type missing.");
+			Ql.severe("Event type missing.");
 			return null;
 		}
 		final Class<? extends Qevent> c = ElementManager.getInstance().getEventClass(type);
@@ -144,16 +144,14 @@ public abstract class Qevent extends Element {
 				qev.delay = del;
 			}
 			catch (final Exception e) {
-				Quester.log.severe("Error when deserializing " + c.getSimpleName()
+				Ql.severe("Error when deserializing " + c.getSimpleName()
 						+ ". Method load() missing or invalid. " + e.getClass().getName());
-				if(QConfiguration.debug) {
-					e.printStackTrace();
-				}
+				Ql.debug("Exception follows", e);
 				return null;
 			}
 		}
 		else {
-			Quester.log.severe("Unknown event type: '" + type + "'");
+			Ql.severe("Unknown event type: '" + type + "'");
 		}
 		return qev;
 	}

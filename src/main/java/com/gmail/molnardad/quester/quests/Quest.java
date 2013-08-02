@@ -15,8 +15,8 @@ import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.Ql;
 import com.gmail.molnardad.quester.utils.Util;
-import com.gmail.molnardad.quester.Quester;
 
 public class Quest {
 	
@@ -347,7 +347,7 @@ public class Quest {
 						quest.addObjective(obj);
 					}
 					else {
-						Quester.log.severe("Error occured when deserializing objective ID " + i
+						Ql.severe("Error occured when deserializing objective ID " + i
 								+ " in quest '" + quest.getName() + "'.");
 					}
 				}
@@ -363,7 +363,7 @@ public class Quest {
 						quest.addCondition(con);
 					}
 					else {
-						Quester.log.severe("Error occured when deserializing condition ID " + i
+						Ql.severe("Error occured when deserializing condition ID " + i
 								+ " in quest '" + quest.getName() + "'.");
 					}
 				}
@@ -379,8 +379,8 @@ public class Quest {
 						quest.addQevent(qvt);
 					}
 					else {
-						Quester.log.severe("Error occured when deserializing event ID:" + i
-								+ " in quest '" + quest.getName() + "'.");
+						Ql.severe("Error occured when deserializing event ID:" + i + " in quest '"
+								+ quest.getName() + "'.");
 					}
 				}
 			}

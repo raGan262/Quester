@@ -7,6 +7,7 @@ import javax.management.InstanceNotFoundException;
 import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.Ql;
 
 public class QConfiguration {
 	
@@ -71,7 +72,7 @@ public class QConfiguration {
 	
 	private QConfiguration(final Quester plugin) {
 		final File file = new File(plugin.getDataFolder(), "config.yml");
-		storage = new ConfigStorage(file, Quester.log, plugin.getResource(file.getName()));
+		storage = new ConfigStorage(file, plugin.getLogger(), plugin.getResource(file.getName()));
 		storage.load();
 	}
 	
@@ -80,7 +81,7 @@ public class QConfiguration {
 	}
 	
 	private static void wrongConfig(final String path, final String def) {
-		Quester.log.info("Invalid or missing value in config: " + path.replace('.', ':')
+		Ql.info("Invalid or missing value in config: " + path.replace('.', ':')
 				+ ". Setting to default. (" + def + ")");
 	}
 	
