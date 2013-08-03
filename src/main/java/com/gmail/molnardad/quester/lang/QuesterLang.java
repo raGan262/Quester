@@ -9,9 +9,7 @@ public class QuesterLang {
 	public String MSG_ONLY_PLAYER = "This command can only be run by player.";
 	public String MSG_DATA_SAVE = "Quester data saved.";
 	public String MSG_AUTOSAVE_DISABLED = "AutoSaving is disabled in config.";
-	public String MSG_AUTOSAVE_STARTED = "Saving started. Interval: %intervalm";// %interval =
-																				// autosave
-																				// interval;
+	public String MSG_AUTOSAVE_STARTED = "Saving started. Interval: %intervalm";// %interval = autosave interval;
 	public String MSG_AUTOSAVE_RUNNING = "Saving already running.";
 	public String MSG_AUTOSAVE_STOPPED = "Saving Stopped.";
 	public String MSG_AUTOSAVE_NOT_RUNNING = "Saving not running.";
@@ -40,7 +38,7 @@ public class QuesterLang {
 	public String INFO_PROGRESS_COMPLETED = "Completed";
 	public String INFO_PROFILE_POINTS = "Quest points";
 	public String INFO_PROFILE_RANK = "Quester rank";
-	public String INFO_PROFILE_COMPLETED = "Completed quests";
+	public String INFO_PROFILE_COMPLETED = "%p's completed quests";// %p = player name;
 	public String INFO_PROFILE_NOT_EXIST = "%p does not have profile.";// %p = player name;
 	public String INFO_HOLDER_LIST = "Holder list";
 	public String INFO_QUESTS = "Quests";
@@ -57,7 +55,11 @@ public class QuesterLang {
 	public String USAGE_LABEL = "Usage: ";
 	public String USAGE_MOD_AVAIL = "Available modifiers: ";
 	
-	// QUEST STRINGs
+	// PROFILE STRINGS
+	public String PROF_COMP_ADDED = "Completed quest added.";
+	public String PROF_COMP_REMOVED = "Completed quest removed.";
+	
+	// QUEST STRINGS
 	
 	public String Q_CREATED = "Quest created and selected.";
 	public String Q_REMOVED = "Quest removed.";
@@ -109,8 +111,7 @@ public class QuesterLang {
 	public String OBJ_DESC_REMOVE = "Description of objective %id removed."; // %id = objective ID;
 	
 	public String OBJ_PREREQ_ADD = "Prerequisites to objective %id added."; // %id = objective ID;
-	public String OBJ_PREREQ_REMOVE = "Prerequisites of objective %id removed."; // %id = objective
-																					// ID;
+	public String OBJ_PREREQ_REMOVE = "Prerequisites of objective %id removed."; // %id = objective ID;
 	
 	// CONDITION STRINGS
 	
@@ -135,8 +136,7 @@ public class QuesterLang {
 	public String ERROR_CUSTOM = "Something is wrong.";
 	public String ERROR_CMD_BAD_ID = "ID must be non-negative number.";
 	public String ERROR_CMD_RANGE_INVALID = "Invalid range.";
-	public String ERROR_CMD_WORLD_THIS = "World '%this' requires player context."; // %this = world
-																					// label;
+	public String ERROR_CMD_WORLD_THIS = "World '%this' requires player context."; // %this = world label;
 	public String ERROR_CMD_WORLD_INVALID = "Invalid world.";
 	public String ERROR_CMD_ITEM_UNKNOWN = "Unknown item.";
 	public String ERROR_CMD_BLOCK_UNKNOWN = "Unknown block.";
@@ -152,12 +152,8 @@ public class QuesterLang {
 	public String ERROR_CMD_AMOUNT_POSITIVE = "Amount must be positive number.";
 	public String ERROR_CMD_AMOUNT_NONZERO = "Amount must not be zero.";
 	public String ERROR_CMD_LOC_INVALID = "Invalid location.";
-	public String ERROR_CMD_LOC_HERE = "Location '%here' requires player context."; // %here =
-																					// location
-																					// label;
-	public String ERROR_CMD_LOC_BLOCK = "Location '%block' requires player context."; // %block =
-																						// location
-																						// label;
+	public String ERROR_CMD_LOC_HERE = "Location '%here' requires player context."; // %here = location label;
+	public String ERROR_CMD_LOC_BLOCK = "Location '%block' requires player context."; // %block = location label;
 	public String ERROR_CMD_LOC_NOBLOCK = "No block targeted.";
 	public String ERROR_CMD_COORDS_INVALID = "Invalid coordinates.";
 	public String ERROR_CMD_ENTITY_UNKNOWN = "Unknown entity.";
