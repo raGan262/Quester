@@ -1,5 +1,9 @@
 package com.gmail.molnardad.quester.commands;
 
+import static com.gmail.molnardad.quester.utils.Util.parsePrerequisites;
+
+import java.util.Set;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -151,5 +155,85 @@ public class ObjectiveCommands {
 	@QCommand(section = "QMod", desc = "objective prerequisites manipulation")
 	@QNestedCommand(ObjectivePrereqCommands.class)
 	public void prereq(final QCommandContext context, final CommandSender sender) throws QuesterException {
+	}
+	
+	public static class ObjectiveDescCommands {
+		
+		final QuestManager qMan;
+		final ProfileManager profMan;
+		
+		public ObjectiveDescCommands(final Quester plugin) {
+			qMan = plugin.getQuestManager();
+			profMan = plugin.getProfileManager();
+		}
+		
+		@QCommandLabels({ "add", "a" })
+		@QCommand(
+				section = "QMod",
+				desc = "adds to objective description",
+				min = 2,
+				max = 2,
+				usage = "<objective ID> <description>")
+		public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
+			qMan.addObjectiveDescription(profMan.getProfile(sender.getName()), context.getInt(0),
+					context.getString(1), context.getSenderLang());
+			sender.sendMessage(ChatColor.GREEN
+					+ context.getSenderLang().OBJ_DESC_ADD.replaceAll("%id", context.getString(0)));
+		}
+		
+		@QCommandLabels({ "remove", "r" })
+		@QCommand(
+				section = "QMod",
+				desc = "removes objective description",
+				min = 1,
+				max = 1,
+				usage = "<objective ID>")
+		public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
+			qMan.removeObjectiveDescription(profMan.getProfile(sender.getName()),
+					context.getInt(0), context.getSenderLang());
+			sender.sendMessage(ChatColor.GREEN
+					+ context.getSenderLang().OBJ_DESC_REMOVE.replaceAll("%id",
+							context.getString(0)));
+		}
+	}
+	
+	public static class ObjectivePrereqCommands {
+		
+		final QuestManager qMan;
+		final ProfileManager profMan;
+		
+		public ObjectivePrereqCommands(final Quester plugin) {
+			qMan = plugin.getQuestManager();
+			profMan = plugin.getProfileManager();
+		}
+		
+		@QCommandLabels({ "add", "a" })
+		@QCommand(
+				section = "QMod",
+				desc = "adds objective prerequisites",
+				min = 1,
+				usage = "<objective ID> <prerequisite1>...")
+		public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
+			final Set<Integer> prereq = parsePrerequisites(context.getArgs(), 1);
+			qMan.addObjectivePrerequisites(profMan.getProfile(sender.getName()), context.getInt(0),
+					prereq, context.getSenderLang());
+			sender.sendMessage(ChatColor.GREEN
+					+ context.getSenderLang().OBJ_PREREQ_ADD.replaceAll("%id", context.getString(0)));
+		}
+		
+		@QCommandLabels({ "remove", "r" })
+		@QCommand(
+				section = "QMod",
+				desc = "removes objective prerequisites",
+				min = 1,
+				usage = "<objective ID> <prerequisite1>...")
+		public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
+			final Set<Integer> prereq = parsePrerequisites(context.getArgs(), 1);
+			qMan.removeObjectivePrerequisites(profMan.getProfile(sender.getName()),
+					context.getInt(0), prereq, context.getSenderLang());
+			sender.sendMessage(ChatColor.GREEN
+					+ context.getSenderLang().OBJ_PREREQ_REMOVE.replaceAll("%id",
+							context.getString(0)));
+		}
 	}
 }
