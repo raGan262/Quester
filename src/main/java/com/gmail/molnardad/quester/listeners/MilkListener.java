@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.Quest;
 
@@ -26,7 +27,8 @@ public class MilkListener implements Listener {
 	public void onMilk(final PlayerBucketFillEvent event) {
 		if(event.getItemStack().getTypeId() == 335) {
 			final Player player = event.getPlayer();
-			final Quest quest = profMan.getProfile(player.getName()).getQuest();
+			final PlayerProfile prof = profMan.getProfile(player.getName());
+			final Quest quest = prof.getQuest();
 			if(quest != null) {
 				if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
 					return;
@@ -34,7 +36,7 @@ public class MilkListener implements Listener {
 				final List<Objective> objs = quest.getObjectives();
 				for(int i = 0; i < objs.size(); i++) {
 					if(objs.get(i).getType().equalsIgnoreCase("MILK")) {
-						if(!profMan.isObjectiveActive(player, i)) {
+						if(!profMan.isObjectiveActive(prof, i)) {
 							continue;
 						}
 						profMan.incProgress(player, ActionSource.listenerSource(event), i);

@@ -13,8 +13,8 @@ import com.gmail.molnardad.quester.profiles.ProfileManager;
 
 public class HolderCommands {
 	
-	QuestHolderManager holMan = null;
-	ProfileManager profMan = null;
+	final QuestHolderManager holMan;
+	final ProfileManager profMan;
 	
 	public HolderCommands(final Quester plugin) {
 		holMan = plugin.getHolderManager();
@@ -25,7 +25,7 @@ public class HolderCommands {
 	@QCommand(section = "Mod", desc = "creates a holder", min = 1, max = 1, usage = "<holder name>")
 	public void set(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		final int id = holMan.createHolder(context.getString(0));
-		profMan.selectHolder(sender.getName(), id);
+		profMan.selectHolder(profMan.getProfile(sender.getName()), id);
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().HOL_CREATED);
 	}
 	
@@ -97,7 +97,7 @@ public class HolderCommands {
 	@QCommandLabels({ "select", "sel" })
 	@QCommand(section = "Mod", desc = "selects holder", min = 1, max = 1, usage = "<holder ID>")
 	public void select(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		profMan.selectHolder(sender.getName(), context.getInt(0));
+		profMan.selectHolder(profMan.getProfile(sender.getName()), context.getInt(0));
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().HOL_SELECTED);
 	}
 }

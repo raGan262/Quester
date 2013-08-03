@@ -8,14 +8,17 @@ import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.QuestManager;
 
 public class ObjectiveDescCommands {
 	
-	QuestManager qMan = null;
+	final QuestManager qMan;
+	final ProfileManager profMan;
 	
 	public ObjectiveDescCommands(final Quester plugin) {
 		qMan = plugin.getQuestManager();
+		profMan = plugin.getProfileManager();
 	}
 	
 	@QCommandLabels({ "add", "a" })
@@ -26,8 +29,8 @@ public class ObjectiveDescCommands {
 			max = 2,
 			usage = "<objective ID> <description>")
 	public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.addObjectiveDescription(sender.getName(), context.getInt(0), context.getString(1),
-				context.getSenderLang());
+		qMan.addObjectiveDescription(profMan.getProfile(sender.getName()), context.getInt(0),
+				context.getString(1), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().OBJ_DESC_ADD.replaceAll("%id", context.getString(0)));
 	}
@@ -40,7 +43,7 @@ public class ObjectiveDescCommands {
 			max = 1,
 			usage = "<objective ID>")
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.removeObjectiveDescription(sender.getName(), context.getInt(0),
+		qMan.removeObjectiveDescription(profMan.getProfile(sender.getName()), context.getInt(0),
 				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().OBJ_DESC_REMOVE.replaceAll("%id", context.getString(0)));

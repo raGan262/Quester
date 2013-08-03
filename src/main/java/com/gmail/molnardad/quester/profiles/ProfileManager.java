@@ -73,10 +73,10 @@ public class ProfileManager {
 	private PlayerProfile createProfile(final String playerName) {
 		final PlayerProfile prof = new PlayerProfile(playerName);
 		final Player player = Bukkit.getPlayerExact(playerName);
-		if(player == null || !Util.isPlayer(player)) {
+		if(!playerName.equalsIgnoreCase("console") && (player == null || !Util.isPlayer(player))) {
 			Ql.warning("Smeone/Something tried to get profile of a non-player.");
-			new CustomException("Contact Quester author and show him this exception.")
-					.printStackTrace();
+			Ql.debug("Contact Quester author and show him this exception.", new CustomException(
+					"player name: " + playerName));
 		}
 		else {
 			profiles.put(playerName.toLowerCase(), prof);
@@ -122,81 +122,77 @@ public class ProfileManager {
 		return ranks;
 	}
 	
-	public Quest getSelectedQuest(final String playerName) {
-		if(playerName == null) {
-			return null;
-		}
-		return getProfile(playerName).getSelected();
+	public boolean setProgress(final PlayerProfile profile, final int objective, final int value) {
+		return setProgress(profile, profile.getQuestProgressIndex(), objective, value);
 	}
 	
-	public boolean setProgress(final String playerName, final int objective, final int value) {
-		return setProgress(playerName, getProfile(playerName).getQuestProgressIndex(), objective,
-				value);
-	}
-	
-	public boolean setProgress(final String playerName, final int index, final int objective, final int value) {
-		final PlayerProfile prof = getProfile(playerName);
-		final QuestProgress prog = prof.getProgress(index);
+	public boolean setProgress(final PlayerProfile profile, final int index, final int objective, final int value) {
+		final QuestProgress prog = profile.getProgress(index);
 		if(prog != null) {
 			prog.setProgress(objective, value);
-			prof.setChanged();
+			profile.setChanged();
 			return true;
 		}
 		return false;
 	}
 	
-	public void assignQuest(final String playerName, final Quest quest) {
-		getProfile(playerName).addQuest(quest);
+	public void assignQuest(final PlayerProfile profile, final Quest quest) {
+		profile.addQuest(quest);
 	}
 	
-	public void unassignQuest(final String playerName) {
-		unassignQuest(playerName, -1);
+	public void unassignQuest(final PlayerProfile profile) {
+		unassignQuest(profile, -1);
 	}
 	
-	public void unassignQuest(final String playerName, final int index) {
-		final PlayerProfile prof = getProfile(playerName);
+	public void unassignQuest(final PlayerProfile profile, final int index) {
 		if(index < 0) {
-			prof.unsetQuest();
+			profile.unsetQuest();
 		}
 		else {
-			prof.unsetQuest(index);
+			profile.unsetQuest(index);
 		}
-		prof.refreshActive();
+		profile.refreshActive();
 	}
 	
-	public void addCompletedQuest(final String playerName, final String questName) {
-		final PlayerProfile prof = getProfile(playerName);
-		prof.addCompleted(questName, (int) (System.currentTimeMillis() / 1000));
+	public void addCompletedQuest(final PlayerProfile profile, final String questName) {
+		addCompletedQuest(profile, questName, System.currentTimeMillis());
 	}
 	
-	public void selectQuest(final String changer, final Quest newSelected) throws QuesterException {
-		getProfile(changer).setSelected(newSelected);
+	public void addCompletedQuest(final PlayerProfile profile, final String questName, final long timeInMillis) {
+		profile.addCompleted(questName, (int) (timeInMillis / 1000));
 	}
 	
-	public void clearSelectedQuest(final String playerName) {
-		getProfile(playerName).setSelected(null);
+	public void removeCompletedQuest(final PlayerProfile profile, final String questName) {
+		profile.removeCompleted(questName);
 	}
 	
-	public void selectHolder(final String changer, final int id) throws QuesterException {
-		getProfile(changer).setHolderID(id);
+	public void selectQuest(final PlayerProfile profile, final Quest newSelected) throws QuesterException {
+		profile.setSelected(newSelected);
 	}
 	
-	public void clearSelectedHolder(final String playerName) {
-		getProfile(playerName).setHolderID(-1);
+	public void clearSelectedQuest(final PlayerProfile profile) {
+		profile.setSelected(null);
 	}
 	
-	public boolean switchQuest(final String playerName, final int id) {
-		return getProfile(playerName).setActiveQuest(id);
+	public void selectHolder(final PlayerProfile profile, final int id) throws QuesterException {
+		profile.setHolderID(id);
 	}
 	
-	public int addPoints(final String playerName, final int amount) {
-		return getProfile(playerName).addPoints(amount);
+	public void clearSelectedHolder(final PlayerProfile profile) {
+		profile.setHolderID(-1);
 	}
 	
-	public boolean areObjectivesCompleted(final Player player) {
+	public boolean switchQuest(final PlayerProfile profile, final int id) {
+		return profile.setActiveQuest(id);
+	}
+	
+	public int addPoints(final PlayerProfile profile, final int amount) {
+		return profile.addPoints(amount);
+	}
+	
+	public boolean areObjectivesCompleted(final PlayerProfile profile) {
 		
-		for(final ObjectiveStatus status : getProfile(player.getName()).getProgress()
-				.getObjectiveStatuses()) {
+		for(final ObjectiveStatus status : profile.getProgress().getObjectiveStatuses()) {
 			if(status != ObjectiveStatus.COMPLETED) {
 				return false;
 			}
@@ -204,14 +200,9 @@ public class ProfileManager {
 		return true;
 	}
 	
-	public int getCurrentObjective(final Player player) {
+	public boolean isObjectiveActive(final PlayerProfile profile, final int id) {
 		
-		return getProfile(player.getName()).getProgress().getCurrentObjectiveID();
-	}
-	
-	public boolean isObjectiveActive(final Player player, final int id) {
-		
-		final QuestProgress progress = getProfile(player.getName()).getProgress();
+		final QuestProgress progress = profile.getProgress();
 		return progress.getObjectiveStatus(id) == ObjectiveStatus.ACTIVE;
 	}
 	
@@ -262,7 +253,7 @@ public class ProfileManager {
 			return;
 		}
 		
-		assignQuest(playerName, quest);
+		assignQuest(prof, quest);
 		if(QConfiguration.progMsgStart) {
 			player.sendMessage(Quester.LABEL
 					+ lang.MSG_Q_STARTED.replaceAll("%q", ChatColor.GOLD + quest.getName()
@@ -328,7 +319,7 @@ public class ProfileManager {
 		final QuestCancelEvent event = new QuestCancelEvent(as, player, quest);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		
-		unassignQuest(player.getName(), index);
+		unassignQuest(prof, index);
 		if(QConfiguration.progMsgCancel) {
 			player.sendMessage(Quester.LABEL
 					+ lang.MSG_Q_CANCELLED.replaceAll("%q", ChatColor.GOLD + quest.getName()
@@ -347,7 +338,8 @@ public class ProfileManager {
 	}
 	
 	public void complete(final Player player, ActionSource as, final QuesterLang lang, final boolean checkObjs) throws QuesterException {
-		final Quest quest = getProfile(player.getName()).getQuest();
+		final PlayerProfile prof = getProfile(player.getName());
+		final Quest quest = prof.getQuest();
 		if(quest == null) {
 			throw new QuestException(lang.ERROR_Q_NOT_ASSIGNED);
 		}
@@ -368,7 +360,7 @@ public class ProfileManager {
 			error = !completeObjective(player, as, lang);
 		}
 		
-		if(areObjectivesCompleted(player)) {
+		if(areObjectivesCompleted(prof)) {
 			completeQuest(player, as, lang);
 		}
 		else if(error) {
@@ -377,13 +369,14 @@ public class ProfileManager {
 	}
 	
 	private boolean completeObjective(final Player player, final ActionSource as, final QuesterLang lang) throws QuesterException {
-		final Quest quest = getProfile(player.getName()).getQuest();
+		final PlayerProfile prof = getProfile(player.getName());
+		final Quest quest = prof.getQuest();
 		final List<Objective> objs = quest.getObjectives();
 		
 		int i = 0;
 		boolean completed = false;
 		while(i < objs.size() && !completed) {
-			if(isObjectiveActive(player, i)) {
+			if(isObjectiveActive(prof, i)) {
 				if(objs.get(i).tryToComplete(player)) {
 					incProgress(player, as, i, false);
 					completed = true;
@@ -396,10 +389,11 @@ public class ProfileManager {
 	}
 	
 	public void completeQuest(final Player player, final ActionSource as, final QuesterLang lang) throws QuesterException {
-		final Quest quest = getProfile(player.getName()).getQuest();
+		final PlayerProfile prof = getProfile(player.getName());
+		final Quest quest = prof.getQuest();
 		
-		unassignQuest(player.getName());
-		addCompletedQuest(player.getName(), quest.getName());
+		unassignQuest(prof);
+		addCompletedQuest(prof, quest.getName());
 		if(QConfiguration.progMsgDone) {
 			player.sendMessage(Quester.LABEL
 					+ lang.MSG_Q_COMPLETED.replaceAll("%q", ChatColor.GOLD + quest.getName()
@@ -442,7 +436,7 @@ public class ProfileManager {
 		final int newValue = prog.getProgress()[objectiveId] + amount;
 		final Quest q = prof.getQuest();
 		final Objective obj = q.getObjectives().get(objectiveId);
-		setProgress(prof.getName(), objectiveId, newValue);
+		setProgress(prof, objectiveId, newValue);
 		
 		// TODO add progress update message
 		if(obj.getTargetAmount() <= newValue) {
@@ -475,15 +469,8 @@ public class ProfileManager {
 		for(int i = progs.length - 1; i >= 0; i--) {
 			localUnset = false;
 			final Quest quest = progs[i].getQuest();
-			if(!quest.equals(qMan.getQuest(quest.getID()))		// if ID or name
-					// changed
-					|| progs[i].getSize() != quest.getObjectives().size()) {	// if
-																				// number
-																				// of
-																				// objectives
-																				// changed
-				localUnset = true;
-			}
+			localUnset = !quest.equals(qMan.getQuest(quest.getID()))		// if ID or name changed
+					|| progs[i].getSize() != quest.getObjectives().size();	// if number of objectives changed
 			
 			if(localUnset) {
 				profile.unsetQuest(i);
@@ -512,8 +499,6 @@ public class ProfileManager {
 			sender.sendMessage(ChatColor.BLUE + lang.INFO_PROFILE_RANK + ": " + ChatColor.GOLD
 					+ prof.getRank());
 		}
-		sender.sendMessage(ChatColor.BLUE + lang.INFO_PROFILE_COMPLETED + ": " + ChatColor.WHITE
-				+ Util.implode(prof.getCompletedQuests(), ','));
 		
 	}
 	

@@ -14,6 +14,7 @@ import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.objectives.ShearObjective;
+import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.Quest;
 
@@ -30,7 +31,8 @@ public class ShearListener implements Listener {
 		if(event.getEntity().getType() == EntityType.SHEEP) {
 			final Player player = event.getPlayer();
 			final Sheep sheep = (Sheep) event.getEntity();
-			final Quest quest = profMan.getProfile(player.getName()).getQuest();
+			final PlayerProfile prof = profMan.getProfile(player.getName());
+			final Quest quest = prof.getQuest();
 			if(quest != null) {
 				if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
 					return;
@@ -38,7 +40,7 @@ public class ShearListener implements Listener {
 				final List<Objective> objs = quest.getObjectives();
 				for(int i = 0; i < objs.size(); i++) {
 					if(objs.get(i).getType().equalsIgnoreCase("SHEAR")) {
-						if(!profMan.isObjectiveActive(player, i)) {
+						if(!profMan.isObjectiveActive(prof, i)) {
 							continue;
 						}
 						final ShearObjective obj = (ShearObjective) objs.get(i);

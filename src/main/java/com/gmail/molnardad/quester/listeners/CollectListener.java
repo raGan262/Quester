@@ -17,6 +17,7 @@ import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.objectives.CollectObjective;
+import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.Quest;
 
@@ -31,7 +32,8 @@ public class CollectListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPickup(final PlayerPickupItemEvent event) {
 		final Player player = event.getPlayer();
-		final Quest quest = profMan.getProfile(player.getName()).getQuest();
+		final PlayerProfile prof = profMan.getProfile(player.getName());
+		final Quest quest = prof.getQuest();
 		if(quest != null) {
 			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
 				return;
@@ -42,7 +44,7 @@ public class CollectListener implements Listener {
 						profMan.getProfile(player.getName()).getProgress().getProgress();
 				// check if Objective is type COLLECT
 				if(objs.get(i).getType().equalsIgnoreCase("COLLECT")) {
-					if(!profMan.isObjectiveActive(player, i)) {
+					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
 					final CollectObjective obj = (CollectObjective) objs.get(i);

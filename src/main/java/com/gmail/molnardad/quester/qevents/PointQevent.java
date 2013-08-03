@@ -8,6 +8,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
+import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("POINT")
@@ -26,7 +27,8 @@ public final class PointQevent extends Qevent {
 	
 	@Override
 	protected void run(final Player player, final Quester plugin) {
-		plugin.getProfileManager().addPoints(player.getName(), amount);
+		final PlayerProfile prof = plugin.getProfileManager().getProfile(player.getName());
+		plugin.getProfileManager().addPoints(prof, amount);
 	}
 	
 	@QCommand(min = 1, max = 1, usage = "<amount>")

@@ -8,14 +8,17 @@ import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.QuestManager;
 
 public class ConditionDescCommands {
 	
-	QuestManager qMan = null;
+	final QuestManager qMan;
+	final ProfileManager profMan;
 	
 	public ConditionDescCommands(final Quester plugin) {
 		qMan = plugin.getQuestManager();
+		profMan = plugin.getProfileManager();
 	}
 	
 	@QCommandLabels({ "add", "a" })
@@ -26,8 +29,8 @@ public class ConditionDescCommands {
 			max = 2,
 			usage = "<condition ID> <description>")
 	public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.addConditionDescription(sender.getName(), context.getInt(0), context.getString(1),
-				context.getSenderLang());
+		qMan.addConditionDescription(profMan.getProfile(sender.getName()), context.getInt(0),
+				context.getString(1), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().CON_DESC_ADD.replaceAll("%id", context.getString(0)));
 	}
@@ -40,7 +43,7 @@ public class ConditionDescCommands {
 			max = 1,
 			usage = "<condition ID>")
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.removeConditionDescription(sender.getName(), context.getInt(0),
+		qMan.removeConditionDescription(profMan.getProfile(sender.getName()), context.getInt(0),
 				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().CON_DESC_REMOVE.replaceAll("%id", context.getString(0)));

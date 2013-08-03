@@ -48,7 +48,7 @@ public final class ObjectiveCompleteQevent extends Qevent {
 						profMan.incProgress(player, as, objective, req - prog[objective]);
 					}
 					else {
-						profMan.setProgress(player.getName(), objective, req);
+						profMan.setProgress(prof, objective, req);
 						profMan.complete(player, as,
 								plugin.getLanguageManager().getPlayerLang(player.getName()), false);
 					}

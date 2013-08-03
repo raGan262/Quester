@@ -15,6 +15,7 @@ import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.objectives.BreakObjective;
 import com.gmail.molnardad.quester.objectives.PlaceObjective;
+import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.Quest;
 
@@ -29,7 +30,8 @@ public class PlaceListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onBreak(final BlockPlaceEvent event) {
 		final Player player = event.getPlayer();
-		final Quest quest = profMan.getProfile(player.getName()).getQuest();
+		final PlayerProfile prof = profMan.getProfile(player.getName());
+		final Quest quest = prof.getQuest();
 		if(quest != null) {
 			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
 				return;
@@ -40,14 +42,13 @@ public class PlaceListener implements Listener {
 				for(int i = 0; i < objs.size(); i++) {
 					// check if Objective is type BREAK
 					if(objs.get(i).getType().equalsIgnoreCase("BREAK")) {
-						if(!profMan.isObjectiveActive(player, i)) {
+						if(!profMan.isObjectiveActive(prof, i)) {
 							continue;
 						}
 						final BreakObjective obj = (BreakObjective) objs.get(i);
 						// compare block ID
 						if(obj.checkBlock(event.getBlock())) {
-							profMan.incProgress(player, ActionSource.listenerSource(event), i,
-									-1);
+							profMan.incProgress(player, ActionSource.listenerSource(event), i, -1);
 							break;
 						}
 					}
@@ -56,7 +57,7 @@ public class PlaceListener implements Listener {
 			for(int i = 0; i < objs.size(); i++) {
 				// check if Objective is type PLACE
 				if(objs.get(i).getType().equalsIgnoreCase("PLACE")) {
-					if(!profMan.isObjectiveActive(player, i)) {
+					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
 					final PlaceObjective obj = (PlaceObjective) objs.get(i);

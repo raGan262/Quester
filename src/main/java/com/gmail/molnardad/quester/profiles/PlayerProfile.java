@@ -53,6 +53,12 @@ public class PlayerProfile {
 		setChanged();
 	}
 	
+	void removeCompleted(final String questName) {
+		if(completed.remove(questName.toLowerCase()) != null) {
+			setChanged();
+		}
+	}
+	
 	public String[] getCompletedQuests() {
 		return completed.keySet().toArray(new String[0]);
 	}

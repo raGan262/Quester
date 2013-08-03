@@ -11,14 +11,17 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.QuestManager;
 
 public class LocationCommands {
 	
-	QuestManager qMan = null;
+	final QuestManager qMan;
+	final ProfileManager profMan;
 	
 	public LocationCommands(final Quester plugin) {
 		qMan = plugin.getQuestManager();
+		profMan = plugin.getProfileManager();
 	}
 	
 	@QCommandLabels({ "set", "s" })
@@ -34,8 +37,8 @@ public class LocationCommands {
 			if(range < 1) {
 				throw new NumberFormatException();
 			}
-			qMan.setQuestLocation(sender.getName(), getLoc(sender, context.getString(0)), range,
-					context.getSenderLang());
+			qMan.setQuestLocation(profMan.getProfile(sender.getName()),
+					getLoc(sender, context.getString(0)), range, context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_LOC_SET);
 		}
 		catch (final NumberFormatException e) {
@@ -49,7 +52,7 @@ public class LocationCommands {
 	@QCommandLabels({ "remove", "r" })
 	@QCommand(section = "QMod", desc = "removes quest location", max = 0)
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.removeQuestLocation(sender.getName(), context.getSenderLang());
+		qMan.removeQuestLocation(profMan.getProfile(sender.getName()), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_LOC_REMOVED);
 	}
 }

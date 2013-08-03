@@ -12,14 +12,17 @@ import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.QuestManager;
 
 public class ObjectivePrereqCommands {
 	
-	QuestManager qMan = null;
+	final QuestManager qMan;
+	final ProfileManager profMan;
 	
 	public ObjectivePrereqCommands(final Quester plugin) {
 		qMan = plugin.getQuestManager();
+		profMan = plugin.getProfileManager();
 	}
 	
 	@QCommandLabels({ "add", "a" })
@@ -30,8 +33,8 @@ public class ObjectivePrereqCommands {
 			usage = "<objective ID> <prerequisite1>...")
 	public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		final Set<Integer> prereq = parsePrerequisites(context.getArgs(), 1);
-		qMan.addObjectivePrerequisites(sender.getName(), context.getInt(0), prereq,
-				context.getSenderLang());
+		qMan.addObjectivePrerequisites(profMan.getProfile(sender.getName()), context.getInt(0),
+				prereq, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().OBJ_PREREQ_ADD.replaceAll("%id", context.getString(0)));
 	}
@@ -44,8 +47,8 @@ public class ObjectivePrereqCommands {
 			usage = "<objective ID> <prerequisite1>...")
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		final Set<Integer> prereq = parsePrerequisites(context.getArgs(), 1);
-		qMan.removeObjectivePrerequisites(sender.getName(), context.getInt(0), prereq,
-				context.getSenderLang());
+		qMan.removeObjectivePrerequisites(profMan.getProfile(sender.getName()), context.getInt(0),
+				prereq, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().OBJ_PREREQ_REMOVE.replaceAll("%id", context.getString(0)));
 	}

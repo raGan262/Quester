@@ -19,6 +19,7 @@ import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.objectives.CraftObjective;
 import com.gmail.molnardad.quester.objectives.SmeltObjective;
+import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.Quest;
 
@@ -36,7 +37,8 @@ public class CraftSmeltListener implements Listener {
 			return;
 		}
 		final Player player = (Player) event.getWhoClicked();
-		final Quest quest = profMan.getProfile(player.getName()).getQuest();
+		final PlayerProfile prof = profMan.getProfile(player.getName());
+		final Quest quest = prof.getQuest();
 		if(quest != null) {
 			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
 				return;
@@ -46,7 +48,7 @@ public class CraftSmeltListener implements Listener {
 				// check if Objective is type CRAFT
 				if(objs.get(i).getType().equalsIgnoreCase("CRAFT")) {
 					// check if it is already complete
-					if(!profMan.isObjectiveActive(player, i)) {
+					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
 					final CraftObjective obj = (CraftObjective) objs.get(i);
@@ -92,7 +94,8 @@ public class CraftSmeltListener implements Listener {
 			return;
 		}
 		final Player player = (Player) event.getWhoClicked();
-		final Quest quest = profMan.getProfile(player.getName()).getQuest();
+		final PlayerProfile prof = profMan.getProfile(player.getName());
+		final Quest quest = prof.getQuest();
 		if(quest != null) {
 			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
 				return;
@@ -101,7 +104,7 @@ public class CraftSmeltListener implements Listener {
 			for(int i = 0; i < objs.size(); i++) {
 				// check if Objective is type SMELT
 				if(objs.get(i).getType().equalsIgnoreCase("SMELT")) {
-					if(!profMan.isObjectiveActive(player, i)) {
+					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
 					final SmeltObjective obj = (SmeltObjective) objs.get(i);

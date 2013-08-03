@@ -11,15 +11,18 @@ import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.QuestFlag;
 import com.gmail.molnardad.quester.quests.QuestManager;
 
 public class ModifierCommands {
 	
-	QuestManager qMan = null;
+	final QuestManager qMan;
+	final ProfileManager profMan;
 	
 	public ModifierCommands(final Quester plugin) {
 		qMan = plugin.getQuestManager();
+		profMan = plugin.getProfileManager();
 	}
 	
 	private QuestFlag[] getModifiers(final String[] args) {
@@ -45,7 +48,7 @@ public class ModifierCommands {
 					+ ChatColor.WHITE + QuestFlag.stringize(QuestFlag.values()));
 			return;
 		}
-		qMan.addQuestFlag(sender.getName(), modArray, context.getSenderLang());
+		qMan.addQuestFlag(profMan.getProfile(sender.getName()), modArray, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_MOD_ADDED);
 	}
 	
@@ -53,7 +56,8 @@ public class ModifierCommands {
 	@QCommand(section = "QMod", desc = "sets quest modifier", min = 1, usage = "<modifier1> ...")
 	public void set(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		final QuestFlag[] modArray = getModifiers(context.getArgs());
-		qMan.removeQuestFlag(sender.getName(), modArray, context.getSenderLang());
+		qMan.removeQuestFlag(profMan.getProfile(sender.getName()), modArray,
+				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_MOD_REMOVED);
 	}
 }

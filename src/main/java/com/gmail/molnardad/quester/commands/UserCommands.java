@@ -23,9 +23,9 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public class UserCommands {
 	
-	private QuestManager qMan = null;
-	private ProfileManager profMan = null;
-	private Quester plugin = null;
+	final QuestManager qMan;
+	final ProfileManager profMan;
+	final Quester plugin;
 	
 	public UserCommands(final Quester plugin) {
 		qMan = plugin.getQuestManager();
@@ -230,7 +230,7 @@ public class UserCommands {
 			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);
 			return;
 		}
-		if(profMan.switchQuest(sender.getName(), context.getInt(0))) {
+		if(profMan.switchQuest(profMan.getProfile(sender.getName()), context.getInt(0))) {
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_SWITCHED);
 		}
 	}

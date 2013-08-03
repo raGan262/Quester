@@ -17,8 +17,8 @@ import com.gmail.molnardad.quester.utils.Ql;
 
 public class ModificationCommands {
 	
-	private QuestManager qMan = null;
-	private ProfileManager profMan = null;
+	final QuestManager qMan;
+	final ProfileManager profMan;
 	
 	public ModificationCommands(final Quester plugin) {
 		qMan = plugin.getQuestManager();
@@ -50,7 +50,8 @@ public class ModificationCommands {
 			usage = "<quest name>",
 			permission = QConfiguration.PERM_MODIFY)
 	public void create(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.createQuest(sender.getName(), context.getString(0), context.getSenderLang());
+		qMan.createQuest(profMan.getProfile(sender.getName()), context.getString(0),
+				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_CREATED);
 		Ql.verbose(sender.getName() + " created quest '" + context.getString(0) + "'.");
 	}
@@ -65,8 +66,8 @@ public class ModificationCommands {
 			permission = QConfiguration.PERM_MODIFY)
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		final String name =
-				qMan.removeQuest(sender.getName(), context.getInt(0), context.getSenderLang())
-						.getName();
+				qMan.removeQuest(profMan.getProfile(sender.getName()), context.getInt(0),
+						context.getSenderLang()).getName();
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_REMOVED);
 		Ql.verbose(sender.getName() + " removed quest '" + name + "'.");
 	}
@@ -80,7 +81,8 @@ public class ModificationCommands {
 			usage = "<new name>",
 			permission = QConfiguration.PERM_MODIFY)
 	public void name(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.changeQuestName(sender.getName(), context.getString(0), context.getSenderLang());
+		qMan.changeQuestName(profMan.getProfile(sender.getName()), context.getString(0),
+				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().Q_RENAMED.replaceAll("%q", context.getString(0)));
 	}
@@ -98,7 +100,8 @@ public class ModificationCommands {
 			active = qMan.toggleQuest(context.getInt(0), context.getSenderLang());
 		}
 		else {
-			active = qMan.toggleQuest(sender, context.getSenderLang());
+			active =
+					qMan.toggleQuest(profMan.getProfile(sender.getName()), context.getSenderLang());
 		}
 		if(active) {
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_ACTIVATED);
@@ -117,7 +120,7 @@ public class ModificationCommands {
 			usage = "<quest ID>",
 			permission = QConfiguration.PERM_MODIFY)
 	public void select(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		profMan.selectQuest(sender.getName(), qMan.getQuest(context.getInt(0)));
+		profMan.selectQuest(profMan.getProfile(sender.getName()), qMan.getQuest(context.getInt(0)));
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_SELECTED);
 	}
 	

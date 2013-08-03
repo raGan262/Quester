@@ -25,6 +25,7 @@ import com.gmail.molnardad.quester.lang.LanguageManager;
 import com.gmail.molnardad.quester.lang.QuesterLang;
 import com.gmail.molnardad.quester.objectives.NpcKillObjective;
 import com.gmail.molnardad.quester.objectives.NpcObjective;
+import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.Quest;
 import com.gmail.molnardad.quester.quests.QuestManager;
@@ -192,7 +193,8 @@ public class Citizens2Listener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onAnyClick(final NPCRightClickEvent event) {
 		final Player player = event.getClicker();
-		final Quest quest = profMan.getProfile(player.getName()).getQuest();
+		final PlayerProfile prof = profMan.getProfile(player.getName());
+		final Quest quest = prof.getQuest();
 		if(quest != null) {
 			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
 				return;
@@ -200,7 +202,7 @@ public class Citizens2Listener implements Listener {
 			final List<Objective> objs = quest.getObjectives();
 			for(int i = 0; i < objs.size(); i++) {
 				if(objs.get(i).getType().equalsIgnoreCase("NPC")) {
-					if(!profMan.isObjectiveActive(player, i)) {
+					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
 					final NpcObjective obj = (NpcObjective) objs.get(i);
@@ -222,7 +224,8 @@ public class Citizens2Listener implements Listener {
 		if(player == null) {
 			return;
 		}
-		final Quest quest = profMan.getProfile(player.getName()).getQuest();
+		final PlayerProfile prof = profMan.getProfile(player.getName());
+		final Quest quest = prof.getQuest();
 		if(quest != null) {
 			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
 				return;
@@ -230,7 +233,7 @@ public class Citizens2Listener implements Listener {
 			final List<Objective> objs = quest.getObjectives();
 			for(int i = 0; i < objs.size(); i++) {
 				if(objs.get(i).getType().equalsIgnoreCase("NPCKILL")) {
-					if(!profMan.isObjectiveActive(player, i)) {
+					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
 					final NpcKillObjective obj = (NpcKillObjective) objs.get(i);

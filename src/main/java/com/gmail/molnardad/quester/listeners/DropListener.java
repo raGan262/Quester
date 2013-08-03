@@ -18,6 +18,7 @@ import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.objectives.CollectObjective;
 import com.gmail.molnardad.quester.objectives.DropObjective;
+import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.Quest;
 
@@ -36,7 +37,8 @@ public class DropListener implements Listener {
 		boolean collectObj = true;
 		boolean dropObj = true;
 		final Player player = event.getPlayer();
-		final Quest quest = profMan.getProfile(player.getName()).getQuest();
+		final PlayerProfile prof = profMan.getProfile(player.getName());
+		final Quest quest = prof.getQuest();
 		if(quest != null) {
 			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
 				return;
@@ -46,7 +48,7 @@ public class DropListener implements Listener {
 				// check if Objective is type COLLECT
 				if(QConfiguration.colSubOnDrop && collectObj
 						&& objs.get(i).getType().equalsIgnoreCase("COLLECT")) {
-					if(!profMan.isObjectiveActive(player, i)) {
+					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
 					final CollectObjective obj = (CollectObjective) objs.get(i);
@@ -60,7 +62,7 @@ public class DropListener implements Listener {
 					}
 				}
 				else if(dropObj && objs.get(i).getType().equalsIgnoreCase("DROP")) {
-					if(!profMan.isObjectiveActive(player, i)) {
+					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
 					final DropObjective obj = (DropObjective) objs.get(i);

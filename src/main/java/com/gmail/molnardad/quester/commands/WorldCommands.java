@@ -11,14 +11,17 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.QuestManager;
 
 public class WorldCommands {
 	
-	QuestManager qMan = null;
+	final QuestManager qMan;
+	final ProfileManager profMan;
 	
 	public WorldCommands(final Quester plugin) {
 		qMan = plugin.getQuestManager();
+		profMan = plugin.getProfileManager();
 	}
 	
 	@QCommandLabels({ "add", "a" })
@@ -41,7 +44,8 @@ public class WorldCommands {
 		if(world == null) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_WORLD_INVALID);
 		}
-		qMan.addQuestWorld(sender.getName(), world.getName(), context.getSenderLang());
+		qMan.addQuestWorld(profMan.getProfile(sender.getName()), world.getName(),
+				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_WORLD_ADDED);
 	}
 	
@@ -59,7 +63,8 @@ public class WorldCommands {
 								QConfiguration.worldLabelThis));
 			}
 		}
-		if(qMan.removeQuestWorld(sender.getName(), worldName, context.getSenderLang())) {
+		if(qMan.removeQuestWorld(profMan.getProfile(sender.getName()), worldName,
+				context.getSenderLang())) {
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_WORLD_REMOVED);
 		}
 		else {

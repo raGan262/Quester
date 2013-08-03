@@ -12,6 +12,7 @@ import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.lang.LanguageManager;
 import com.gmail.molnardad.quester.objectives.RegionObjective;
+import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.Quest;
 import com.gmail.molnardad.quester.quests.QuestFlag;
@@ -32,7 +33,8 @@ public class PositionListener implements Runnable {
 	@Override
 	public void run() {
 		for(final Player player : Bukkit.getServer().getOnlinePlayers()) {
-			final Quest quest = profMan.getProfile(player.getName()).getQuest();
+			final PlayerProfile prof = profMan.getProfile(player.getName());
+			final Quest quest = prof.getQuest();
 			if(quest != null) {
 				// LOCATION CHECK
 				if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
@@ -41,7 +43,7 @@ public class PositionListener implements Runnable {
 				final List<Objective> objs = quest.getObjectives();
 				for(int i = 0; i < objs.size(); i++) {
 					if(objs.get(i).getType().equalsIgnoreCase("REGION")) {
-						if(!profMan.isObjectiveActive(player, i)) {
+						if(!profMan.isObjectiveActive(prof, i)) {
 							continue;
 						}
 						final RegionObjective obj = (RegionObjective) objs.get(i);

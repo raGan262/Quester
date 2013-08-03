@@ -15,6 +15,7 @@ import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.lang.LanguageManager;
 import com.gmail.molnardad.quester.objectives.DeathObjective;
 import com.gmail.molnardad.quester.objectives.PlayerKillObjective;
+import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.Quest;
 import com.gmail.molnardad.quester.quests.QuestFlag;
@@ -37,7 +38,8 @@ public class DeathListener implements Listener {
 			return;
 		}
 		// DEATH OBJECTIVE
-		final Quest quest = profMan.getProfile(player.getName()).getQuest();
+		final PlayerProfile prof = profMan.getProfile(player.getName());
+		final Quest quest = prof.getQuest();
 		if(quest != null) {
 			// DEATH CHECK
 			if(quest.hasFlag(QuestFlag.DEATHCANCEL)) {
@@ -54,7 +56,7 @@ public class DeathListener implements Listener {
 			final List<Objective> objs = quest.getObjectives();
 			for(int i = 0; i < objs.size(); i++) {
 				if(objs.get(i).getType().equalsIgnoreCase("DEATH")) {
-					if(!profMan.isObjectiveActive(player, i)) {
+					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
 					final DeathObjective obj = (DeathObjective) objs.get(i);
@@ -71,12 +73,13 @@ public class DeathListener implements Listener {
 	public void onKill(final PlayerDeathEvent event) {
 		// PLAYER KILL OBJECTIVE
 		final Player killer = event.getEntity().getKiller();
-		final Player player = event.getEntity();
-		if(!Util.isPlayer(player) || !Util.isPlayer(killer)) {
+		final Player victim = event.getEntity();
+		if(!Util.isPlayer(victim) || !Util.isPlayer(killer)) {
 			return;
 		}
 		if(killer != null) {
-			final Quest quest = profMan.getProfile(killer.getName()).getQuest();
+			final PlayerProfile prof = profMan.getProfile(killer.getName());
+			final Quest quest = prof.getQuest();
 			if(quest != null) {
 				// PLAYERKILL CHECK
 				if(!quest.allowedWorld(killer.getWorld().getName().toLowerCase())) {
@@ -84,12 +87,12 @@ public class DeathListener implements Listener {
 				}
 				final List<Objective> objs = quest.getObjectives();
 				for(int i = 0; i < objs.size(); i++) {
-					if(!profMan.isObjectiveActive(killer, i)) {
+					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
 					if(objs.get(i).getType().equalsIgnoreCase("PLAYERKILL")) {
 						final PlayerKillObjective obj = (PlayerKillObjective) objs.get(i);
-						if(obj.checkPlayer(player)) {
+						if(obj.checkPlayer(victim)) {
 							profMan.incProgress(killer, ActionSource.listenerSource(event), i);
 							return;
 						}

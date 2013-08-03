@@ -15,16 +15,19 @@ import com.gmail.molnardad.quester.exceptions.ConditionException;
 import com.gmail.molnardad.quester.exceptions.ElementException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.lang.QuesterLang;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.QuestManager;
 
 public class ConditionCommands {
 	
-	QuestManager qMan = null;
-	ElementManager eMan = null;
+	final QuestManager qMan;
+	final ElementManager eMan;
+	final ProfileManager profMan;
 	
 	public ConditionCommands(final Quester plugin) {
 		qMan = plugin.getQuestManager();
 		eMan = plugin.getElementManager();
+		profMan = plugin.getProfileManager();
 	}
 	
 	private Condition getCondition(final String type, final QCommandContext subContext, final QuesterLang lang) throws ConditionException, QCommandException, QuesterException {
@@ -59,7 +62,7 @@ public class ConditionCommands {
 		catch (final ConditionException e) {
 			return;
 		}
-		qMan.addQuestCondition(sender.getName(), condition, context.getSenderLang());
+		qMan.addQuestCondition(profMan.getProfile(sender.getName()), condition, lang);
 		sender.sendMessage(ChatColor.GREEN + lang.CON_ADD.replaceAll("%type", type.toUpperCase()));
 	}
 	
@@ -80,7 +83,7 @@ public class ConditionCommands {
 		catch (final ConditionException e) {
 			return;
 		}
-		qMan.setQuestCondition(sender.getName(), conditionID, condition, context.getSenderLang());
+		qMan.setQuestCondition(profMan.getProfile(sender.getName()), conditionID, condition, lang);
 		sender.sendMessage(ChatColor.GREEN + lang.CON_SET.replaceAll("%type", type.toUpperCase()));
 	}
 	
@@ -92,7 +95,8 @@ public class ConditionCommands {
 			max = 1,
 			usage = "<condition ID>")
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.removeQuestCondition(sender.getName(), context.getInt(0), context.getSenderLang());
+		qMan.removeQuestCondition(profMan.getProfile(sender.getName()), context.getInt(0),
+				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().CON_REMOVE.replaceAll("%id", context.getString(0)));
 	}

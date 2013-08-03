@@ -15,16 +15,19 @@ import com.gmail.molnardad.quester.exceptions.ElementException;
 import com.gmail.molnardad.quester.exceptions.ObjectiveException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.lang.QuesterLang;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.QuestManager;
 
 public class ObjectiveCommands {
 	
-	QuestManager qMan = null;
-	ElementManager eMan = null;
+	final QuestManager qMan;
+	final ElementManager eMan;
+	final ProfileManager profMan;
 	
 	public ObjectiveCommands(final Quester plugin) {
 		qMan = plugin.getQuestManager();
 		eMan = plugin.getElementManager();
+		profMan = plugin.getProfileManager();
 	}
 	
 	private Objective getObjective(final String type, final QCommandContext subContext, final QuesterLang lang) throws QCommandException, ObjectiveException, QuesterException {
@@ -61,7 +64,7 @@ public class ObjectiveCommands {
 		catch (final ObjectiveException e) {
 			return;
 		}
-		qMan.addQuestObjective(sender.getName(), obj, context.getSenderLang());
+		qMan.addQuestObjective(profMan.getProfile(sender.getName()), obj, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + lang.OBJ_ADD.replaceAll("%type", type.toUpperCase()));
 	}
 	
@@ -82,7 +85,8 @@ public class ObjectiveCommands {
 		catch (final ObjectiveException e) {
 			return;
 		}
-		qMan.setQuestObjective(sender.getName(), objectiveID, obj, context.getSenderLang());
+		qMan.setQuestObjective(profMan.getProfile(sender.getName()), objectiveID, obj,
+				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + lang.OBJ_SET.replaceAll("%type", type.toUpperCase()));
 	}
 	
@@ -94,7 +98,8 @@ public class ObjectiveCommands {
 			max = 1,
 			usage = "<objective ID>")
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.removeQuestObjective(sender.getName(), context.getInt(0), context.getSenderLang());
+		qMan.removeQuestObjective(profMan.getProfile(sender.getName()), context.getInt(0),
+				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().OBJ_REMOVE.replaceAll("%id", context.getString(0)));
 	}
@@ -114,8 +119,8 @@ public class ObjectiveCommands {
 			desc = "swaps two objectives",
 			usage = "<obj ID 1> <obj ID 2>")
 	public void swap(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.swapQuestObjectives(sender.getName(), context.getInt(0), context.getInt(1),
-				context.getSenderLang());
+		qMan.swapQuestObjectives(profMan.getProfile(sender.getName()), context.getInt(0),
+				context.getInt(1), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().OBJ_SWAP.replaceAll("%id1", context.getString(0))
 						.replaceAll("%id2", context.getString(1)));
@@ -129,8 +134,8 @@ public class ObjectiveCommands {
 			desc = "moves an objective",
 			usage = "<ID from> <ID to>")
 	public void move(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.moveQuestObjective(sender.getName(), context.getInt(0), context.getInt(1),
-				context.getSenderLang());
+		qMan.moveQuestObjective(profMan.getProfile(sender.getName()), context.getInt(0),
+				context.getInt(1), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().OBJ_MOVE.replaceAll("%id1", context.getString(0))
 						.replaceAll("%id2", context.getString(1)));

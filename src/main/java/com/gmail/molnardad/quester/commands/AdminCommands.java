@@ -23,11 +23,11 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public class AdminCommands {
 	
-	private Quester plugin = null;
-	private ProfileManager profMan = null;
-	private QuestManager qMan = null;
-	private QuestHolderManager holMan = null;
-	private LanguageManager langMan = null;
+	final Quester plugin;
+	final ProfileManager profMan;
+	final QuestManager qMan;
+	final QuestHolderManager holMan;
+	final LanguageManager langMan;
 	
 	public AdminCommands(final Quester plugin) {
 		this.plugin = plugin;
@@ -181,8 +181,11 @@ public class AdminCommands {
 				+ plugin.getDescription().getAuthors().get(0));
 	}
 	
-	@QCommandLabels({ "player" })
-	@QCommand(section = "Admin", desc = "player profile modification commands")
+	@QCommandLabels({ "player", "pl" })
+	@QCommand(
+			section = "Admin",
+			desc = "player profile modification commands",
+			permission = QConfiguration.PERM_ADMIN)
 	@QNestedCommand(PlayerCommands.class)
 	public void player(final QCommandContext context, final CommandSender sender) {
 	}

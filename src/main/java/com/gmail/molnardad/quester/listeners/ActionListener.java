@@ -14,6 +14,7 @@ import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.objectives.ActionObjective;
+import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.Quest;
 
@@ -28,7 +29,8 @@ public class ActionListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onAction(final PlayerInteractEvent event) {
 		final Player player = event.getPlayer();
-		final Quest quest = profMan.getProfile(player.getName()).getQuest();
+		final PlayerProfile prof = profMan.getProfile(player.getName());
+		final Quest quest = prof.getQuest();
 		if(quest != null) {
 			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
 				return;
@@ -38,7 +40,7 @@ public class ActionListener implements Listener {
 			final ItemStack item = player.getItemInHand();
 			for(int i = 0; i < objs.size(); i++) {
 				if(objs.get(i).getType().equalsIgnoreCase("ACTION")) {
-					if(!profMan.isObjectiveActive(player, i)) {
+					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
 					final ActionObjective obj = (ActionObjective) objs.get(i);

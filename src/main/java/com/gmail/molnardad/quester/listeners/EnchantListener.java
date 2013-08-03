@@ -15,6 +15,7 @@ import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.objectives.EnchantObjective;
+import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.Quest;
 
@@ -29,7 +30,8 @@ public class EnchantListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onEnchant(final EnchantItemEvent event) {
 		final Player player = event.getEnchanter();
-		final Quest quest = profMan.getProfile(player.getName()).getQuest();
+		final PlayerProfile prof = profMan.getProfile(player.getName());
+		final Quest quest = prof.getQuest();
 		if(quest != null) {
 			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
 				return;
@@ -38,7 +40,7 @@ public class EnchantListener implements Listener {
 			for(int i = 0; i < objs.size(); i++) {
 				// check if Objective is type CRAFT
 				if(objs.get(i).getType().equalsIgnoreCase("ENCHANT")) {
-					if(!profMan.isObjectiveActive(player, i)) {
+					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
 					final EnchantObjective obj = (EnchantObjective) objs.get(i);

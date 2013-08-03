@@ -8,14 +8,17 @@ import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.QuestManager;
 
 public class DescCommands {
 	
-	QuestManager qMan = null;
+	final QuestManager qMan;
+	final ProfileManager profMan;
 	
 	public DescCommands(final Quester plugin) {
 		qMan = plugin.getQuestManager();
+		profMan = plugin.getProfileManager();
 	}
 	
 	@QCommandLabels({ "set", "s" })
@@ -30,7 +33,8 @@ public class DescCommands {
 		if(context.length() > 0) {
 			desc = context.getString(0);
 		}
-		qMan.setQuestDescription(sender.getName(), desc, context.getSenderLang());
+		qMan.setQuestDescription(profMan.getProfile(sender.getName()), desc,
+				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_DESC_SET);
 	}
 	
@@ -42,7 +46,8 @@ public class DescCommands {
 			max = 1,
 			usage = "<description to add>")
 	public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.addQuestDescription(sender.getName(), context.getString(0), context.getSenderLang());
+		qMan.addQuestDescription(profMan.getProfile(sender.getName()), context.getString(0),
+				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_DESC_SET);
 	}
 }
