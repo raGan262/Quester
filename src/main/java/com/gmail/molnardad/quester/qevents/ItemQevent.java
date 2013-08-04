@@ -13,7 +13,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -30,15 +29,22 @@ import com.gmail.molnardad.quester.utils.Util;
 @QElement("ITEM")
 public final class ItemQevent extends Qevent {
 	
-	public final Material material;
-	public final short data;
+	private final Material material;
+	private final short data;
 	private final int amount;
 	private final Map<Integer, Integer> enchants;
 	private final boolean inverted;
 	private final boolean quest;
+	private final boolean armor;
 	
-	public ItemQevent(final Material mat, final int dat, final int amt, final Map<Integer, Integer> enchs, final boolean invert, final boolean quest) {
+	public ItemQevent(final Material mat, final int dat, final int amt, final Map<Integer, Integer> enchs, final boolean invert, final boolean quest, final boolean armor) {
 		inverted = invert;
+		if(inverted) {
+			this.armor = armor;
+		}
+		else {
+			this.armor = false;
+		}
 		material = mat;
 		this.quest = quest;
 		if(!invert && dat < 0) {
@@ -80,28 +86,18 @@ public final class ItemQevent extends Qevent {
 	
 	@Override
 	protected void run(final Player player, final Quester plugin) {
-		if(inverted) {
+		if(inverted) { // remove if inverted
 			int toRemove = amount;
-			final Inventory inv = player.getInventory();
-			final ItemStack[] contents = inv.getContents();
-			for(int i = 0; i < contents.length; i++) {
-				final ItemStack is = contents[i];
-				if(is != null && is.getTypeId() == material.getId()
-						&& Util.isQuestItem(is) == quest
-						&& (data < 0 || is.getDurability() == data) && checkEnchants(is)) {
-					if(is.getAmount() <= toRemove) {
-						toRemove -= is.getAmount();
-						contents[i] = null;
-						if(toRemove == 0) {
-							break;
-						}
-					}
-					else {
-						is.setAmount(is.getAmount() - toRemove);
-						break;
-					}
-				}
+			final PlayerInventory inv = player.getInventory();
+			// ARMOR
+			if(armor) {
+				final ItemStack[] armor = inv.getArmorContents();
+				toRemove = removeItems(armor, toRemove);
+				inv.setArmorContents(armor);
 			}
+			// INVENTORY
+			final ItemStack[] contents = inv.getContents();
+			toRemove = removeItems(contents, toRemove);
 			inv.setContents(contents);
 		}
 		else {
@@ -156,6 +152,29 @@ public final class ItemQevent extends Qevent {
 		}
 	}
 	
+	private int removeItems(final ItemStack[] contents, final int amount) {
+		int toRemove = amount;
+		for(int i = 0; i < contents.length; i++) {
+			final ItemStack is = contents[i];
+			if(is != null && is.getTypeId() == material.getId() && Util.isQuestItem(is) == quest
+					&& (data < 0 || is.getDurability() == data) && checkEnchants(is)) {
+				if(is.getAmount() <= toRemove) {
+					toRemove -= is.getAmount();
+					contents[i] = null;
+					if(toRemove == 0) {
+						break;
+					}
+				}
+				else {
+					is.setAmount(is.getAmount() - toRemove);
+					toRemove = 0;
+					break;
+				}
+			}
+		}
+		return toRemove;
+	}
+	
 	private boolean checkEnchants(final ItemStack is) {
 		if(enchants.isEmpty()) {
 			return true;
@@ -190,7 +209,8 @@ public final class ItemQevent extends Qevent {
 			enchs = parseEnchants(context.getString(2));
 		}
 		
-		return new ItemQevent(mat, dat, amt, enchs, context.hasFlag('i'), context.hasFlag('q'));
+		return new ItemQevent(mat, dat, amt, enchs, context.hasFlag('i'), context.hasFlag('q'),
+				context.hasFlag('a'));
 	}
 	
 	@Override
@@ -204,6 +224,9 @@ public final class ItemQevent extends Qevent {
 		}
 		if(inverted) {
 			key.setBoolean("inverted", true);
+			if(armor) {
+				key.setBoolean("armor", armor);
+			}
 		}
 		if(quest) {
 			key.setBoolean("quest", true);
@@ -234,6 +257,6 @@ public final class ItemQevent extends Qevent {
 		catch (final IllegalArgumentException ignore) {}
 		
 		return new ItemQevent(mat, dat, amt, enchs, key.getBoolean("inverted", false),
-				key.getBoolean("quest", false));
+				key.getBoolean("quest", false), key.getBoolean("armor", false));
 	}
 }
