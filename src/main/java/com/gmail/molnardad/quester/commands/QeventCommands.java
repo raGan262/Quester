@@ -2,7 +2,9 @@ package com.gmail.molnardad.quester.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
@@ -23,11 +25,13 @@ public class QeventCommands {
 	final QuestManager qMan;
 	final ElementManager eMan;
 	final ProfileManager profMan;
+	final Quester plugin;
 	
 	public QeventCommands(final Quester plugin) {
 		qMan = plugin.getQuestManager();
 		eMan = plugin.getElementManager();
 		profMan = plugin.getProfileManager();
+		this.plugin = plugin;
 	}
 	
 	private Qevent getQevent(final String type, final String occassion, final QCommandContext subContext, final QuesterLang lang) throws QeventException, QCommandException, QuesterException {
@@ -52,6 +56,29 @@ public class QeventCommands {
 			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
 		}
 		return evt;
+	}
+	
+	@QCommandLabels({ "run" })
+	@QCommand(
+			section = "QMod",
+			desc = "runs an event",
+			min = 1,
+			usage = "<event type> [args]",
+			permission = QConfiguration.PERM_ADMIN)
+	public void run(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+		if(!(sender instanceof Player)) {
+			throw new QCommandException("This command requires player context.");
+		}
+		final QuesterLang lang = context.getSenderLang();
+		final String type = context.getString(0);
+		Qevent qevent;
+		try {
+			qevent = getQevent(type, "0", context.getSubContext(1), lang);
+		}
+		catch (final QeventException e) {
+			return;
+		}
+		qevent.execute(context.getPlayer(), plugin);
 	}
 	
 	@QCommandLabels({ "add", "a" })
