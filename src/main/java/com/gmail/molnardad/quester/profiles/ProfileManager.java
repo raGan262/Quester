@@ -585,10 +585,10 @@ public class ProfileManager {
 		if(rankKey != null) {
 			for(final StorageKey subKey : rankKey.getSubKeys()) {
 				rankMap.put(subKey.getInt(""), subKey.getName().replace('-', ' '));
-				sortedRanks.add(subKey.getInt(""));
+				sortedList.add(subKey.getInt(""));
 			}
 		}
-		if(sortedRanks.size() == 0) {
+		if(sortedList.size() == 0) {
 			rankKey.setInt("Default-Rank", 0);
 			rankMap.put(0, "Default-Rank");
 			sortedList.add(0);
