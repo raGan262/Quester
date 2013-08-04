@@ -121,19 +121,19 @@ public class AdminCommands {
 		que = context.hasFlag('q');
 		lang = context.hasFlag('l');
 		if(con || que || lang) {
-			if(que) {
-				reloadQuests();
-			}
 			if(con) {
 				reloadData();
+			}
+			if(que) {
+				reloadQuests();
 			}
 			if(lang) {
 				langMan.reloadLangs();
 			}
 		}
 		else {
-			reloadQuests();
 			reloadData();
+			reloadQuests();
 			langMan.reloadLangs();
 		}
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().MSG_DATA_RELOADED);
@@ -143,6 +143,8 @@ public class AdminCommands {
 	private void reloadData() {
 		try {
 			QConfiguration.reloadData();
+			profMan.loadRanks();
+			profMan.updateRanks();
 		}
 		catch (final InstanceNotFoundException e) {
 			Ql.info("Failed to reload config: No instance of QConfiguration.");

@@ -84,7 +84,7 @@ public class ProfileManager {
 		return prof;
 	}
 	
-	private void updateRank(final PlayerProfile prof) {
+	public void updateRank(final PlayerProfile prof) {
 		final int pts = prof.getPoints();
 		String lastRank = "";
 		for(final int i : sortedRanks) {
@@ -96,6 +96,12 @@ public class ProfileManager {
 			}
 		}
 		prof.setRank(lastRank);
+	}
+	
+	public void updateRanks() {
+		for(final PlayerProfile prof : profiles.values()) {
+			updateRank(prof);
+		}
 	}
 	
 	public PlayerProfile[] getProfiles() {
