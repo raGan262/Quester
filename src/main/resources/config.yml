@@ -1,4 +1,5 @@
 general:
+  use-metrics: true
   verbose-logging: true
   save-interval: 15
   debug-info: false

@@ -16,6 +16,7 @@ public class QConfiguration {
 	public static int saveInterval = 15;
 	public static boolean debug = false;
 	public static boolean useRank = true;
+	public static boolean useMetrics = true;
 	public static StorageType profileStorageType = StorageType.CONFIG;
 	
 	// MYSQL
@@ -144,6 +145,11 @@ public class QConfiguration {
 		}
 		QConfiguration.profileStorageType = type;
 		mainKey.setString(path, profileStorageType.name());
+		
+		// USE RANK
+		path = "general.use-metrics";
+		QConfiguration.useRank = mainKey.getBoolean(path);
+		mainKey.setBoolean(path, QConfiguration.useMetrics);
 		
 		// MYSQL
 		path = "mysql.host";

@@ -100,12 +100,14 @@ public class Quester extends JavaPlugin {
 		}
 		holders.loadHolders();
 		
-		try {
-			final Metrics metrics = new Metrics(this);
-			metrics.start();
-		}
-		catch (final IOException e) {
-			// Failed to submit the statistics :-(
+		if(QConfiguration.useMetrics) {
+			try {
+				final Metrics metrics = new Metrics(this);
+				metrics.start();
+			}
+			catch (final IOException e) {
+				// Failed to submit the statistics :-(
+			}
 		}
 		
 		if(setupEconomy()) {
