@@ -2,6 +2,7 @@ package com.gmail.molnardad.quester.commands;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,12 +16,15 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.commandbase.QNestedCommand;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
+import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.exceptions.ObjectiveException;
 import com.gmail.molnardad.quester.exceptions.QuestException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.lang.LanguageManager;
 import com.gmail.molnardad.quester.lang.QuesterLang;
 import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
+import com.gmail.molnardad.quester.profiles.QuestProgress;
 import com.gmail.molnardad.quester.quests.Quest;
 import com.gmail.molnardad.quester.quests.QuestManager;
 import com.gmail.molnardad.quester.utils.Util;
@@ -286,9 +290,86 @@ public class PlayerCommands {
 	public static class ProgressCommands {
 		
 		final ProfileManager profMan;
+		final QuestManager qMan;
 		
 		public ProgressCommands(final Quester plugin) {
 			profMan = plugin.getProfileManager();
+			qMan = plugin.getQuestManager();
+		}
+		
+		@QCommandLabels({ "get", "g" })
+		@QCommand(
+				section = "Admin",
+				desc = "gets quest progress",
+				min = 1,
+				max = 2,
+				usage = "<player> [index]")
+		public void get(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+			final PlayerProfile prof =
+					getProfileSafe(profMan, context.getString(0), context.getSenderLang());
+			final QuesterLang lang = context.getSenderLang();
+			final int index;
+			if(context.length() > 1) {
+				index = context.getInt(1);
+			}
+			else {
+				index = prof.getQuestProgressIndex();
+			}
+			final QuestProgress progress = prof.getProgress(index);
+			
+			if(progress == null) {
+				throw new QuestException(lang.ERROR_Q_NOT_ASSIGNED);
+			}
+			
+			final List<Objective> objectives = progress.getQuest().getObjectives();
+			final int[] prog = progress.getProgress();
+			
+			sender.sendMessage(ChatColor.BLUE
+					+ lang.PROF_PROGRESS.replaceAll("%p",
+							ChatColor.GOLD + prof.getName() + ChatColor.BLUE).replaceAll("%q",
+							ChatColor.GOLD + progress.getQuest().getName() + ChatColor.BLUE));
+			
+			for(int i = 0; i < objectives.size(); i++) {
+				final Objective o = objectives.get(i);
+				sender.sendMessage(String.format("[%d] %s: %d/%d", i, o.getType(), prog[i],
+						o.getTargetAmount()));
+			}
+		}
+		
+		@QCommandLabels({ "set", "s" })
+		@QCommand(
+				section = "Admin",
+				desc = "sets quest progress",
+				min = 3,
+				max = 4,
+				usage = "<player> [index] <obj id> <progress>")
+		public void set(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+			final PlayerProfile prof =
+					getProfileSafe(profMan, context.getString(0), context.getSenderLang());
+			final QuesterLang lang = context.getSenderLang();
+			final int offset;
+			final int index;
+			if(context.length() == 3) {
+				index = prof.getQuestProgressIndex();
+				offset = 0;
+			}
+			else {
+				index = context.getInt(1);
+				offset = 1;
+			}
+			
+			final QuestProgress progress = prof.getProgress(index);
+			if(progress == null) {
+				throw new QuestException(lang.ERROR_Q_NOT_ASSIGNED);
+			}
+			
+			final int objectiveId = context.getInt(1 + offset);
+			if(progress.getObjectiveStatus(objectiveId) == null) {
+				throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
+			}
+			
+			profMan.setProgress(prof, index, objectiveId, context.getInt(2 + offset));
+			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().PROF_PROGRESS_SET);
 		}
 	}
 }

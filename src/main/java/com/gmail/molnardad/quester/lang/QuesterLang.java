@@ -62,6 +62,8 @@ public class QuesterLang {
 	public String PROF_QUEST_CANCELLED = "Quest cancelled.";
 	public String PROF_REPUTATION_SET = "Reputation points set.";
 	public String PROF_REPUTATION_ADDED = "Reputation points added.";
+	public String PROF_PROGRESS = "%p's progress with %q";
+	public String PROF_PROGRESS_SET = "Progress set.";
 	
 	// QUEST STRINGS
 	

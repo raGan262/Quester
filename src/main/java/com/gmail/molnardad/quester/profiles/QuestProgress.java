@@ -79,7 +79,7 @@ public class QuestProgress {
 		}
 	}
 	
-	public boolean setProgress(final int objectiveID, final int newValue) {
+	boolean setProgress(final int objectiveID, final int newValue) {
 		if(objectiveID >= 0 && objectiveID < progress.length) {
 			progress[objectiveID] = newValue;
 			// if objective status went from not complete to complete or vice versa
@@ -93,7 +93,7 @@ public class QuestProgress {
 	}
 	
 	public int[] getProgress() {
-		return progress;
+		return Arrays.copyOf(progress, progress.length);
 	}
 	
 	public int getCurrentObjectiveID() {
