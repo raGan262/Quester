@@ -44,13 +44,6 @@ public class PlayerCommands {
 		return pMan.getProfile(playerName);
 	}
 	
-	//	TODO: PLAYER COMANDS
-	//	==============
-	//	COMPLETED LIST/FIND/ADD/REMOVE - DONE
-	//	QUEST START/CANCEL
-	//	REPUTATION SET/ADD
-	//	PROGRESS GET/SET
-	
 	@QCommandLabels({ "completed", "compl" })
 	@QCommand(section = "Admin", desc = "modification of completed quests")
 	@QNestedCommand(PlayerCommands.CompletedCommands.class)

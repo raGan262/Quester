@@ -61,7 +61,7 @@ public class QeventCommands {
 	
 	@QCommandLabels({ "run" })
 	@QCommand(
-			section = "QMod",
+			section = "Admin",
 			desc = "runs an event",
 			min = 1,
 			usage = "<event type> [args]",
@@ -84,7 +84,7 @@ public class QeventCommands {
 	
 	@QCommandLabels({ "runas" })
 	@QCommand(
-			section = "QMod",
+			section = "Admin",
 			desc = "runs an event as player",
 			min = 3,
 			max = 3,
