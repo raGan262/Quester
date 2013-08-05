@@ -194,7 +194,9 @@ public class ProfileManager {
 	}
 	
 	public int addPoints(final PlayerProfile profile, final int amount) {
-		return profile.addPoints(amount);
+		final int result = profile.addPoints(amount);
+		updateRank(profile);
+		return result;
 	}
 	
 	public boolean areObjectivesCompleted(final PlayerProfile profile) {
