@@ -3,18 +3,26 @@ package com.gmail.molnardad.quester.commands;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.ActionSource;
 import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.commandbase.QNestedCommand;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
+import com.gmail.molnardad.quester.exceptions.QuestException;
+import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.lang.LanguageManager;
 import com.gmail.molnardad.quester.lang.QuesterLang;
 import com.gmail.molnardad.quester.profiles.PlayerProfile;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
+import com.gmail.molnardad.quester.quests.Quest;
+import com.gmail.molnardad.quester.quests.QuestManager;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class PlayerCommands {
@@ -23,6 +31,13 @@ public class PlayerCommands {
 	
 	public PlayerCommands(final Quester plugin) {
 		profMan = plugin.getProfileManager();
+	}
+	
+	private static PlayerProfile getProfileSafe(final ProfileManager pMan, final String playerName, final QuesterLang lang) throws QCommandException {
+		if(!pMan.hasProfile(playerName)) {
+			throw new QCommandException(lang.INFO_PROFILE_NOT_EXIST.replaceAll("%p", playerName));
+		}
+		return pMan.getProfile(playerName);
 	}
 	
 	//	TODO: PLAYER COMANDS
@@ -64,20 +79,12 @@ public class PlayerCommands {
 			profMan = plugin.getProfileManager();
 		}
 		
-		private PlayerProfile getProfileSafe(final String playerName, final QuesterLang lang) throws QCommandException {
-			if(!profMan.hasProfile(playerName)) {
-				throw new QCommandException(
-						lang.INFO_PROFILE_NOT_EXIST.replaceAll("%p", playerName));
-			}
-			return profMan.getProfile(playerName);
-		}
-		
 		@QCommandLabels({ "list", "l" })
 		@QCommand(section = "Admin", desc = "lists completed quests", max = 1, usage = "[player]")
 		public void list(final QCommandContext context, final CommandSender sender) throws QCommandException {
 			final PlayerProfile prof;
 			if(context.length() > 0) {
-				prof = getProfileSafe(context.getString(0), context.getSenderLang());
+				prof = getProfileSafe(profMan, context.getString(0), context.getSenderLang());
 			}
 			else {
 				prof = profMan.getProfile(sender.getName());
@@ -100,7 +107,7 @@ public class PlayerCommands {
 			final String pattern;
 			if(context.length() > 1) {
 				pattern = context.getString(1).toLowerCase();
-				prof = getProfileSafe(context.getString(0), context.getSenderLang());
+				prof = getProfileSafe(profMan, context.getString(0), context.getSenderLang());
 			}
 			else {
 				pattern = context.getString(0).toLowerCase();
@@ -129,7 +136,7 @@ public class PlayerCommands {
 				usage = "<player> <quest> [time]")
 		public void add(final QCommandContext context, final CommandSender sender) throws QCommandException {
 			final PlayerProfile prof =
-					getProfileSafe(context.getString(0), context.getSenderLang());
+					getProfileSafe(profMan, context.getString(0), context.getSenderLang());
 			long time = System.currentTimeMillis();
 			if(context.length() > 2) {
 				final int totake = context.getInt(2) * 1000;
@@ -150,7 +157,7 @@ public class PlayerCommands {
 				usage = "<player> <quest>")
 		public void remove(final QCommandContext context, final CommandSender sender) throws QCommandException {
 			final PlayerProfile prof =
-					getProfileSafe(context.getString(0), context.getSenderLang());
+					getProfileSafe(profMan, context.getString(0), context.getSenderLang());
 			profMan.removeCompletedQuest(prof, context.getString(1));
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().PROF_COMP_REMOVED);
 		}
@@ -159,9 +166,81 @@ public class PlayerCommands {
 	public static class QuestCommands {
 		
 		final ProfileManager profMan;
+		final LanguageManager langMan;
+		final QuestManager qMan;
 		
 		public QuestCommands(final Quester plugin) {
 			profMan = plugin.getProfileManager();
+			langMan = plugin.getLanguageManager();
+			qMan = plugin.getQuestManager();
+		}
+		
+		@QCommandLabels({ "start" })
+		@QCommand(
+				section = "Admin",
+				desc = "forces quest start",
+				min = 2,
+				max = 2,
+				usage = "<player> <quest> (-e)")
+		public void start(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+			final Player player = Bukkit.getPlayerExact(context.getString(0));
+			final QuesterLang lang = context.getSenderLang();
+			if(context.hasFlag('e')) {
+				final PlayerProfile prof = getProfileSafe(profMan, context.getString(0), lang);
+				final Quest quest = qMan.getQuest(context.getString(1));
+				if(quest == null) {
+					throw new QuestException(lang.ERROR_Q_NOT_EXIST);
+				}
+				profMan.assignQuest(prof, quest);
+				if(player != null) {
+					player.sendMessage(Quester.LABEL
+							+ langMan.getPlayerLang(player.getName()).MSG_Q_STARTED.replaceAll(
+									"%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
+				}
+			}
+			else {
+				if(player == null) {
+					throw new QCommandException(lang.ERROR_CMD_PLAYER_OFFLINE.replaceAll("%p",
+							context.getString(0)));
+				}
+				profMan.startQuest(player, context.getString(1), ActionSource.adminSource(sender),
+						lang);
+			}
+			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().PROF_QUEST_STARTED);
+		}
+		
+		@QCommandLabels({ "cancel" })
+		@QCommand(
+				section = "Admin",
+				desc = "forces quest cancel",
+				min = 2,
+				max = 2,
+				usage = "<player> <id> (-e)")
+		public void cancel(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+			final QuesterLang lang = context.getSenderLang();
+			final Player player = Bukkit.getPlayerExact(context.getString(0));
+			final int index = context.getInt(1);
+			if(context.hasFlag('e')) {
+				if(index < 0) {
+					throw new QuestException(lang.ERROR_Q_NOT_ASSIGNED);
+				}
+				final PlayerProfile prof = getProfileSafe(profMan, context.getString(0), lang);
+				final String quest = prof.getQuest(index).getName();
+				profMan.unassignQuest(prof, index);
+				if(player != null) {
+					player.sendMessage(Quester.LABEL
+							+ langMan.getPlayerLang(player.getName()).MSG_Q_CANCELLED.replaceAll(
+									"%q", ChatColor.GOLD + quest + ChatColor.BLUE));
+				}
+			}
+			else {
+				if(player == null) {
+					throw new QCommandException(lang.ERROR_CMD_PLAYER_OFFLINE.replaceAll("%p",
+							context.getString(0)));
+				}
+				profMan.cancelQuest(player, index, ActionSource.adminSource(sender), lang);
+			}
+			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().PROF_QUEST_CANCELLED);
 		}
 	}
 	

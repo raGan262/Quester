@@ -31,6 +31,7 @@ import com.gmail.molnardad.quester.events.ObjectiveCompleteEvent;
 import com.gmail.molnardad.quester.events.QuestCancelEvent;
 import com.gmail.molnardad.quester.events.QuestCompleteEvent;
 import com.gmail.molnardad.quester.events.QuestStartEvent;
+import com.gmail.molnardad.quester.exceptions.ConditionException;
 import com.gmail.molnardad.quester.exceptions.CustomException;
 import com.gmail.molnardad.quester.exceptions.ObjectiveException;
 import com.gmail.molnardad.quester.exceptions.QuestException;
@@ -242,11 +243,11 @@ public class ProfileManager {
 		if(as.is(ActionSource.COMMAND) && quest.hasFlag(QuestFlag.HIDDEN)) {
 			throw new QuestException(lang.ERROR_Q_NOT_CMD);
 		}
-		if(!Util.permCheck(player, QConfiguration.PERM_ADMIN, false, null)) {
+		if(!as.is(ActionSource.ADMIN)
+				&& !Util.permCheck(player, QConfiguration.PERM_ADMIN, false, null)) {
 			for(final Condition con : quest.getConditions()) {
 				if(!con.isMet(player, plugin)) {
-					player.sendMessage(ChatColor.RED + con.inShow());
-					return;
+					throw new ConditionException(con.inShow());
 				}
 			}
 		}
@@ -262,8 +263,8 @@ public class ProfileManager {
 		assignQuest(prof, quest);
 		if(QConfiguration.progMsgStart) {
 			player.sendMessage(Quester.LABEL
-					+ lang.MSG_Q_STARTED.replaceAll("%q", ChatColor.GOLD + quest.getName()
-							+ ChatColor.BLUE));
+					+ langMan.getPlayerLang(playerName).MSG_Q_STARTED.replaceAll("%q",
+							ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 		}
 		final String description = quest.getDescription(playerName);
 		if(!description.isEmpty() && !quest.hasFlag(QuestFlag.NODESC)) {
@@ -328,10 +329,11 @@ public class ProfileManager {
 		unassignQuest(prof, index);
 		if(QConfiguration.progMsgCancel) {
 			player.sendMessage(Quester.LABEL
-					+ lang.MSG_Q_CANCELLED.replaceAll("%q", ChatColor.GOLD + quest.getName()
-							+ ChatColor.BLUE));
+					+ langMan.getPlayerLang(player.getName()).MSG_Q_CANCELLED.replaceAll("%q",
+							ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 		}
-		Ql.verbose(player.getName() + " cancelled quest '" + quest.getName() + "'.");
+		Ql.verbose(player.getName() + "'s quest '" + quest.getName() + "' was cancelled. "
+				+ "(ActionSource: " + as.getType() + ")");
 		for(final Qevent qv : quest.getQevents()) {
 			if(qv.getOccasion() == -2) {
 				qv.execute(player, plugin);
@@ -402,8 +404,8 @@ public class ProfileManager {
 		addCompletedQuest(prof, quest.getName());
 		if(QConfiguration.progMsgDone) {
 			player.sendMessage(Quester.LABEL
-					+ lang.MSG_Q_COMPLETED.replaceAll("%q", ChatColor.GOLD + quest.getName()
-							+ ChatColor.BLUE));
+					+ langMan.getPlayerLang(player.getName()).MSG_Q_COMPLETED.replaceAll("%q",
+							ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 		}
 		Ql.verbose(player.getName() + " completed quest '" + quest.getName() + "'.");
 		/* QuestCompleteEvent */
