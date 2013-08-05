@@ -251,6 +251,36 @@ public class PlayerCommands {
 		public ReputationCommands(final Quester plugin) {
 			profMan = plugin.getProfileManager();
 		}
+		
+		@QCommandLabels({ "set", "s" })
+		@QCommand(
+				section = "Admin",
+				desc = "sets quest points",
+				min = 2,
+				max = 2,
+				usage = "<player> <points>")
+		public void set(final QCommandContext context, final CommandSender sender) throws QCommandException {
+			final PlayerProfile prof =
+					getProfileSafe(profMan, context.getString(0), context.getSenderLang());
+			final int points = context.getInt(1);
+			profMan.addPoints(prof, points - prof.getPoints());
+			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().PROF_REPUTATION_SET);
+		}
+		
+		@QCommandLabels({ "add", "a" })
+		@QCommand(
+				section = "Admin",
+				desc = "adds quest points",
+				min = 2,
+				max = 2,
+				usage = "<player> <points>")
+		public void add(final QCommandContext context, final CommandSender sender) throws QCommandException {
+			final PlayerProfile prof =
+					getProfileSafe(profMan, context.getString(0), context.getSenderLang());
+			final int points = context.getInt(1);
+			profMan.addPoints(prof, points);
+			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().PROF_REPUTATION_ADDED);
+		}
 	}
 	
 	public static class ProgressCommands {
