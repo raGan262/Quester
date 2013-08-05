@@ -139,7 +139,10 @@ public abstract class Objective extends Element {
 		try {
 			prereq = Util.deserializePrerequisites(key.getString("prerequisites"));
 		}
-		catch (final Exception ignore) {}
+		catch (final NullPointerException ignore) {}
+		catch (final Exception ex) {
+			Ql.debug("Failed to load prerequisites. (" + type + ")");
+		}
 		
 		final Class<? extends Objective> c = ElementManager.getInstance().getObjectiveClass(type);
 		if(c != null) {
