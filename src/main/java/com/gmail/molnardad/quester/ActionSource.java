@@ -14,6 +14,7 @@ public class ActionSource {
 	public static final int HOLDER = 3;
 	public static final int EVENT = 4;
 	public static final int OTHER = 5;
+	public static final int ADMIN = 6;
 	
 	public static final ActionSource BLANKSOURCE = new ActionSource(ActionSource.OTHER, null);
 	public static final ActionSource QUESTERSOURCE = new ActionSource(ActionSource.QUESTER, null);
@@ -48,6 +49,11 @@ public class ActionSource {
 	public static ActionSource commandSource(final CommandSender sender) {
 		validate(sender);
 		return new ActionSource(ActionSource.COMMAND, sender);
+	}
+	
+	public static ActionSource adminSource(final CommandSender sender) {
+		validate(sender);
+		return new ActionSource(ActionSource.ADMIN, sender);
 	}
 	
 	public static ActionSource listenerSource(final Event event) {
