@@ -1,5 +1,6 @@
 package com.gmail.molnardad.quester.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -77,6 +78,34 @@ public class QeventCommands {
 		}
 		catch (final QeventException e) {
 			return;
+		}
+		qevent.execute(context.getPlayer(), plugin);
+	}
+	
+	@QCommandLabels({ "runas" })
+	@QCommand(
+			section = "QMod",
+			desc = "runs an event as player",
+			min = 3,
+			max = 3,
+			usage = "<player> <quest id> <event id>",
+			permission = QConfiguration.PERM_ADMIN)
+	public void runas(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+		final Player player = Bukkit.getPlayerExact(context.getString(0));
+		final QuesterLang lang = context.getSenderLang();
+		if(player == null) {
+			throw new QCommandException(lang.ERROR_CMD_PLAYER_OFFLINE.replaceAll("%p",
+					context.getString(0)));
+		}
+		
+		final Qevent qevent;
+		final int questId = context.getInt(1);
+		final int eventId = context.getInt(2);
+		try {
+			qevent = qMan.getQuest(questId).getQevent(eventId);
+		}
+		catch (final Exception e) {
+			throw new QeventException(lang.ERROR_EVT_NOT_EXIST);
 		}
 		qevent.execute(context.getPlayer(), plugin);
 	}
