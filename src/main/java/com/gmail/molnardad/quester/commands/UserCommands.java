@@ -37,7 +37,7 @@ public class UserCommands {
 	@QCommand(section = "User", desc = "displays help", usage = "[arg1] [arg2]...")
 	public void help(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		final Map<String, List<String>> cmds =
-				plugin.getCommandManager().getHelp(context.getArgs(), sender);
+				plugin.getCommandManager().getHelp(context.getArgs(), sender, context.hasFlag('d'));
 		final QuesterLang lang = context.getSenderLang();
 		StringBuilder sb;
 		String key = "User";

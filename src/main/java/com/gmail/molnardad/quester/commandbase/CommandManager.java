@@ -204,7 +204,7 @@ public class CommandManager {
 		}
 	}
 	
-	public Map<String, List<String>> getHelp(final String[] args, final CommandSender sender) {
+	public Map<String, List<String>> getHelp(final String[] args, final CommandSender sender, final boolean deep) {
 		final Map<String, List<String>> result = new HashMap<String, List<String>>();
 		Method m = null;
 		for(final String s : args) {
@@ -221,53 +221,67 @@ public class CommandManager {
 				return result;
 			}
 		}
-		QCommand anno = null;
-		final Map<String, Method> lbls = labels.get(m);
+		addHelpToMap(sender, m, args, result, deep);
+		return result;
+	}
+	
+	private void addHelpToMap(final CommandSender sender, final Method method, final String[] arguments, final Map<String, List<String>> resultMap, final boolean deep) {
+		QCommand command = null;
+		final Map<String, Method> lbls = labels.get(method);
 		if(lbls != null) {
-			for(final String s : lbls.keySet()) {
-				final Method innerMethod = lbls.get(s);
-				anno = annotations.get(innerMethod);
-				if(anno != null && Util.permCheck(sender, anno.permission(), false, null)) {
-					if(result.get(anno.section()) == null) {
-						result.put(anno.section(), new ArrayList<String>());
+			for(final String label : lbls.keySet()) {
+				final Method innerMethod = lbls.get(label);
+				command = annotations.get(innerMethod);
+				if(command != null && Util.permCheck(sender, command.permission(), false, null)) {
+					if(deep) {
+						final String[] newArguments = new String[arguments.length + 1];
+						for(int i = 0; i < arguments.length; i++) {
+							newArguments[i] = arguments[i];
+						}
+						newArguments[arguments.length] = label;
+						addHelpToMap(sender, innerMethod, newArguments, resultMap, deep);
 					}
-					final StringBuilder cmd = new StringBuilder();
-					final String usage = anno.usage();
-					cmd.append(displayedCommand);
-					if(args.length > 0) {
-						cmd.append(' ').append(Util.implode(args));
+					else {
+						if(resultMap.get(command.section()) == null) {
+							resultMap.put(command.section(), new ArrayList<String>());
+						}
+						final StringBuilder cmdString = new StringBuilder();
+						final String usage = command.usage();
+						cmdString.append(displayedCommand);
+						if(arguments.length > 0) {
+							cmdString.append(' ').append(Util.implode(arguments));
+						}
+						cmdString.append(' ').append(label);
+						if(!usage.isEmpty()) {
+							cmdString.append(' ').append(ChatColor.GOLD).append(usage);
+						}
+						cmdString.append(ChatColor.GRAY).append(" - ").append(command.desc());
+						resultMap.get(command.section()).add(cmdString.toString());
 					}
-					cmd.append(' ').append(s);
-					if(!usage.isEmpty()) {
-						cmd.append(' ').append(ChatColor.GOLD).append(usage);
-					}
-					cmd.append(ChatColor.GRAY).append(" - ").append(anno.desc());
-					result.get(anno.section()).add(cmd.toString());
 				}
 			}
 		}
 		else {
-			if(m != null) {
-				anno = annotations.get(m);
-				if(anno != null && Util.permCheck(sender, anno.permission(), false, null)) {
-					if(result.get(anno.section()) == null) {
-						result.put(anno.section(), new ArrayList<String>());
+			if(method != null) {
+				command = annotations.get(method);
+				if(command != null && Util.permCheck(sender, command.permission(), false, null)) {
+					if(resultMap.get(command.section()) == null) {
+						resultMap.put(command.section(), new ArrayList<String>());
 					}
-					final StringBuilder cmd = new StringBuilder();
-					final String usage = anno.usage();
-					cmd.append(displayedCommand);
-					if(args.length > 0) {
-						cmd.append(' ').append(Util.implode(args));
+					final StringBuilder cmdString = new StringBuilder();
+					final String usage = command.usage();
+					cmdString.append(displayedCommand);
+					if(arguments.length > 0) {
+						cmdString.append(' ').append(Util.implode(arguments));
 					}
 					if(!usage.isEmpty()) {
-						cmd.append(' ').append(ChatColor.GOLD).append(usage);
+						cmdString.append(' ').append(ChatColor.GOLD).append(usage);
 					}
-					cmd.append(ChatColor.GRAY).append(" - ").append(anno.desc());
-					result.get(anno.section()).add(cmd.toString());
+					cmdString.append(ChatColor.GRAY).append(" - ").append(command.desc());
+					resultMap.get(command.section()).add(cmdString.toString());
 				}
 			}
 		}
-		return result;
 	}
 	
 	public String getUsage(final String[] args, final int level, final Method method) {
