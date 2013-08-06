@@ -421,6 +421,7 @@ public class Quester extends JavaPlugin {
 				PointQevent.class,
 				ItemQevent.class,
 				SoundQevent.class,
+				ProgressQevent.class,
 				
 				// objectives
 				BreakObjective.class,
@@ -448,7 +449,8 @@ public class Quester extends JavaPlugin {
 				BossObjective.class,
 				NpcKillObjective.class,
 				DropObjective.class,
-				ChatObjective.class };
+				ChatObjective.class,
+				DummyObjective.class };
 		for(final Class<? extends Element> clss : classes) {
 			try {
 				elements.register(clss);

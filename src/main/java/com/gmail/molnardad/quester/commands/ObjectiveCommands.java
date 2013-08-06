@@ -46,8 +46,9 @@ public class ObjectiveCommands {
 		if(obj == null) {
 			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
 		}
-		else if(subContext.hasFlag('h')) {
-			obj.setHidden(true);
+		else {
+			obj.setHidden(subContext.hasFlag('h'));
+			obj.setDisplayProgress(!subContext.hasFlag('p'));
 		}
 		return obj;
 	}

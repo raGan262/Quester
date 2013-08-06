@@ -44,6 +44,7 @@ public class QConfiguration {
 	public static boolean progMsgCancel = true;
 	public static boolean progMsgDone = true;
 	public static boolean progMsgObj = true;
+	public static boolean progMsg = true;
 	
 	// COMMANDS
 	public static String displayedCmd = "/q";
@@ -245,6 +246,10 @@ public class QConfiguration {
 		path = "quests.messages.objective-show";
 		QConfiguration.progMsgObj = mainKey.getBoolean(path, true);
 		mainKey.setBoolean(path, QConfiguration.progMsgObj);
+		
+		path = "quests.messages.progress-show";
+		QConfiguration.progMsg = mainKey.getBoolean(path, true);
+		mainKey.setBoolean(path, QConfiguration.progMsg);
 		
 		// COMMANDS
 		path = "commands.displayed-cmd";

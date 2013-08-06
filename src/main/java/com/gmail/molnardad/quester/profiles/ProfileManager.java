@@ -470,6 +470,9 @@ public class ProfileManager {
 				catch (final QuesterException ignore) {}
 			}
 		}
+		else if(!obj.isHidden() && obj.shouldDisplayProgress() && QConfiguration.progMsg) {
+			player.sendMessage(ChatColor.YELLOW + " - " + obj.inShow(newValue));
+		}
 	}
 	
 	public String[] validateProgress(final PlayerProfile profile) {

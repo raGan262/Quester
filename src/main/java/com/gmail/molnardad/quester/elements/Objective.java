@@ -16,6 +16,7 @@ public abstract class Objective extends Element {
 	
 	private String desc = "";
 	private boolean hidden = false;
+	private boolean displayProgress = true;
 	private final Set<Integer> prerequisites = new HashSet<Integer>();
 	
 	public Set<Integer> getPrerequisites() {
@@ -57,6 +58,14 @@ public abstract class Objective extends Element {
 		return hidden;
 	}
 	
+	public void setDisplayProgress(final boolean value) {
+		displayProgress = value;
+	}
+	
+	public boolean shouldDisplayProgress() {
+		return displayProgress;
+	}
+	
 	public final boolean isComplete(final int progress) {
 		return progress >= getTargetAmount();
 	}
@@ -91,7 +100,8 @@ public abstract class Objective extends Element {
 	}
 	
 	public String inInfo() {
-		return getType() + ": " + info() + coloredDesc();
+		final String flags = displayProgress ? "" : "(p)";
+		return flags + getType() + ": " + info() + coloredDesc();
 	}
 	
 	@Override
@@ -117,6 +127,9 @@ public abstract class Objective extends Element {
 		if(hidden) {
 			key.setBoolean("hidden", hidden);
 		}
+		if(!displayProgress) {
+			key.setBoolean("progress", hidden);
+		}
 	}
 	
 	public static final Objective deserialize(final StorageKey key) {
@@ -126,7 +139,6 @@ public abstract class Objective extends Element {
 		}
 		Objective obj = null;
 		String type = null, des = null;
-		boolean hid = false;
 		Set<Integer> prereq = new HashSet<Integer>();
 		
 		type = key.getString("type");
@@ -135,7 +147,8 @@ public abstract class Objective extends Element {
 			return null;
 		}
 		des = key.getString("description", null);
-		hid = key.getBoolean("hidden", false);
+		final boolean hid = key.getBoolean("hidden", false);
+		final boolean prog = key.getBoolean("progress", true);
 		try {
 			prereq = Util.deserializePrerequisites(key.getString("prerequisites"));
 		}
@@ -156,9 +169,9 @@ public abstract class Objective extends Element {
 				if(des != null) {
 					obj.addDescription(des);
 				}
-				if(hid) {
-					obj.setHidden(true);
-				}
+				obj.setHidden(hid);
+				obj.setDisplayProgress(prog);
+				
 				if(!prereq.isEmpty()) {
 					for(final int i : prereq) {
 						obj.addPrerequisity(i);

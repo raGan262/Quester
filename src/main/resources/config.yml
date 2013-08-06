@@ -26,6 +26,7 @@ quests:
     cancel-show: true
     done-show: true
     objective-show: true
+    progress-show: true
 ranks:
   Quester: 0
   Apprentice-Quester: 25
