@@ -17,6 +17,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.commandbase.QNestedCommand;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
+import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.exceptions.ObjectiveException;
 import com.gmail.molnardad.quester.exceptions.QuestException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
@@ -50,7 +51,7 @@ public class PlayerCommands {
 	public void completed(final QCommandContext context, final CommandSender sender) {
 	}
 	
-	@QCommandLabels({ "quest" })
+	@QCommandLabels({ "quest", "q" })
 	@QCommand(section = "Admin", desc = "player quest manipulation")
 	@QNestedCommand(PlayerCommands.QuestCommands.class)
 	public void quest(final QCommandContext context, final CommandSender sender) {
@@ -165,11 +166,13 @@ public class PlayerCommands {
 		final ProfileManager profMan;
 		final LanguageManager langMan;
 		final QuestManager qMan;
+		final Quester plugin;
 		
 		public QuestCommands(final Quester plugin) {
 			profMan = plugin.getProfileManager();
 			langMan = plugin.getLanguageManager();
 			qMan = plugin.getQuestManager();
+			this.plugin = plugin;
 		}
 		
 		@QCommandLabels({ "start" })
@@ -238,6 +241,54 @@ public class PlayerCommands {
 				profMan.cancelQuest(player, index, ActionSource.adminSource(sender), lang);
 			}
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().PROF_QUEST_CANCELLED);
+		}
+		
+		@QCommandLabels({ "complete", "compl" })
+		@QCommand(
+				section = "Admin",
+				desc = "forces quest complete",
+				min = 2,
+				max = 2,
+				usage = "<player> <quest> (-ef)")
+		public void complete(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+			final QuesterLang lang = context.getSenderLang();
+			final Quest quest = qMan.getQuest(context.getString(1));
+			if(quest == null) {
+				throw new QuestException(lang.ERROR_Q_NOT_EXIST);
+			}
+			final PlayerProfile prof;
+			final Player player;
+			final boolean runEvents = context.hasFlag('e');
+			if(runEvents) {
+				player = Bukkit.getPlayerExact(context.getString(0));
+				if(player == null) {
+					throw new QCommandException(lang.ERROR_CMD_PLAYER_OFFLINE.replaceAll("%p",
+							context.getString(0)));
+				}
+				prof = profMan.getProfile(player.getName());
+			}
+			else {
+				player = null;
+				prof = getProfileSafe(profMan, context.getString(0), lang);
+			}
+			if(context.hasFlag('f') && prof.isCompleted(quest.getName())) {
+				throw new QCommandException(lang.ERROR_PROF_Q_ALREADY_DONE);
+			}
+			final int id = prof.getQuestProgressIndex(quest);
+			if(id >= 0) {
+				profMan.unassignQuest(prof, id);
+			}
+			profMan.addCompletedQuest(prof, context.getString(1), System.currentTimeMillis());
+			
+			if(runEvents) {
+				for(final Qevent qevent : quest.getQevents()) {
+					if(qevent.getOccasion() == -3) {
+						qevent.execute(player, plugin);
+					}
+				}
+			}
+			
+			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().PROF_QUEST_COMPLETED);
 		}
 	}
 	

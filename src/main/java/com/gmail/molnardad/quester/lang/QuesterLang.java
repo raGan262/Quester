@@ -60,6 +60,7 @@ public class QuesterLang {
 	public String PROF_COMP_REMOVED = "Completed quest removed.";
 	public String PROF_QUEST_STARTED = "Quest started.";
 	public String PROF_QUEST_CANCELLED = "Quest cancelled.";
+	public String PROF_QUEST_COMPLETED = "Quest completed.";
 	public String PROF_REPUTATION_SET = "Reputation points set.";
 	public String PROF_REPUTATION_ADDED = "Reputation points added.";
 	public String PROF_PROGRESS = "%p's progress with %q";
@@ -204,6 +205,7 @@ public class QuesterLang {
 	public String ERROR_REW_NOT_EXIST = "Reward does not exist.";
 	public String ERROR_REW_CANT_DO = "Not enough space to recieve quest rewards.";
 	public String ERROR_EVT_NOT_EXIST = "Event does not exist.";
+	public String ERROR_PROF_Q_ALREADY_DONE = "Player already completed this quest.";
 	public String ERROR_WHY = "Why would you want to do this ?";
 	public String ERROR_INTERESTING =
 			"Interesting error, you should definitely notify Quester developer.";
