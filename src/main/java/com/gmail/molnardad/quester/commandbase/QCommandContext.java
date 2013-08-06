@@ -142,7 +142,7 @@ public class QCommandContext {
 	}
 	
 	public String getString(final int i, final String def) {
-		return i < 0 || i >= args.length ? args[i] : def;
+		return i < 0 || i >= args.length ? def : args[i];
 	}
 	
 	public int getInt(final int i) throws NumberFormatException {
