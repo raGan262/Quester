@@ -137,25 +137,14 @@ public abstract class Objective extends Element {
 			Ql.severe("Objective deserialization error: no subkeys");
 			return null;
 		}
-		Objective obj = null;
-		String type = null, des = null;
-		Set<Integer> prereq = new HashSet<Integer>();
 		
-		type = key.getString("type");
+		final String type = key.getString("type");
 		if(type == null) {
 			Ql.severe("Objective type missing.");
 			return null;
 		}
-		des = key.getString("description", null);
-		final boolean hid = key.getBoolean("hidden", false);
-		final boolean prog = key.getBoolean("progress", true);
-		try {
-			prereq = Util.deserializePrerequisites(key.getString("prerequisites"));
-		}
-		catch (final NullPointerException ignore) {}
-		catch (final Exception ex) {
-			Ql.debug("Failed to load prerequisites. (" + type + ")");
-		}
+		
+		Objective obj = null;
 		
 		final Class<? extends Objective> c = ElementManager.getInstance().getObjectiveClass(type);
 		if(c != null) {
@@ -166,16 +155,24 @@ public abstract class Objective extends Element {
 				if(obj == null) {
 					return null;
 				}
-				if(des != null) {
-					obj.addDescription(des);
-				}
-				obj.setHidden(hid);
-				obj.setDisplayProgress(prog);
 				
-				if(!prereq.isEmpty()) {
+				final String description = key.getString("description");
+				if(description != null) {
+					obj.addDescription(description);
+				}
+				obj.setHidden(key.getBoolean("hidden", false));
+				obj.setDisplayProgress(key.getBoolean("progress", true));
+				
+				try {
+					final Set<Integer> prereq =
+							Util.deserializePrerequisites(key.getString("prerequisites"));
 					for(final int i : prereq) {
 						obj.addPrerequisity(i);
 					}
+				}
+				catch (final NullPointerException ignore) {}
+				catch (final Exception ex) {
+					Ql.debug("Failed to load prerequisites. (" + type + ")");
 				}
 			}
 			catch (final Exception e) {

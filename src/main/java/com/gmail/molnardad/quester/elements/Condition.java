@@ -73,19 +73,15 @@ public abstract class Condition extends Element {
 			Ql.severe("Condition deserialization error: no subkeys");
 			return null;
 		}
-		Condition con = null;
-		String type = null, des = null;
 		
-		if(key.getString("type") != null) {
-			type = key.getString("type");
-		}
-		else {
+		final String type = key.getString("type");
+		if(type == null) {
 			Ql.severe("Condition type missing.");
 			return null;
 		}
-		if(key.getString("description") != null) {
-			des = key.getString("description");
-		}
+		
+		Condition con = null;
+		
 		final Class<? extends Condition> c = ElementManager.getInstance().getConditionClass(type);
 		if(c != null) {
 			try {
@@ -95,6 +91,8 @@ public abstract class Condition extends Element {
 				if(con == null) {
 					return null;
 				}
+				
+				final String des = key.getString("description");
 				if(des != null) {
 					con.addDescription(des);
 				}

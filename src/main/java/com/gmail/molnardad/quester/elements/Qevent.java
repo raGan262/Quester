@@ -109,10 +109,7 @@ public abstract class Qevent extends Element {
 		key.setString("type", type);
 		key.setInt("occasion", occasion);
 		if(delay != 0) {
-			key.setLong("delay", delay);
-		}
-		else {
-			key.removeKey("delay");
+			key.setInt("delay", delay);
 		}
 	}
 	
@@ -121,16 +118,15 @@ public abstract class Qevent extends Element {
 			Ql.severe("Qevent deserialization error: no sybkeys.");
 			return null;
 		}
-		Qevent qev = null;
-		int occ = -10, del = 0;
-		String type = null;
-		occ = key.getInt("occasion", -10);
-		del = key.getInt("delay", 0);
-		type = key.getString("type");
+		
+		final String type = key.getString("type");
 		if(type == null) {
 			Ql.severe("Event type missing.");
 			return null;
 		}
+		
+		Qevent qev = null;
+		
 		final Class<? extends Qevent> c = ElementManager.getInstance().getEventClass(type);
 		if(c != null) {
 			try {
@@ -140,8 +136,9 @@ public abstract class Qevent extends Element {
 				if(qev == null) {
 					return null;
 				}
-				qev.occasion = occ;
-				qev.delay = del;
+				
+				qev.occasion = key.getInt("occasion", -10);
+				qev.delay = key.getInt("delay", 0);
 			}
 			catch (final Exception e) {
 				Ql.severe("Error when deserializing " + c.getSimpleName()
