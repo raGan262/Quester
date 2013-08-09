@@ -57,7 +57,6 @@ public final class Ql {
 		else {
 			throw new IllegalArgumentException("Quester cannot be null.");
 		}
-		fileLogger.log(Level.SEVERE, "Message", new NullPointerException("Test exception"));
 	}
 	
 	public static void info(final String msg) {
