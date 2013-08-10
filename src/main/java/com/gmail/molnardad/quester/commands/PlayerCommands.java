@@ -33,9 +33,11 @@ import com.gmail.molnardad.quester.utils.Util;
 public class PlayerCommands {
 	
 	final ProfileManager profMan;
+	final LanguageManager langMan;
 	
 	public PlayerCommands(final Quester plugin) {
 		profMan = plugin.getProfileManager();
+		langMan = plugin.getLanguageManager();
 	}
 	
 	private static PlayerProfile getProfileSafe(final ProfileManager pMan, final String playerName, final QuesterLang lang) throws QCommandException {
@@ -67,6 +69,39 @@ public class PlayerCommands {
 	@QCommand(section = "Admin", desc = "progress modification")
 	@QNestedCommand(PlayerCommands.ProgressCommands.class)
 	public void progress(final QCommandContext context, final CommandSender sender) {
+	}
+	
+	@QCommandLabels({ "lang" })
+	@QCommand(
+			section = "Admin",
+			desc = "gets or sets language",
+			min = 1,
+			max = 2,
+			usage = "<player> [language]")
+	public void lang(final QCommandContext context, final CommandSender sender) throws QCommandException {
+		final PlayerProfile prof =
+				getProfileSafe(profMan, context.getString(0), context.getSenderLang());
+		if(context.length() > 1) {
+			final QuesterLang lang;
+			String langName = context.getString(1);
+			if(langName.equalsIgnoreCase("reset")) {
+				langName = null;
+			}
+			if(profMan.setProfileLanguage(prof, langName)) {
+				lang = langMan.getPlayerLang(sender.getName());
+				sender.sendMessage(ChatColor.GREEN
+						+ lang.PROF_LANGUAGE_SET.replaceAll("%p", prof.getName()));
+			}
+			else {
+				lang = context.getSenderLang();
+				throw new QCommandException(lang.ERROR_CMD_LANG_INVALID);
+			}
+		}
+		else {
+			sender.sendMessage(ChatColor.BLUE
+					+ context.getSenderLang().PROF_LANGUAGE.replaceAll("%p", prof.getName()) + ": "
+					+ ChatColor.RESET + langMan.getPlayerLangName(prof.getName()));
+		}
 	}
 	
 	public static class CompletedCommands {

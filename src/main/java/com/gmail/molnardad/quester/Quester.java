@@ -37,7 +37,6 @@ import com.gmail.molnardad.quester.profiles.ProfileListener;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.qevents.*;
 import com.gmail.molnardad.quester.quests.QuestManager;
-import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.DatabaseConnection;
 import com.gmail.molnardad.quester.utils.Ql;
 import com.gmail.molnardad.quester.elements.Element;
@@ -84,7 +83,19 @@ public class Quester extends JavaPlugin {
 		}
 		
 		// Managers
-		langs = new LanguageManager(this);
+		try {
+			langs =
+					new LanguageManager(this, new File(getDataFolder() + File.separator + "local"
+							+ File.separator), QConfiguration.defaultLang);
+		}
+		catch (final Exception e) {
+			Ql.severe("Failed to load languages.");
+			getServer().getPluginManager().disablePlugin(this);
+			return;
+		}
+		final int langCount = langs.loadLangs();
+		Ql.info(langCount + (langCount == 1 ? " language" : " languages") + " loaded.");
+		
 		elements = new ElementManager();
 		ElementManager.setInstance(elements);
 		quests = new QuestManager(this);
@@ -93,7 +104,6 @@ public class Quester extends JavaPlugin {
 		holders = new QuestHolderManager(this);
 		commands = new CommandManager(langs, getLogger(), QConfiguration.displayedCmd, this);
 		
-		loadLocal();
 		registerElements();
 		if(QConfiguration.useRank) {
 			profiles.loadRanks();
@@ -316,30 +326,6 @@ public class Quester extends JavaPlugin {
 			}
 		}
 		return denizen;
-	}
-	
-	private void loadLocal() {
-		if(langs == null) {
-			Ql.warning("Failed to load languages: LanguageManager null");
-			return;
-		}
-		langs.loadLang("english", new File(getDataFolder(), "langEN.yml"));
-		int i = 1;
-		try {
-			if(QConfiguration.getConfigKey("languges").hasSubKeys()) {
-				for(final StorageKey subKey : QConfiguration.getConfigKey("languges").getSubKeys()) {
-					if(subKey.getString("") != null) {
-						langs.loadLang(subKey.getName(),
-								new File(getDataFolder(), subKey.getString("") + ".yml"));
-						i++;
-					}
-				}
-			}
-		}
-		catch (final InstanceNotFoundException e) {
-			Ql.severe("DataManager instance exception occured while loading languages.");
-		}
-		Ql.info(i + " languages loaded.");
 	}
 	
 	public void reloadLocal() {

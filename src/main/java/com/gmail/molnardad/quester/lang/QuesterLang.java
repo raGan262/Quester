@@ -21,6 +21,7 @@ public class QuesterLang {
 	public String MSG_Q_DEACTIVATED = "One of your quests has been deactivated.";
 	public String MSG_Q_SOME_CANCELLED = "Some of your quests have been cancelled.";
 	public String MSG_OBJ_COMPLETED = "You completed a quest objective.";
+	public String MSG_LANG_SET = "Language set.";
 	
 	public String INFO_NAME = "Name";
 	public String INFO_DESCRIPTION = "Description";
@@ -44,6 +45,7 @@ public class QuesterLang {
 	public String INFO_QUESTS = "Quests";
 	public String INFO_QUESTS_OTHER = "%p's quests";
 	public String INFO_LIMIT = "Limit";
+	public String AVAILABLE_LANGS = "Available languages";
 	
 	public String HELP_SECTION_USE = "Quester help";
 	public String HELP_SECTION_MODIFY = "Modify help";
@@ -65,6 +67,8 @@ public class QuesterLang {
 	public String PROF_REPUTATION_ADDED = "Reputation points added.";
 	public String PROF_PROGRESS = "%p's progress with %q";
 	public String PROF_PROGRESS_SET = "Progress set.";
+	public String PROF_LANGUAGE = "%p's language";
+	public String PROF_LANGUAGE_SET = "%p's language set.";
 	
 	// QUEST STRINGS
 	
@@ -176,6 +180,7 @@ public class QuesterLang {
 	public String ERROR_CMD_OCC_INCORRECT_FORM = "Incorrect occasion format.";
 	public String ERROR_CMD_REGION_INVALID = "Invalid region.";
 	public String ERROR_CMD_PLAYER_OFFLINE = "Player %p is not online.";
+	public String ERROR_CMD_LANG_INVALID = "Invalid language.";
 	
 	public String ERROR_Q_EXIST = "Quest already exists.";
 	public String ERROR_Q_NOT_EXIST = "Quest does not exist.";

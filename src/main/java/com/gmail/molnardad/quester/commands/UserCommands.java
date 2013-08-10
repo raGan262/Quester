@@ -1,7 +1,9 @@
 package com.gmail.molnardad.quester.commands;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -16,6 +18,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandLabels;
 import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.commandbase.exceptions.QPermissionException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
+import com.gmail.molnardad.quester.lang.LanguageManager;
 import com.gmail.molnardad.quester.lang.QuesterLang;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.QuestManager;
@@ -26,10 +29,12 @@ public class UserCommands {
 	final QuestManager qMan;
 	final ProfileManager profMan;
 	final Quester plugin;
+	final LanguageManager langMan;
 	
 	public UserCommands(final Quester plugin) {
 		qMan = plugin.getQuestManager();
 		profMan = plugin.getProfileManager();
+		langMan = plugin.getLanguageManager();
 		this.plugin = plugin;
 	}
 	
@@ -267,6 +272,50 @@ public class UserCommands {
 		}
 		else {
 			profMan.showTakenQuests(sender);
+		}
+	}
+	
+	@QCommandLabels({ "langs" })
+	@QCommand(section = "User", desc = "shows available languages", max = 0)
+	public void langs(final QCommandContext context, final CommandSender sender) {
+		final String playerLang = langMan.getPlayerLangName(sender.getName());
+		final Set<String> langSet = langMan.getLangSet();
+		String toAdd = null;
+		for(final Iterator<String> i = langSet.iterator(); i.hasNext();) {
+			final String l = i.next();
+			if(l.equals(playerLang)) {
+				i.remove();
+				toAdd = ChatColor.GREEN + l + ChatColor.RESET;
+				break;
+			}
+		}
+		if(toAdd != null) {
+			langSet.add(toAdd);
+		}
+		sender.sendMessage(ChatColor.GOLD + context.getSenderLang().AVAILABLE_LANGS + ": "
+				+ ChatColor.RESET + Util.implode(langSet.toArray(new String[0]), ','));
+	}
+	
+	@QCommandLabels({ "lang" })
+	@QCommand(
+			section = "User",
+			desc = "sets language",
+			min = 1,
+			max = 1,
+			usage = "<language or RESET>")
+	public void lang(final QCommandContext context, final CommandSender sender) throws QCommandException {
+		final QuesterLang lang;
+		String langName = context.getString(0);
+		if(langName.equalsIgnoreCase("reset")) {
+			langName = null;
+		}
+		if(profMan.setProfileLanguage(profMan.getProfile(sender.getName()), langName)) {
+			lang = langMan.getLang(langName);
+			sender.sendMessage(ChatColor.GREEN + lang.MSG_LANG_SET);
+		}
+		else {
+			lang = context.getSenderLang();
+			throw new QCommandException(lang.ERROR_CMD_LANG_INVALID);
 		}
 	}
 }

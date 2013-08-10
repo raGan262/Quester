@@ -27,6 +27,7 @@ public class PlayerProfile {
 	private int points;
 	private String rank;
 	private boolean changed;
+	private String language;
 	
 	PlayerProfile(final String player) {
 		name = player;
@@ -38,6 +39,7 @@ public class PlayerProfile {
 		points = 0;
 		rank = "";
 		changed = false;
+		language = "";
 	}
 	
 	public String getName() {
@@ -225,6 +227,17 @@ public class PlayerProfile {
 		}
 	}
 	
+	public String getLanguage() {
+		return language;
+	}
+	
+	void setLanguage(final String newLang) {
+		if(newLang != null) {
+			setChanged();
+			language = newLang;
+		}
+	}
+	
 	public boolean isChanged() {
 		return changed;
 	}
@@ -244,6 +257,11 @@ public class PlayerProfile {
 		key.removeKey("points");
 		if(points != 0) {
 			key.setInt("points", points);
+		}
+		
+		key.removeKey("language");
+		if(!language.isEmpty()) {
+			key.setString("language", language);
 		}
 		
 		key.removeKey("completed");
@@ -287,6 +305,8 @@ public class PlayerProfile {
 		}
 		
 		prof.addPoints(key.getInt("points", 0));
+		
+		prof.setLanguage(key.getString("language"));
 		
 		if(key.getSubKey("completed").hasSubKeys()) {
 			for(final StorageKey subKey : key.getSubKey("completed").getSubKeys()) {

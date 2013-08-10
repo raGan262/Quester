@@ -128,13 +128,13 @@ public class AdminCommands {
 				reloadQuests();
 			}
 			if(lang) {
-				langMan.reloadLangs();
+				langMan.loadLangs();
 			}
 		}
 		else {
 			reloadData();
 			reloadQuests();
-			langMan.reloadLangs();
+			langMan.loadLangs();
 		}
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().MSG_DATA_RELOADED);
 	}

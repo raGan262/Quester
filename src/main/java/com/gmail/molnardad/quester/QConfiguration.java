@@ -18,6 +18,7 @@ public class QConfiguration {
 	public static boolean useRank = true;
 	public static boolean useMetrics = true;
 	public static StorageType profileStorageType = StorageType.CONFIG;
+	public static String defaultLang = "english";
 	
 	// MYSQL
 	public static String mysqlUrl =
@@ -147,10 +148,20 @@ public class QConfiguration {
 		QConfiguration.profileStorageType = type;
 		mainKey.setString(path, profileStorageType.name());
 		
-		// USE RANK
+		// USE METRICS
 		path = "general.use-metrics";
 		QConfiguration.useRank = mainKey.getBoolean(path);
 		mainKey.setBoolean(path, QConfiguration.useMetrics);
+		
+		// DEFAULT LANG
+		path = "general.default-lang";
+		temp = mainKey.getString(path, "");
+		if(temp.isEmpty()) {
+			mainKey.setString(path, "english");
+			wrongConfig(path, "english");
+		}
+		QConfiguration.defaultLang = mainKey.getString(path, "english");
+		mainKey.setString(path, QConfiguration.defaultLang);
 		
 		// MYSQL
 		path = "mysql.host";

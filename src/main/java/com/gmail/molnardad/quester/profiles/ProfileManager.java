@@ -215,6 +215,14 @@ public class ProfileManager {
 		return progress.getObjectiveStatus(id) == ObjectiveStatus.ACTIVE;
 	}
 	
+	public boolean setProfileLanguage(final PlayerProfile profile, final String language) {
+		if(langMan.setPlayerLang(profile.getName(), language)) {
+			profile.setLanguage(language == null ? "" : language);
+			return true;
+		}
+		return false;
+	}
+	
 	// QUEST PROGRESS METHODS
 	
 	public void startQuest(final Player player, final int questID, final ActionSource as, final QuesterLang lang) throws QuesterException {
@@ -618,6 +626,11 @@ public class ProfileManager {
 	
 	void loadProfile(final PlayerProfile prof) {
 		updateRank(prof);
+		if(!prof.getLanguage().isEmpty()) {
+			if(!langMan.setPlayerLang(prof.getName(), prof.getLanguage())) {
+				prof.setLanguage("");
+			}
+		}
 		profiles.put(prof.getName().toLowerCase(), prof);
 	}
 	
