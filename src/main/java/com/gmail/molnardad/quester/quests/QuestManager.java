@@ -1,8 +1,10 @@
 package com.gmail.molnardad.quester.quests;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -707,12 +709,14 @@ public class QuestManager {
 		}
 		final List<Quest> onHold = new ArrayList<Quest>();
 		int lastGeneric = 0;
+		boolean errorHappened = false;
 		for(final StorageKey questKey : storage.getKey("").getSubKeys()) {
 			if(questKey.hasSubKeys()) {
 				Ql.debug("Deserializing quest " + questKey.getName() + ".");
 				final Quest quest = Quest.deserialize(questKey);
 				if(quest == null) {
-					Ql.severe("Quest " + questKey.getName() + " corrupted.");
+					Ql.severe("Quest " + questKey.getName() + " is corrupted.");
+					errorHappened = true;
 					continue;
 				}
 				if(questNames.containsKey(quest.getName().toLowerCase())) { // duplicate name, generating new one
@@ -725,6 +729,7 @@ public class QuestManager {
 					}
 					Ql.severe("Duplicate quest name in quest " + questKey.getName()
 							+ " detected, generated new name '" + name + "'.");
+					errorHappened = true;
 				}
 				if(quest.hasID()) {
 					if(quests.get(quest.getID()) != null) { // duplicate ID
@@ -732,6 +737,7 @@ public class QuestManager {
 								+ " detected, new ID will be assigned.");
 						quest.setID(-1);
 						onHold.add(quest);
+						errorHappened = true;
 					}
 					else { // everything all right
 						quests.put(quest.getID(), quest);
@@ -744,24 +750,9 @@ public class QuestManager {
 				else { // quest has default ID, new needs to be generated
 					onHold.add(quest);
 				}
-				for(int i = 0; i < quest.getObjectives().size(); i++) {
-					if(quest.getObjective(i) == null) {
-						Ql.info("Objective " + i + " is invalid.");
-						quest.removeObjective(i);
-						quest.removeFlag(QuestFlag.ACTIVE);
-					}
-				}
-				for(int i = 0; i < quest.getConditions().size(); i++) {
-					if(quest.getCondition(i) == null) {
-						Ql.info("Condition " + i + " is invalid.");
-						quest.removeCondition(i);
-					}
-				}
-				for(int i = 0; i < quest.getQevents().size(); i++) {
-					if(quest.getQevent(i) == null) {
-						Ql.info("Event " + i + " is invalid.");
-						quest.removeQevent(i);
-					}
+				if(quest.error) {
+					errorHappened = true;
+					quest.error = false;
 				}
 			}
 		}
@@ -775,6 +766,24 @@ public class QuestManager {
 			}
 		}
 		Ql.verbose(quests.size() + " quests loaded.");
+		
+		if(QConfiguration.autoBackup && errorHappened) {
+			try {
+				final File backupDir =
+						new File(plugin.getDataFolder() + File.separator + "backups");
+				if(!backupDir.isDirectory()) {
+					backupDir.mkdir();
+				}
+				final String date = new SimpleDateFormat("yy-MM-dd--HH-mm-ss").format(new Date());
+				final File f = new File(backupDir, "quests-" + date + ".yml");
+				f.createNewFile();
+				((ConfigStorage) storage).saveToFile(f);
+				Ql.info("Found errors in quests.yml, backup created. Backup name: " + f.getName());
+			}
+			catch (final Exception e) {
+				Ql.severe("Failed to create quests backup.", e);
+			}
+		}
 		return true;
 	}
 }

@@ -1,6 +1,8 @@
 package com.gmail.molnardad.quester;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.management.InstanceNotFoundException;
 
@@ -8,6 +10,7 @@ import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Ql;
+import com.gmail.molnardad.quester.utils.Util;
 
 public class QConfiguration {
 	
@@ -19,6 +22,7 @@ public class QConfiguration {
 	public static boolean useMetrics = true;
 	public static StorageType profileStorageType = StorageType.CONFIG;
 	public static String defaultLang = "english";
+	public static boolean autoBackup = true;
 	
 	// MYSQL
 	public static String mysqlUrl =
@@ -53,6 +57,10 @@ public class QConfiguration {
 	public static String locLabelHere = "here";
 	public static String locLabelPlayer = "player";
 	public static String locLabelBlock = "block";
+	
+	// QUEST ITEMS
+	
+	public static Set<Integer> questItemInteractable = new HashSet<Integer>();
 	
 	public static final String PERM_USE_NPC = "quester.use.npc";
 	public static final String PERM_USE_SIGN = "quester.use.sign";
@@ -232,6 +240,11 @@ public class QConfiguration {
 		QConfiguration.colSubOnDrop = mainKey.getBoolean(path, false);
 		mainKey.setBoolean(path, QConfiguration.colSubOnDrop);
 		
+		// AUTO BACKUP
+		path = "quests.auto-backup";
+		QConfiguration.autoBackup = mainKey.getBoolean(path, true);
+		mainKey.setBoolean(path, QConfiguration.autoBackup);
+		
 		// MAX QUESTS
 		path = "quests.max-amount";
 		if(mainKey.getInt(path, -1) < 1) {
@@ -307,6 +320,18 @@ public class QConfiguration {
 		}
 		QConfiguration.locLabelBlock = mainKey.getString(path, "block");
 		mainKey.setString(path, QConfiguration.locLabelBlock);
+		
+		// IS WHITELIST
+		path = "quest-item.interactable";
+		QConfiguration.questItemInteractable.clear();
+		try {
+			for(final String s : mainKey.getString(path).split(",")) {
+				QConfiguration.questItemInteractable.add(Integer.valueOf(s));
+			}
+		}
+		catch (final Exception ignore) {}
+		mainKey.setString(path,
+				Util.implodeInt(QConfiguration.questItemInteractable.toArray(new Integer[0]), ","));
 		
 		saveData();
 	}

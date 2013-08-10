@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.molnardad.quester.QConfiguration;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestItemListener implements Listener {
@@ -27,7 +28,8 @@ public class QuestItemListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onAction(final PlayerInteractEvent event) {
-		if(Util.isQuestItem(event.getItem())) {
+		if(Util.isQuestItem(event.getItem())
+				&& !QConfiguration.questItemInteractable.contains(event.getItem().getTypeId())) {
 			event.setCancelled(true);
 		}
 	}

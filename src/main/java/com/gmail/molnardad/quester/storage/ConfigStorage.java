@@ -68,8 +68,12 @@ public class ConfigStorage implements Storage {
 	
 	@Override
 	public void save() {
+		saveToFile(conFile);
+	}
+	
+	public void saveToFile(final File file) {
 		try {
-			config.save(conFile);
+			config.save(file);
 		}
 		catch (final IOException ex) {
 			logger.severe("Can't write to file '" + conFile.getName() + "'!");

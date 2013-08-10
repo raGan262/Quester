@@ -31,6 +31,8 @@ public class Quest {
 	private int range = 1;
 	private int ID = -1;
 	
+	boolean error = false;
+	
 	public Quest(final String name) {
 		this.name = name;
 		description = "";
@@ -347,6 +349,7 @@ public class Quest {
 						quest.addObjective(obj);
 					}
 					else {
+						quest.error = true;
 						Ql.severe("Error occured when deserializing objective ID " + i
 								+ " in quest '" + quest.getName() + "'.");
 					}
@@ -363,6 +366,7 @@ public class Quest {
 						quest.addCondition(con);
 					}
 					else {
+						quest.error = true;
 						Ql.severe("Error occured when deserializing condition ID " + i
 								+ " in quest '" + quest.getName() + "'.");
 					}
@@ -379,6 +383,7 @@ public class Quest {
 						quest.addQevent(qvt);
 					}
 					else {
+						quest.error = true;
 						Ql.severe("Error occured when deserializing event ID:" + i + " in quest '"
 								+ quest.getName() + "'.");
 					}

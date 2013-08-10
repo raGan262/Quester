@@ -5,6 +5,7 @@ general:
   debug-info: false
   use-rank: true
   profile-storage: CONFIG
+  default-lang: english
 mysql:
   host: localhost
   port: 3306
@@ -20,6 +21,7 @@ objectives:
     remove-on-pickup: true
     subtract-on-drop: false
 quests:
+  auto-backup: true
   max-amount: 1
   messages:
     start-show: true
@@ -37,3 +39,5 @@ commands:
   loc-label-here: here
   loc-label-player: player
   loc-label-block: block
+quest-item:
+  interactable: ''
