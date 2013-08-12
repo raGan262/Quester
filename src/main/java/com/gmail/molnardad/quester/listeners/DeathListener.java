@@ -74,10 +74,13 @@ public class DeathListener implements Listener {
 		// PLAYER KILL OBJECTIVE
 		final Player killer = event.getEntity().getKiller();
 		final Player victim = event.getEntity();
-		if(!Util.isPlayer(victim) || !Util.isPlayer(killer)) {
+		if(!Util.isPlayer(victim)) {
 			return;
 		}
 		if(killer != null) {
+			if(!Util.isPlayer(killer)) {
+				return;
+			}
 			final PlayerProfile prof = profMan.getProfile(killer.getName());
 			final Quest quest = prof.getQuest();
 			if(quest != null) {
