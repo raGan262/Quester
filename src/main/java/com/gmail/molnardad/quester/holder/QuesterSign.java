@@ -3,7 +3,7 @@ package com.gmail.molnardad.quester.holder;
 import org.bukkit.Location;
 
 import com.gmail.molnardad.quester.storage.StorageKey;
-import com.gmail.molnardad.quester.utils.Util;
+import com.gmail.molnardad.quester.utils.SerUtils;
 
 public class QuesterSign {
 	
@@ -27,7 +27,7 @@ public class QuesterSign {
 	}
 	
 	public void serialize(final StorageKey key) {
-		key.setString("location", Util.serializeLocString(location));
+		key.setString("location", SerUtils.serializeLocString(location));
 		key.setInt("holder", holder);
 	}
 	
@@ -36,7 +36,7 @@ public class QuesterSign {
 		QuesterSign sign = null;
 		
 		try {
-			loc = Util.deserializeLocString(key.getString("location", ""));
+			loc = SerUtils.deserializeLocString(key.getString("location", ""));
 			if(loc == null) {
 				return null;
 			}

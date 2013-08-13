@@ -1,8 +1,5 @@
 package com.gmail.molnardad.quester.objectives;
 
-import static com.gmail.molnardad.quester.utils.Util.parseEnchants;
-import static com.gmail.molnardad.quester.utils.Util.parseItem;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +14,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.SerUtils;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("ITEM")
@@ -90,20 +88,20 @@ public final class ItemObjective extends Objective {
 		int dat;
 		int amt = 1;
 		Map<Integer, Integer> enchs = null;
-		final int[] itm = parseItem(context.getString(0), context.getSenderLang());
+		final int[] itm = SerUtils.parseItem(context.getString(0), context.getSenderLang());
 		mat = Material.getMaterial(itm[0]);
 		dat = itm[1];
 		if(context.length() > 1) {
 			amt = context.getInt(1);
 			if(context.length() > 2) {
-				enchs = parseEnchants(context.getString(2));
+				enchs = SerUtils.parseEnchants(context.getString(2));
 			}
 		}
 		if(amt < 1 || dat < -1) {
 			throw new IllegalArgumentException(context.getSenderLang().ERROR_CMD_ITEM_NUMBERS);
 		}
 		if(context.length() > 2) {
-			enchs = parseEnchants(context.getString(2));
+			enchs = SerUtils.parseEnchants(context.getString(2));
 		}
 		
 		return new ItemObjective(mat, amt, dat, enchs, context.hasFlag('q'));
@@ -111,9 +109,9 @@ public final class ItemObjective extends Objective {
 	
 	@Override
 	protected void save(final StorageKey key) {
-		key.setString("item", Util.serializeItem(material, data));
+		key.setString("item", SerUtils.serializeItem(material, data));
 		if(!enchants.isEmpty()) {
-			key.setString("enchants", Util.serializeEnchants(enchants));
+			key.setString("enchants", SerUtils.serializeEnchants(enchants));
 		}
 		if(amount != 1) {
 			key.setInt("amount", amount);
@@ -129,7 +127,7 @@ public final class ItemObjective extends Objective {
 		Map<Integer, Integer> enchs = null;
 		boolean qi = false;
 		try {
-			final int[] itm = Util.parseItem(key.getString("item", ""));
+			final int[] itm = SerUtils.parseItem(key.getString("item", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
 			
@@ -138,7 +136,7 @@ public final class ItemObjective extends Objective {
 				amt = 1;
 			}
 			try {
-				enchs = Util.parseEnchants(key.getString("enchants", ""));
+				enchs = SerUtils.parseEnchants(key.getString("enchants", ""));
 			}
 			catch (final IllegalArgumentException e) {
 				enchs = null;

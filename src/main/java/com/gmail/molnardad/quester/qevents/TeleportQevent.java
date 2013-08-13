@@ -12,7 +12,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.storage.StorageKey;
-import com.gmail.molnardad.quester.utils.Util;
+import com.gmail.molnardad.quester.utils.SerUtils;
 
 @QElement("TELE")
 public final class TeleportQevent extends Qevent {
@@ -25,7 +25,7 @@ public final class TeleportQevent extends Qevent {
 	
 	@Override
 	public String info() {
-		return Util.displayLocation(location);
+		return SerUtils.displayLocation(location);
 	}
 	
 	@Override
@@ -42,7 +42,7 @@ public final class TeleportQevent extends Qevent {
 	@QCommand(min = 1, max = 1, usage = "{<location>}")
 	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
 		final Location loc =
-				Util.getLoc(context.getPlayer(), context.getString(0), context.getSenderLang());
+				SerUtils.getLoc(context.getPlayer(), context.getString(0), context.getSenderLang());
 		if(loc == null) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_LOC_INVALID);
 		}
@@ -51,12 +51,12 @@ public final class TeleportQevent extends Qevent {
 	
 	@Override
 	protected void save(final StorageKey key) {
-		key.setString("location", Util.serializeLocString(location));
+		key.setString("location", SerUtils.serializeLocString(location));
 		
 	}
 	
 	protected static Qevent load(final StorageKey key) {
-		final Location loc = Util.deserializeLocString(key.getString("location", ""));
+		final Location loc = SerUtils.deserializeLocString(key.getString("location", ""));
 		if(loc == null) {
 			return null;
 		}

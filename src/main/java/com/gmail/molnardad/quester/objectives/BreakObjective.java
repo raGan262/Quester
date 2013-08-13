@@ -1,7 +1,5 @@
 package com.gmail.molnardad.quester.objectives;
 
-import static com.gmail.molnardad.quester.utils.Util.parseItem;
-
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
@@ -11,7 +9,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.storage.StorageKey;
-import com.gmail.molnardad.quester.utils.Util;
+import com.gmail.molnardad.quester.utils.SerUtils;
 
 @QElement("BREAK")
 public final class BreakObjective extends Objective {
@@ -59,7 +57,7 @@ public final class BreakObjective extends Objective {
 		Material mat = null;
 		byte dat = -1;
 		if(!context.getString(0).equalsIgnoreCase("ANY")) {
-			itm = parseItem(context.getString(0));
+			itm = SerUtils.parseItem(context.getString(0));
 			mat = Material.getMaterial(itm[0]);
 			dat = (byte) itm[1];
 			if(mat.getId() > 255) {
@@ -72,7 +70,7 @@ public final class BreakObjective extends Objective {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_ITEM_NUMBERS);
 		}
 		if(context.length() > 2) {
-			itm = parseItem(context.getString(2));
+			itm = SerUtils.parseItem(context.getString(2));
 			hnd = itm[0];
 		}
 		return new BreakObjective(amt, mat, dat, hnd);
@@ -81,7 +79,7 @@ public final class BreakObjective extends Objective {
 	@Override
 	protected void save(final StorageKey key) {
 		if(material != null) {
-			key.setString("block", Util.serializeItem(material, data));
+			key.setString("block", SerUtils.serializeItem(material, data));
 		}
 		if(amount > 1) {
 			key.setInt("amount", amount);
@@ -98,7 +96,7 @@ public final class BreakObjective extends Objective {
 		final String blockString = key.getString("block");
 		if(blockString != null) {
 			try {
-				final int[] itm = Util.parseItem(blockString);
+				final int[] itm = SerUtils.parseItem(blockString);
 				mat = Material.getMaterial(itm[0]);
 				dat = itm[1];
 			}
@@ -111,7 +109,7 @@ public final class BreakObjective extends Objective {
 			amt = 1;
 		}
 		try {
-			hnd = Util.parseItem(key.getString("inhand", ""))[0];
+			hnd = SerUtils.parseItem(key.getString("inhand", ""))[0];
 		}
 		catch (final IllegalArgumentException e) {}
 		return new BreakObjective(amt, mat, dat, hnd);

@@ -16,6 +16,7 @@ import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Ql;
+import com.gmail.molnardad.quester.utils.SerUtils;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class Quest {
@@ -256,7 +257,7 @@ public class Quest {
 			key.setString("description", description);
 		}
 		if(location != null) {
-			key.setString("location", Util.serializeLocString(location));
+			key.setString("location", SerUtils.serializeLocString(location));
 			if(range > 1) {
 				key.setInt("range", range);
 			}
@@ -305,7 +306,7 @@ public class Quest {
 			}
 			
 			if(key.getString("location") != null) {
-				quest.setLocation(Util.deserializeLocString(key.getString("location")));
+				quest.setLocation(SerUtils.deserializeLocString(key.getString("location")));
 				if(key.getInt("range", 1) > 1) {
 					quest.setRange(key.getInt("range"));
 				}

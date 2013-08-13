@@ -1,7 +1,5 @@
 package com.gmail.molnardad.quester.commands;
 
-import static com.gmail.molnardad.quester.utils.Util.getLoc;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -13,6 +11,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.QuestManager;
+import com.gmail.molnardad.quester.utils.SerUtils;
 
 public class LocationCommands {
 	
@@ -38,7 +37,7 @@ public class LocationCommands {
 				throw new NumberFormatException();
 			}
 			qMan.setQuestLocation(profMan.getProfile(sender.getName()),
-					getLoc(sender, context.getString(0)), range, context.getSenderLang());
+					SerUtils.getLoc(sender, context.getString(0)), range, context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_LOC_SET);
 		}
 		catch (final NumberFormatException e) {

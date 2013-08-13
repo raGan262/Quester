@@ -11,6 +11,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.SerUtils;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("ITEM")
@@ -83,7 +84,7 @@ public final class ItemCondition extends Condition {
 	
 	@QCommand(min = 1, max = 2, usage = "{<item>} <amount> (-qi)")
 	public static Condition fromCommand(final QCommandContext context) throws QCommandException {
-		final int[] itm = Util.parseItem(context.getString(0));
+		final int[] itm = SerUtils.parseItem(context.getString(0));
 		final Material mat = Material.getMaterial(itm[0]);
 		final int dat = itm[1];
 		int amt;
@@ -104,7 +105,7 @@ public final class ItemCondition extends Condition {
 	
 	@Override
 	protected void save(final StorageKey key) {
-		key.setString("item", Util.serializeItem(material.getId(), data));
+		key.setString("item", SerUtils.serializeItem(material.getId(), data));
 		key.setInt("amount", amount);
 		if(inverted) {
 			key.setBoolean("inverted", inverted);
@@ -120,7 +121,7 @@ public final class ItemCondition extends Condition {
 		final boolean invert = key.getBoolean("inverted", false);
 		final boolean quest = key.getBoolean("questitem", false);
 		try {
-			final int[] itm = Util.parseItem(key.getString("item"));
+			final int[] itm = SerUtils.parseItem(key.getString("item"));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
 			amt = key.getInt("amount", 1);

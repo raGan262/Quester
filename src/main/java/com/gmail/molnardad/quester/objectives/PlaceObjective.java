@@ -1,7 +1,5 @@
 package com.gmail.molnardad.quester.objectives;
 
-import static com.gmail.molnardad.quester.utils.Util.parseItem;
-
 import org.bukkit.Material;
 
 import com.gmail.molnardad.quester.commandbase.QCommand;
@@ -10,7 +8,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.storage.StorageKey;
-import com.gmail.molnardad.quester.utils.Util;
+import com.gmail.molnardad.quester.utils.SerUtils;
 
 @QElement("PLACE")
 public final class PlaceObjective extends Objective {
@@ -47,7 +45,7 @@ public final class PlaceObjective extends Objective {
 	
 	@QCommand(min = 2, max = 2, usage = "{<item>} <amount>")
 	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
-		final int[] itm = parseItem(context.getString(0));
+		final int[] itm = SerUtils.parseItem(context.getString(0));
 		final Material mat = Material.getMaterial(itm[0]);
 		final byte dat = (byte) itm[1];
 		if(mat.getId() > 255) {
@@ -62,7 +60,7 @@ public final class PlaceObjective extends Objective {
 	
 	@Override
 	protected void save(final StorageKey key) {
-		key.setString("block", Util.serializeItem(material, data));
+		key.setString("block", SerUtils.serializeItem(material, data));
 		if(amount > 1) {
 			key.setInt("amount", amount);
 		}
@@ -72,7 +70,7 @@ public final class PlaceObjective extends Objective {
 		Material mat;
 		int dat, amt = 1;
 		try {
-			final int[] itm = Util.parseItem(key.getString("block", ""));
+			final int[] itm = SerUtils.parseItem(key.getString("block", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
 		}

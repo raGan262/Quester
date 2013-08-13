@@ -19,7 +19,7 @@ import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.lang.QuesterLang;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.QuestManager;
-import com.gmail.molnardad.quester.utils.Util;
+import com.gmail.molnardad.quester.utils.SerUtils;
 
 public class QeventCommands {
 	
@@ -38,7 +38,7 @@ public class QeventCommands {
 	private Qevent getQevent(final String type, final String occassion, final QCommandContext subContext, final QuesterLang lang) throws QeventException, QCommandException, QuesterException {
 		int[] occasion;
 		try {
-			occasion = Util.deserializeOccasion(occassion, lang);
+			occasion = SerUtils.deserializeOccasion(occassion, lang);
 		}
 		catch (final IllegalArgumentException e) {
 			throw new QCommandException(e.getMessage());

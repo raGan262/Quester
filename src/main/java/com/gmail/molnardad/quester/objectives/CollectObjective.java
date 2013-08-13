@@ -1,7 +1,5 @@
 package com.gmail.molnardad.quester.objectives;
 
-import static com.gmail.molnardad.quester.utils.Util.parseItem;
-
 import org.bukkit.Material;
 
 import com.gmail.molnardad.quester.commandbase.QCommand;
@@ -10,7 +8,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.storage.StorageKey;
-import com.gmail.molnardad.quester.utils.Util;
+import com.gmail.molnardad.quester.utils.SerUtils;
 
 @QElement("COLLECT")
 public final class CollectObjective extends Objective {
@@ -45,7 +43,7 @@ public final class CollectObjective extends Objective {
 	
 	@QCommand(min = 2, max = 2, usage = "{<item>} <amount>")
 	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
-		final int[] itm = parseItem(context.getString(0));
+		final int[] itm = SerUtils.parseItem(context.getString(0));
 		final Material mat = Material.getMaterial(itm[0]);
 		final int dat = itm[1];
 		final int amt = Integer.parseInt(context.getString(1));
@@ -57,7 +55,7 @@ public final class CollectObjective extends Objective {
 	
 	@Override
 	protected void save(final StorageKey key) {
-		key.setString("item", Util.serializeItem(material, data));
+		key.setString("item", SerUtils.serializeItem(material, data));
 		key.setInt("amount", amount);
 	}
 	
@@ -65,7 +63,7 @@ public final class CollectObjective extends Objective {
 		Material mat;
 		int dat, amt;
 		try {
-			final int[] itm = Util.parseItem(key.getString("item", ""));
+			final int[] itm = SerUtils.parseItem(key.getString("item", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
 		}

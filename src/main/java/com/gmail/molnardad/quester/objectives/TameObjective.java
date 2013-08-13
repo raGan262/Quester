@@ -8,7 +8,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.storage.StorageKey;
-import com.gmail.molnardad.quester.utils.Util;
+import com.gmail.molnardad.quester.utils.SerUtils;
 
 @QElement("TAME")
 public final class TameObjective extends Objective {
@@ -46,7 +46,7 @@ public final class TameObjective extends Objective {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
 		}
 		if(context.length() > 1) {
-			ent = Util.parseEntity(context.getString(1));
+			ent = SerUtils.parseEntity(context.getString(1));
 			if(ent == null) {
 				throw new QCommandException(context.getSenderLang().ERROR_CMD_ENTITY_UNKNOWN);
 			}
@@ -68,7 +68,7 @@ public final class TameObjective extends Objective {
 		int amt = 1;
 		EntityType ent = null;
 		try {
-			ent = Util.parseEntity(key.getString("entity"));
+			ent = SerUtils.parseEntity(key.getString("entity"));
 		}
 		catch (final Exception e) {}
 		amt = key.getInt("amount", 1);

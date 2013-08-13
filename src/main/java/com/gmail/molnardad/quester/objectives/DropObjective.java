@@ -1,7 +1,5 @@
 package com.gmail.molnardad.quester.objectives;
 
-import static com.gmail.molnardad.quester.utils.Util.parseItem;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -12,6 +10,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.SerUtils;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("DROP")
@@ -44,7 +43,7 @@ public final class DropObjective extends Objective {
 	protected String show(final int progress) {
 		final String datStr = data < 0 ? "" : " (data" + data + ")";
 		final String spec = questItem ? " special" : "";
-		final String locStr = location == null ? "" : " at " + Util.displayLocation(location);
+		final String locStr = location == null ? "" : " at " + SerUtils.displayLocation(location);
 		return "Drop " + spec + material.name().toLowerCase().replace('_', ' ') + datStr + locStr
 				+ " - " + progress + "/" + amount + ".";
 	}
@@ -53,7 +52,7 @@ public final class DropObjective extends Objective {
 	protected String info() {
 		final String dataStr = data < 0 ? "" : ":" + data;
 		final String locStr =
-				location == null ? "" : "; LOC: " + Util.displayLocation(location) + "; RNG: "
+				location == null ? "" : "; LOC: " + SerUtils.displayLocation(location) + "; RNG: "
 						+ range;
 		final String flags = questItem ? " (-q)" : "";
 		return material.name() + "[" + material.getId() + dataStr + "]; AMT: " + amount + locStr
@@ -62,7 +61,7 @@ public final class DropObjective extends Objective {
 	
 	@QCommand(min = 2, max = 4, usage = "{<item>} <amount> {[location]} [range] (-q)")
 	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
-		final int[] itm = parseItem(context.getString(0));
+		final int[] itm = SerUtils.parseItem(context.getString(0));
 		final Material mat = Material.getMaterial(itm[0]);
 		final int dat = itm[1];
 		final int amt = context.getInt(1);
@@ -72,7 +71,7 @@ public final class DropObjective extends Objective {
 		Location loc = null;
 		double rng = 2.0;
 		if(context.length() > 2) {
-			loc = Util.getLoc(context.getPlayer(), context.getString(2));
+			loc = SerUtils.getLoc(context.getPlayer(), context.getString(2));
 			if(context.length() > 3) {
 				rng = context.getDouble(3);
 				if(rng < 0) {
@@ -85,10 +84,10 @@ public final class DropObjective extends Objective {
 	
 	@Override
 	protected void save(final StorageKey key) {
-		key.setString("item", Util.serializeItem(material, data));
+		key.setString("item", SerUtils.serializeItem(material, data));
 		key.setInt("amount", amount);
 		if(location != null) {
-			key.setString("location", Util.serializeLocString(location));
+			key.setString("location", SerUtils.serializeLocString(location));
 			key.setDouble("range", range);
 		}
 		if(questItem) {
@@ -102,7 +101,7 @@ public final class DropObjective extends Objective {
 		Location loc = null;
 		double rng = 2.0;
 		try {
-			final int[] itm = Util.parseItem(key.getString("item", ""));
+			final int[] itm = SerUtils.parseItem(key.getString("item", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
 		}
@@ -113,7 +112,7 @@ public final class DropObjective extends Objective {
 		if(amt < 1) {
 			return null;
 		}
-		loc = Util.deserializeLocString(key.getString("location", ""));
+		loc = SerUtils.deserializeLocString(key.getString("location", ""));
 		if(loc != null) {
 			rng = key.getDouble("range", 2.0);
 			if(rng < 0) {

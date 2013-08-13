@@ -1,7 +1,5 @@
 package com.gmail.molnardad.quester.commands;
 
-import static com.gmail.molnardad.quester.utils.Util.parsePrerequisites;
-
 import java.util.Set;
 
 import org.bukkit.ChatColor;
@@ -21,6 +19,7 @@ import com.gmail.molnardad.quester.exceptions.QuesterException;
 import com.gmail.molnardad.quester.lang.QuesterLang;
 import com.gmail.molnardad.quester.profiles.ProfileManager;
 import com.gmail.molnardad.quester.quests.QuestManager;
+import com.gmail.molnardad.quester.utils.SerUtils;
 
 public class ObjectiveCommands {
 	
@@ -215,7 +214,7 @@ public class ObjectiveCommands {
 				min = 1,
 				usage = "<objective ID> <prerequisite1>...")
 		public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
-			final Set<Integer> prereq = parsePrerequisites(context.getArgs(), 1);
+			final Set<Integer> prereq = SerUtils.parsePrerequisites(context.getArgs(), 1);
 			qMan.addObjectivePrerequisites(profMan.getProfile(sender.getName()), context.getInt(0),
 					prereq, context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
@@ -229,7 +228,7 @@ public class ObjectiveCommands {
 				min = 1,
 				usage = "<objective ID> <prerequisite1>...")
 		public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
-			final Set<Integer> prereq = parsePrerequisites(context.getArgs(), 1);
+			final Set<Integer> prereq = SerUtils.parsePrerequisites(context.getArgs(), 1);
 			qMan.removeObjectivePrerequisites(profMan.getProfile(sender.getName()),
 					context.getInt(0), prereq, context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN

@@ -1,7 +1,5 @@
 package com.gmail.molnardad.quester.objectives;
 
-import static com.gmail.molnardad.quester.utils.Util.parseEntity;
-
 import org.bukkit.entity.EntityType;
 
 import com.gmail.molnardad.quester.commandbase.QCommand;
@@ -10,7 +8,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.storage.StorageKey;
-import com.gmail.molnardad.quester.utils.Util;
+import com.gmail.molnardad.quester.utils.SerUtils;
 
 @QElement("MOBKILL")
 public final class MobKillObjective extends Objective {
@@ -48,7 +46,7 @@ public final class MobKillObjective extends Objective {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
 		}
 		if(context.length() > 1) {
-			ent = parseEntity(context.getString(1));
+			ent = SerUtils.parseEntity(context.getString(1));
 		}
 		return new MobKillObjective(amt, ent);
 	}
@@ -67,7 +65,7 @@ public final class MobKillObjective extends Objective {
 		int amt = 1;
 		EntityType ent = null;
 		try {
-			ent = Util.parseEntity(key.getString("entity"));
+			ent = SerUtils.parseEntity(key.getString("entity"));
 		}
 		catch (final Exception ignore) {}
 		amt = key.getInt("amount", 1);

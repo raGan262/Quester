@@ -1,7 +1,5 @@
 package com.gmail.molnardad.quester.qevents;
 
-import static com.gmail.molnardad.quester.utils.Util.parseEffect;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -13,7 +11,7 @@ import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Ql;
-import com.gmail.molnardad.quester.utils.Util;
+import com.gmail.molnardad.quester.utils.SerUtils;
 
 @QElement("EFFECT")
 public class EffectQevent extends Qevent {
@@ -37,13 +35,13 @@ public class EffectQevent extends Qevent {
 	
 	@QCommand(min = 1, max = 1, usage = "{<potion effect>}")
 	public static Qevent fromCommand(final QCommandContext context) {
-		final PotionEffect eff = parseEffect(context.getString(0));
+		final PotionEffect eff = SerUtils.parseEffect(context.getString(0));
 		return new EffectQevent(eff);
 	}
 	
 	@Override
 	protected void save(final StorageKey key) {
-		key.setString("effect", Util.serializeEffect(effect));
+		key.setString("effect", SerUtils.serializeEffect(effect));
 	}
 	
 	protected static Qevent load(final StorageKey key) {
@@ -51,7 +49,7 @@ public class EffectQevent extends Qevent {
 		
 		if(key.getString("effect") != null) {
 			try {
-				eff = Util.parseEffect(key.getString("effect", ""));
+				eff = SerUtils.parseEffect(key.getString("effect", ""));
 			}
 			catch (final IllegalArgumentException e) {
 				Ql.severe("Error deserializing effect event: "

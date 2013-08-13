@@ -1,8 +1,5 @@
 package com.gmail.molnardad.quester.objectives;
 
-import static com.gmail.molnardad.quester.utils.Util.parseEnchants;
-import static com.gmail.molnardad.quester.utils.Util.parseItem;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +13,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.SerUtils;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("ENCHANT")
@@ -71,7 +69,7 @@ public final class EnchantObjective extends Objective {
 	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
 		Map<Integer, Integer> enchs = null;
 		int amt = 1;
-		final int[] itm = parseItem(context.getString(0));
+		final int[] itm = SerUtils.parseItem(context.getString(0));
 		final Material mat = Material.getMaterial(itm[0]);
 		if(context.length() > 1) {
 			amt = context.getInt(1);
@@ -79,7 +77,7 @@ public final class EnchantObjective extends Objective {
 				throw new QCommandException(context.getSenderLang().ERROR_CMD_ENCH_LEVEL);
 			}
 			if(context.length() > 2) {
-				enchs = parseEnchants(context.getString(2));
+				enchs = SerUtils.parseEnchants(context.getString(2));
 			}
 		}
 		return new EnchantObjective(mat, amt, enchs);
@@ -87,9 +85,9 @@ public final class EnchantObjective extends Objective {
 	
 	@Override
 	protected void save(final StorageKey key) {
-		key.setString("enchants", Util.serializeEnchants(enchants));
+		key.setString("enchants", SerUtils.serializeEnchants(enchants));
 		if(material != null) {
-			key.setString("item", Util.serializeItem(material, -1));
+			key.setString("item", SerUtils.serializeItem(material, -1));
 		}
 		if(amount > 1) {
 			key.setInt("amount", amount);
@@ -102,14 +100,14 @@ public final class EnchantObjective extends Objective {
 		Map<Integer, Integer> enchs = null;
 		try {
 			try {
-				mat = Material.getMaterial(Util.parseItem(key.getString("item"))[0]);
+				mat = Material.getMaterial(SerUtils.parseItem(key.getString("item"))[0]);
 			}
 			catch (final Exception ignore) {}
 			amt = key.getInt("amount", 1);
 			if(amt < 1) {
 				amt = 1;
 			}
-			enchs = Util.parseEnchants(key.getString("enchants", ""));
+			enchs = SerUtils.parseEnchants(key.getString("enchants", ""));
 		}
 		catch (final Exception e) {
 			return null;

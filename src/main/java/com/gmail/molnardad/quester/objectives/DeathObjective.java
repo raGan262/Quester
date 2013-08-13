@@ -1,7 +1,5 @@
 package com.gmail.molnardad.quester.objectives;
 
-import static com.gmail.molnardad.quester.utils.Util.getLoc;
-
 import org.bukkit.Location;
 
 import com.gmail.molnardad.quester.commandbase.QCommand;
@@ -10,7 +8,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.storage.StorageKey;
-import com.gmail.molnardad.quester.utils.Util;
+import com.gmail.molnardad.quester.utils.SerUtils;
 
 @QElement("DEATH")
 public final class DeathObjective extends Objective {
@@ -57,7 +55,7 @@ public final class DeathObjective extends Objective {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
 		}
 		if(context.length() > 1) {
-			loc = getLoc(context.getPlayer(), context.getString(1));
+			loc = SerUtils.getLoc(context.getPlayer(), context.getString(1));
 			if(context.length() > 2) {
 				rng = context.getInt(2);
 				if(rng < 1) {
@@ -71,7 +69,7 @@ public final class DeathObjective extends Objective {
 	@Override
 	protected void save(final StorageKey key) {
 		if(location != null) {
-			key.setString("location", Util.serializeLocString(location));
+			key.setString("location", SerUtils.serializeLocString(location));
 		}
 		if(amount != 1) {
 			key.setInt("amount", amount);
@@ -84,7 +82,7 @@ public final class DeathObjective extends Objective {
 	protected static Objective load(final StorageKey key) {
 		Location loc = null;
 		int amt = 1, rng = 5;
-		loc = Util.deserializeLocString(key.getString("location", ""));
+		loc = SerUtils.deserializeLocString(key.getString("location", ""));
 		amt = key.getInt("amount", 1);
 		if(amt < 1) {
 			amt = 1;

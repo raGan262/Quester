@@ -28,10 +28,10 @@ public abstract class Region {
 		try {
 			final String[] strs = string.split(Pattern.quote(SEPARATOR));
 			if(strs[0].equalsIgnoreCase("SPHERE")) {
-				return new Sphere(Util.getLoc(sender, strs[1]), Double.valueOf(strs[2]));
+				return new Sphere(SerUtils.getLoc(sender, strs[1]), Double.valueOf(strs[2]));
 			}
 			else if(strs[0].equalsIgnoreCase("CUBOID")) {
-				return new Cuboid(Util.getLoc(sender, strs[1]), Util.getLoc(sender, strs[2]));
+				return new Cuboid(SerUtils.getLoc(sender, strs[1]), SerUtils.getLoc(sender, strs[2]));
 			}
 			else if(strs[0].equalsIgnoreCase("WORLD")) {
 				if(sender instanceof Player
@@ -113,12 +113,12 @@ public abstract class Region {
 		
 		@Override
 		public String toString() {
-			return getType() + " " + Util.displayLocation(center) + " R=" + range;
+			return getType() + " " + SerUtils.displayLocation(center) + " R=" + range;
 		}
 		
 		@Override
 		public String serializeToString() {
-			return Util.serializeLocString(center) + SEPARATOR + range;
+			return SerUtils.serializeLocString(center) + SEPARATOR + range;
 		}
 	}
 	
@@ -160,12 +160,12 @@ public abstract class Region {
 		
 		@Override
 		public String toString() {
-			return getType() + " " + Util.displayLocation(min) + " " + Util.displayLocation(max);
+			return getType() + " " + SerUtils.displayLocation(min) + " " + SerUtils.displayLocation(max);
 		}
 		
 		@Override
 		public String serializeToString() {
-			return Util.serializeLocString(min) + SEPARATOR + Util.serializeLocString(max);
+			return SerUtils.serializeLocString(min) + SEPARATOR + SerUtils.serializeLocString(max);
 		}
 	}
 	

@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Ql;
-import com.gmail.molnardad.quester.utils.Util;
+import com.gmail.molnardad.quester.utils.SerUtils;
 
 public abstract class Objective extends Element {
 	
@@ -34,7 +34,7 @@ public abstract class Objective extends Element {
 	private String coloredDesc() {
 		String des = "";
 		if(!prerequisites.isEmpty()) {
-			des += " PRE: " + Util.serializePrerequisites(prerequisites, ",");
+			des += " PRE: " + SerUtils.serializePrerequisites(prerequisites, ",");
 		}
 		if(!desc.isEmpty()) {
 			des += "\n  - " + ChatColor.translateAlternateColorCodes('&', desc) + ChatColor.RESET;
@@ -122,7 +122,7 @@ public abstract class Objective extends Element {
 			key.setString("description", desc);
 		}
 		if(!prerequisites.isEmpty()) {
-			key.setString("prerequisites", Util.serializePrerequisites(prerequisites));
+			key.setString("prerequisites", SerUtils.serializePrerequisites(prerequisites));
 		}
 		if(hidden) {
 			key.setBoolean("hidden", hidden);
@@ -165,7 +165,7 @@ public abstract class Objective extends Element {
 				
 				try {
 					final Set<Integer> prereq =
-							Util.deserializePrerequisites(key.getString("prerequisites"));
+							SerUtils.deserializePrerequisites(key.getString("prerequisites"));
 					for(final int i : prereq) {
 						obj.addPrerequisity(i);
 					}

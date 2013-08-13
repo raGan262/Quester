@@ -11,7 +11,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.storage.StorageKey;
-import com.gmail.molnardad.quester.utils.Util;
+import com.gmail.molnardad.quester.utils.SerUtils;
 
 @QElement("SOUND")
 public final class SoundQevent extends Qevent {
@@ -32,7 +32,7 @@ public final class SoundQevent extends Qevent {
 	public String info() {
 		String locStr = "PLAYER";
 		if(location != null) {
-			locStr = Util.displayLocation(location);
+			locStr = SerUtils.displayLocation(location);
 		}
 		return sound.name() + "; LOC: " + locStr + "; VOL: " + volume + "; PIT: " + pitch;
 	}
@@ -51,8 +51,8 @@ public final class SoundQevent extends Qevent {
 	
 	@QCommand(min = 2, max = 4, usage = "{<sound>} {<location>} [volume] [pitch]")
 	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
-		final Sound snd = Util.parseSound(context.getString(0));
-		final Location loc = Util.getLoc(context.getPlayer(), context.getString(1));
+		final Sound snd = SerUtils.parseSound(context.getString(0));
+		final Location loc = SerUtils.getLoc(context.getPlayer(), context.getString(1));
 		float vol = 1F;
 		float pit = 1F;
 		if(context.length() > 2) {
@@ -71,7 +71,7 @@ public final class SoundQevent extends Qevent {
 	protected void save(final StorageKey key) {
 		key.setString("sound", sound.name());
 		if(location != null) {
-			key.setString("location", Util.serializeLocString(location));
+			key.setString("location", SerUtils.serializeLocString(location));
 		}
 		if(volume != 1F) {
 			key.setDouble("volume", volume);
@@ -82,11 +82,11 @@ public final class SoundQevent extends Qevent {
 	}
 	
 	protected static Qevent load(final StorageKey key) {
-		final Sound snd = Util.parseSound(key.getString("sound", ""));
+		final Sound snd = SerUtils.parseSound(key.getString("sound", ""));
 		if(snd == null) {
 			return null;
 		}
-		final Location loc = Util.deserializeLocString(key.getString("location", ""));
+		final Location loc = SerUtils.deserializeLocString(key.getString("location", ""));
 		float vol = (float) key.getDouble("volume", 1F);
 		float pit = (float) key.getDouble("pitch", 1F);
 		if(vol < 0F) {

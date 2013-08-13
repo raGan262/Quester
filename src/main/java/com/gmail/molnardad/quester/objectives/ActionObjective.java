@@ -1,9 +1,5 @@
 package com.gmail.molnardad.quester.objectives;
 
-import static com.gmail.molnardad.quester.utils.Util.getLoc;
-import static com.gmail.molnardad.quester.utils.Util.parseAction;
-import static com.gmail.molnardad.quester.utils.Util.parseItem;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -16,7 +12,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.storage.StorageKey;
-import com.gmail.molnardad.quester.utils.Util;
+import com.gmail.molnardad.quester.utils.SerUtils;
 
 @QElement("ACTION")
 public final class ActionObjective extends Objective {
@@ -70,7 +66,7 @@ public final class ActionObjective extends Objective {
 		final String handDatStr = inHandData < 0 ? "" : "(data" + inHandData + ")";
 		final String locStr =
 				location == null ? "" : " " + range + " blocks close to "
-						+ Util.displayLocation(location);
+						+ SerUtils.displayLocation(location);
 		return clickStr + blockStr + datStr + handStr + handDatStr + locStr + ".";
 	}
 	
@@ -85,7 +81,7 @@ public final class ActionObjective extends Objective {
 		final String clickStr =
 				click == 1 ? "LEFT" : click == 2 ? "RIGHT" : click == 3 ? "PUSH" : "ALL";
 		return clickStr + "; BLOCK: " + blockStr + "; HAND: " + handStr + "; LOC: "
-				+ Util.displayLocation(location) + "; RNG: " + range;
+				+ SerUtils.displayLocation(location) + "; RNG: " + range;
 	}
 	
 	@QCommand(min = 1, max = 5, usage = "{<click>} {[block]} {[item]} {[location]} [range]")
@@ -94,10 +90,10 @@ public final class ActionObjective extends Objective {
 		int dat = -1, hdat = -1, rng = 0, click = 0;
 		Location loc = null;
 		int[] itm;
-		click = parseAction(context.getString(0));
+		click = SerUtils.parseAction(context.getString(0));
 		if(context.length() > 1) {
 			if(!context.getString(1).equalsIgnoreCase("ANY")) {
-				itm = parseItem(context.getString(1));
+				itm = SerUtils.parseItem(context.getString(1));
 				if(itm[0] > 255) {
 					throw new QCommandException(context.getSenderLang().ERROR_CMD_BLOCK_UNKNOWN);
 				}
@@ -106,12 +102,12 @@ public final class ActionObjective extends Objective {
 			}
 			if(context.length() > 2) {
 				if(!context.getString(2).equalsIgnoreCase("ANY")) {
-					itm = parseItem(context.getString(2));
+					itm = SerUtils.parseItem(context.getString(2));
 					hmat = Material.getMaterial(itm[0]);
 					hdat = itm[1];
 				}
 				if(context.length() > 3) {
-					loc = getLoc(context.getPlayer(), context.getString(3));
+					loc = SerUtils.getLoc(context.getPlayer(), context.getString(3));
 					if(context.length() > 4) {
 						rng = Integer.parseInt(context.getString(4));
 					}
@@ -124,16 +120,16 @@ public final class ActionObjective extends Objective {
 	@Override
 	protected void save(final StorageKey key) {
 		if(block != null) {
-			key.setString("block", Util.serializeItem(block, blockData));
+			key.setString("block", SerUtils.serializeItem(block, blockData));
 		}
 		if(inHand != null) {
-			key.setString("hand", Util.serializeItem(inHand, inHandData));
+			key.setString("hand", SerUtils.serializeItem(inHand, inHandData));
 		}
 		if(click > 0 && click < 4) {
 			key.setInt("click", click);
 		}
 		if(location != null) {
-			key.setString("location", Util.serializeLocString(location));
+			key.setString("location", SerUtils.serializeLocString(location));
 			if(range > 0) {
 				key.setInt("range", range);
 			}
@@ -146,19 +142,19 @@ public final class ActionObjective extends Objective {
 		int dat = -1, hdat = -1, rng = 0, clck = 0;
 		int[] itm;
 		try {
-			itm = Util.parseItem(key.getString("block", ""));
+			itm = SerUtils.parseItem(key.getString("block", ""));
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
 		}
 		catch (final IllegalArgumentException ignore) {}
 		try {
-			itm = Util.parseItem(key.getString("hand", ""));
+			itm = SerUtils.parseItem(key.getString("hand", ""));
 			hnd = Material.getMaterial(itm[0]);
 			hdat = itm[1];
 		}
 		catch (final IllegalArgumentException ignore) {}
 		clck = key.getInt("click", 0);
-		loc = Util.deserializeLocString(key.getString("location", ""));
+		loc = SerUtils.deserializeLocString(key.getString("location", ""));
 		rng = key.getInt("range", 0);
 		
 		return new ActionObjective(mat, dat, hnd, hdat, clck, loc, rng);

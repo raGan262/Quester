@@ -32,6 +32,7 @@ import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Ql;
+import com.gmail.molnardad.quester.utils.SerUtils;
 import com.gmail.molnardad.quester.utils.Util;
 
 public class QuestManager {
@@ -579,7 +580,7 @@ public class QuestManager {
 		}
 		if(quest.hasLocation()) {
 			sender.sendMessage(ChatColor.BLUE + lang.INFO_LOCATION + ": " + ChatColor.WHITE
-					+ Util.displayLocation(quest.getLocation()));
+					+ SerUtils.displayLocation(quest.getLocation()));
 		}
 		string = QuestFlag.stringize(quest.getFlags());
 		if(!string.isEmpty()) {

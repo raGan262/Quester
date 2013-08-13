@@ -9,6 +9,7 @@ import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.SerUtils;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("EXPLOSION")
@@ -28,7 +29,7 @@ public final class ExplosionQevent extends Qevent {
 	public String info() {
 		String locStr = "PLAYER";
 		if(location != null) {
-			locStr = Util.displayLocation(location);
+			locStr = SerUtils.displayLocation(location);
 		}
 		return locStr + "; RNG: " + range + "; DMG: " + damage;
 	}
@@ -53,7 +54,7 @@ public final class ExplosionQevent extends Qevent {
 	
 	@QCommand(min = 1, max = 2, usage = "{<location>} [range] (-d)")
 	public static Qevent fromCommand(final QCommandContext context) {
-		final Location loc = Util.getLoc(context.getPlayer(), context.getString(0));
+		final Location loc = SerUtils.getLoc(context.getPlayer(), context.getString(0));
 		int range = 0;
 		if(context.length() > 1) {
 			range = context.getInt(1);
@@ -67,7 +68,7 @@ public final class ExplosionQevent extends Qevent {
 			key.setBoolean("damage", damage);
 		}
 		if(location != null) {
-			key.setString("location", Util.serializeLocString(location));
+			key.setString("location", SerUtils.serializeLocString(location));
 		}
 		if(range != 0) {
 			key.setInt("range", range);
@@ -75,7 +76,7 @@ public final class ExplosionQevent extends Qevent {
 	}
 	
 	protected static Qevent load(final StorageKey key) {
-		final Location loc = Util.deserializeLocString(key.getString("location", ""));
+		final Location loc = SerUtils.deserializeLocString(key.getString("location", ""));
 		int rng = key.getInt("range", 0);
 		if(rng < 0) {
 			rng = 0;

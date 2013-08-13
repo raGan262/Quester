@@ -1,7 +1,5 @@
 package com.gmail.molnardad.quester.objectives;
 
-import static com.gmail.molnardad.quester.utils.Util.getLoc;
-
 import org.bukkit.Location;
 
 import com.gmail.molnardad.quester.commandbase.QCommand;
@@ -11,7 +9,7 @@ import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Region;
-import com.gmail.molnardad.quester.utils.Util;
+import com.gmail.molnardad.quester.utils.SerUtils;
 
 /* DEPRECATED - use REGION objective instead */
 
@@ -41,13 +39,13 @@ public final class LocObjective extends Objective {
 	
 	@Override
 	protected String info() {
-		return Util.serializeLocString(location) + "; RNG: " + range;
+		return SerUtils.serializeLocString(location) + "; RNG: " + range;
 	}
 	
 	@QCommand(min = 1, max = 2, usage = "{<location>} [range]")
 	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
 		int rng = 3;
-		final Location loc = getLoc(context.getPlayer(), context.getString(0));
+		final Location loc = SerUtils.getLoc(context.getPlayer(), context.getString(0));
 		if(loc == null) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_LOC_INVALID);
 		}
@@ -62,14 +60,14 @@ public final class LocObjective extends Objective {
 	
 	@Override
 	protected void save(final StorageKey key) {
-		key.setString("location", Util.serializeLocString(location));
+		key.setString("location", SerUtils.serializeLocString(location));
 		if(range != 3) {
 			key.setInt("range", range);
 		}
 	}
 	
 	protected static Objective load(final StorageKey key) {
-		final Location location = Util.deserializeLocString(key.getString("location", ""));
+		final Location location = SerUtils.deserializeLocString(key.getString("location", ""));
 		int range = 3;
 		if(location == null) {
 			return null;

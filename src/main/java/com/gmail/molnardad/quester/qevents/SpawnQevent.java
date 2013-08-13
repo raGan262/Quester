@@ -1,7 +1,5 @@
 package com.gmail.molnardad.quester.qevents;
 
-import static com.gmail.molnardad.quester.utils.Util.parseEntity;
-
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -13,6 +11,7 @@ import com.gmail.molnardad.quester.commandbase.exceptions.QCommandException;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.SerUtils;
 import com.gmail.molnardad.quester.utils.Util;
 
 @QElement("SPAWN")
@@ -34,7 +33,7 @@ public final class SpawnQevent extends Qevent {
 	public String info() {
 		String locStr = "PLAYER";
 		if(location != null) {
-			locStr = Util.displayLocation(location);
+			locStr = SerUtils.displayLocation(location);
 		}
 		return entity.getName() + "; AMT: " + amount + "; LOC: " + locStr + "; RNG: " + range;
 	}
@@ -55,9 +54,9 @@ public final class SpawnQevent extends Qevent {
 	
 	@QCommand(min = 3, max = 4, usage = "{<entity>} <amount> {<location>} [range]")
 	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
-		final EntityType ent = parseEntity(context.getString(0));
+		final EntityType ent = SerUtils.parseEntity(context.getString(0));
 		final int amt = context.getInt(1);
-		final Location loc = Util.getLoc(context.getSender(), context.getString(2));
+		final Location loc = SerUtils.getLoc(context.getSender(), context.getString(2));
 		int rng = 0;
 		if(amt < 1) {
 			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
@@ -78,7 +77,7 @@ public final class SpawnQevent extends Qevent {
 			key.setInt("amount", amount);
 		}
 		if(location != null) {
-			key.setString("location", Util.serializeLocString(location));
+			key.setString("location", SerUtils.serializeLocString(location));
 		}
 		if(range != 0) {
 			key.setInt("range", range);
@@ -88,13 +87,13 @@ public final class SpawnQevent extends Qevent {
 	protected static Qevent load(final StorageKey key) {
 		EntityType ent = null;
 		try {
-			ent = Util.parseEntity(key.getString("entity", ""));
+			ent = SerUtils.parseEntity(key.getString("entity", ""));
 		}
 		catch (final Exception e) {
 			return null;
 		}
 		
-		final Location loc = Util.deserializeLocString(key.getString("location", ""));
+		final Location loc = SerUtils.deserializeLocString(key.getString("location", ""));
 		
 		int rng = key.getInt("range", 0);
 		if(rng < 0) {
