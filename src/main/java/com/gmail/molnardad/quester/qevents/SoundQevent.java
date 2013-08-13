@@ -49,12 +49,15 @@ public final class SoundQevent extends Qevent {
 		temp.getWorld().playSound(temp, sound, volume, pitch);
 	}
 	
-	@QCommand(min = 2, max = 4, usage = "{<sound>} {<location>} [volume] [pitch]")
+	@QCommand(min = 1, max = 4, usage = "{<sound>} {[location]} [volume] [pitch]")
 	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
 		final Sound snd = SerUtils.parseSound(context.getString(0));
-		final Location loc = SerUtils.getLoc(context.getPlayer(), context.getString(1));
 		float vol = 1F;
 		float pit = 1F;
+		Location loc = null;
+		if(context.length() > 1) {
+			loc = SerUtils.getLoc(context.getPlayer(), context.getString(1));
+		}
 		if(context.length() > 2) {
 			vol = (float) context.getDouble(2);
 			if(context.length() > 3) {
