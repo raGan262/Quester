@@ -52,7 +52,7 @@ public class ModificationCommands {
 	public void create(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.createQuest(profMan.getProfile(sender.getName()), context.getString(0),
 				context.getSenderLang());
-		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_CREATED);
+		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_CREATED"));
 		Ql.verbose(sender.getName() + " created quest '" + context.getString(0) + "'.");
 	}
 	
@@ -68,7 +68,7 @@ public class ModificationCommands {
 		final String name =
 				qMan.removeQuest(profMan.getProfile(sender.getName()), context.getInt(0),
 						context.getSenderLang()).getName();
-		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_REMOVED);
+		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_REMOVED"));
 		Ql.verbose(sender.getName() + " removed quest '" + name + "'.");
 	}
 	
@@ -84,7 +84,7 @@ public class ModificationCommands {
 		qMan.changeQuestName(profMan.getProfile(sender.getName()), context.getString(0),
 				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
-				+ context.getSenderLang().Q_RENAMED.replaceAll("%q", context.getString(0)));
+				+ context.getSenderLang().get("Q_RENAMED").replaceAll("%q", context.getString(0)));
 	}
 	
 	@QCommandLabels({ "toggle" })
@@ -104,10 +104,10 @@ public class ModificationCommands {
 					qMan.toggleQuest(profMan.getProfile(sender.getName()), context.getSenderLang());
 		}
 		if(active) {
-			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_ACTIVATED);
+			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_ACTIVATED"));
 		}
 		else {
-			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_DEACTIVATED);
+			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_DEACTIVATED"));
 		}
 	}
 	
@@ -121,7 +121,7 @@ public class ModificationCommands {
 			permission = QConfiguration.PERM_MODIFY)
 	public void select(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		profMan.selectQuest(profMan.getProfile(sender.getName()), qMan.getQuest(context.getInt(0)));
-		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_SELECTED);
+		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_SELECTED"));
 	}
 	
 	// nested commands

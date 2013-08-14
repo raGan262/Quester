@@ -238,20 +238,20 @@ public class ProfileManager {
 	public void startQuest(final Player player, final Quest quest, final ActionSource as, final QuesterLang lang) throws QuesterException {
 		final String playerName = player.getName();
 		if(quest == null) {
-			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
+			throw new QuestException(lang.get("ERROR_Q_NOT_EXIST"));
 		}
 		final PlayerProfile prof = getProfile(playerName);
 		if(prof.hasQuest(quest)) {
-			throw new QuestException(lang.ERROR_Q_ASSIGNED);
+			throw new QuestException(lang.get("ERROR_Q_ASSIGNED"));
 		}
 		if(prof.getQuestAmount() >= QConfiguration.maxQuests) {
-			throw new QuestException(lang.ERROR_Q_MAX_AMOUNT);
+			throw new QuestException(lang.get("ERROR_Q_MAX_AMOUNT"));
 		}
 		if(!quest.hasFlag(QuestFlag.ACTIVE)) {
-			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
+			throw new QuestException(lang.get("ERROR_Q_NOT_EXIST"));
 		}
 		if(as.is(ActionSource.COMMAND) && quest.hasFlag(QuestFlag.HIDDEN)) {
-			throw new QuestException(lang.ERROR_Q_NOT_CMD);
+			throw new QuestException(lang.get("ERROR_Q_NOT_CMD"));
 		}
 		if(!as.is(ActionSource.ADMIN)
 				&& !Util.permCheck(player, QConfiguration.PERM_ADMIN, false, null)) {
@@ -273,8 +273,8 @@ public class ProfileManager {
 		assignQuest(prof, quest);
 		if(QConfiguration.progMsgStart) {
 			player.sendMessage(Quester.LABEL
-					+ langMan.getPlayerLang(playerName).MSG_Q_STARTED.replaceAll("%q",
-							ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
+					+ langMan.getPlayerLang(playerName).get("MSG_Q_STARTED")
+							.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 		}
 		final String description = quest.getDescription(playerName);
 		if(!description.isEmpty() && !quest.hasFlag(QuestFlag.NODESC)) {
@@ -300,7 +300,7 @@ public class ProfileManager {
 		}
 		allQuests = null;
 		if(chosenQuests.isEmpty()) {
-			throw new QuestException(lang.ERROR_Q_NONE_ACTIVE);
+			throw new QuestException(lang.get("ERROR_Q_NONE_ACTIVE"));
 		}
 		final int id = randGen.nextInt(chosenQuests.size());
 		startQuest(player, chosenQuests.get(id).getName(), as, lang);
@@ -324,13 +324,13 @@ public class ProfileManager {
 			}
 		}
 		if(quest == null) {
-			throw new QuestException(lang.ERROR_Q_NOT_ASSIGNED);
+			throw new QuestException(lang.get("ERROR_Q_NOT_ASSIGNED"));
 		}
 		if(as == null) {
 			as = ActionSource.BLANKSOURCE;
 		}
 		if(as.is(ActionSource.COMMAND) && quest.hasFlag(QuestFlag.UNCANCELLABLE)) {
-			throw new QuestException(lang.ERROR_Q_CANT_CANCEL);
+			throw new QuestException(lang.get("ERROR_Q_CANT_CANCEL"));
 		}
 		/* QuestCancelEvent */
 		final QuestCancelEvent event = new QuestCancelEvent(as, player, quest);
@@ -339,8 +339,8 @@ public class ProfileManager {
 		unassignQuest(prof, index);
 		if(QConfiguration.progMsgCancel) {
 			player.sendMessage(Quester.LABEL
-					+ langMan.getPlayerLang(player.getName()).MSG_Q_CANCELLED.replaceAll("%q",
-							ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
+					+ langMan.getPlayerLang(player.getName()).get("MSG_Q_CANCELLED")
+							.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 		}
 		Ql.verbose(player.getName() + "'s quest '" + quest.getName() + "' was cancelled. "
 				+ "(ActionSource: " + as.getType() + ")");
@@ -359,18 +359,18 @@ public class ProfileManager {
 		final PlayerProfile prof = getProfile(player.getName());
 		final Quest quest = prof.getQuest();
 		if(quest == null) {
-			throw new QuestException(lang.ERROR_Q_NOT_ASSIGNED);
+			throw new QuestException(lang.get("ERROR_Q_NOT_ASSIGNED"));
 		}
 		if(as == null) {
 			as = ActionSource.BLANKSOURCE;
 		}
 		
 		if(as.is(ActionSource.COMMAND) && quest.hasFlag(QuestFlag.HIDDEN)) {
-			throw new QuestException(lang.ERROR_Q_NOT_CMD);
+			throw new QuestException(lang.get("ERROR_Q_NOT_CMD"));
 		}
 		
 		if(!quest.allowedWorld(player.getWorld().getName())) {
-			throw new QuestException(lang.ERROR_Q_BAD_WORLD);
+			throw new QuestException(lang.get("ERROR_Q_BAD_WORLD"));
 		}
 		
 		boolean error = false;
@@ -382,7 +382,7 @@ public class ProfileManager {
 			completeQuest(player, as, lang);
 		}
 		else if(error) {
-			throw new ObjectiveException(lang.ERROR_OBJ_CANT_DO);
+			throw new ObjectiveException(lang.get("ERROR_OBJ_CANT_DO"));
 		}
 	}
 	
@@ -414,8 +414,8 @@ public class ProfileManager {
 		addCompletedQuest(prof, quest.getName());
 		if(QConfiguration.progMsgDone) {
 			player.sendMessage(Quester.LABEL
-					+ langMan.getPlayerLang(player.getName()).MSG_Q_COMPLETED.replaceAll("%q",
-							ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
+					+ langMan.getPlayerLang(player.getName()).get("MSG_Q_COMPLETED")
+							.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 		}
 		Ql.verbose(player.getName() + " completed quest '" + quest.getName() + "'.");
 		/* QuestCompleteEvent */
@@ -459,7 +459,7 @@ public class ProfileManager {
 		// TODO add progress update message
 		if(obj.getTargetAmount() <= newValue) {
 			if(QConfiguration.progMsgObj && !obj.isHidden()) {
-				player.sendMessage(Quester.LABEL + lang.MSG_OBJ_COMPLETED);
+				player.sendMessage(Quester.LABEL + lang.get("MSG_OBJ_COMPLETED"));
 			}
 			/* ObjectiveCompleteEvent */
 			final ObjectiveCompleteEvent event =
@@ -509,16 +509,18 @@ public class ProfileManager {
 	
 	public void showProfile(final CommandSender sender, final String name, final QuesterLang lang) {
 		if(!hasProfile(name)) {
-			sender.sendMessage(ChatColor.RED + lang.INFO_PROFILE_NOT_EXIST.replaceAll("%p", name));
+			sender.sendMessage(ChatColor.RED
+					+ lang.get("INFO_PROFILE_NOT_EXIST").replaceAll("%p", name));
 			return;
 		}
 		final PlayerProfile prof = getProfile(name);
-		sender.sendMessage(ChatColor.BLUE + lang.INFO_NAME + ": " + ChatColor.GOLD + prof.getName());
-		sender.sendMessage(ChatColor.BLUE + lang.INFO_PROFILE_POINTS + ": " + ChatColor.WHITE
-				+ prof.getPoints());
+		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_NAME") + ": " + ChatColor.GOLD
+				+ prof.getName());
+		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_PROFILE_POINTS") + ": "
+				+ ChatColor.WHITE + prof.getPoints());
 		if(QConfiguration.useRank) {
-			sender.sendMessage(ChatColor.BLUE + lang.INFO_PROFILE_RANK + ": " + ChatColor.GOLD
-					+ prof.getRank());
+			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_PROFILE_RANK") + ": "
+					+ ChatColor.GOLD + prof.getRank());
 		}
 		
 	}
@@ -538,18 +540,19 @@ public class ProfileManager {
 			progress = prof.getProgress(index);
 		}
 		if(progress == null) {
-			throw new QuestException(lang.ERROR_Q_NOT_ASSIGNED);
+			throw new QuestException(lang.get("ERROR_Q_NOT_ASSIGNED"));
 		}
 		quest = progress.getQuest();
 		
 		if(!quest.hasFlag(QuestFlag.HIDDENOBJS)) {
-			player.sendMessage(lang.INFO_PROGRESS.replaceAll("%q", ChatColor.GOLD + quest.getName()
-					+ ChatColor.BLUE));
+			player.sendMessage(lang.get("INFO_PROGRESS").replaceAll("%q",
+					ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 			final List<Objective> objs = quest.getObjectives();
 			for(int i = 0; i < objs.size(); i++) {
 				if(!objs.get(i).isHidden()) {
 					if(progress.getObjectiveStatus(i) == ObjectiveStatus.COMPLETED) {
-						player.sendMessage(ChatColor.GREEN + " - " + lang.INFO_PROGRESS_COMPLETED);
+						player.sendMessage(ChatColor.GREEN + " - "
+								+ lang.get("INFO_PROGRESS_COMPLETED"));
 					}
 					else {
 						final boolean active =
@@ -564,7 +567,7 @@ public class ProfileManager {
 			}
 		}
 		else {
-			player.sendMessage(Quester.LABEL + lang.INFO_PROGRESS_HIDDEN);
+			player.sendMessage(Quester.LABEL + lang.get("INFO_PROGRESS_HIDDEN"));
 		}
 	}
 	
@@ -574,14 +577,15 @@ public class ProfileManager {
 	
 	public void showTakenQuests(final CommandSender sender, final String name, final QuesterLang lang) {
 		if(!hasProfile(name)) {
-			sender.sendMessage(ChatColor.RED + lang.INFO_PROFILE_NOT_EXIST.replaceAll("%p", name));
+			sender.sendMessage(ChatColor.RED
+					+ lang.get("INFO_PROFILE_NOT_EXIST").replaceAll("%p", name));
 			return;
 		}
 		final PlayerProfile prof = getProfile(name);
 		sender.sendMessage(ChatColor.BLUE
-				+ (sender.getName().equalsIgnoreCase(name) ? lang.INFO_QUESTS + ": "
-						: lang.INFO_QUESTS_OTHER.replaceAll("%p", prof.getName()) + ": ") + "("
-				+ lang.INFO_LIMIT + ": " + QConfiguration.maxQuests + ")");
+				+ (sender.getName().equalsIgnoreCase(name) ? lang.get("INFO_QUESTS") + ": " : lang
+						.get("INFO_QUESTS_OTHER").replaceAll("%p", prof.getName()) + ": ") + "("
+				+ lang.get("INFO_LIMIT") + ": " + QConfiguration.maxQuests + ")");
 		final int current = prof.getQuestProgressIndex();
 		for(int i = 0; i < prof.getQuestAmount(); i++) {
 			sender.sendMessage("[" + i + "] " + (current == i ? ChatColor.GREEN : ChatColor.YELLOW)

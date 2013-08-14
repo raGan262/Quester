@@ -66,7 +66,7 @@ public final class DropObjective extends Objective {
 		final int dat = itm[1];
 		final int amt = context.getInt(1);
 		if(amt < 1 || dat < -1) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_ITEM_NUMBERS);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_ITEM_NUMBERS"));
 		}
 		Location loc = null;
 		double rng = 2.0;
@@ -75,7 +75,7 @@ public final class DropObjective extends Objective {
 			if(context.length() > 3) {
 				rng = context.getDouble(3);
 				if(rng < 0) {
-					throw new QCommandException(context.getSenderLang().ERROR_CMD_RANGE_INVALID);
+					throw new QCommandException(context.getSenderLang().get("ERROR_CMD_RANGE_INVALID"));
 				}
 			}
 		}

@@ -98,7 +98,7 @@ public final class ItemObjective extends Objective {
 			}
 		}
 		if(amt < 1 || dat < -1) {
-			throw new IllegalArgumentException(context.getSenderLang().ERROR_CMD_ITEM_NUMBERS);
+			throw new IllegalArgumentException(context.getSenderLang().get("ERROR_CMD_ITEM_NUMBERS"));
 		}
 		if(context.length() > 2) {
 			enchs = SerUtils.parseEnchants(context.getString(2));

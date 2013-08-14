@@ -38,7 +38,7 @@ public final class NpcObjective extends Objective {
 		final int id = context.getInt(0);
 		final boolean ccl = context.hasFlag('c');
 		if(id < 0) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_BAD_ID);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_BAD_ID"));
 		}
 		return new NpcObjective(id, ccl);
 	}

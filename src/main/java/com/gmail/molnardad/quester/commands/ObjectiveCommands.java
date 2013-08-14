@@ -35,15 +35,15 @@ public class ObjectiveCommands {
 	
 	private Objective getObjective(final String type, final QCommandContext subContext, final QuesterLang lang) throws QCommandException, ObjectiveException, QuesterException {
 		if(!eMan.isObjective(type)) {
-			subContext.getSender().sendMessage(ChatColor.RED + lang.ERROR_OBJ_NOT_EXIST);
+			subContext.getSender().sendMessage(ChatColor.RED + lang.get("ERROR_OBJ_NOT_EXIST"));
 			subContext.getSender().sendMessage(
-					ChatColor.RED + lang.OBJ_LIST + ": " + ChatColor.WHITE
+					ChatColor.RED + lang.get("OBJ_LIST") + ": " + ChatColor.WHITE
 							+ eMan.getObjectiveList());
-			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
+			throw new ObjectiveException(lang.get("ERROR_OBJ_NOT_EXIST"));
 		}
 		final Objective obj = eMan.getObjectiveFromCommand(type, subContext);
 		if(obj == null) {
-			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
+			throw new ElementException(lang.get("ERROR_ELEMENT_FAIL"));
 		}
 		else {
 			obj.setHidden(subContext.hasFlag('h'));
@@ -69,7 +69,8 @@ public class ObjectiveCommands {
 			return;
 		}
 		qMan.addQuestObjective(profMan.getProfile(sender.getName()), obj, context.getSenderLang());
-		sender.sendMessage(ChatColor.GREEN + lang.OBJ_ADD.replaceAll("%type", type.toUpperCase()));
+		sender.sendMessage(ChatColor.GREEN
+				+ lang.get("OBJ_ADD").replaceAll("%type", type.toUpperCase()));
 	}
 	
 	@QCommandLabels({ "set", "s" })
@@ -91,7 +92,8 @@ public class ObjectiveCommands {
 		}
 		qMan.setQuestObjective(profMan.getProfile(sender.getName()), objectiveID, obj,
 				context.getSenderLang());
-		sender.sendMessage(ChatColor.GREEN + lang.OBJ_SET.replaceAll("%type", type.toUpperCase()));
+		sender.sendMessage(ChatColor.GREEN
+				+ lang.get("OBJ_SET").replaceAll("%type", type.toUpperCase()));
 	}
 	
 	@QCommandLabels({ "remove", "r" })
@@ -105,13 +107,13 @@ public class ObjectiveCommands {
 		qMan.removeQuestObjective(profMan.getProfile(sender.getName()), context.getInt(0),
 				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
-				+ context.getSenderLang().OBJ_REMOVE.replaceAll("%id", context.getString(0)));
+				+ context.getSenderLang().get("OBJ_REMOVE").replaceAll("%id", context.getString(0)));
 	}
 	
 	@QCommandLabels({ "list", "l" })
 	@QCommand(section = "QMod", max = 0, desc = "objective list")
 	public void list(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		sender.sendMessage(ChatColor.RED + context.getSenderLang().OBJ_LIST + ": "
+		sender.sendMessage(ChatColor.RED + context.getSenderLang().get("OBJ_LIST") + ": "
 				+ ChatColor.WHITE + eMan.getObjectiveList());
 	}
 	
@@ -126,7 +128,7 @@ public class ObjectiveCommands {
 		qMan.swapQuestObjectives(profMan.getProfile(sender.getName()), context.getInt(0),
 				context.getInt(1), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
-				+ context.getSenderLang().OBJ_SWAP.replaceAll("%id1", context.getString(0))
+				+ context.getSenderLang().get("OBJ_SWAP").replaceAll("%id1", context.getString(0))
 						.replaceAll("%id2", context.getString(1)));
 	}
 	
@@ -141,7 +143,7 @@ public class ObjectiveCommands {
 		qMan.moveQuestObjective(profMan.getProfile(sender.getName()), context.getInt(0),
 				context.getInt(1), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
-				+ context.getSenderLang().OBJ_MOVE.replaceAll("%id1", context.getString(0))
+				+ context.getSenderLang().get("OBJ_MOVE").replaceAll("%id1", context.getString(0))
 						.replaceAll("%id2", context.getString(1)));
 	}
 	
@@ -178,7 +180,8 @@ public class ObjectiveCommands {
 			qMan.addObjectiveDescription(profMan.getProfile(sender.getName()), context.getInt(0),
 					context.getString(1), context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
-					+ context.getSenderLang().OBJ_DESC_ADD.replaceAll("%id", context.getString(0)));
+					+ context.getSenderLang().get("OBJ_DESC_ADD")
+							.replaceAll("%id", context.getString(0)));
 		}
 		
 		@QCommandLabels({ "remove", "r" })
@@ -192,8 +195,8 @@ public class ObjectiveCommands {
 			qMan.removeObjectiveDescription(profMan.getProfile(sender.getName()),
 					context.getInt(0), context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
-					+ context.getSenderLang().OBJ_DESC_REMOVE.replaceAll("%id",
-							context.getString(0)));
+					+ context.getSenderLang().get("OBJ_DESC_REMOVE")
+							.replaceAll("%id", context.getString(0)));
 		}
 	}
 	
@@ -218,7 +221,8 @@ public class ObjectiveCommands {
 			qMan.addObjectivePrerequisites(profMan.getProfile(sender.getName()), context.getInt(0),
 					prereq, context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
-					+ context.getSenderLang().OBJ_PREREQ_ADD.replaceAll("%id", context.getString(0)));
+					+ context.getSenderLang().get("OBJ_PREREQ_ADD")
+							.replaceAll("%id", context.getString(0)));
 		}
 		
 		@QCommandLabels({ "remove", "r" })
@@ -232,8 +236,8 @@ public class ObjectiveCommands {
 			qMan.removeObjectivePrerequisites(profMan.getProfile(sender.getName()),
 					context.getInt(0), prereq, context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
-					+ context.getSenderLang().OBJ_PREREQ_REMOVE.replaceAll("%id",
-							context.getString(0)));
+					+ context.getSenderLang().get("OBJ_PREREQ_REMOVE")
+							.replaceAll("%id", context.getString(0)));
 		}
 	}
 }

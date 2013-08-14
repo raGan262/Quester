@@ -50,12 +50,12 @@ public final class DyeObjective extends Objective {
 		final int id = context.getInt(0);
 		DyeColor col = null;
 		if(id < 0) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_POSITIVE"));
 		}
 		if(context.length() > 1) {
 			col = SerUtils.parseColor(context.getString(1));
 			if(col == null) {
-				throw new QCommandException(context.getSenderLang().ERROR_CMD_COLOR_UNKNOWN);
+				throw new QCommandException(context.getSenderLang().get("ERROR_CMD_COLOR_UNKNOWN"));
 			}
 		}
 		return new DyeObjective(id, col);

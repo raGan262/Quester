@@ -44,17 +44,18 @@ public class QeventCommands {
 			throw new QCommandException(e.getMessage());
 		}
 		if(!eMan.isEvent(type)) {
-			subContext.getSender().sendMessage(ChatColor.RED + lang.ERROR_EVT_NOT_EXIST);
+			subContext.getSender().sendMessage(ChatColor.RED + lang.get("ERROR_EVT_NOT_EXIST"));
 			subContext.getSender().sendMessage(
-					ChatColor.RED + lang.EVT_LIST + ": " + ChatColor.WHITE + eMan.getEventList());
-			throw new QeventException(lang.ERROR_EVT_NOT_EXIST);
+					ChatColor.RED + lang.get("EVT_LIST") + ": " + ChatColor.WHITE
+							+ eMan.getEventList());
+			throw new QeventException(lang.get("ERROR_EVT_NOT_EXIST"));
 		}
 		final Qevent evt = eMan.getEventFromCommand(type, subContext);
 		if(evt != null) {
 			evt.setOccasion(occasion[0], occasion[1]);
 		}
 		else {
-			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
+			throw new ElementException(lang.get("ERROR_ELEMENT_FAIL"));
 		}
 		return evt;
 	}
@@ -94,7 +95,7 @@ public class QeventCommands {
 		final Player player = Bukkit.getPlayerExact(context.getString(0));
 		final QuesterLang lang = context.getSenderLang();
 		if(player == null) {
-			throw new QCommandException(lang.ERROR_CMD_PLAYER_OFFLINE.replaceAll("%p",
+			throw new QCommandException(lang.get("ERROR_CMD_PLAYER_OFFLINE").replaceAll("%p",
 					context.getString(0)));
 		}
 		
@@ -105,7 +106,7 @@ public class QeventCommands {
 			qevent = qMan.getQuest(questId).getQevent(eventId);
 		}
 		catch (final Exception e) {
-			throw new QeventException(lang.ERROR_EVT_NOT_EXIST);
+			throw new QeventException(lang.get("ERROR_EVT_NOT_EXIST"));
 		}
 		qevent.execute(context.getPlayer(), plugin);
 	}
@@ -127,7 +128,8 @@ public class QeventCommands {
 			return;
 		}
 		qMan.addQuestQevent(profMan.getProfile(sender.getName()), qevent, lang);
-		sender.sendMessage(ChatColor.GREEN + lang.EVT_ADD.replaceAll("%type", type.toUpperCase()));
+		sender.sendMessage(ChatColor.GREEN
+				+ lang.get("EVT_ADD").replaceAll("%type", type.toUpperCase()));
 	}
 	
 	@QCommandLabels({ "set", "s" })
@@ -148,7 +150,8 @@ public class QeventCommands {
 			return;
 		}
 		qMan.setQuestQevent(profMan.getProfile(sender.getName()), qeventID, qevent, lang);
-		sender.sendMessage(ChatColor.GREEN + lang.EVT_SET.replaceAll("%type", type.toUpperCase()));
+		sender.sendMessage(ChatColor.GREEN
+				+ lang.get("EVT_SET").replaceAll("%type", type.toUpperCase()));
 	}
 	
 	@QCommandLabels({ "remove", "r" })
@@ -157,13 +160,13 @@ public class QeventCommands {
 		qMan.removeQuestQevent(profMan.getProfile(sender.getName()), context.getInt(0),
 				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
-				+ context.getSenderLang().EVT_REMOVE.replaceAll("%id", context.getString(0)));
+				+ context.getSenderLang().get("EVT_REMOVE").replaceAll("%id", context.getString(0)));
 	}
 	
 	@QCommandLabels({ "list", "l" })
 	@QCommand(section = "QMod", max = 0, desc = "event list")
 	public void list(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		sender.sendMessage(ChatColor.RED + context.getSenderLang().EVT_LIST + ": "
+		sender.sendMessage(ChatColor.RED + context.getSenderLang().get("EVT_LIST") + ": "
 				+ ChatColor.WHITE + eMan.getEventList());
 	}
 }

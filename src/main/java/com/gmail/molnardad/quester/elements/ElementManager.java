@@ -153,12 +153,13 @@ public class ElementManager {
 			String parent;
 			if(context.length() < ei.command.min()) {
 				parent = getParentArgs(context.getParentArgs());
-				throw new QUsageException(context.getSenderLang().ERROR_CMD_ARGS_NOT_ENOUGH, parent
-						+ ei.usage);
+				throw new QUsageException(context.getSenderLang().get("ERROR_CMD_ARGS_NOT_ENOUGH"),
+						parent + ei.usage);
 			}
 			if(!(ei.command.max() < 0) && context.length() > ei.command.max()) {
 				parent = getParentArgs(context.getParentArgs());
-				throw new QUsageException(context.getSenderLang().ERROR_CMD_ARGS_TOO_MANY, ei.usage);
+				throw new QUsageException(context.getSenderLang().get("ERROR_CMD_ARGS_TOO_MANY"),
+						ei.usage);
 			}
 			
 			obj = ei.method.invoke(null, context);

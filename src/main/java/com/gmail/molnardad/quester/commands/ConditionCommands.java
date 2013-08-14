@@ -33,15 +33,15 @@ public class ConditionCommands {
 	private Condition getCondition(final String type, final QCommandContext subContext, final QuesterLang lang) throws ConditionException, QCommandException, QuesterException {
 		
 		if(!eMan.isCondition(type)) {
-			subContext.getSender().sendMessage(ChatColor.RED + lang.ERROR_CON_NOT_EXIST);
+			subContext.getSender().sendMessage(ChatColor.RED + lang.get("ERROR_CON_NOT_EXIST"));
 			subContext.getSender().sendMessage(
-					ChatColor.RED + lang.CON_LIST + ": " + ChatColor.WHITE
+					ChatColor.RED + lang.get("CON_LIST") + ": " + ChatColor.WHITE
 							+ eMan.getConditionList());
-			throw new ConditionException(lang.ERROR_CON_NOT_EXIST);
+			throw new ConditionException(lang.get("ERROR_CON_NOT_EXIST"));
 		}
 		final Condition con = eMan.getConditionFromCommand(type, subContext);
 		if(con == null) {
-			throw new ElementException(lang.ERROR_ELEMENT_FAIL);
+			throw new ElementException(lang.get("ERROR_ELEMENT_FAIL"));
 		}
 		return con;
 	}
@@ -63,7 +63,8 @@ public class ConditionCommands {
 			return;
 		}
 		qMan.addQuestCondition(profMan.getProfile(sender.getName()), condition, lang);
-		sender.sendMessage(ChatColor.GREEN + lang.CON_ADD.replaceAll("%type", type.toUpperCase()));
+		sender.sendMessage(ChatColor.GREEN
+				+ lang.get("CON_ADD").replaceAll("%type", type.toUpperCase()));
 	}
 	
 	@QCommandLabels({ "set", "s" })
@@ -84,7 +85,8 @@ public class ConditionCommands {
 			return;
 		}
 		qMan.setQuestCondition(profMan.getProfile(sender.getName()), conditionID, condition, lang);
-		sender.sendMessage(ChatColor.GREEN + lang.CON_SET.replaceAll("%type", type.toUpperCase()));
+		sender.sendMessage(ChatColor.GREEN
+				+ lang.get("CON_SET").replaceAll("%type", type.toUpperCase()));
 	}
 	
 	@QCommandLabels({ "remove", "r" })
@@ -98,7 +100,7 @@ public class ConditionCommands {
 		qMan.removeQuestCondition(profMan.getProfile(sender.getName()), context.getInt(0),
 				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
-				+ context.getSenderLang().CON_REMOVE.replaceAll("%id", context.getString(0)));
+				+ context.getSenderLang().get("CON_REMOVE").replaceAll("%id", context.getString(0)));
 	}
 	
 	@QCommandLabels({ "desc" })
@@ -110,7 +112,7 @@ public class ConditionCommands {
 	@QCommandLabels({ "list", "l" })
 	@QCommand(section = "QMod", max = 0, desc = "condition list")
 	public void list(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		sender.sendMessage(ChatColor.RED + context.getSenderLang().CON_LIST + ": "
+		sender.sendMessage(ChatColor.RED + context.getSenderLang().get("CON_LIST") + ": "
 				+ ChatColor.WHITE + eMan.getConditionList());
 	}
 	
@@ -135,7 +137,8 @@ public class ConditionCommands {
 			qMan.addConditionDescription(profMan.getProfile(sender.getName()), context.getInt(0),
 					context.getString(1), context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
-					+ context.getSenderLang().CON_DESC_ADD.replaceAll("%id", context.getString(0)));
+					+ context.getSenderLang().get("CON_DESC_ADD")
+							.replaceAll("%id", context.getString(0)));
 		}
 		
 		@QCommandLabels({ "remove", "r" })
@@ -149,8 +152,8 @@ public class ConditionCommands {
 			qMan.removeConditionDescription(profMan.getProfile(sender.getName()),
 					context.getInt(0), context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
-					+ context.getSenderLang().CON_DESC_REMOVE.replaceAll("%id",
-							context.getString(0)));
+					+ context.getSenderLang().get("CON_DESC_REMOVE")
+							.replaceAll("%id", context.getString(0)));
 		}
 	}
 }

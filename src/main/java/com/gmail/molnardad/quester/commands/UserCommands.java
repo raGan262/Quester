@@ -48,7 +48,7 @@ public class UserCommands {
 		String key = "User";
 		if(cmds.containsKey(key)) {
 			sb = new StringBuilder();
-			sb.append(Util.line(ChatColor.BLUE, lang.HELP_SECTION_USE, ChatColor.GOLD))
+			sb.append(Util.line(ChatColor.BLUE, lang.get("HELP_SECTION_USE"), ChatColor.GOLD))
 					.append(ChatColor.RESET).append('\n');
 			for(final String ss : cmds.get(key)) {
 				sb.append(ss).append(ChatColor.RESET).append('\n');
@@ -59,7 +59,7 @@ public class UserCommands {
 		key = "Mod";
 		if(cmds.containsKey(key)) {
 			sb = new StringBuilder();
-			sb.append(Util.line(ChatColor.BLUE, lang.HELP_SECTION_MODIFY, ChatColor.GOLD))
+			sb.append(Util.line(ChatColor.BLUE, lang.get("HELP_SECTION_MODIFY"), ChatColor.GOLD))
 					.append(ChatColor.RESET).append('\n');
 			for(final String ss : cmds.get(key)) {
 				sb.append(ss).append(ChatColor.RESET).append('\n');
@@ -70,7 +70,7 @@ public class UserCommands {
 		key = "QMod";
 		if(cmds.containsKey(key)) {
 			sb = new StringBuilder();
-			sb.append(Util.line(ChatColor.DARK_GRAY, lang.HELP_SECTION_MODIFY_SELECTED))
+			sb.append(Util.line(ChatColor.DARK_GRAY, lang.get("HELP_SECTION_MODIFY_SELECTED")))
 					.append(ChatColor.RESET).append('\n');
 			for(final String ss : cmds.get(key)) {
 				sb.append(ss).append(ChatColor.RESET).append('\n');
@@ -81,7 +81,8 @@ public class UserCommands {
 		key = "HMod";
 		if(cmds.containsKey(key)) {
 			sb = new StringBuilder();
-			sb.append(Util.line(ChatColor.DARK_GRAY, lang.HELP_SECTION_MODIFY_HOLDER_SELECTED))
+			sb.append(
+					Util.line(ChatColor.DARK_GRAY, lang.get("HELP_SECTION_MODIFY_HOLDER_SELECTED")))
 					.append(ChatColor.RESET).append('\n');
 			for(final String ss : cmds.get(key)) {
 				sb.append(ss).append(ChatColor.RESET).append('\n');
@@ -92,7 +93,7 @@ public class UserCommands {
 		key = "Admin";
 		if(cmds.containsKey(key)) {
 			sb = new StringBuilder();
-			sb.append(Util.line(ChatColor.BLUE, lang.HELP_SECTION_ADMIN, ChatColor.GOLD))
+			sb.append(Util.line(ChatColor.BLUE, lang.get("HELP_SECTION_ADMIN"), ChatColor.GOLD))
 					.append(ChatColor.RESET).append('\n');
 			for(final String ss : cmds.get(key)) {
 				sb.append(ss).append(ChatColor.RESET).append('\n');
@@ -102,7 +103,7 @@ public class UserCommands {
 		}
 		for(final String s : cmds.keySet()) {
 			sb = new StringBuilder();
-			sb.append(Util.line(ChatColor.BLUE, lang.HELP_SECTION_OTHER, ChatColor.GOLD))
+			sb.append(Util.line(ChatColor.BLUE, lang.get("HELP_SECTION_OTHER"), ChatColor.GOLD))
 					.append(ChatColor.RESET).append('\n');
 			for(final String ss : cmds.get(s)) {
 				sb.append(ss).append(ChatColor.RESET).append('\n');
@@ -167,7 +168,7 @@ public class UserCommands {
 					+ QConfiguration.PERM_USE_START_PICK)
 	public void start(final QCommandContext context, final CommandSender sender) throws QuesterException, QCommandException {
 		if(context.getPlayer() == null) {
-			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);
+			sender.sendMessage(context.getSenderLang().get("MSG_ONLY_PLAYER"));
 			return;
 		}
 		final ActionSource as = ActionSource.commandSource(sender);
@@ -195,7 +196,7 @@ public class UserCommands {
 			permission = QConfiguration.PERM_USE_DONE)
 	public void done(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		if(context.getPlayer() == null) {
-			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);
+			sender.sendMessage(context.getSenderLang().get("MSG_ONLY_PLAYER"));
 			return;
 		}
 		final ActionSource as = ActionSource.commandSource(sender);
@@ -211,7 +212,7 @@ public class UserCommands {
 			permission = QConfiguration.PERM_USE_CANCEL)
 	public void cancel(final QCommandContext context, final CommandSender sender) throws QuesterException, QCommandException {
 		if(context.getPlayer() == null) {
-			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);
+			sender.sendMessage(context.getSenderLang().get("MSG_ONLY_PLAYER"));
 			return;
 		}
 		int index = -1;
@@ -232,11 +233,11 @@ public class UserCommands {
 			permission = QConfiguration.PERM_USE_SWITCH)
 	public void switch0(final QCommandContext context, final CommandSender sender) throws QuesterException, QCommandException {
 		if(context.getPlayer() == null) {
-			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);
+			sender.sendMessage(context.getSenderLang().get("MSG_ONLY_PLAYER"));
 			return;
 		}
 		if(profMan.switchQuest(profMan.getProfile(sender.getName()), context.getInt(0))) {
-			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_SWITCHED);
+			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_SWITCHED"));
 		}
 	}
 	
@@ -249,7 +250,7 @@ public class UserCommands {
 			permission = QConfiguration.PERM_USE_PROGRESS)
 	public void progress(final QCommandContext context, final CommandSender sender) throws QuesterException, QCommandException {
 		if(context.getPlayer() == null) {
-			sender.sendMessage(context.getSenderLang().MSG_ONLY_PLAYER);
+			sender.sendMessage(context.getSenderLang().get("MSG_ONLY_PLAYER"));
 			return;
 		}
 		int index = -1;
@@ -292,7 +293,7 @@ public class UserCommands {
 		if(toAdd != null) {
 			langSet.add(toAdd);
 		}
-		sender.sendMessage(ChatColor.GOLD + context.getSenderLang().AVAILABLE_LANGS + ": "
+		sender.sendMessage(ChatColor.GOLD + context.getSenderLang().get("AVAILABLE_LANGS") + ": "
 				+ ChatColor.RESET + Util.implode(langSet.toArray(new String[0]), ','));
 	}
 	
@@ -311,11 +312,11 @@ public class UserCommands {
 		}
 		if(profMan.setProfileLanguage(profMan.getProfile(sender.getName()), langName)) {
 			lang = langMan.getLang(langName);
-			sender.sendMessage(ChatColor.GREEN + lang.MSG_LANG_SET);
+			sender.sendMessage(ChatColor.GREEN + lang.get("MSG_LANG_SET"));
 		}
 		else {
 			lang = context.getSenderLang();
-			throw new QCommandException(lang.ERROR_CMD_LANG_INVALID);
+			throw new QCommandException(lang.get("ERROR_CMD_LANG_INVALID"));
 		}
 	}
 }

@@ -121,7 +121,7 @@ public class Util {
 			}
 		}
 		if(message) {
-			sender.sendMessage(ChatColor.RED + lang.MSG_PERMS);
+			sender.sendMessage(ChatColor.RED + lang.get("MSG_PERMS"));
 		}
 		return false;
 	}

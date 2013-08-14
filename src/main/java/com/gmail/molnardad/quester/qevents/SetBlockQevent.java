@@ -39,7 +39,7 @@ public final class SetBlockQevent extends Qevent {
 	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
 		final int[] itm = SerUtils.parseItem(context.getString(0));
 		if(itm[0] > 255) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_BLOCK_UNKNOWN);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_BLOCK_UNKNOWN"));
 		}
 		final int dat = itm[1] < 0 ? 0 : itm[1];
 		final Location loc = SerUtils.getLoc(context.getPlayer(), context.getString(1));

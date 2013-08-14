@@ -72,7 +72,7 @@ public final class ObjectiveCompleteQevent extends Qevent {
 	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
 		final int obj = context.getInt(0);
 		if(obj < 0) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_BAD_ID);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_BAD_ID"));
 		}
 		return new ObjectiveCompleteQevent(obj, context.hasFlag('e'));
 	}

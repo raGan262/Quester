@@ -95,7 +95,7 @@ public final class ActionObjective extends Objective {
 			if(!context.getString(1).equalsIgnoreCase("ANY")) {
 				itm = SerUtils.parseItem(context.getString(1));
 				if(itm[0] > 255) {
-					throw new QCommandException(context.getSenderLang().ERROR_CMD_BLOCK_UNKNOWN);
+					throw new QCommandException(context.getSenderLang().get("ERROR_CMD_BLOCK_UNKNOWN"));
 				}
 				mat = Material.getMaterial(itm[0]);
 				dat = itm[1];

@@ -50,7 +50,7 @@ public final class PointCondition extends Condition {
 			return new PointCondition(amt, context.hasFlag('i'));
 		}
 		catch (final NumberFormatException e) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_GENERAL);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_GENERAL"));
 		}
 	}
 	

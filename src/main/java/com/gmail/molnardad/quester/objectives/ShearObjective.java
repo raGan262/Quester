@@ -43,12 +43,12 @@ public final class ShearObjective extends Objective {
 		DyeColor col = null;
 		final int amt = context.getInt(0);
 		if(amt < 1) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_POSITIVE"));
 		}
 		if(context.length() > 1) {
 			col = SerUtils.parseColor(context.getString(1));
 			if(col == null) {
-				throw new QCommandException(context.getSenderLang().ERROR_CMD_COLOR_UNKNOWN);
+				throw new QCommandException(context.getSenderLang().get("ERROR_CMD_COLOR_UNKNOWN"));
 			}
 		}
 		return new ShearObjective(amt, col);

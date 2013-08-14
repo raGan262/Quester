@@ -47,12 +47,12 @@ public final class LocObjective extends Objective {
 		int rng = 3;
 		final Location loc = SerUtils.getLoc(context.getPlayer(), context.getString(0));
 		if(loc == null) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_LOC_INVALID);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_LOC_INVALID"));
 		}
 		if(context.length() > 1) {
 			rng = context.getInt(1);
 			if(rng < 1) {
-				throw new QCommandException(context.getSenderLang().ERROR_CMD_RANGE_INVALID);
+				throw new QCommandException(context.getSenderLang().get("ERROR_CMD_RANGE_INVALID"));
 			}
 		}
 		return new RegionObjective(new Region.Sphere(loc, rng), context.hasFlag('i'));

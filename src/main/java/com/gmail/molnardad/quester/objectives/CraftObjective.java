@@ -50,7 +50,7 @@ public final class CraftObjective extends Objective {
 		final int dat = itm[1];
 		final int amt = Integer.parseInt(context.getString(1));
 		if(amt < 1 || dat < -1) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_ITEM_NUMBERS);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_ITEM_NUMBERS"));
 		}
 		return new CraftObjective(amt, mat, dat);
 	}

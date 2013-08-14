@@ -52,7 +52,7 @@ public final class MoneyQevent extends Qevent {
 	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
 		final double amt = context.getDouble(0);
 		if(amt == 0.0D) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_NONZERO);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_NONZERO"));
 		}
 		return new MoneyQevent(context.getDouble(0));
 	}

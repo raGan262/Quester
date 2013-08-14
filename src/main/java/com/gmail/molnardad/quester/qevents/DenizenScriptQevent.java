@@ -95,9 +95,9 @@ public final class DenizenScriptQevent extends Qevent {
 					cont = new HashMap<String, String>();
 					ss = context.getString(i).split(":");
 					if(ss.length != 2) {
-						throw new QCommandException(
-								context.getSenderLang().ERROR_CMD_ARG_CANT_PARSE.replaceAll("%arg",
-										context.getString(i)));
+						throw new QCommandException(context.getSenderLang()
+								.get("ERROR_CMD_ARG_CANT_PARSE")
+								.replaceAll("%arg", context.getString(i)));
 					}
 					cont.put(ss[0], ss[1]);
 				}

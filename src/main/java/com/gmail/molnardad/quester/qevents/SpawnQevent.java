@@ -59,12 +59,12 @@ public final class SpawnQevent extends Qevent {
 		final Location loc = SerUtils.getLoc(context.getSender(), context.getString(2));
 		int rng = 0;
 		if(amt < 1) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_POSITIVE"));
 		}
 		if(context.length() > 3) {
 			rng = context.getInt(3);
 			if(rng < 0) {
-				throw new QCommandException(context.getSenderLang().ERROR_CMD_RANGE_INVALID);
+				throw new QCommandException(context.getSenderLang().get("ERROR_CMD_RANGE_INVALID"));
 			}
 		}
 		return new SpawnQevent(loc, rng, ent, amt);

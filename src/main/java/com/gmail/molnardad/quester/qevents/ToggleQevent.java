@@ -43,7 +43,7 @@ public final class ToggleQevent extends Qevent {
 	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
 		final int id = context.getInt(0);
 		if(id < 0) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_BAD_ID);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_BAD_ID"));
 		}
 		return new ToggleQevent(id);
 	}

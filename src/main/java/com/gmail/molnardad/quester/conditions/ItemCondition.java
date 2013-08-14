@@ -95,7 +95,7 @@ public final class ItemCondition extends Condition {
 			}
 		}
 		catch (final NumberFormatException e) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_ITEM_NUMBERS);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_ITEM_NUMBERS"));
 		}
 		catch (final IllegalArgumentException e) {
 			throw new QCommandException(e.getMessage());

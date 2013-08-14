@@ -49,7 +49,7 @@ public final class ExperienceQevent extends Qevent {
 	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
 		final int amt = context.getInt(0);
 		if(amt == 0) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_NONZERO);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_NONZERO"));
 		}
 		return new ExperienceQevent(amt, context.hasFlag('l'));
 	}

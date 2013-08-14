@@ -74,7 +74,7 @@ public final class EnchantObjective extends Objective {
 		if(context.length() > 1) {
 			amt = context.getInt(1);
 			if(amt < 1) {
-				throw new QCommandException(context.getSenderLang().ERROR_CMD_ENCH_LEVEL);
+				throw new QCommandException(context.getSenderLang().get("ERROR_CMD_ENCH_LEVEL"));
 			}
 			if(context.length() > 2) {
 				enchs = SerUtils.parseEnchants(context.getString(2));

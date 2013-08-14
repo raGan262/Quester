@@ -50,7 +50,7 @@ public final class BossObjective extends Objective {
 		if(context.length() > 1) {
 			amt = context.getInt(1);
 			if(amt < 1) {
-				throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
+				throw new QCommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_POSITIVE"));
 			}
 		}
 		return new BossObjective(boss, amt);

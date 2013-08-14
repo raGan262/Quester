@@ -49,11 +49,11 @@ public final class PlaceObjective extends Objective {
 		final Material mat = Material.getMaterial(itm[0]);
 		final byte dat = (byte) itm[1];
 		if(mat.getId() > 255) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_BLOCK_UNKNOWN);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_BLOCK_UNKNOWN"));
 		}
 		final int amt = Integer.parseInt(context.getString(1));
 		if(amt < 1 || dat < -1) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_ITEM_NUMBERS);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_ITEM_NUMBERS"));
 		}
 		return new PlaceObjective(amt, mat, dat);
 	}

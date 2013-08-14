@@ -38,7 +38,7 @@ public class DummyObjective extends Objective {
 	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
 		final int id = context.getInt(0);
 		if(id < 0) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_POSITIVE"));
 		}
 		return new DummyObjective(id, context.getString(1, ""));
 	}

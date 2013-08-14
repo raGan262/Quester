@@ -35,7 +35,7 @@ public final class MilkObjective extends Objective {
 	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
 		final int amt = context.getInt(0);
 		if(amt < 1) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_POSITIVE"));
 		}
 		return new MilkObjective(amt);
 	}

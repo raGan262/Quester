@@ -22,20 +22,21 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.gmail.molnardad.quester.QConfiguration;
+import com.gmail.molnardad.quester.lang.LanguageManager;
 import com.gmail.molnardad.quester.lang.QuesterLang;
 
 public class SerUtils {
-
+	
 	public static Location getLoc(final CommandSender sender, final String arg) throws IllegalArgumentException {
-		return getLoc(sender, arg, new QuesterLang(null));
+		return getLoc(sender, arg, LanguageManager.defaultLang);
 	}
-
+	
 	public static Location getLoc(final CommandSender sender, final String arg, final QuesterLang lang) throws IllegalArgumentException {
 		
 		final String args[] = arg.split(";");
 		Location loc;
 		if(args.length < 1) {
-			throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_INVALID);
+			throw new IllegalArgumentException(ChatColor.RED + lang.get("ERROR_CMD_LOC_INVALID"));
 		}
 		
 		if(args[0].equalsIgnoreCase(QConfiguration.locLabelHere)) {
@@ -44,20 +45,22 @@ public class SerUtils {
 			}
 			else {
 				throw new IllegalArgumentException(ChatColor.RED
-						+ lang.ERROR_CMD_LOC_HERE.replaceAll("%here", QConfiguration.locLabelHere));
+						+ lang.get("ERROR_CMD_LOC_HERE").replaceAll("%here",
+								QConfiguration.locLabelHere));
 			}
 		}
 		else if(args[0].equalsIgnoreCase(QConfiguration.locLabelBlock)) {
 			if(sender instanceof Player) {
 				final Block block = ((Player) sender).getTargetBlock(null, 5);
 				if(block == null) {
-					throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_NOBLOCK);
+					throw new IllegalArgumentException(ChatColor.RED
+							+ lang.get("ERROR_CMD_LOC_NOBLOCK"));
 				}
 				return block.getLocation();
 			}
 			else {
 				throw new IllegalArgumentException(ChatColor.RED
-						+ lang.ERROR_CMD_LOC_BLOCK.replaceAll("%block",
+						+ lang.get("ERROR_CMD_LOC_BLOCK").replaceAll("%block",
 								QConfiguration.locLabelBlock));
 			}
 		}
@@ -73,10 +76,12 @@ public class SerUtils {
 				z = Double.parseDouble(args[2]);
 			}
 			catch (final NumberFormatException e) {
-				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_COORDS_INVALID);
+				throw new IllegalArgumentException(ChatColor.RED
+						+ lang.get("ERROR_CMD_COORDS_INVALID"));
 			}
 			if(y < 0) {
-				throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_COORDS_INVALID);
+				throw new IllegalArgumentException(ChatColor.RED
+						+ lang.get("ERROR_CMD_COORDS_INVALID"));
 			}
 			if(sender instanceof Player && args[3].equalsIgnoreCase(QConfiguration.worldLabelThis)) {
 				loc = new Location(((Player) sender).getWorld(), x, y, z);
@@ -84,16 +89,17 @@ public class SerUtils {
 			else {
 				final World world = Bukkit.getServer().getWorld(args[3]);
 				if(world == null) {
-					throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_WORLD_INVALID);
+					throw new IllegalArgumentException(ChatColor.RED
+							+ lang.get("ERROR_CMD_WORLD_INVALID"));
 				}
 				loc = new Location(world, x, y, z);
 			}
 			return loc;
 		}
 		
-		throw new IllegalArgumentException(ChatColor.RED + lang.ERROR_CMD_LOC_INVALID);
+		throw new IllegalArgumentException(ChatColor.RED + lang.get("ERROR_CMD_LOC_INVALID"));
 	}
-
+	
 	public static String serializeEnchants(final Map<Integer, Integer> enchs) {
 		String result = "";
 		boolean first = true;
@@ -111,11 +117,11 @@ public class SerUtils {
 		}
 		return result;
 	}
-
+	
 	public static Map<Integer, Integer> parseEnchants(final String arg) throws IllegalArgumentException {
-		return parseEnchants(arg, new QuesterLang(null));
+		return parseEnchants(arg, LanguageManager.defaultLang);
 	}
-
+	
 	public static Map<Integer, Integer> parseEnchants(final String arg, final QuesterLang lang) throws IllegalArgumentException {
 		
 		final Map<Integer, Integer> enchs = new HashMap<Integer, Integer>();
@@ -125,18 +131,18 @@ public class SerUtils {
 			int lvl = 0;
 			final String[] s = args[i].split(":");
 			if(s.length != 2) {
-				throw new IllegalArgumentException(lang.ERROR_CMD_ENCH_INVALID);
+				throw new IllegalArgumentException(lang.get("ERROR_CMD_ENCH_INVALID"));
 			}
 			en = Enchantment.getByName(s[0].toUpperCase());
 			if(en == null) {
 				en = Enchantment.getById(Integer.parseInt(s[0]));
 			}
 			if(en == null) {
-				throw new IllegalArgumentException(lang.ERROR_CMD_ENCH_INVALID);
+				throw new IllegalArgumentException(lang.get("ERROR_CMD_ENCH_INVALID"));
 			}
 			lvl = Integer.parseInt(s[1]);
 			if(lvl < 1) {
-				throw new IllegalArgumentException(lang.ERROR_CMD_ENCH_LEVEL);
+				throw new IllegalArgumentException(lang.get("ERROR_CMD_ENCH_LEVEL"));
 			}
 			
 			enchs.put(en.getId(), lvl);
@@ -144,7 +150,7 @@ public class SerUtils {
 		
 		return enchs;
 	}
-
+	
 	public static String serializeItem(final Material mat, final int data) {
 		if(mat == null) {
 			return null;
@@ -152,7 +158,7 @@ public class SerUtils {
 		
 		return serializeItem(mat.getId(), data);
 	}
-
+	
 	public static String serializeItem(final int mat, final int data) {
 		String str = "";
 		if(data >= 0) {
@@ -160,17 +166,17 @@ public class SerUtils {
 		}
 		return mat + str;
 	}
-
+	
 	public static int[] parseItem(final String arg) throws IllegalArgumentException {
-		return parseItem(arg, new QuesterLang(null));
+		return parseItem(arg, LanguageManager.defaultLang);
 	}
-
+	
 	public static int[] parseItem(final String arg, final QuesterLang lang) throws IllegalArgumentException {
 		
 		final int[] itm = new int[2];
 		final String[] s = arg.split(":");
 		if(s.length > 2) {
-			throw new IllegalArgumentException(lang.ERROR_CMD_ITEM_UNKNOWN);
+			throw new IllegalArgumentException(lang.get("ERROR_CMD_ITEM_UNKNOWN"));
 		}
 		final Material mat = Material.getMaterial(s[0].toUpperCase());
 		if(mat == null) {
@@ -178,10 +184,10 @@ public class SerUtils {
 				itm[0] = Integer.parseInt(s[0]);
 			}
 			catch (final NumberFormatException e) {
-				throw new IllegalArgumentException(lang.ERROR_CMD_ITEM_UNKNOWN);
+				throw new IllegalArgumentException(lang.get("ERROR_CMD_ITEM_UNKNOWN"));
 			}
 			if(Material.getMaterial(itm[0]) == null) {
-				throw new IllegalArgumentException(lang.ERROR_CMD_ITEM_UNKNOWN);
+				throw new IllegalArgumentException(lang.get("ERROR_CMD_ITEM_UNKNOWN"));
 			}
 		}
 		else {
@@ -195,19 +201,19 @@ public class SerUtils {
 				itm[1] = Integer.parseInt(s[1]);
 			}
 			catch (final NumberFormatException e) {
-				throw new IllegalArgumentException(lang.ERROR_CMD_ITEM_UNKNOWN);
+				throw new IllegalArgumentException(lang.get("ERROR_CMD_ITEM_UNKNOWN"));
 			}
 		}
 		return itm;
 	}
-
+	
 	public static String serializeColor(final DyeColor col) {
 		if(col == null) {
 			return null;
 		}
 		return "" + col.getDyeData();
 	}
-
+	
 	public static DyeColor parseColor(final String arg) {
 		DyeColor col = null;
 		try {
@@ -222,18 +228,18 @@ public class SerUtils {
 		}
 		return col;
 	}
-
+	
 	public static String serializeEffect(final PotionEffect eff) {
 		if(eff == null) {
 			return null;
 		}
 		return eff.getType().getId() + ";" + eff.getDuration() / 20.0 + ";" + eff.getAmplifier();
 	}
-
+	
 	public static PotionEffect parseEffect(final String arg) throws IllegalArgumentException {
-		return parseEffect(arg, new QuesterLang(null));
+		return parseEffect(arg, LanguageManager.defaultLang);
 	}
-
+	
 	public static PotionEffect parseEffect(final String arg, final QuesterLang lang) throws IllegalArgumentException {
 		
 		PotionEffectType type = null;
@@ -241,7 +247,7 @@ public class SerUtils {
 		int amp = 0;
 		final String[] s = arg.split(";");
 		if(s.length > 3 || s.length < 2) {
-			throw new IllegalArgumentException(lang.ERROR_CMD_EFFECT_UNKNOWN + "1");
+			throw new IllegalArgumentException(lang.get("ERROR_CMD_EFFECT_UNKNOWN") + "1");
 		}
 		type = PotionEffectType.getByName(s[0]);
 		if(type == null) {
@@ -249,10 +255,10 @@ public class SerUtils {
 				type = PotionEffectType.getById(Integer.parseInt(s[0]));
 			}
 			catch (final NumberFormatException e) {
-				throw new IllegalArgumentException(lang.ERROR_CMD_EFFECT_UNKNOWN + "2");
+				throw new IllegalArgumentException(lang.get("ERROR_CMD_EFFECT_UNKNOWN") + "2");
 			}
 			if(type == null) {
-				throw new IllegalArgumentException(lang.ERROR_CMD_EFFECT_UNKNOWN + "3");
+				throw new IllegalArgumentException(lang.get("ERROR_CMD_EFFECT_UNKNOWN") + "3");
 			}
 		}
 		try {
@@ -263,7 +269,7 @@ public class SerUtils {
 			dur *= 20;
 		}
 		catch (final NumberFormatException e) {
-			throw new IllegalArgumentException(lang.ERROR_CMD_EFFECT_DURATION);
+			throw new IllegalArgumentException(lang.get("ERROR_CMD_EFFECT_DURATION"));
 		}
 		try {
 			if(s.length > 2) {
@@ -274,33 +280,33 @@ public class SerUtils {
 			}
 		}
 		catch (final NumberFormatException e) {
-			throw new IllegalArgumentException(lang.ERROR_CMD_EFFECT_AMPLIFIER);
+			throw new IllegalArgumentException(lang.get("ERROR_CMD_EFFECT_AMPLIFIER"));
 		}
 		return new PotionEffect(type, (int) dur, amp);
 	}
-
+	
 	public static String serializeEntity(final EntityType ent) {
 		if(ent == null) {
 			return null;
 		}
 		return "" + ent.getTypeId();
 	}
-
+	
 	public static EntityType parseEntity(final String arg) throws IllegalArgumentException {
-		return parseEntity(arg, new QuesterLang(null));
+		return parseEntity(arg, LanguageManager.defaultLang);
 	}
-
+	
 	public static EntityType parseEntity(final String arg, final QuesterLang lang) throws IllegalArgumentException {
 		EntityType ent = EntityType.fromName(arg.toUpperCase());
 		if(ent == null) {
 			ent = EntityType.fromId(Integer.parseInt(arg));
 			if(ent == null || ent.getTypeId() < 50) {
-				throw new IllegalArgumentException(lang.ERROR_CMD_ENTITY_UNKNOWN);
+				throw new IllegalArgumentException(lang.get("ERROR_CMD_ENTITY_UNKNOWN"));
 			}
 		}
 		return ent;
 	}
-
+	
 	public static Sound parseSound(final String arg) {
 		Sound sound = null;
 		try {
@@ -309,7 +315,7 @@ public class SerUtils {
 		catch (final Exception ignore) {}
 		return sound;
 	}
-
+	
 	public static Set<Integer> parsePrerequisites(final String[] args, final int from) {
 		final Set<Integer> result = new HashSet<Integer>();
 		for(int i = from; i < args.length; i++) {
@@ -320,7 +326,7 @@ public class SerUtils {
 		}
 		return result;
 	}
-
+	
 	public static Set<Integer> deserializePrerequisites(final String arg) throws NumberFormatException {
 		final Set<Integer> result = new HashSet<Integer>();
 		final String[] args = arg.split(";");
@@ -329,7 +335,7 @@ public class SerUtils {
 		}
 		return result;
 	}
-
+	
 	public static String serializePrerequisites(final Set<Integer> prereq, final String glue) {
 		String result = "";
 		boolean first = true;
@@ -344,18 +350,18 @@ public class SerUtils {
 		}
 		return result;
 	}
-
+	
 	public static String serializePrerequisites(final Set<Integer> prereq) {
 		return serializePrerequisites(prereq, ";");
 	}
-
+	
 	public static int[] deserializeOccasion(final String arg, final QuesterLang lang) throws IllegalArgumentException {
 		final int[] arr = new int[2];
 		arr[0] = -4;
 		arr[1] = 0;
 		final String[] s = arg.split(":");
 		if(s.length > 2 || s.length < 1) {
-			throw new IllegalArgumentException(lang.ERROR_CMD_OCC_INCORRECT_FORM);
+			throw new IllegalArgumentException(lang.get("ERROR_CMD_OCC_INCORRECT_FORM"));
 		}
 		try {
 			arr[0] = Integer.parseInt(s[0]);
@@ -365,11 +371,11 @@ public class SerUtils {
 			arr[1] = Integer.parseInt(s[1]);
 		}
 		if(arr[0] < -3 || arr[1] < 0) {
-			throw new IllegalArgumentException(lang.ERROR_CMD_OCC_INCORRECT);
+			throw new IllegalArgumentException(lang.get("ERROR_CMD_OCC_INCORRECT"));
 		}
 		return arr;
 	}
-
+	
 	public static String serializeOccasion(final int occ, final int del) {
 		if(del != 0) {
 			return occ + ":" + del;
@@ -378,7 +384,7 @@ public class SerUtils {
 			return "" + occ;
 		}
 	}
-
+	
 	public static int parseAction(final String arg) {
 		try {
 			final int i = Integer.parseInt(arg);
@@ -401,7 +407,7 @@ public class SerUtils {
 		}
 		return 0;
 	}
-
+	
 	public static String displayLocation(final Location loc) {
 		String str = "";
 		
@@ -415,7 +421,7 @@ public class SerUtils {
 		
 		return str;
 	}
-
+	
 	public static String serializeLocString(final Location loc) {
 		String str = "";
 		
@@ -430,7 +436,7 @@ public class SerUtils {
 		
 		return str;
 	}
-
+	
 	public static Location deserializeLocString(final String str) {
 		double x, y, z;
 		float yaw = 0;

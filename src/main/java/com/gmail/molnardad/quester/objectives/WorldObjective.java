@@ -49,15 +49,15 @@ public final class WorldObjective extends Objective {
 				world = player.getWorld();
 			}
 			else {
-				throw new QCommandException(
-						context.getSenderLang().ERROR_CMD_WORLD_THIS.replaceAll("%this", label));
+				throw new QCommandException(context.getSenderLang().get("ERROR_CMD_WORLD_THIS")
+						.replaceAll("%this", label));
 			}
 		}
 		else {
 			world = Bukkit.getServer().getWorld(context.getString(0));
 		}
 		if(world == null) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_WORLD_INVALID);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_WORLD_INVALID"));
 		}
 		return new RegionObjective(new Region.World(world.getName()), context.hasFlag('i'));
 	}

@@ -64,7 +64,7 @@ public final class SoundQevent extends Qevent {
 				pit = (float) context.getDouble(3);
 			}
 			if(vol < 0) {
-				throw new QCommandException(context.getSenderLang().ERROR_CMD_VOL_PIT);
+				throw new QCommandException(context.getSenderLang().get("ERROR_CMD_VOL_PIT"));
 			}
 		}
 		return new SoundQevent(loc, snd, vol, pit);

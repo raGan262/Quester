@@ -107,7 +107,7 @@ public class QuestHolderManager {
 	public void addHolderQuest(final String issuer, final int questID, final QuesterLang lang) throws QuesterException {
 		final QuestHolder qh = getHolder(profMan.getProfile(issuer).getHolderID());
 		if(qh == null) {
-			throw new HolderException(lang.ERROR_HOL_NOT_EXIST);
+			throw new HolderException(lang.get("ERROR_HOL_NOT_EXIST"));
 		}
 		qh.addQuest(questID);
 	}
@@ -115,7 +115,7 @@ public class QuestHolderManager {
 	public void removeHolderQuest(final String issuer, final int questID, final QuesterLang lang) throws QuesterException {
 		final QuestHolder qh = getHolder(profMan.getProfile(issuer).getHolderID());
 		if(qh == null) {
-			throw new HolderException(lang.ERROR_HOL_NOT_EXIST);
+			throw new HolderException(lang.get("ERROR_HOL_NOT_EXIST"));
 		}
 		qh.removeQuest(questID);
 	}
@@ -123,13 +123,13 @@ public class QuestHolderManager {
 	public void moveHolderQuest(final String issuer, final int which, final int where, final QuesterLang lang) throws QuesterException {
 		final QuestHolder qh = getHolder(profMan.getProfile(issuer).getHolderID());
 		if(qh == null) {
-			throw new HolderException(lang.ERROR_HOL_NOT_SELECTED);
+			throw new HolderException(lang.get("ERROR_HOL_NOT_SELECTED"));
 		}
 		try {
 			qh.moveQuest(which, where);
 		}
 		catch (final IndexOutOfBoundsException e) {
-			throw new CustomException(lang.ERROR_CMD_ID_OUT_OF_BOUNDS);
+			throw new CustomException(lang.get("ERROR_CMD_ID_OUT_OF_BOUNDS"));
 		}
 	}
 	
@@ -158,7 +158,7 @@ public class QuestHolderManager {
 		}
 		final List<Integer> heldQuests = holder.getQuests();
 		if(heldQuests.isEmpty()) {
-			throw new HolderException(lang.ERROR_Q_NONE);
+			throw new HolderException(lang.get("ERROR_Q_NONE"));
 		}
 		if(holder.getSelected(selecter) == -1) {
 			holder.setSelected(selecter, 0);
@@ -181,7 +181,7 @@ public class QuestHolderManager {
 				notChosen = false;
 			}
 			else if(i == selected) {
-				throw new HolderException(lang.ERROR_Q_NONE_ACTIVE);
+				throw new HolderException(lang.get("ERROR_Q_NONE_ACTIVE"));
 			}
 		}
 		return true;
@@ -206,7 +206,7 @@ public class QuestHolderManager {
 	}
 	
 	public void showHolderList(final CommandSender sender, final QuesterLang lang) {
-		sender.sendMessage(Util.line(ChatColor.BLUE, lang.INFO_HOLDER_LIST, ChatColor.GOLD));
+		sender.sendMessage(Util.line(ChatColor.BLUE, lang.get("INFO_HOLDER_LIST"), ChatColor.GOLD));
 		for(final int id : getHolders().keySet()) {
 			sender.sendMessage(ChatColor.BLUE + "[" + id + "]" + ChatColor.GOLD + " "
 					+ getHolder(id).getName());
@@ -225,10 +225,10 @@ public class QuestHolderManager {
 		qh = getHolder(id);
 		if(qh == null) {
 			if(holderID < 0) {
-				throw new HolderException(lang.ERROR_HOL_NOT_SELECTED);
+				throw new HolderException(lang.get("ERROR_HOL_NOT_SELECTED"));
 			}
 			else {
-				throw new HolderException(lang.ERROR_HOL_NOT_EXIST);
+				throw new HolderException(lang.get("ERROR_HOL_NOT_EXIST"));
 			}
 		}
 		sender.sendMessage(ChatColor.GOLD + "Holder ID: " + ChatColor.RESET + id);

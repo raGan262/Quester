@@ -26,14 +26,14 @@ public class HolderCommands {
 	public void set(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		final int id = holMan.createHolder(context.getString(0));
 		profMan.selectHolder(profMan.getProfile(sender.getName()), id);
-		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().HOL_CREATED);
+		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("HOL_CREATED"));
 	}
 	
 	@QCommandLabels({ "delete", "d" })
 	@QCommand(section = "Mod", desc = "deletes a holder", min = 1, max = 1, usage = "<holder ID>")
 	public void delete(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		holMan.removeHolder(context.getInt(0));
-		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().HOL_REMOVED);
+		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("HOL_REMOVED"));
 	}
 	
 	@QCommandLabels({ "add", "a" })
@@ -45,7 +45,7 @@ public class HolderCommands {
 			usage = "<quest ID>")
 	public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		holMan.addHolderQuest(sender.getName(), context.getInt(0), context.getSenderLang());
-		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().HOL_Q_ADDED);
+		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("HOL_Q_ADDED"));
 	}
 	
 	@QCommandLabels({ "remove", "r" })
@@ -57,7 +57,7 @@ public class HolderCommands {
 			usage = "<quest ID>")
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		holMan.removeHolderQuest(sender.getName(), context.getInt(0), context.getSenderLang());
-		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().HOL_Q_REMOVED);
+		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("HOL_Q_REMOVED"));
 	}
 	
 	@QCommandLabels({ "move", "m" })
@@ -70,7 +70,7 @@ public class HolderCommands {
 	public void move(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		holMan.moveHolderQuest(sender.getName(), context.getInt(0), context.getInt(1),
 				context.getSenderLang());
-		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().HOL_Q_MOVED);
+		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("HOL_Q_MOVED"));
 	}
 	
 	@QCommandLabels({ "list", "l" })
@@ -98,6 +98,6 @@ public class HolderCommands {
 	@QCommand(section = "Mod", desc = "selects holder", min = 1, max = 1, usage = "<holder ID>")
 	public void select(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		profMan.selectHolder(profMan.getProfile(sender.getName()), context.getInt(0));
-		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().HOL_SELECTED);
+		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("HOL_SELECTED"));
 	}
 }

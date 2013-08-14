@@ -43,12 +43,12 @@ public final class TameObjective extends Objective {
 		EntityType ent = null;
 		final int amt = context.getInt(0);
 		if(amt < 1) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_POSITIVE"));
 		}
 		if(context.length() > 1) {
 			ent = SerUtils.parseEntity(context.getString(1));
 			if(ent == null) {
-				throw new QCommandException(context.getSenderLang().ERROR_CMD_ENTITY_UNKNOWN);
+				throw new QCommandException(context.getSenderLang().get("ERROR_CMD_ENTITY_UNKNOWN"));
 			}
 		}
 		return new TameObjective(amt, ent);

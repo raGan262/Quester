@@ -41,7 +41,7 @@ public final class RegionObjective extends Objective {
 	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
 		final Region region = Region.fromString(context.getPlayer(), context.getString(0));
 		if(region == null) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_REGION_INVALID);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_REGION_INVALID"));
 		}
 		return new RegionObjective(region, context.hasFlag('i'));
 	}

@@ -45,16 +45,16 @@ public class AdminCommands {
 			permission = QConfiguration.PERM_ADMIN)
 	public void startsave(final QCommandContext context, final CommandSender sender) {
 		if(QConfiguration.saveInterval == 0) {
-			sender.sendMessage(ChatColor.RED + context.getSenderLang().MSG_AUTOSAVE_DISABLED);
+			sender.sendMessage(ChatColor.RED + context.getSenderLang().get("MSG_AUTOSAVE_DISABLED"));
 			return;
 		}
 		if(plugin.startSaving()) {
 			sender.sendMessage(ChatColor.GREEN
-					+ context.getSenderLang().MSG_AUTOSAVE_STARTED.replaceAll("%interval",
-							String.valueOf(QConfiguration.saveInterval)));
+					+ context.getSenderLang().get("MSG_AUTOSAVE_STARTED")
+							.replaceAll("%interval", String.valueOf(QConfiguration.saveInterval)));
 		}
 		else {
-			sender.sendMessage(ChatColor.RED + context.getSenderLang().MSG_AUTOSAVE_RUNNING);
+			sender.sendMessage(ChatColor.RED + context.getSenderLang().get("MSG_AUTOSAVE_RUNNING"));
 		}
 	}
 	
@@ -66,14 +66,16 @@ public class AdminCommands {
 			permission = QConfiguration.PERM_ADMIN)
 	public void stopsave(final QCommandContext context, final CommandSender sender) {
 		if(QConfiguration.saveInterval == 0) {
-			sender.sendMessage(ChatColor.RED + context.getSenderLang().MSG_AUTOSAVE_DISABLED);
+			sender.sendMessage(ChatColor.RED + context.getSenderLang().get("MSG_AUTOSAVE_DISABLED"));
 			return;
 		}
 		if(plugin.stopSaving()) {
-			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().MSG_AUTOSAVE_STOPPED);
+			sender.sendMessage(ChatColor.GREEN
+					+ context.getSenderLang().get("MSG_AUTOSAVE_STOPPED"));
 		}
 		else {
-			sender.sendMessage(ChatColor.RED + context.getSenderLang().MSG_AUTOSAVE_NOT_RUNNING);
+			sender.sendMessage(ChatColor.RED
+					+ context.getSenderLang().get("MSG_AUTOSAVE_NOT_RUNNING"));
 		}
 	}
 	
@@ -106,7 +108,7 @@ public class AdminCommands {
 			holMan.saveHolders();
 		}
 		
-		sender.sendMessage(context.getSenderLang().MSG_DATA_SAVE);
+		sender.sendMessage(context.getSenderLang().get("MSG_DATA_SAVE"));
 	}
 	
 	@QCommandLabels({ "reload" })
@@ -136,7 +138,7 @@ public class AdminCommands {
 			reloadQuests();
 			langMan.loadLangs();
 		}
-		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().MSG_DATA_RELOADED);
+		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("MSG_DATA_RELOADED"));
 	}
 	
 	// used above
@@ -159,7 +161,7 @@ public class AdminCommands {
 				if(unset.length > 0
 						&& (player = Bukkit.getServer().getPlayerExact(prof.getName())) != null) {
 					player.sendMessage(Quester.LABEL
-							+ langMan.getPlayerLang(player.getName()).MSG_Q_SOME_CANCELLED);
+							+ langMan.getPlayerLang(player.getName()).get("MSG_Q_SOME_CANCELLED"));
 					player.sendMessage(Quester.LABEL + ChatColor.WHITE + Util.implode(unset, ','));
 				}
 			}

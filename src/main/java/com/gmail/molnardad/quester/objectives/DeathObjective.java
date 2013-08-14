@@ -52,14 +52,14 @@ public final class DeathObjective extends Objective {
 		int rng = 5;
 		final int amt = Integer.parseInt(context.getString(0));
 		if(amt < 1) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_AMOUNT_POSITIVE);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_POSITIVE"));
 		}
 		if(context.length() > 1) {
 			loc = SerUtils.getLoc(context.getPlayer(), context.getString(1));
 			if(context.length() > 2) {
 				rng = context.getInt(2);
 				if(rng < 1) {
-					throw new QCommandException(context.getSenderLang().ERROR_CMD_RANGE_INVALID);
+					throw new QCommandException(context.getSenderLang().get("ERROR_CMD_RANGE_INVALID"));
 				}
 			}
 		}

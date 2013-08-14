@@ -71,9 +71,8 @@ public final class TimeCondition extends Condition {
 		String world = "";
 		final String[] ss = context.getString(0).split("-");
 		if(ss.length != 2) {
-			throw new QCommandException(
-					context.getSenderLang().ERROR_CMD_ARG_CANT_PARSE.replaceAll("%arg",
-							context.getString(0)));
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_ARG_CANT_PARSE")
+					.replaceAll("%arg", context.getString(0)));
 		}
 		from = Integer.parseInt(ss[0]);
 		to = Integer.parseInt(ss[1]);
@@ -88,16 +87,16 @@ public final class TimeCondition extends Condition {
 		if(context.length() > 1) {
 			if(context.getString(1).equalsIgnoreCase(QConfiguration.worldLabelThis)) {
 				if(context.getPlayer() == null) {
-					throw new QCommandException(
-							context.getSenderLang().ERROR_CMD_WORLD_THIS.replaceAll("%this",
-									QConfiguration.worldLabelThis));
+					throw new QCommandException(context.getSenderLang().get("ERROR_CMD_WORLD_THIS")
+							.replaceAll("%this", QConfiguration.worldLabelThis));
 				}
 				world = context.getPlayer().getWorld().getName();
 			}
 			else {
 				final World x = Bukkit.getServer().getWorld(context.getString(1));
 				if(x == null) {
-					throw new QCommandException(context.getSenderLang().ERROR_CMD_WORLD_INVALID);
+					throw new QCommandException(context.getSenderLang().get(
+							"ERROR_CMD_WORLD_INVALID"));
 				}
 				world = x.getName();
 			}

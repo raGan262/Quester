@@ -183,6 +183,7 @@ public class Quester extends JavaPlugin {
 		if(getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 			@Override
 			public void run() {
+				langs.saveLanguages();
 				quests.loadQuests();
 				profiles.loadProfiles(QConfiguration.profileStorageType, false);
 				holders.checkHolders();
@@ -229,11 +230,11 @@ public class Quester extends JavaPlugin {
 				if(e instanceof QUsageException) {
 					sender.sendMessage(ChatColor.RED + e.getMessage());
 					sender.sendMessage(ChatColor.RED
-							+ langs.getPlayerLang(sender.getName()).USAGE_LABEL
+							+ langs.getPlayerLang(sender.getName()).get("USAGE_LABEL")
 							+ ((QUsageException) e).getUsage());
 				}
 				else if(e instanceof QPermissionException) {
-					sender.sendMessage(ChatColor.RED + langs.getDefaultLang().MSG_PERMS);
+					sender.sendMessage(ChatColor.RED + langs.getDefaultLang().get("MSG_PERMS"));
 				}
 				else {
 					sender.sendMessage(ChatColor.RED + e.getMessage());

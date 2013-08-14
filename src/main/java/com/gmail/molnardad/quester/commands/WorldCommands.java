@@ -33,20 +33,19 @@ public class WorldCommands {
 				world = context.getPlayer().getWorld();
 			}
 			else {
-				throw new QCommandException(
-						context.getSenderLang().ERROR_CMD_WORLD_THIS.replaceAll("%this",
-								QConfiguration.worldLabelThis));
+				throw new QCommandException(context.getSenderLang().get("ERROR_CMD_WORLD_THIS")
+						.replaceAll("%this", QConfiguration.worldLabelThis));
 			}
 		}
 		else {
 			world = sender.getServer().getWorld(context.getString(0));
 		}
 		if(world == null) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_WORLD_INVALID);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_WORLD_INVALID"));
 		}
 		qMan.addQuestWorld(profMan.getProfile(sender.getName()), world.getName(),
 				context.getSenderLang());
-		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_WORLD_ADDED);
+		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_WORLD_ADDED"));
 	}
 	
 	@QCommandLabels({ "remove", "r" })
@@ -58,17 +57,16 @@ public class WorldCommands {
 				worldName = context.getPlayer().getWorld().getName();
 			}
 			else {
-				throw new QCommandException(
-						context.getSenderLang().ERROR_CMD_WORLD_THIS.replaceAll("%this",
-								QConfiguration.worldLabelThis));
+				throw new QCommandException(context.getSenderLang().get("ERROR_CMD_WORLD_THIS")
+						.replaceAll("%this", QConfiguration.worldLabelThis));
 			}
 		}
 		if(qMan.removeQuestWorld(profMan.getProfile(sender.getName()), worldName,
 				context.getSenderLang())) {
-			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().Q_WORLD_REMOVED);
+			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_WORLD_REMOVED"));
 		}
 		else {
-			throw new QCommandException(context.getSenderLang().ERROR_WORLD_NOT_ASSIGNED);
+			throw new QCommandException(context.getSenderLang().get("ERROR_WORLD_NOT_ASSIGNED"));
 		}
 	}
 }

@@ -44,7 +44,7 @@ public final class TeleportQevent extends Qevent {
 		final Location loc =
 				SerUtils.getLoc(context.getPlayer(), context.getString(0), context.getSenderLang());
 		if(loc == null) {
-			throw new QCommandException(context.getSenderLang().ERROR_CMD_LOC_INVALID);
+			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_LOC_INVALID"));
 		}
 		return new TeleportQevent(loc);
 	}

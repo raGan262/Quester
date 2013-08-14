@@ -84,10 +84,10 @@ public class QuestManager {
 	
 	public void modifyCheck(final Quest quest, final QuesterLang lang) throws QuesterException {
 		if(quest == null) {
-			throw new QuestException(lang.ERROR_Q_NOT_SELECTED);
+			throw new QuestException(lang.get("ERROR_Q_NOT_SELECTED"));
 		}
 		if(quest.hasFlag(QuestFlag.ACTIVE)) {
-			throw new QuestException(lang.ERROR_Q_CANT_MODIFY);
+			throw new QuestException(lang.get("ERROR_Q_CANT_MODIFY"));
 		}
 	}
 	
@@ -151,7 +151,7 @@ public class QuestManager {
 	
 	public Quest createQuest(final PlayerProfile issuer, final String questName, final QuesterLang lang) throws QuesterException {
 		if(isQuest(questName)) {
-			throw new QuestException(lang.ERROR_Q_EXIST);
+			throw new QuestException(lang.get("ERROR_Q_EXIST"));
 		}
 		final Quest quest = new Quest(questName);
 		assignQuestID(quest);
@@ -184,7 +184,7 @@ public class QuestManager {
 				final Player player = Bukkit.getServer().getPlayerExact(prof.getName());
 				if(player != null) {
 					player.sendMessage(Quester.LABEL
-							+ langMan.getPlayerLang(player.getName()).MSG_Q_DEACTIVATED);
+							+ langMan.getPlayerLang(player.getName()).get("MSG_Q_DEACTIVATED"));
 				}
 			}
 		}
@@ -201,7 +201,7 @@ public class QuestManager {
 	
 	public boolean toggleQuest(final Quest q, final QuesterLang lang) throws QuesterException {
 		if(q == null) {
-			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
+			throw new QuestException(lang.get("ERROR_Q_NOT_EXIST"));
 		}
 		if(q.hasFlag(QuestFlag.ACTIVE)) {
 			deactivateQuest(q);
@@ -216,7 +216,7 @@ public class QuestManager {
 	public void changeQuestName(final PlayerProfile issuer, final String newName, final QuesterLang lang) throws QuesterException {
 		final Quest quest = issuer.getSelected();
 		if(isQuest(newName)) {
-			throw new QuestException(lang.ERROR_Q_EXIST);
+			throw new QuestException(lang.get("ERROR_Q_EXIST"));
 		}
 		modifyCheck(quest, lang);
 		questNames.remove(quest.getName().toLowerCase());
@@ -292,7 +292,7 @@ public class QuestManager {
 		modifyCheck(quest, lang);
 		final Objective oldObj = quest.getObjective(id);
 		if(oldObj == null) {
-			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
+			throw new ObjectiveException(lang.get("ERROR_OBJ_NOT_EXIST"));
 		}
 		quest.setObjective(id, newObjective);
 		for(final int prerequisity : oldObj.getPrerequisites()) {
@@ -304,7 +304,7 @@ public class QuestManager {
 		final Quest quest = issuer.getSelected();
 		modifyCheck(quest, lang);
 		if(!quest.removeObjective(id)) {
-			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
+			throw new ObjectiveException(lang.get("ERROR_OBJ_NOT_EXIST"));
 		}
 	}
 	
@@ -313,7 +313,7 @@ public class QuestManager {
 		modifyCheck(quest, lang);
 		final List<Objective> objs = quest.getObjectives();
 		if(id >= objs.size() || id < 0) {
-			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
+			throw new ObjectiveException(lang.get("ERROR_OBJ_NOT_EXIST"));
 		}
 		objs.get(id).addDescription(desc);
 	}
@@ -323,7 +323,7 @@ public class QuestManager {
 		modifyCheck(quest, lang);
 		final List<Objective> objs = quest.getObjectives();
 		if(id >= objs.size() || id < 0) {
-			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
+			throw new ObjectiveException(lang.get("ERROR_OBJ_NOT_EXIST"));
 		}
 		objs.get(id).removeDescription();
 	}
@@ -331,12 +331,12 @@ public class QuestManager {
 	public void swapQuestObjectives(final PlayerProfile issuer, final int first, final int second, final QuesterLang lang) throws QuesterException {
 		final Quest quest = issuer.getSelected();
 		if(first == second) {
-			throw new CustomException(lang.ERROR_WHY);
+			throw new CustomException(lang.get("ERROR_WHY"));
 		}
 		modifyCheck(quest, lang);
 		
 		if(quest.getObjective(first) == null || quest.getObjective(second) == null) {
-			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
+			throw new ObjectiveException(lang.get("ERROR_OBJ_NOT_EXIST"));
 		}
 		final List<Objective> objs = quest.getObjectives();
 		final Objective obj = objs.get(first);
@@ -356,12 +356,12 @@ public class QuestManager {
 	public void moveQuestObjective(final PlayerProfile issuer, final int which, final int where, final QuesterLang lang) throws QuesterException {
 		final Quest quest = issuer.getSelected();
 		if(which == where) {
-			throw new CustomException(lang.ERROR_WHY);
+			throw new CustomException(lang.get("ERROR_WHY"));
 		}
 		modifyCheck(quest, lang);
 		
 		if(quest.getObjective(which) == null || quest.getObjective(where) == null) {
-			throw new CustomException(lang.ERROR_CMD_ID_OUT_OF_BOUNDS);
+			throw new CustomException(lang.get("ERROR_CMD_ID_OUT_OF_BOUNDS"));
 		}
 		Util.moveListUnit(quest.getObjectives(), which, where);
 		final List<Qevent> evts = quest.getQevents();
@@ -388,7 +388,7 @@ public class QuestManager {
 		modifyCheck(quest, lang);
 		final List<Objective> objs = quest.getObjectives();
 		if(id >= objs.size() || id < 0) {
-			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
+			throw new ObjectiveException(lang.get("ERROR_OBJ_NOT_EXIST"));
 		}
 		for(final int i : prereq) {
 			if(i >= objs.size() || i < 0 || i != id) {
@@ -402,7 +402,7 @@ public class QuestManager {
 		modifyCheck(quest, lang);
 		final List<Objective> objs = quest.getObjectives();
 		if(id >= objs.size() || id < 0) {
-			throw new ObjectiveException(lang.ERROR_OBJ_NOT_EXIST);
+			throw new ObjectiveException(lang.get("ERROR_OBJ_NOT_EXIST"));
 		}
 		for(final int i : prereq) {
 			objs.get(id).removePrerequisity(i);
@@ -419,7 +419,7 @@ public class QuestManager {
 		final Quest quest = issuer.getSelected();
 		modifyCheck(quest, lang);
 		if(quest.getCondition(id) == null) {
-			throw new ConditionException(lang.ERROR_CON_NOT_EXIST);
+			throw new ConditionException(lang.get("ERROR_CON_NOT_EXIST"));
 		}
 		quest.setCondition(id, newCondition);
 	}
@@ -428,7 +428,7 @@ public class QuestManager {
 		final Quest quest = issuer.getSelected();
 		modifyCheck(quest, lang);
 		if(!quest.removeCondition(id)) {
-			throw new ConditionException(lang.ERROR_CON_NOT_EXIST);
+			throw new ConditionException(lang.get("ERROR_CON_NOT_EXIST"));
 		}
 	}
 	
@@ -437,7 +437,7 @@ public class QuestManager {
 		modifyCheck(quest, lang);
 		final List<Condition> cons = quest.getConditions();
 		if(id >= cons.size() || id < 0) {
-			throw new ConditionException(lang.ERROR_CON_NOT_EXIST);
+			throw new ConditionException(lang.get("ERROR_CON_NOT_EXIST"));
 		}
 		cons.get(id).addDescription(desc);
 	}
@@ -447,7 +447,7 @@ public class QuestManager {
 		modifyCheck(quest, lang);
 		final List<Condition> cons = quest.getConditions();
 		if(id >= cons.size() || id < 0) {
-			throw new ConditionException(lang.ERROR_CON_NOT_EXIST);
+			throw new ConditionException(lang.get("ERROR_CON_NOT_EXIST"));
 		}
 		cons.get(id).removeDescription();
 	}
@@ -457,7 +457,7 @@ public class QuestManager {
 		modifyCheck(quest, lang);
 		final int occasion = newQevent.getOccasion();
 		if(occasion < -3 || occasion >= quest.getObjectives().size()) {
-			throw new ConditionException(lang.ERROR_OCC_NOT_EXIST);
+			throw new ConditionException(lang.get("ERROR_OCC_NOT_EXIST"));
 		}
 		quest.addQevent(newQevent);
 	}
@@ -467,7 +467,7 @@ public class QuestManager {
 		modifyCheck(quest, lang);
 		final int occasion = newQevent.getOccasion();
 		if(occasion < -3 || occasion >= quest.getObjectives().size()) {
-			throw new ConditionException(lang.ERROR_OCC_NOT_EXIST);
+			throw new ConditionException(lang.get("ERROR_OCC_NOT_EXIST"));
 		}
 		quest.setQevent(qeventID, newQevent);
 	}
@@ -476,7 +476,7 @@ public class QuestManager {
 		final Quest quest = issuer.getSelected();
 		modifyCheck(quest, lang);
 		if(!quest.removeQevent(id)) {
-			throw new QeventException(lang.ERROR_EVT_NOT_EXIST);
+			throw new QeventException(lang.get("ERROR_EVT_NOT_EXIST"));
 		}
 	}
 	
@@ -486,7 +486,7 @@ public class QuestManager {
 	
 	public boolean areConditionsMet(final Player player, final Quest quest, final QuesterLang lang) throws QuesterException {
 		if(quest == null) {
-			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
+			throw new QuestException(lang.get("ERROR_Q_NOT_EXIST"));
 		}
 		for(final Condition c : quest.getConditions()) {
 			if(!c.isMet(player, plugin)) {
@@ -512,26 +512,27 @@ public class QuestManager {
 		}
 		
 		if(qst == null) {
-			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
+			throw new QuestException(lang.get("ERROR_Q_NOT_EXIST"));
 		}
 		if(!qst.hasFlag(QuestFlag.ACTIVE) || qst.hasFlag(QuestFlag.HIDDEN)) {
 			if(!Util.permCheck(sender, QConfiguration.PERM_MODIFY, false, null)) {
-				throw new QuestException(lang.ERROR_Q_NOT_EXIST);
+				throw new QuestException(lang.get("ERROR_Q_NOT_EXIST"));
 			}
 		}
 		Player player = null;
 		if(sender instanceof Player) {
 			player = (Player) sender;
 		}
-		sender.sendMessage(ChatColor.BLUE + lang.INFO_NAME + ": " + ChatColor.GOLD + qst.getName());
+		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_NAME") + ": " + ChatColor.GOLD
+				+ qst.getName());
 		final String string = qst.getDescription(sender.getName());
 		if(!string.isEmpty()) {
-			sender.sendMessage(ChatColor.BLUE + lang.INFO_DESCRIPTION + ": " + ChatColor.WHITE
-					+ string);
+			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_DESCRIPTION") + ": "
+					+ ChatColor.WHITE + string);
 		}
 		final List<Condition> cons = qst.getConditions();
 		if(!cons.isEmpty()) {
-			sender.sendMessage(ChatColor.BLUE + lang.INFO_CONDITIONS + ":");
+			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_CONDITIONS") + ":");
 		}
 		ChatColor color = ChatColor.WHITE;
 		for(int i = 0; i < cons.size(); i++) {
@@ -542,7 +543,7 @@ public class QuestManager {
 		}
 		if(!qst.hasFlag(QuestFlag.HIDDENOBJS)) {
 			final List<Objective> objs = qst.getObjectives();
-			sender.sendMessage(ChatColor.BLUE + lang.INFO_OBJECTIVES + ":");
+			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_OBJECTIVES") + ":");
 			for(int i = 0; i < objs.size(); i++) {
 				if(!objs.get(i).isHidden()
 						&& (objs.get(i).getPrerequisites().isEmpty() || !QConfiguration.ordOnlyCurrent)) {
@@ -566,33 +567,34 @@ public class QuestManager {
 	
 	public void showQuestInfo(final CommandSender sender, final Quest quest, final QuesterLang lang) throws QuesterException {
 		if(quest == null) {
-			throw new QuestException(lang.ERROR_Q_NOT_EXIST);
+			throw new QuestException(lang.get("ERROR_Q_NOT_EXIST"));
 		}
 		
-		sender.sendMessage(Util.line(ChatColor.BLUE, lang.INFO_QUEST_INFO, ChatColor.GOLD));
+		sender.sendMessage(Util.line(ChatColor.BLUE, lang.get("INFO_QUEST_INFO"), ChatColor.GOLD));
 		
-		sender.sendMessage(ChatColor.BLUE + lang.INFO_NAME + ": " + "[" + quest.getID() + "]"
-				+ ChatColor.GOLD + quest.getName());
+		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_NAME") + ": " + "[" + quest.getID()
+				+ "]" + ChatColor.GOLD + quest.getName());
 		String string = quest.getDescription(sender.getName());
 		if(!string.isEmpty()) {
-			sender.sendMessage(ChatColor.BLUE + lang.INFO_DESCRIPTION + ": " + ChatColor.WHITE
-					+ string);
+			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_DESCRIPTION") + ": "
+					+ ChatColor.WHITE + string);
 		}
 		if(quest.hasLocation()) {
-			sender.sendMessage(ChatColor.BLUE + lang.INFO_LOCATION + ": " + ChatColor.WHITE
+			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_LOCATION") + ": " + ChatColor.WHITE
 					+ SerUtils.displayLocation(quest.getLocation()));
 		}
 		string = QuestFlag.stringize(quest.getFlags());
 		if(!string.isEmpty()) {
-			sender.sendMessage(ChatColor.BLUE + lang.INFO_FLAGS + ": " + ChatColor.WHITE + string);
+			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_FLAGS") + ": " + ChatColor.WHITE
+					+ string);
 		}
 		if(!quest.getWorlds().isEmpty()) {
-			sender.sendMessage(ChatColor.BLUE + lang.INFO_WORLDS + ": " + ChatColor.WHITE
+			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_WORLDS") + ": " + ChatColor.WHITE
 					+ quest.getWorldNames());
 		}
 		int i;
 		final Map<Integer, Map<Integer, Qevent>> qmap = quest.getQeventMap();
-		sender.sendMessage(ChatColor.BLUE + lang.INFO_EVENTS + ":");
+		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_EVENTS") + ":");
 		for(i = -1; i > -4; i--) {
 			if(qmap.get(i) != null) {
 				sender.sendMessage(ChatColor.GOLD + " " + Qevent.parseOccasion(i) + ":");
@@ -601,14 +603,14 @@ public class QuestManager {
 				}
 			}
 		}
-		sender.sendMessage(ChatColor.BLUE + lang.INFO_CONDITIONS + ":");
+		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_CONDITIONS") + ":");
 		i = 0;
 		for(final Condition c : quest.getConditions()) {
 			sender.sendMessage(" [" + i + "] " + c.inInfo());
 			i++;
 			
 		}
-		sender.sendMessage(ChatColor.BLUE + lang.INFO_OBJECTIVES + ":");
+		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_OBJECTIVES") + ":");
 		i = 0;
 		for(final Objective o : quest.getObjectives()) {
 			final String color = o.isHidden() ? ChatColor.YELLOW + "" : "";
@@ -631,7 +633,7 @@ public class QuestManager {
 			showFullQuestList(sender, lang);
 			return;
 		}
-		sender.sendMessage(Util.line(ChatColor.BLUE, lang.INFO_QUEST_LIST, ChatColor.GOLD));
+		sender.sendMessage(Util.line(ChatColor.BLUE, lang.get("INFO_QUEST_LIST"), ChatColor.GOLD));
 		ChatColor color = ChatColor.RED;
 		final PlayerProfile prof = profMan.getProfile(player.getName());
 		Quest quest = null;
@@ -662,7 +664,7 @@ public class QuestManager {
 	}
 	
 	public void showFullQuestList(final CommandSender sender, final QuesterLang lang) {
-		sender.sendMessage(Util.line(ChatColor.BLUE, lang.INFO_QUEST_LIST, ChatColor.GOLD));
+		sender.sendMessage(Util.line(ChatColor.BLUE, lang.get("INFO_QUEST_LIST"), ChatColor.GOLD));
 		Quest q = null;
 		for(final int i : getQuestIds()) {
 			q = getQuest(i);
