@@ -50,10 +50,10 @@ public final class ToggleQevent extends Qevent {
 					warning = "Deprecated usage of Quest ID in TOGGLE event detected.";
 				}
 			}
-			qm.toggleQuest(q, LanguageManager.defaultLang);
 			if(warning != null) {
 				Ql.warning(warning);
 			}
+			qm.toggleQuest(q, LanguageManager.defaultLang);
 		}
 		catch (final QuesterException e) {
 			Ql.warning("Event failed to toggle quest. Reason: "

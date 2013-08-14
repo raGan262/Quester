@@ -51,11 +51,11 @@ public final class QuestQevent extends Qevent {
 					warning = "Deprecated usage of Quest ID in QUEST event detected.";
 				}
 			}
-			plugin.getProfileManager().startQuest(player, quest, ActionSource.eventSource(this),
-					LanguageManager.defaultLang);
 			if(warning != null) {
 				Ql.warning(warning);
 			}
+			plugin.getProfileManager().startQuest(player, q, ActionSource.eventSource(this),
+					LanguageManager.defaultLang);
 		}
 		catch (final QuesterException e) {
 			Ql.warning("Event failed to give quest to " + player.getName() + ". Reason: "
