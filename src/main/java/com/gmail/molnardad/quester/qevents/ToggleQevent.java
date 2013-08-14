@@ -36,19 +36,18 @@ public final class ToggleQevent extends Qevent {
 	protected void run(final Player player, final Quester plugin) {
 		final QuestManager qm = plugin.getQuestManager();
 		String warning = null;
-		Quest q = null;
-		try {
-			q = qm.getQuest(quest);
-		}
-		catch (final Exception ignore) {}
+		Quest q = qm.getQuest(quest);
 		try {
 			if(q == null) {
 				try {
 					q = qm.getQuest(Integer.valueOf(quest));
-					warning = "Deprecated usage of Quest ID in TOGGLE event detected.";
 				}
-				catch (final NumberFormatException e) {
+				catch (final NumberFormatException ignore) {}
+				if(q == null) {
 					throw new QuestException(LanguageManager.defaultLang.get("ERROR_Q_NOT_EXIST"));
+				}
+				else {
+					warning = "Deprecated usage of Quest ID in TOGGLE event detected.";
 				}
 			}
 			qm.toggleQuest(q, LanguageManager.defaultLang);
