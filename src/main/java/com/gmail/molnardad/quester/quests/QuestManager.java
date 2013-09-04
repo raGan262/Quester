@@ -525,7 +525,7 @@ public class QuestManager {
 		}
 		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_NAME") + ": " + ChatColor.GOLD
 				+ qst.getName());
-		final String string = qst.getDescription(sender.getName());
+		final String string = qst.getDescription(sender.getName(), lang);
 		if(!string.isEmpty()) {
 			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_DESCRIPTION") + ": "
 					+ ChatColor.WHITE + string);
@@ -539,7 +539,7 @@ public class QuestManager {
 			if(player != null) {
 				color = cons.get(i).isMet(player, plugin) ? ChatColor.GREEN : ChatColor.RED;
 			}
-			sender.sendMessage(color + " - " + cons.get(i).inShow());
+			sender.sendMessage(color + " - " + cons.get(i).inShow(lang));
 		}
 		if(!qst.hasFlag(QuestFlag.HIDDENOBJS)) {
 			final List<Objective> objs = qst.getObjectives();
@@ -547,7 +547,7 @@ public class QuestManager {
 			for(int i = 0; i < objs.size(); i++) {
 				if(!objs.get(i).isHidden()
 						&& (objs.get(i).getPrerequisites().isEmpty() || !QConfiguration.ordOnlyCurrent)) {
-					sender.sendMessage(ChatColor.WHITE + " - " + objs.get(i).inShow(0));
+					sender.sendMessage(ChatColor.WHITE + " - " + objs.get(i).inShow(0, lang));
 				}
 			}
 		}
@@ -574,19 +574,22 @@ public class QuestManager {
 		
 		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_NAME") + ": " + "[" + quest.getID()
 				+ "]" + ChatColor.GOLD + quest.getName());
-		String string = quest.getDescription(sender.getName());
-		if(!string.isEmpty()) {
-			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_DESCRIPTION") + ": "
-					+ ChatColor.WHITE + string);
+		String msgString = quest.getRawDescription();
+		if(!msgString.isEmpty()) {
+			final ChatColor color =
+					langMan.customMessageExists(LanguageManager.getCustomMessageKey(msgString))
+							? ChatColor.GREEN : ChatColor.RED;
+			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_DESCRIPTION") + ": " + color
+					+ msgString);
 		}
 		if(quest.hasLocation()) {
 			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_LOCATION") + ": " + ChatColor.WHITE
 					+ SerUtils.displayLocation(quest.getLocation()));
 		}
-		string = QuestFlag.stringize(quest.getFlags());
-		if(!string.isEmpty()) {
+		msgString = QuestFlag.stringize(quest.getFlags());
+		if(!msgString.isEmpty()) {
 			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_FLAGS") + ": " + ChatColor.WHITE
-					+ string);
+					+ msgString);
 		}
 		if(!quest.getWorlds().isEmpty()) {
 			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_WORLDS") + ": " + ChatColor.WHITE
@@ -606,7 +609,7 @@ public class QuestManager {
 		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_CONDITIONS") + ":");
 		i = 0;
 		for(final Condition c : quest.getConditions()) {
-			sender.sendMessage(" [" + i + "] " + c.inInfo());
+			sender.sendMessage(" [" + i + "] " + c.inInfo(langMan));
 			i++;
 			
 		}
@@ -614,7 +617,7 @@ public class QuestManager {
 		i = 0;
 		for(final Objective o : quest.getObjectives()) {
 			final String color = o.isHidden() ? ChatColor.YELLOW + "" : "";
-			sender.sendMessage(color + " [" + i + "] " + o.inInfo());
+			sender.sendMessage(color + " [" + i + "] " + o.inInfo(langMan));
 			if(qmap.get(i) != null) {
 				for(final int j : qmap.get(i).keySet()) {
 					sender.sendMessage("  <" + j + "> " + qmap.get(i).get(j).inInfo());

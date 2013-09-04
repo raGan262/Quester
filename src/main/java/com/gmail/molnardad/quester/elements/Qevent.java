@@ -76,6 +76,11 @@ public abstract class Qevent extends Element {
 				@Override
 				public void run() {
 					try {
+						if(!player.isOnline()) {
+							Ql.debug(getType() + " event failed to run: Player offline ["
+									+ occasion + ":" + delay + "]");
+							return;
+						}
 						Qevent.this.run(player, plugin);
 					}
 					catch (final Exception e) {

@@ -27,7 +27,7 @@ public final class Ql {
 			if(serverLogger == null) {
 				throw new IllegalArgumentException("serverLogger cannot be null.");
 			}
-			fileLogger.setUseParentHandlers(false);
+			setUseParentHandlers(false);
 			final Handler[] handlers = serverLogger.getHandlers();
 			boolean foundHandler = false;
 			for(final Handler h : handlers) {

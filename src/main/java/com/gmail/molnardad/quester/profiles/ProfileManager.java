@@ -235,29 +235,29 @@ public class ProfileManager {
 		startQuest(player, qst, as, lang);
 	}
 	
-	public void startQuest(final Player player, final Quest quest, final ActionSource as, final QuesterLang lang) throws QuesterException {
+	public void startQuest(final Player player, final Quest quest, final ActionSource as, final QuesterLang senderLang) throws QuesterException {
 		final String playerName = player.getName();
 		if(quest == null) {
-			throw new QuestException(lang.get("ERROR_Q_NOT_EXIST"));
+			throw new QuestException(senderLang.get("ERROR_Q_NOT_EXIST"));
 		}
 		final PlayerProfile prof = getProfile(playerName);
 		if(prof.hasQuest(quest)) {
-			throw new QuestException(lang.get("ERROR_Q_ASSIGNED"));
+			throw new QuestException(senderLang.get("ERROR_Q_ASSIGNED"));
 		}
 		if(prof.getQuestAmount() >= QConfiguration.maxQuests) {
-			throw new QuestException(lang.get("ERROR_Q_MAX_AMOUNT"));
+			throw new QuestException(senderLang.get("ERROR_Q_MAX_AMOUNT"));
 		}
 		if(!quest.hasFlag(QuestFlag.ACTIVE)) {
-			throw new QuestException(lang.get("ERROR_Q_NOT_EXIST"));
+			throw new QuestException(senderLang.get("ERROR_Q_NOT_EXIST"));
 		}
 		if(as.is(ActionSource.COMMAND) && quest.hasFlag(QuestFlag.HIDDEN)) {
-			throw new QuestException(lang.get("ERROR_Q_NOT_CMD"));
+			throw new QuestException(senderLang.get("ERROR_Q_NOT_CMD"));
 		}
 		if(!as.is(ActionSource.ADMIN)
 				&& !Util.permCheck(player, QConfiguration.PERM_ADMIN, false, null)) {
 			for(final Condition con : quest.getConditions()) {
 				if(!con.isMet(player, plugin)) {
-					throw new ConditionException(con.inShow());
+					throw new ConditionException(con.inShow(senderLang));
 				}
 			}
 		}
@@ -271,12 +271,13 @@ public class ProfileManager {
 		}
 		
 		assignQuest(prof, quest);
+		final QuesterLang playerLang = langMan.getPlayerLang(playerName);
 		if(QConfiguration.progMsgStart) {
 			player.sendMessage(Quester.LABEL
-					+ langMan.getPlayerLang(playerName).get("MSG_Q_STARTED")
-							.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
+					+ playerLang.get("MSG_Q_STARTED").replaceAll("%q",
+							ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 		}
-		final String description = quest.getDescription(playerName);
+		final String description = quest.getDescription(playerName, playerLang);
 		if(!description.isEmpty() && !quest.hasFlag(QuestFlag.NODESC)) {
 			player.sendMessage(description);
 		}
@@ -456,7 +457,6 @@ public class ProfileManager {
 		final Objective obj = q.getObjectives().get(objectiveId);
 		setProgress(prof, objectiveId, newValue);
 		
-		// TODO add progress update message
 		if(obj.getTargetAmount() <= newValue) {
 			if(QConfiguration.progMsgObj && !obj.isHidden()) {
 				player.sendMessage(Quester.LABEL + lang.get("MSG_OBJ_COMPLETED"));
@@ -479,7 +479,7 @@ public class ProfileManager {
 			}
 		}
 		else if(!obj.isHidden() && obj.shouldDisplayProgress() && QConfiguration.progMsg) {
-			player.sendMessage(ChatColor.YELLOW + " - " + obj.inShow(newValue));
+			player.sendMessage(ChatColor.YELLOW + " - " + obj.inShow(newValue, lang));
 		}
 	}
 	
@@ -560,7 +560,7 @@ public class ProfileManager {
 						if(active || !QConfiguration.ordOnlyCurrent) {
 							final ChatColor col = active ? ChatColor.YELLOW : ChatColor.RED;
 							player.sendMessage(col + " - "
-									+ objs.get(i).inShow(progress.getProgress()[i]));
+									+ objs.get(i).inShow(progress.getProgress()[i], lang));
 						}
 					}
 				}

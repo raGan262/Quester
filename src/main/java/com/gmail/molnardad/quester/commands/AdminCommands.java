@@ -1,5 +1,7 @@
 package com.gmail.molnardad.quester.commands;
 
+import java.io.File;
+
 import javax.management.InstanceNotFoundException;
 
 import org.bukkit.Bukkit;
@@ -130,12 +132,18 @@ public class AdminCommands {
 				reloadQuests();
 			}
 			if(lang) {
+				langMan.clearCustomMessages();
+				langMan.loadCustomMessages(new File(plugin.getDataFolder(), "messages.yml"));
 				langMan.loadLangs();
 			}
 		}
 		else {
 			reloadData();
+			
 			reloadQuests();
+			
+			langMan.clearCustomMessages();
+			langMan.loadCustomMessages(new File(plugin.getDataFolder(), "messages.yml"));
 			langMan.loadLangs();
 		}
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("MSG_DATA_RELOADED"));
@@ -192,5 +200,14 @@ public class AdminCommands {
 			permission = QConfiguration.PERM_ADMIN)
 	@QNestedCommand(PlayerCommands.class)
 	public void player(final QCommandContext context, final CommandSender sender) {
+	}
+	
+	@QCommandLabels({ "message", "msg" })
+	@QCommand(
+			section = "Admin",
+			desc = "custom messages manipulation",
+			permission = QConfiguration.PERM_ADMIN)
+	@QNestedCommand(MessageCommands.class)
+	public void message(final QCommandContext context, final CommandSender sender) {
 	}
 }

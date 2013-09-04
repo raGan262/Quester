@@ -9,6 +9,8 @@ class MessageRegistry {
 	
 	final Map<String, String> messages = new HashMap<String, String>(INITIAL_CAPACITY);
 	
+	final Map<String, String> customMessages = new HashMap<String, String>();
+	
 	MessageRegistry() {
 		messages.put("MSG_UNKNOWN_MESSAGE", "UNKNOWN MESSAGE");
 		
@@ -208,4 +210,14 @@ class MessageRegistry {
 		}
 	}
 	
+	boolean registerCustomMessage(final String key, final String message) {
+		final String upperKey = key.toUpperCase();
+		if(customMessages.containsKey(upperKey)) {
+			return false;
+		}
+		else {
+			customMessages.put(upperKey, message);
+			return true;
+		}
+	}
 }

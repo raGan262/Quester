@@ -83,18 +83,7 @@ public class Quester extends JavaPlugin {
 		}
 		
 		// Managers
-		try {
-			langs =
-					new LanguageManager(this, new File(getDataFolder() + File.separator + "local"
-							+ File.separator), QConfiguration.defaultLang);
-		}
-		catch (final Exception e) {
-			Ql.severe("Failed to load languages.");
-			getServer().getPluginManager().disablePlugin(this);
-			return;
-		}
-		final int langCount = langs.loadLangs();
-		Ql.info(langCount + (langCount == 1 ? " language" : " languages") + " loaded.");
+		loadLangs();
 		
 		elements = new ElementManager();
 		ElementManager.setInstance(elements);
@@ -276,6 +265,23 @@ public class Quester extends JavaPlugin {
 		return holders;
 	}
 	
+	private void loadLangs() {
+		try {
+			langs =
+					new LanguageManager(this, new File(getDataFolder() + File.separator + "local"
+							+ File.separator), QConfiguration.defaultLang);
+		}
+		catch (final Exception e) {
+			Ql.severe("Failed to load languages.");
+			getServer().getPluginManager().disablePlugin(this);
+			return;
+		}
+		langs.loadCustomMessages(new File(getDataFolder(), "messages.yml"));
+		
+		final int langCount = langs.loadLangs();
+		Ql.info(langCount + (langCount == 1 ? " language" : " languages") + " loaded.");
+	}
+	
 	private boolean setupEconomy() {
 		if(getServer().getPluginManager().getPlugin("Vault") == null) {
 			Ql.warning("Vault not found, economy support disabled.");
@@ -327,19 +333,6 @@ public class Quester extends JavaPlugin {
 			}
 		}
 		return denizen;
-	}
-	
-	public void reloadLocal() {
-		if(langs == null) {
-			Ql.warning("Failed to reload languages: LanguageManager null");
-			return;
-		}
-		int i = 0;
-		for(final String lang : langs.getLangSet()) {
-			langs.reloadLang(lang);
-			i++;
-		}
-		Ql.info(i + " languages loaded.");
 	}
 	
 	private void setupListeners() {

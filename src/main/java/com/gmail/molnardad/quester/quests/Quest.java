@@ -14,6 +14,8 @@ import org.bukkit.Location;
 import com.gmail.molnardad.quester.elements.Condition;
 import com.gmail.molnardad.quester.elements.Objective;
 import com.gmail.molnardad.quester.elements.Qevent;
+import com.gmail.molnardad.quester.lang.LanguageManager;
+import com.gmail.molnardad.quester.lang.QuesterLang;
 import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Ql;
 import com.gmail.molnardad.quester.utils.SerUtils;
@@ -21,12 +23,13 @@ import com.gmail.molnardad.quester.utils.Util;
 
 public class Quest {
 	
-	private List<Objective> objectives = null;
-	private List<Condition> conditions = null;
-	private List<Qevent> qevents = null;
-	private Set<String> worlds = null;
-	private Set<QuestFlag> flags = null;
-	private String description = null;
+	private final List<Objective> objectives = new ArrayList<Objective>();
+	private final List<Condition> conditions = new ArrayList<Condition>();
+	private final List<Qevent> qevents = new ArrayList<Qevent>();
+	private final Set<String> worlds = new HashSet<String>();
+	private final Set<QuestFlag> flags = new HashSet<QuestFlag>();
+	private String description = "";
+	private boolean isCustomMessage = false;
 	private String name = null;
 	private Location location = null;
 	private int range = 1;
@@ -36,12 +39,6 @@ public class Quest {
 	
 	public Quest(final String name) {
 		this.name = name;
-		description = "";
-		objectives = new ArrayList<Objective>();
-		conditions = new ArrayList<Condition>();
-		qevents = new ArrayList<Qevent>();
-		worlds = new HashSet<String>();
-		flags = new HashSet<QuestFlag>();
 	}
 	
 	public boolean hasID() {
@@ -80,17 +77,42 @@ public class Quest {
 		name = newName;
 	}
 	
-	public String getDescription(final String playerName) {
-		return ChatColor.translateAlternateColorCodes('&', description)
-				.replaceAll("%p", playerName);
+	public String getRawDescription() {
+		if(isCustomMessage) {
+			return "LANG:" + description;
+		}
+		else {
+			return description;
+		}
+	}
+	
+	public String getDescription(final String playerName, final QuesterLang lang) {
+		final String localDesc = isCustomMessage ? lang.getCustom(description) : description;
+		return ChatColor.translateAlternateColorCodes('&', localDesc).replaceAll("%p", playerName);
 	}
 	
 	void setDescription(final String newDescription) {
 		description = newDescription;
+		customMessageCheck();
 	}
 	
 	void addDescription(final String toAdd) {
+		final boolean doCheck = description.isEmpty();
 		description = (description + " " + toAdd).trim();
+		if(doCheck) {
+			customMessageCheck();
+		}
+	}
+	
+	private void customMessageCheck() {
+		final String langMsg = LanguageManager.getCustomMessageKey(description);
+		if(langMsg != null) {
+			description = langMsg;
+			isCustomMessage = true;
+		}
+		else {
+			isCustomMessage = false;
+		}
 	}
 	
 	public boolean hasLocation() {
@@ -254,7 +276,8 @@ public class Quest {
 		
 		key.setString("name", name);
 		if(!description.isEmpty()) {
-			key.setString("description", description);
+			final String prefix = isCustomMessage ? "LANG:" : "";
+			key.setString("description", prefix + description);
 		}
 		if(location != null) {
 			key.setString("location", SerUtils.serializeLocString(location));

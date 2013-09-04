@@ -12,10 +12,23 @@ import com.gmail.molnardad.quester.Quester;
 import com.gmail.molnardad.quester.storage.ConfigStorage;
 import com.gmail.molnardad.quester.storage.Storage;
 import com.gmail.molnardad.quester.storage.StorageKey;
+import com.gmail.molnardad.quester.utils.Ql;
 
 public class LanguageManager {
 	
 	public static QuesterLang defaultLang = new QuesterLang(null, new MessageRegistry());
+	
+	static final String CUSTOM_KEY = "-CUSTOM-";
+	
+	public static String getCustomMessageKey(final String rawMessage) {
+		final String upper = rawMessage.toUpperCase();
+		if(upper.startsWith("LANG:")) {
+			return upper.substring(upper.indexOf(':') + 1);
+		}
+		else {
+			return null;
+		}
+	}
 	
 	private final Map<String, QuesterLang> languages = new HashMap<String, QuesterLang>();
 	private final Map<String, String> playerLangs = new HashMap<String, String>();
@@ -41,8 +54,42 @@ public class LanguageManager {
 		languages.put(defaultLangName, defLang);
 	}
 	
+	public boolean messageExists(final String key) {
+		return registry.messages.get(key) != null;
+	}
+	
+	public boolean customMessageExists(final String key) {
+		return registry.customMessages.get(key) != null;
+	}
+	
 	public boolean registerMessage(final String key, final String message) {
 		return registry.registerMessage(key, message);
+	}
+	
+	public boolean registerCustomMessage(final String key, final String message) {
+		return registry.registerCustomMessage(key, message);
+	}
+	
+	public int loadCustomMessages(final File file) {
+		final Storage messageStorage = new ConfigStorage(file, logger, null);
+		int count = 0;
+		if(messageStorage.load()) {
+			for(final StorageKey key : messageStorage.getKey("").getSubKeys()) {
+				if(registerCustomMessage(key.getName(), key.getString(""))) {
+					count++;
+				}
+			}
+			Ql.verbose("Loaded " + count + " custom messages.");
+			return count;
+		}
+		else {
+			Ql.severe("Failed to load custom messages.");
+		}
+		return 0;
+	}
+	
+	public void clearCustomMessages() {
+		registry.customMessages.clear();
 	}
 	
 	public Set<String> getLangSet() {
@@ -109,9 +156,15 @@ public class LanguageManager {
 	public void saveLanguage(final QuesterLang lang) {
 		if(lang.addDefaults() > 0 && lang.getFile() != null) {
 			final Storage storage = new ConfigStorage(lang.getFile(), logger, null);
-			final StorageKey storageKey = storage.getKey("");
-			final Map<String, String> messages = lang.getMessages();
-			
+			// save regular messages
+			StorageKey storageKey = storage.getKey("");
+			Map<String, String> messages = lang.getMessages();
+			for(final String key : new TreeSet<String>(messages.keySet())) {
+				storageKey.setString(key, messages.get(key));
+			}
+			// save user created messages
+			storageKey = storage.getKey(CUSTOM_KEY);
+			messages = lang.getCustomMessages();
 			for(final String key : new TreeSet<String>(messages.keySet())) {
 				storageKey.setString(key, messages.get(key));
 			}
@@ -138,8 +191,14 @@ public class LanguageManager {
 		final QuesterLang lang = new QuesterLang(file, registry);
 		
 		for(final StorageKey subKey : key.getSubKeys()) {
-			final String message = subKey.getString("");
-			lang.put(subKey.getName(), message);
+			if(subKey.hasSubKeys() && subKey.getName().equals(LanguageManager.CUSTOM_KEY)) {
+				for(final StorageKey customKey : subKey.getSubKeys()) {
+					lang.putCustom(customKey.getName(), customKey.getString(""));
+				}
+			}
+			else {
+				lang.put(subKey.getName(), subKey.getString(""));
+			}
 		}
 		saveLanguage(lang);
 		languages.put(name.toLowerCase(), lang);

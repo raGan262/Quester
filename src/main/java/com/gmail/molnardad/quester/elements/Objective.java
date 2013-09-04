@@ -8,6 +8,8 @@ import org.apache.commons.lang.SerializationException;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import com.gmail.molnardad.quester.lang.LanguageManager;
+import com.gmail.molnardad.quester.lang.QuesterLang;
 import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Ql;
 import com.gmail.molnardad.quester.utils.SerUtils;
@@ -15,6 +17,7 @@ import com.gmail.molnardad.quester.utils.SerUtils;
 public abstract class Objective extends Element {
 	
 	private String desc = "";
+	private boolean isCustomMessage = false;
 	private boolean hidden = false;
 	private boolean displayProgress = true;
 	private final Set<Integer> prerequisites = new HashSet<Integer>();
@@ -31,23 +34,51 @@ public abstract class Objective extends Element {
 		prerequisites.remove(pre);
 	}
 	
-	private String coloredDesc() {
-		String des = "";
+	private String coloredDesc(final LanguageManager langMan) {
+		String result = "";
 		if(!prerequisites.isEmpty()) {
-			des += " PRE: " + SerUtils.serializePrerequisites(prerequisites, ",");
+			result += " PRE: " + SerUtils.serializePrerequisites(prerequisites, ",");
 		}
 		if(!desc.isEmpty()) {
-			des += "\n  - " + ChatColor.translateAlternateColorCodes('&', desc) + ChatColor.RESET;
+			result += "\n  - ";
+			if(isCustomMessage) {
+				if(langMan != null) {
+					if(langMan.customMessageExists(desc)) {
+						result += ChatColor.GREEN;
+					}
+					else {
+						result += ChatColor.RED;
+					}
+				}
+				result += "LANG:";
+			}
+			result += ChatColor.translateAlternateColorCodes('&', desc) + ChatColor.RESET;
 		}
-		return des;
+		return result;
 	}
 	
 	public void addDescription(final String msg) {
+		final boolean doCheck = desc.isEmpty();
 		desc += (" " + msg).trim();
+		if(doCheck) {
+			customMessageCheck();
+		}
 	}
 	
 	public void removeDescription() {
 		desc = "";
+		isCustomMessage = false;
+	}
+	
+	private void customMessageCheck() {
+		final String langMsg = LanguageManager.getCustomMessageKey(desc);
+		if(langMsg != null) {
+			desc = langMsg;
+			isCustomMessage = true;
+		}
+		else {
+			isCustomMessage = false;
+		}
 	}
 	
 	public void setHidden(final boolean value) {
@@ -84,14 +115,21 @@ public abstract class Objective extends Element {
 		return false;
 	}
 	
-	public String inShow() {
-		return inShow(0);
+	public String inShow(final QuesterLang lang) {
+		return inShow(0, lang);
 	}
 	
-	public String inShow(final int progress) {
+	public String inShow(final int progress, final QuesterLang lang) {
 		if(!desc.isEmpty()) {
+			final String actualDesc;
+			if(isCustomMessage) {
+				actualDesc = lang.getCustom(desc);
+			}
+			else {
+				actualDesc = desc;
+			}
 			final String partiallyParsed =
-					desc.replaceAll("%r", String.valueOf(getTargetAmount() - progress))
+					actualDesc.replaceAll("%r", String.valueOf(getTargetAmount() - progress))
 							.replaceAll("%t", String.valueOf(getTargetAmount()))
 							.replaceAll("%a", String.valueOf(progress));
 			return ChatColor.translateAlternateColorCodes('&', parseDescription(partiallyParsed));
@@ -99,9 +137,9 @@ public abstract class Objective extends Element {
 		return show(progress);
 	}
 	
-	public String inInfo() {
+	public String inInfo(final LanguageManager langMan) {
 		final String flags = displayProgress ? "" : "(p)";
-		return flags + getType() + ": " + info() + coloredDesc();
+		return flags + getType() + ": " + info() + coloredDesc(langMan);
 	}
 	
 	@Override
@@ -119,7 +157,12 @@ public abstract class Objective extends Element {
 		save(key);
 		key.setString("type", type);
 		if(!desc.isEmpty()) {
-			key.setString("description", desc);
+			if(isCustomMessage) {
+				key.setString("description", "LANG:" + desc);
+			}
+			else {
+				key.setString("description", desc);
+			}
 		}
 		if(!prerequisites.isEmpty()) {
 			key.setString("prerequisites", SerUtils.serializePrerequisites(prerequisites));

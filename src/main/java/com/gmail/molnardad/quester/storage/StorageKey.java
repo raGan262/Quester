@@ -28,6 +28,10 @@ public abstract class StorageKey {
 		return name;
 	}
 	
+	public String getPath() {
+		return path;
+	}
+	
 	public abstract String getStorageType();
 	
 	public abstract boolean keyExists(String key);

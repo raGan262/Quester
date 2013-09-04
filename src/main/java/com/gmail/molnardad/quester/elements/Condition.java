@@ -7,27 +7,57 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
+import com.gmail.molnardad.quester.lang.LanguageManager;
+import com.gmail.molnardad.quester.lang.QuesterLang;
 import com.gmail.molnardad.quester.storage.StorageKey;
 import com.gmail.molnardad.quester.utils.Ql;
 
 public abstract class Condition extends Element {
 	
 	private String desc = "";
+	private boolean isCustomMessage = false;
 	
-	private String coloredDesc() {
-		String des = "";
+	private String coloredDesc(final LanguageManager langMan) {
+		String result = "";
 		if(!desc.isEmpty()) {
-			des = "\n  - " + ChatColor.translateAlternateColorCodes('&', desc) + ChatColor.RESET;
+			result += "\n  - ";
+			if(isCustomMessage) {
+				if(langMan != null) {
+					if(langMan.customMessageExists(desc)) {
+						result += ChatColor.GREEN;
+					}
+					else {
+						result += ChatColor.RED;
+					}
+				}
+				result += "LANG:";
+			}
+			result += ChatColor.translateAlternateColorCodes('&', desc) + ChatColor.RESET;
 		}
-		return des;
+		return result;
 	}
 	
 	public final void addDescription(final String msg) {
+		final boolean doCheck = desc.isEmpty();
 		desc += (" " + msg).trim();
+		if(doCheck) {
+			customMessageCheck();
+		}
 	}
 	
 	public final void removeDescription() {
 		desc = "";
+	}
+	
+	private void customMessageCheck() {
+		final String langMsg = LanguageManager.getCustomMessageKey(desc);
+		if(langMsg != null) {
+			desc = langMsg;
+			isCustomMessage = true;
+		}
+		else {
+			isCustomMessage = false;
+		}
 	}
 	
 	protected abstract String parseDescription(String description);
@@ -38,15 +68,22 @@ public abstract class Condition extends Element {
 	
 	public abstract boolean isMet(Player player, Quester plugin);
 	
-	public String inShow() {
+	public String inShow(final QuesterLang lang) {
 		if(!desc.isEmpty()) {
-			return ChatColor.translateAlternateColorCodes('&', parseDescription(desc));
+			final String actualDesc;
+			if(isCustomMessage) {
+				actualDesc = lang.getCustom(desc);
+			}
+			else {
+				actualDesc = desc;
+			}
+			return ChatColor.translateAlternateColorCodes('&', parseDescription(actualDesc));
 		}
 		return show();
 	}
 	
-	public String inInfo() {
-		return getType() + ": " + info() + coloredDesc();
+	public String inInfo(final LanguageManager langMan) {
+		return getType() + ": " + info() + coloredDesc(langMan);
 	}
 	
 	@Override
@@ -64,7 +101,12 @@ public abstract class Condition extends Element {
 		save(key);
 		key.setString("type", type);
 		if(!desc.isEmpty()) {
-			key.setString("description", desc);
+			if(isCustomMessage) {
+				key.setString("description", "LANG:" + desc);
+			}
+			else {
+				key.setString("description", desc);
+			}
 		}
 	}
 	

@@ -12,6 +12,9 @@ public class QuesterLang {
 	private final Map<String, String> messages = new HashMap<String, String>(
 			MessageRegistry.INITIAL_CAPACITY);
 	
+	private final Map<String, String> customMessages = new HashMap<String, String>(
+			MessageRegistry.INITIAL_CAPACITY);
+	
 	private final File file;
 	private final String fileName;
 	private final MessageRegistry registry;
@@ -48,8 +51,30 @@ public class QuesterLang {
 		return result;
 	}
 	
+	public String getCustom(final String key) {
+		String result = customMessages.get(key);
+		if(result == null) {
+			result = registry.customMessages.get(key);
+			if(result == null) {
+				final StackTraceElement st = Thread.currentThread().getStackTrace()[2];
+				Ql.debug("Class " + st.getClassName() + " requested unknown custom message '" + key
+						+ "' on line " + st.getLineNumber() + ".");
+				result = messages.get("MSG_UNKNOWN_MESSAGE");
+			}
+		}
+		return result;
+	}
+	
+	public Map<String, String> getCustomMessages() {
+		return customMessages;
+	}
+	
 	void put(final String key, final String message) {
 		messages.put(key, message);
+	}
+	
+	void putCustom(final String key, final String message) {
+		customMessages.put(key, message);
 	}
 	
 	Map<String, String> getMessages() {
@@ -63,6 +88,16 @@ public class QuesterLang {
 				messages.put(entry.getKey(), entry.getValue());
 				if(file != null) {
 					Ql.debug(entry.getKey() + " in " + fileName + " reset to default.");
+				}
+				counter++;
+			}
+		}
+		for(final Entry<String, String> entry : registry.customMessages.entrySet()) {
+			if(customMessages.get(entry.getKey()) == null) { // intended
+				customMessages.put(entry.getKey(), entry.getValue());
+				if(file != null) {
+					Ql.debug(LanguageManager.CUSTOM_KEY + " " + entry.getKey() + " in " + fileName
+							+ " reset to default.");
 				}
 				counter++;
 			}

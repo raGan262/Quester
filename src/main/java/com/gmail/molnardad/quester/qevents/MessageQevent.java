@@ -8,6 +8,7 @@ import com.gmail.molnardad.quester.commandbase.QCommand;
 import com.gmail.molnardad.quester.commandbase.QCommandContext;
 import com.gmail.molnardad.quester.elements.QElement;
 import com.gmail.molnardad.quester.elements.Qevent;
+import com.gmail.molnardad.quester.lang.LanguageManager;
 import com.gmail.molnardad.quester.storage.StorageKey;
 
 @QElement("MSG")
@@ -15,10 +16,19 @@ public final class MessageQevent extends Qevent {
 	
 	private final String message;
 	private final String rawmessage;
+	private final boolean isCustomMessage;
 	
 	public MessageQevent(final String msg) {
+		final String custom = LanguageManager.getCustomMessageKey(msg);
 		rawmessage = msg;
-		message = ChatColor.translateAlternateColorCodes('&', rawmessage).replaceAll("\\\\n", "\n");
+		if(custom != null) {
+			isCustomMessage = true;
+			message = custom;
+		}
+		else {
+			isCustomMessage = false;
+			message = ChatColor.translateAlternateColorCodes('&', msg).replaceAll("\\\\n", "\n");
+		}
 	}
 	
 	@Override
@@ -28,7 +38,15 @@ public final class MessageQevent extends Qevent {
 	
 	@Override
 	protected void run(final Player player, final Quester plugin) {
-		player.sendMessage(message.replace("%p", player.getName()));
+		if(isCustomMessage) {
+			final String msg =
+					plugin.getLanguageManager().getPlayerLang(player.getName()).getCustom(message);
+			player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg)
+					.replaceAll("\\\\n", "\n").replace("%p", player.getName()));
+		}
+		else {
+			player.sendMessage(message.replace("%p", player.getName()));
+		}
 	}
 	
 	@QCommand(min = 1, max = 1, usage = "<message>")
