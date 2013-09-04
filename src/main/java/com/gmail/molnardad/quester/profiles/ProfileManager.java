@@ -489,13 +489,14 @@ public class ProfileManager {
 		final List<String> unset = new ArrayList<String>(QConfiguration.maxQuests);
 		for(int i = progs.length - 1; i >= 0; i--) {
 			localUnset = false;
-			final Quest quest = progs[i].getQuest();
-			localUnset = !quest.equals(qMan.getQuest(quest.getID()))		// if ID or name changed
-					|| progs[i].getSize() != quest.getObjectives().size();	// if number of objectives changed
+			final Quest profileQuest = progs[i].getQuest();
+			final Quest storedQuest = qMan.getQuest(profileQuest.getID());
+			localUnset = !profileQuest.equals(storedQuest)		// if ID or name changed
+					|| progs[i].getSize() != storedQuest.getObjectives().size();	// if number of objectives changed
 			
 			if(localUnset) {
 				profile.unsetQuest(i);
-				unset.add(quest.getName());
+				unset.add(profileQuest.getName());
 			}
 		}
 		return unset.toArray(new String[0]);
