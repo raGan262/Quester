@@ -24,7 +24,7 @@ permissions:
             quester.use.npc: true
             quester.use.sign: true
             quester.use.list: true
-            quester.use.info: true
+            quester.use.show: true
             quester.use.profile: true
             quester.use.done: true
             quester.use.cancel: true
