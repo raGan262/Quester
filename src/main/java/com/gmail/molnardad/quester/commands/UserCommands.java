@@ -206,7 +206,7 @@ public class UserCommands {
 	@QCommandLabels({ "cancel" })
 	@QCommand(
 			section = "User",
-			desc = "completes current objective",
+			desc = "drops current or selected quest",
 			max = 1,
 			usage = "[quest ID]",
 			permission = QConfiguration.PERM_USE_CANCEL)

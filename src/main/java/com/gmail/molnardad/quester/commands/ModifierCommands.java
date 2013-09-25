@@ -53,7 +53,7 @@ public class ModifierCommands {
 	}
 	
 	@QCommandLabels({ "remove", "r" })
-	@QCommand(section = "QMod", desc = "sets quest modifier", min = 1, usage = "<modifier1> ...")
+	@QCommand(section = "QMod", desc = "removes quest modifier", min = 1, usage = "<modifier1> ...")
 	public void set(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		final QuestFlag[] modArray = getModifiers(context.getArgs());
 		qMan.removeQuestFlag(profMan.getProfile(sender.getName()), modArray,

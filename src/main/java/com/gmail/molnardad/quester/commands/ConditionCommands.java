@@ -129,7 +129,7 @@ public class ConditionCommands {
 		@QCommandLabels({ "add", "a" })
 		@QCommand(
 				section = "QMod",
-				desc = "adds condition description",
+				desc = "adds to condition description",
 				min = 2,
 				max = 2,
 				usage = "<condition ID> <description>")
@@ -144,7 +144,7 @@ public class ConditionCommands {
 		@QCommandLabels({ "remove", "r" })
 		@QCommand(
 				section = "QMod",
-				desc = "adds to condition description",
+				desc = "clears condition description",
 				min = 1,
 				max = 1,
 				usage = "<condition ID>")

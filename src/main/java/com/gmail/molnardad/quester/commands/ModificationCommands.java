@@ -30,7 +30,7 @@ public class ModificationCommands {
 			section = "Mod",
 			desc = "shows detailed info about the quest",
 			max = 1,
-			usage = "[quest_ID]",
+			usage = "[quest ID]",
 			permission = QConfiguration.PERM_MODIFY)
 	public void info(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		if(context.length() > 0) {
