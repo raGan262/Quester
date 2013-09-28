@@ -257,7 +257,7 @@ public class ProfileManager {
 				&& !Util.permCheck(player, QConfiguration.PERM_ADMIN, false, null)) {
 			for(final Condition con : quest.getConditions()) {
 				if(!con.isMet(player, plugin)) {
-					throw new ConditionException(con.inShow(senderLang));
+					throw new ConditionException(con.inShow(player, senderLang));
 				}
 			}
 		}

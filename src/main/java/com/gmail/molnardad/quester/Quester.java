@@ -47,6 +47,8 @@ import com.gmail.molnardad.quester.holder.QuesterTrait;
 
 public class Quester extends JavaPlugin {
 	
+	private static Quester instance = null;
+	
 	public static Economy econ = null;
 	
 	private LanguageManager langs = null;
@@ -66,6 +68,10 @@ public class Quester extends JavaPlugin {
 	
 	public static final String LABEL = ChatColor.BLUE + "[" + ChatColor.GOLD + "Quester"
 			+ ChatColor.BLUE + "] ";
+	
+	public Quester() {
+		instance = this;
+	}
 	
 	@Override
 	public void onEnable() {
@@ -239,6 +245,10 @@ public class Quester extends JavaPlugin {
 			return true;
 		}
 		return false;
+	}
+	
+	public static Quester getInstance() {
+		return instance;
 	}
 	
 	public CommandManager getCommandManager() {

@@ -539,7 +539,7 @@ public class QuestManager {
 			if(player != null) {
 				color = cons.get(i).isMet(player, plugin) ? ChatColor.GREEN : ChatColor.RED;
 			}
-			sender.sendMessage(color + " - " + cons.get(i).inShow(lang));
+			sender.sendMessage(color + " - " + cons.get(i).inShow(player, lang));
 		}
 		if(!qst.hasFlag(QuestFlag.HIDDENOBJS)) {
 			final List<Objective> objs = qst.getObjectives();

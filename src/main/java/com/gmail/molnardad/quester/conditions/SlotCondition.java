@@ -35,7 +35,7 @@ public final class SlotCondition extends Condition {
 	}
 	
 	@Override
-	protected String parseDescription(final String description) {
+	protected String parseDescription(final Player player, final String description) {
 		return description.replaceAll("%amt", String.valueOf(amount));
 	}
 	

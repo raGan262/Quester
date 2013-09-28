@@ -1,5 +1,7 @@
 package com.gmail.molnardad.quester.conditions;
 
+import java.util.concurrent.TimeUnit;
+
 import org.bukkit.entity.Player;
 
 import com.gmail.molnardad.quester.Quester;
@@ -32,8 +34,30 @@ public final class QuestCondition extends Condition {
 	}
 	
 	@Override
-	protected String parseDescription(final String description) {
-		return description.replaceAll("%qst", quest);
+	protected String parseDescription(final Player player, final String description) {
+		long hours = 0;
+		long minutes = 0;
+		long seconds = 0;
+		if(player != null && time > 0) {
+			final PlayerProfile profile =
+					Quester.getInstance().getProfileManager().getProfile(player.getName());
+			final long elapsed =
+					System.currentTimeMillis() / 1000 - profile.getCompletionTime(quest);
+			
+			final long toCount = time - elapsed;
+			
+			if(toCount >= 0) {
+				hours = TimeUnit.SECONDS.toHours(toCount);
+				minutes = TimeUnit.SECONDS.toMinutes(toCount) - TimeUnit.HOURS.toMinutes(hours);
+				seconds =
+						toCount - TimeUnit.MINUTES.toSeconds(minutes)
+								- TimeUnit.HOURS.toSeconds(hours);
+				
+			}
+		}
+		return description.replaceAll("%qst", quest).replaceAll("%h", String.valueOf(hours))
+				.replaceAll("%m", String.valueOf(minutes))
+				.replaceAll("%s", String.valueOf(seconds));
 	}
 	
 	@Override

@@ -60,7 +60,7 @@ public abstract class Condition extends Element {
 		}
 	}
 	
-	protected abstract String parseDescription(String description);
+	protected abstract String parseDescription(Player player, String description);
 	
 	protected abstract String show();
 	
@@ -68,7 +68,7 @@ public abstract class Condition extends Element {
 	
 	public abstract boolean isMet(Player player, Quester plugin);
 	
-	public String inShow(final QuesterLang lang) {
+	public String inShow(final Player player, final QuesterLang lang) {
 		if(!desc.isEmpty()) {
 			final String actualDesc;
 			if(isCustomMessage) {
@@ -77,7 +77,8 @@ public abstract class Condition extends Element {
 			else {
 				actualDesc = desc;
 			}
-			return ChatColor.translateAlternateColorCodes('&', parseDescription(actualDesc));
+			return ChatColor
+					.translateAlternateColorCodes('&', parseDescription(player, actualDesc));
 		}
 		return show();
 	}

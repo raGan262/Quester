@@ -27,7 +27,7 @@ public final class TimeCondition extends Condition {
 	}
 	
 	@Override
-	protected String parseDescription(final String description) {
+	protected String parseDescription(final Player player, final String description) {
 		return description.replaceAll("%from", String.valueOf(from)).replaceAll("%to",
 				String.valueOf(to));
 	}

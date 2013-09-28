@@ -22,7 +22,7 @@ public final class PointCondition extends Condition {
 	}
 	
 	@Override
-	protected String parseDescription(final String description) {
+	protected String parseDescription(final Player player, final String description) {
 		return description.replaceAll("%amt", amount + "");
 	}
 	
