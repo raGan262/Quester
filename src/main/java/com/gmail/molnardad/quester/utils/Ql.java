@@ -51,7 +51,14 @@ public final class Ql {
 	
 	public static void init(final Quester quester) {
 		if(quester != null) {
-			fileLogger = new QuesterDebugLogger(quester.getServer().getLogger());
+			try {
+				fileLogger = new QuesterDebugLogger(quester.getServer().getLogger());
+			}
+			catch (final IllegalArgumentException e) {
+				quester.getLogger().warning(
+						"Failed to initialize file logger, will log only into console.");
+				fileLogger = quester.getLogger();
+			}
 			logger = quester.getLogger();
 		}
 		else {
