@@ -112,7 +112,7 @@ public class Util {
 		if(perm.isEmpty()) {
 			return true;
 		}
-		if(sender.isOp() || sender.hasPermission(QConfiguration.PERM_ADMIN)) {
+		if(sender.hasPermission(QConfiguration.PERM_ADMIN)) {
 			return true;
 		}
 		for(final String s : perm.split("\\|\\|")) {
@@ -250,8 +250,6 @@ public class Util {
 	}
 	
 	// LOCATION SERIALIZATION
-	
-	
 	
 	// MOVE LOCATION
 	
