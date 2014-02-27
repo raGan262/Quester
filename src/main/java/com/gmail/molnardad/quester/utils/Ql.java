@@ -72,11 +72,11 @@ public final class Ql {
 	}
 	
 	public static void verbose(final String msg) {
-		debugLogger.log(Level.INFO, msg);
+		logger.log(Level.INFO, msg);
 	}
 	
 	public static void verbose(final String msg, final Throwable throwable) {
-		debugLogger.log(Level.SEVERE, msg, throwable);
+		logger.log(Level.SEVERE, msg, throwable);
 	}
 	
 	public static void debug(final String msg) {
