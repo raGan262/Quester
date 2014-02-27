@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.npc.dNPC;
+import net.aufdemrand.denizen.npc.dNPCRegistry;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.TaskScriptContainer;
 import net.citizensnpcs.api.CitizensAPI;
@@ -61,9 +63,7 @@ public final class DenizenScriptQevent extends Qevent {
 				else {
 					dNPC denNpc = null;
 					try {
-						denNpc =
-								den.getNPCRegistry().getDenizen(
-										CitizensAPI.getNPCRegistry().getById(npc));
+						denNpc = dNPCRegistry.getDenizen(CitizensAPI.getNPCRegistry().getById(npc));
 					}
 					catch (final Exception ignore) {}
 					final TaskScriptContainer taskScript =
@@ -71,7 +71,8 @@ public final class DenizenScriptQevent extends Qevent {
 					if(npc >= 0 && denNpc == null) {
 						throw new CustomException("Couldn't resolve DENIZEN npc.");
 					}
-					if(taskScript.runTaskScript(player, denNpc, context) == null) {
+					if(taskScript
+							.runTaskScript(dPlayer.mirrorBukkitPlayer(player), denNpc, context) == null) {
 						throw new CustomException("Something went wrong.");
 					}
 				}
