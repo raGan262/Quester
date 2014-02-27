@@ -63,7 +63,6 @@ public class Quester extends JavaPlugin {
 	private int saveID = 0;
 	
 	public static boolean citizens2 = false;
-	public static boolean epicboss = false;
 	public static boolean vault = false;
 	public static boolean denizen = false;
 	
@@ -125,9 +124,6 @@ public class Quester extends JavaPlugin {
 		}
 		if(setupDenizen()) {
 			Ql.info("Denizen found and hooked...");
-		}
-		if(setupEpicBoss()) {
-			Ql.info("EpicBoss found and hooked...");
 		}
 		
 		setupListeners();
@@ -207,7 +203,6 @@ public class Quester extends JavaPlugin {
 		DatabaseConnection.close();
 		econ = null;
 		citizens2 = false;
-		epicboss = false;
 		vault = false;
 		denizen = false;
 	}
@@ -323,11 +318,6 @@ public class Quester extends JavaPlugin {
 		return true;
 	}
 	
-	private boolean setupEpicBoss() {
-		epicboss = getServer().getPluginManager().getPlugin("EpicBossRecoded") != null;
-		return epicboss;
-	}
-	
 	private boolean setupDenizen() {
 		if(citizens2) {
 			denizen = getServer().getPluginManager().getPlugin("Denizen") != null;
@@ -373,9 +363,6 @@ public class Quester extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new QuestItemListener(), this);
 		if(citizens2) {
 			getServer().getPluginManager().registerEvents(new Citizens2Listener(this), this);
-		}
-		if(epicboss) {
-			getServer().getPluginManager().registerEvents(new BossDeathListener(this), this);
 		}
 		getServer().getPluginManager().registerEvents(new ProfileListener(this), this);
 	}
@@ -437,7 +424,6 @@ public class Quester extends JavaPlugin {
 				ActionObjective.class,
 				NpcObjective.class,
 				DyeObjective.class,
-				BossObjective.class,
 				NpcKillObjective.class,
 				DropObjective.class,
 				ChatObjective.class,
