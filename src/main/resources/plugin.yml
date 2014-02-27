@@ -4,7 +4,7 @@ description: Quester provides ability to create highly customizable quests direc
 author: raGan
 website: http://dev.bukkit.org/server-mods/quester/
 main: com.gmail.molnardad.quester.Quester
-softdepend: [Vault, Citizens, EpicBossReloaded, Denizen]
+softdepend: [Vault, Citizens, Denizen]
 commands:
     q:
         description: Main (and only) quester command.
