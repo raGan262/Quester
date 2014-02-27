@@ -1,9 +1,9 @@
-name: Quester
-version: ${yml.version}
-description: Quester provides ability to create highly customizable quests directly in game.
+name: ${project.name}
+version: ${project.version}
+description: ${project.description}
 author: raGan
 website: http://dev.bukkit.org/server-mods/quester/
-main: com.gmail.molnardad.quester.Quester
+main: me.ragan262.quester.Quester
 softdepend: [Vault, Citizens, Denizen]
 commands:
     q:

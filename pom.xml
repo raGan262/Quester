@@ -1,13 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.gmail.molnardad</groupId>
+  <groupId>me.ragan262</groupId>
   <artifactId>quester</artifactId>
-  <version>0.7.0-SNAPSHOT</version>
+  <version>0.7.1-SNAPSHOT</version>
   <name>Quester</name>
+  <description>Quester provides ability to create highly customizable quests directly in game.</description>
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <yml.version>${project.version}</yml.version>
     <package.dir>${project.build.directory}</package.dir>
     <assembly.dir>${project.build.directory}</assembly.dir>
     <package.name>${project.build.finalName}</package.name>
@@ -144,7 +144,7 @@
               <relocations>
                 <relocation>
                   <pattern>org.mcstats</pattern>
-                  <shadedPattern>com.gmail.molnardad.mcstats</shadedPattern>
+                  <shadedPattern>me.ragan262.quester.mcstats</shadedPattern>
                 </relocation>
               </relocations>
             </configuration>
