@@ -57,13 +57,6 @@
       <groupId>net.aufdemrand</groupId>
       <artifactId>denizen</artifactId>
       <version>0.9.4-SNAPSHOT</version>
-    </dependency> 
-    <dependency>
-      <groupId>me.ThaH3lper</groupId>
-      <artifactId>EpicBoss</artifactId>
-      <version>1.0</version>
-      <scope>system</scope>
-      <systemPath>${libs.dir}/EpicBoss.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>org.mcstats.bukkit</groupId>
