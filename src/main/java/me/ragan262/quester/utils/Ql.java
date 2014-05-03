@@ -4,6 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
 
 public final class Ql {
@@ -72,18 +73,26 @@ public final class Ql {
 	}
 	
 	public static void verbose(final String msg) {
-		logger.log(Level.INFO, msg);
+		if(QConfiguration.verbose) {
+			logger.log(Level.INFO, msg);
+		}
 	}
 	
 	public static void verbose(final String msg, final Throwable throwable) {
-		logger.log(Level.SEVERE, msg, throwable);
+		if(QConfiguration.verbose) {
+			logger.log(Level.SEVERE, msg, throwable);
+		}
 	}
 	
 	public static void debug(final String msg) {
-		debugLogger.log(Level.INFO, msg);
+		if(QConfiguration.debug) {
+			debugLogger.log(Level.INFO, msg);
+		}
 	}
 	
 	public static void debug(final String msg, final Throwable throwable) {
-		debugLogger.log(Level.SEVERE, msg, throwable);
+		if(QConfiguration.debug) {
+			debugLogger.log(Level.SEVERE, msg, throwable);
+		}
 	}
 }
