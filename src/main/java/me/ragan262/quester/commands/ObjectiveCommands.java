@@ -68,7 +68,7 @@ public class ObjectiveCommands {
 		catch (final ObjectiveException e) {
 			return;
 		}
-		qMan.addQuestObjective(profMan.getProfile(sender.getName()), obj, context.getSenderLang());
+		qMan.addQuestObjective(profMan.getSenderProfile(sender), obj, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ lang.get("OBJ_ADD").replaceAll("%type", type.toUpperCase()));
 	}
@@ -90,7 +90,7 @@ public class ObjectiveCommands {
 		catch (final ObjectiveException e) {
 			return;
 		}
-		qMan.setQuestObjective(profMan.getProfile(sender.getName()), objectiveID, obj,
+		qMan.setQuestObjective(profMan.getSenderProfile(sender), objectiveID, obj,
 				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ lang.get("OBJ_SET").replaceAll("%type", type.toUpperCase()));
@@ -104,7 +104,7 @@ public class ObjectiveCommands {
 			max = 1,
 			usage = "<objective ID>")
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.removeQuestObjective(profMan.getProfile(sender.getName()), context.getInt(0),
+		qMan.removeQuestObjective(profMan.getSenderProfile(sender), context.getInt(0),
 				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().get("OBJ_REMOVE").replaceAll("%id", context.getString(0)));
@@ -125,7 +125,7 @@ public class ObjectiveCommands {
 			desc = "swaps two objectives",
 			usage = "<obj ID 1> <obj ID 2>")
 	public void swap(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.swapQuestObjectives(profMan.getProfile(sender.getName()), context.getInt(0),
+		qMan.swapQuestObjectives(profMan.getSenderProfile(sender), context.getInt(0),
 				context.getInt(1), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().get("OBJ_SWAP").replaceAll("%id1", context.getString(0))
@@ -140,7 +140,7 @@ public class ObjectiveCommands {
 			desc = "moves an objective",
 			usage = "<ID from> <ID to>")
 	public void move(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.moveQuestObjective(profMan.getProfile(sender.getName()), context.getInt(0),
+		qMan.moveQuestObjective(profMan.getSenderProfile(sender), context.getInt(0),
 				context.getInt(1), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().get("OBJ_MOVE").replaceAll("%id1", context.getString(0))
@@ -150,14 +150,12 @@ public class ObjectiveCommands {
 	@QCommandLabels({ "desc" })
 	@QCommand(section = "QMod", desc = "objective description manipulation")
 	@QNestedCommand(ObjectiveDescCommands.class)
-	public void desc(final QCommandContext context, final CommandSender sender) throws QuesterException {
-	}
+	public void desc(final QCommandContext context, final CommandSender sender) throws QuesterException {}
 	
 	@QCommandLabels({ "prereq" })
 	@QCommand(section = "QMod", desc = "objective prerequisites manipulation")
 	@QNestedCommand(ObjectivePrereqCommands.class)
-	public void prereq(final QCommandContext context, final CommandSender sender) throws QuesterException {
-	}
+	public void prereq(final QCommandContext context, final CommandSender sender) throws QuesterException {}
 	
 	public static class ObjectiveDescCommands {
 		
@@ -177,7 +175,7 @@ public class ObjectiveCommands {
 				max = 2,
 				usage = "<objective ID> <description>")
 		public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
-			qMan.addObjectiveDescription(profMan.getProfile(sender.getName()), context.getInt(0),
+			qMan.addObjectiveDescription(profMan.getSenderProfile(sender), context.getInt(0),
 					context.getString(1), context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
 					+ context.getSenderLang().get("OBJ_DESC_ADD")
@@ -192,8 +190,8 @@ public class ObjectiveCommands {
 				max = 1,
 				usage = "<objective ID>")
 		public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
-			qMan.removeObjectiveDescription(profMan.getProfile(sender.getName()),
-					context.getInt(0), context.getSenderLang());
+			qMan.removeObjectiveDescription(profMan.getSenderProfile(sender), context.getInt(0),
+					context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
 					+ context.getSenderLang().get("OBJ_DESC_REMOVE")
 							.replaceAll("%id", context.getString(0)));
@@ -218,7 +216,7 @@ public class ObjectiveCommands {
 				usage = "<objective ID> <prerequisite1>...")
 		public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
 			final Set<Integer> prereq = SerUtils.parsePrerequisites(context.getArgs(), 1);
-			qMan.addObjectivePrerequisites(profMan.getProfile(sender.getName()), context.getInt(0),
+			qMan.addObjectivePrerequisites(profMan.getSenderProfile(sender), context.getInt(0),
 					prereq, context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
 					+ context.getSenderLang().get("OBJ_PREREQ_ADD")
@@ -233,8 +231,8 @@ public class ObjectiveCommands {
 				usage = "<objective ID> <prerequisite1>...")
 		public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
 			final Set<Integer> prereq = SerUtils.parsePrerequisites(context.getArgs(), 1);
-			qMan.removeObjectivePrerequisites(profMan.getProfile(sender.getName()),
-					context.getInt(0), prereq, context.getSenderLang());
+			qMan.removeObjectivePrerequisites(profMan.getSenderProfile(sender), context.getInt(0),
+					prereq, context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
 					+ context.getSenderLang().get("OBJ_PREREQ_REMOVE")
 							.replaceAll("%id", context.getString(0)));

@@ -31,7 +31,7 @@ public class ShearListener implements Listener {
 		if(event.getEntity().getType() == EntityType.SHEEP) {
 			final Player player = event.getPlayer();
 			final Sheep sheep = (Sheep) event.getEntity();
-			final PlayerProfile prof = profMan.getProfile(player.getName());
+			final PlayerProfile prof = profMan.getProfile(player);
 			final Quest quest = prof.getQuest();
 			if(quest != null) {
 				if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {

@@ -17,10 +17,14 @@ import me.ragan262.quester.exceptions.QuesterException;
 import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.lang.QuesterLang;
 import me.ragan262.quester.profiles.ProfileManager;
+import me.ragan262.quester.profiles.QuestProgress;
+import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.quests.QuestManager;
 import me.ragan262.quester.utils.Util;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -120,9 +124,19 @@ public class UserCommands {
 			usage = "\"[quest name]\"",
 			permission = QConfiguration.PERM_USE_SHOW)
 	public void show(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		String quest = "";
+		String questName = "";
 		if(context.length() > 0) {
-			quest = context.getString(0);
+			questName = context.getString(0);
+		}
+		Quest quest = null;
+		if(questName.isEmpty()) {
+			final QuestProgress prog = profMan.getSenderProfile(sender).getProgress();
+			if(prog != null) {
+				quest = prog.getQuest();
+			}
+		}
+		else {
+			quest = qMan.getQuest(questName);
 		}
 		qMan.showQuest(sender, quest, context.getSenderLang());
 	}
@@ -138,7 +152,7 @@ public class UserCommands {
 			qMan.showFullQuestList(sender, context.getSenderLang());
 		}
 		else {
-			qMan.showQuestList(sender, context.getSenderLang());
+			qMan.showQuestList(sender, profMan.getSenderProfile(sender), context.getSenderLang());
 		}
 	}
 	
@@ -151,7 +165,14 @@ public class UserCommands {
 			permission = QConfiguration.PERM_USE_PROFILE)
 	public void profile(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		if(Util.permCheck(sender, QConfiguration.PERM_ADMIN, false, null) && context.length() > 0) {
-			profMan.showProfile(sender, context.getString(0), context.getSenderLang());
+			final OfflinePlayer player = Bukkit.getOfflinePlayer(context.getString(0));
+			if(!profMan.hasProfile(player)) {
+				sender.sendMessage(ChatColor.RED
+						+ context.getSenderLang().get("INFO_PROFILE_NOT_EXIST")
+								.replaceAll("%p", player.getName()));
+				return;
+			}
+			profMan.showProfile(sender, profMan.getProfile(player), context.getSenderLang());
 		}
 		else {
 			profMan.showProfile(sender);
@@ -236,7 +257,7 @@ public class UserCommands {
 			sender.sendMessage(context.getSenderLang().get("MSG_ONLY_PLAYER"));
 			return;
 		}
-		if(profMan.switchQuest(profMan.getProfile(sender.getName()), context.getInt(0))) {
+		if(profMan.switchQuest(profMan.getSenderProfile(sender), context.getInt(0))) {
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_SWITCHED"));
 		}
 	}
@@ -269,7 +290,14 @@ public class UserCommands {
 			permission = QConfiguration.PERM_USE_QUESTS)
 	public void quests(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		if(Util.permCheck(sender, QConfiguration.PERM_ADMIN, false, null) && context.length() > 0) {
-			profMan.showTakenQuests(sender, context.getString(0), context.getSenderLang());
+			final OfflinePlayer player = Bukkit.getOfflinePlayer(context.getString(0));
+			if(!profMan.hasProfile(player)) {
+				sender.sendMessage(ChatColor.RED
+						+ context.getSenderLang().get("INFO_PROFILE_NOT_EXIST")
+								.replaceAll("%p", player.getName()));
+				return;
+			}
+			profMan.showTakenQuests(sender, profMan.getProfile(player), context.getSenderLang());
 		}
 		else {
 			profMan.showTakenQuests(sender);
@@ -279,7 +307,8 @@ public class UserCommands {
 	@QCommandLabels({ "langs" })
 	@QCommand(section = "User", desc = "shows available languages", max = 0)
 	public void langs(final QCommandContext context, final CommandSender sender) {
-		final String playerLang = langMan.getPlayerLangName(sender.getName());
+		final String playerLang =
+				langMan.getLang(profMan.getSenderProfile(sender).getLanguage()).getName();
 		final Set<String> langSet = langMan.getLangSet();
 		String toAdd = null;
 		for(final Iterator<String> i = langSet.iterator(); i.hasNext();) {
@@ -310,7 +339,7 @@ public class UserCommands {
 		if(langName.equalsIgnoreCase("reset")) {
 			langName = null;
 		}
-		if(profMan.setProfileLanguage(profMan.getProfile(sender.getName()), langName)) {
+		if(profMan.setProfileLanguage(profMan.getSenderProfile(sender), langName)) {
 			lang = langMan.getLang(langName);
 			sender.sendMessage(ChatColor.GREEN + lang.get("MSG_LANG_SET"));
 		}

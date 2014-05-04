@@ -48,7 +48,7 @@ public class ModifierCommands {
 					+ ChatColor.WHITE + QuestFlag.stringize(QuestFlag.values()));
 			return;
 		}
-		qMan.addQuestFlag(profMan.getProfile(sender.getName()), modArray, context.getSenderLang());
+		qMan.addQuestFlag(profMan.getSenderProfile(sender), modArray, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_MOD_ADDED"));
 	}
 	
@@ -56,8 +56,7 @@ public class ModifierCommands {
 	@QCommand(section = "QMod", desc = "removes quest modifier", min = 1, usage = "<modifier1> ...")
 	public void set(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		final QuestFlag[] modArray = getModifiers(context.getArgs());
-		qMan.removeQuestFlag(profMan.getProfile(sender.getName()), modArray,
-				context.getSenderLang());
+		qMan.removeQuestFlag(profMan.getSenderProfile(sender), modArray, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_MOD_REMOVED"));
 	}
 }

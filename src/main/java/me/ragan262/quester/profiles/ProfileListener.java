@@ -69,7 +69,7 @@ public class ProfileListener implements Listener {
 								profMan.loadProfile(prof);
 							}
 							else {
-								Ql.info("Invalid profile '" + serp.name + "'");
+								Ql.info("Invalid profile '" + serp.uid + "'");
 							}
 						}
 					};
@@ -114,7 +114,7 @@ public class ProfileListener implements Listener {
 		}
 		final String playerName = event.getPlayer().getName();
 		final SerializedPlayerProfile serp =
-				new SerializedPlayerProfile(profMan.getProfile(playerName));
+				new SerializedPlayerProfile(profMan.getProfile(event.getPlayer()));
 		
 		final Runnable saveTask = new Runnable() {
 			

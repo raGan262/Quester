@@ -7,6 +7,7 @@ import me.ragan262.quester.commandbase.QCommandContext;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.exceptions.QuesterException;
+import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
 
@@ -17,8 +18,7 @@ import org.bukkit.entity.Player;
 public final class CancelQevent extends Qevent {
 	
 	// TODO option to choose which quest to cancel
-	public CancelQevent() {
-	}
+	public CancelQevent() {}
 	
 	@Override
 	protected String info() {
@@ -28,8 +28,9 @@ public final class CancelQevent extends Qevent {
 	@Override
 	protected void run(final Player player, final Quester plugin) {
 		try {
-			plugin.getProfileManager().cancelQuest(player, ActionSource.eventSource(this),
-					plugin.getLanguageManager().getPlayerLang(player.getName()));
+			final ProfileManager profMan = plugin.getProfileManager();
+			profMan.cancelQuest(player, ActionSource.eventSource(this), plugin.getLanguageManager()
+					.getLang(profMan.getProfile(player).getLanguage()));
 		}
 		catch (final QuesterException e) {
 			Ql.info("Event failed to cancel " + player.getName() + "'s quest. Reason: "
@@ -43,8 +44,7 @@ public final class CancelQevent extends Qevent {
 	}
 	
 	@Override
-	protected void save(final StorageKey key) {
-	}
+	protected void save(final StorageKey key) {}
 	
 	protected static Qevent load(final StorageKey key) {
 		return new CancelQevent();

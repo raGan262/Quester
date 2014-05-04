@@ -31,7 +31,6 @@ public class LanguageManager {
 	}
 	
 	private final Map<String, QuesterLang> languages = new HashMap<String, QuesterLang>();
-	private final Map<String, String> playerLangs = new HashMap<String, String>();
 	private final Logger logger;
 	private final File localFolder;
 	private String defaultLangName = "english";
@@ -98,36 +97,6 @@ public class LanguageManager {
 	
 	public boolean hasLang(final String name) {
 		return name != null && languages.get(name.toLowerCase()) != null;
-	}
-	
-	public QuesterLang getPlayerLang(final String playerName) {
-		if(playerName == null) {
-			return getDefaultLang();
-		}
-		return getLang(playerLangs.get(playerName.toLowerCase()));
-	}
-	
-	public String getPlayerLangName(final String playerName) {
-		if(playerName == null) {
-			return defaultLangName;
-		}
-		final String lang = playerLangs.get(playerName.toLowerCase());
-		return lang == null ? defaultLangName : lang;
-	}
-	
-	public boolean setPlayerLang(final String playerName, final String langName) {
-		if(playerName == null) {
-			return false;
-		}
-		if(langName == null) {
-			playerLangs.remove(playerName.toLowerCase());
-			return true;
-		}
-		if(hasLang(langName)) {
-			playerLangs.put(playerName.toLowerCase(), langName.toLowerCase());
-			return true;
-		}
-		return false;
 	}
 	
 	public QuesterLang getLang(final String name) {

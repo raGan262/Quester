@@ -12,6 +12,7 @@ import me.ragan262.quester.holder.QuestHolderManager;
 import me.ragan262.quester.holder.QuesterSign;
 import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.lang.QuesterLang;
+import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.quests.QuestManager;
@@ -48,12 +49,13 @@ public class SignListeners implements Listener {
 		final Player player = event.getPlayer();
 		if(event.getAction() == Action.LEFT_CLICK_BLOCK
 				|| event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			final PlayerProfile prof = profMan.getProfile(player);
 			final Block block = event.getClickedBlock();
 			final QuesterSign qs = holMan.getSign(block.getLocation());
 			if(qs == null) {
 				return;
 			}
-			final QuesterLang lang = langMan.getPlayerLang(player.getName());
+			final QuesterLang lang = langMan.getLang(prof.getLanguage());
 			if(block.getType().getId() != 63 && block.getType().getId() != 68) {
 				holMan.removeSign(block.getLocation());
 				player.sendMessage(Quester.LABEL + lang.get("SIGN_UNREGISTERED"));
@@ -101,12 +103,12 @@ public class SignListeners implements Listener {
 				
 				final Quest quest = qm.getQuest(holMan.getOne(qh));
 				if(quest != null) {
-					if(profMan.getProfile(player.getName()).hasQuest(quest)) {
+					if(prof.hasQuest(quest)) {
 						return;
 					}
 					else {
 						try {
-							qm.showQuest(player, quest.getName(), lang);
+							qm.showQuest(player, quest, lang);
 							return;
 						}
 						catch (final QuesterException ignore) {}
@@ -138,7 +140,7 @@ public class SignListeners implements Listener {
 				
 				if(isOp) {
 					if(player.getItemInHand().getTypeId() == 369) {
-						final int sel = profMan.getProfile(player.getName()).getHolderID();
+						final int sel = prof.getHolderID();
 						if(sel < 0) {
 							player.sendMessage(ChatColor.RED + lang.get("ERROR_HOL_NOT_ASSIGNED"));
 						}
@@ -160,7 +162,7 @@ public class SignListeners implements Listener {
 				qh.interact(player.getName());
 				final List<Integer> qsts = qh.getQuests();
 				
-				final Quest currentQuest = profMan.getProfile(player.getName()).getQuest();
+				final Quest currentQuest = prof.getQuest();
 				if(!player.isSneaking()) {
 					final int questID = currentQuest == null ? -1 : currentQuest.getID();
 					// player has quest and quest giver does not accept this quest
@@ -213,7 +215,8 @@ public class SignListeners implements Listener {
 		if(block.getType().getId() == 63 || block.getType().getId() == 68) {
 			final Sign sign = (Sign) block.getState();
 			if(holMan.getSign(sign.getLocation()) != null) {
-				final QuesterLang lang = langMan.getPlayerLang(event.getPlayer().getName());
+				final QuesterLang lang =
+						langMan.getLang(profMan.getProfile(event.getPlayer()).getLanguage());
 				if(!event.getPlayer().isSneaking()
 						|| !Util.permCheck(event.getPlayer(), QConfiguration.PERM_MODIFY, false,
 								null)) {
@@ -230,7 +233,8 @@ public class SignListeners implements Listener {
 	public void onSignChange(final SignChangeEvent event) {
 		final Block block = event.getBlock();
 		if(event.getLine(0).equals("[Quester]")) {
-			final QuesterLang lang = langMan.getPlayerLang(event.getPlayer().getName());
+			final QuesterLang lang =
+					langMan.getLang(profMan.getProfile(event.getPlayer()).getLanguage());
 			if(!Util.permCheck(event.getPlayer(), QConfiguration.PERM_MODIFY, true, lang)) {
 				block.breakNaturally();
 			}

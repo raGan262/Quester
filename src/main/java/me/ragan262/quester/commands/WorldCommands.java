@@ -43,7 +43,7 @@ public class WorldCommands {
 		if(world == null) {
 			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_WORLD_INVALID"));
 		}
-		qMan.addQuestWorld(profMan.getProfile(sender.getName()), world.getName(),
+		qMan.addQuestWorld(profMan.getSenderProfile(sender), world.getName(),
 				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_WORLD_ADDED"));
 	}
@@ -61,7 +61,7 @@ public class WorldCommands {
 						.replaceAll("%this", QConfiguration.worldLabelThis));
 			}
 		}
-		if(qMan.removeQuestWorld(profMan.getProfile(sender.getName()), worldName,
+		if(qMan.removeQuestWorld(profMan.getSenderProfile(sender), worldName,
 				context.getSenderLang())) {
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_WORLD_REMOVED"));
 		}

@@ -38,14 +38,14 @@ public class DeathListener implements Listener {
 			return;
 		}
 		// DEATH OBJECTIVE
-		final PlayerProfile prof = profMan.getProfile(player.getName());
+		final PlayerProfile prof = profMan.getProfile(player);
 		final Quest quest = prof.getQuest();
 		if(quest != null) {
 			// DEATH CHECK
 			if(quest.hasFlag(QuestFlag.DEATHCANCEL)) {
 				try {
 					profMan.cancelQuest(player, ActionSource.listenerSource(event),
-							langMan.getPlayerLang(player.getName()));
+							langMan.getLang(prof.getLanguage()));
 				}
 				catch (final QuesterException e) {}
 				return;
@@ -81,7 +81,7 @@ public class DeathListener implements Listener {
 			if(!Util.isPlayer(killer)) {
 				return;
 			}
-			final PlayerProfile prof = profMan.getProfile(killer.getName());
+			final PlayerProfile prof = profMan.getProfile(killer);
 			final Quest quest = prof.getQuest();
 			if(quest != null) {
 				// PLAYERKILL CHECK

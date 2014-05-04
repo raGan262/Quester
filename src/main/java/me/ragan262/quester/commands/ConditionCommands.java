@@ -62,7 +62,7 @@ public class ConditionCommands {
 		catch (final ConditionException e) {
 			return;
 		}
-		qMan.addQuestCondition(profMan.getProfile(sender.getName()), condition, lang);
+		qMan.addQuestCondition(profMan.getSenderProfile(sender), condition, lang);
 		sender.sendMessage(ChatColor.GREEN
 				+ lang.get("CON_ADD").replaceAll("%type", type.toUpperCase()));
 	}
@@ -84,7 +84,7 @@ public class ConditionCommands {
 		catch (final ConditionException e) {
 			return;
 		}
-		qMan.setQuestCondition(profMan.getProfile(sender.getName()), conditionID, condition, lang);
+		qMan.setQuestCondition(profMan.getSenderProfile(sender), conditionID, condition, lang);
 		sender.sendMessage(ChatColor.GREEN
 				+ lang.get("CON_SET").replaceAll("%type", type.toUpperCase()));
 	}
@@ -97,7 +97,7 @@ public class ConditionCommands {
 			max = 1,
 			usage = "<condition ID>")
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.removeQuestCondition(profMan.getProfile(sender.getName()), context.getInt(0),
+		qMan.removeQuestCondition(profMan.getSenderProfile(sender), context.getInt(0),
 				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().get("CON_REMOVE").replaceAll("%id", context.getString(0)));
@@ -106,8 +106,7 @@ public class ConditionCommands {
 	@QCommandLabels({ "desc" })
 	@QCommand(section = "QMod", desc = "condition description manipulation")
 	@QNestedCommand(ConditionDescCommands.class)
-	public void desc(final QCommandContext context, final CommandSender sender) throws QuesterException {
-	}
+	public void desc(final QCommandContext context, final CommandSender sender) throws QuesterException {}
 	
 	@QCommandLabels({ "list", "l" })
 	@QCommand(section = "QMod", max = 0, desc = "condition list")
@@ -134,7 +133,7 @@ public class ConditionCommands {
 				max = 2,
 				usage = "<condition ID> <description>")
 		public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
-			qMan.addConditionDescription(profMan.getProfile(sender.getName()), context.getInt(0),
+			qMan.addConditionDescription(profMan.getSenderProfile(sender), context.getInt(0),
 					context.getString(1), context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
 					+ context.getSenderLang().get("CON_DESC_ADD")
@@ -149,8 +148,8 @@ public class ConditionCommands {
 				max = 1,
 				usage = "<condition ID>")
 		public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
-			qMan.removeConditionDescription(profMan.getProfile(sender.getName()),
-					context.getInt(0), context.getSenderLang());
+			qMan.removeConditionDescription(profMan.getSenderProfile(sender), context.getInt(0),
+					context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
 					+ context.getSenderLang().get("CON_DESC_REMOVE")
 							.replaceAll("%id", context.getString(0)));

@@ -37,7 +37,8 @@ public class ModificationCommands {
 			qMan.showQuestInfo(sender, context.getInt(0), context.getSenderLang());
 		}
 		else {
-			qMan.showQuestInfo(sender, context.getSenderLang());
+			qMan.showQuestInfo(sender, profMan.getSenderProfile(sender).getSelected(),
+					context.getSenderLang());
 		}
 	}
 	
@@ -50,7 +51,7 @@ public class ModificationCommands {
 			usage = "<quest name>",
 			permission = QConfiguration.PERM_MODIFY)
 	public void create(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.createQuest(profMan.getProfile(sender.getName()), context.getString(0),
+		qMan.createQuest(profMan.getSenderProfile(sender), context.getString(0),
 				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_CREATED"));
 		Ql.verbose(sender.getName() + " created quest '" + context.getString(0) + "'.");
@@ -66,7 +67,7 @@ public class ModificationCommands {
 			permission = QConfiguration.PERM_MODIFY)
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		final String name =
-				qMan.removeQuest(profMan.getProfile(sender.getName()), context.getInt(0),
+				qMan.removeQuest(profMan.getSenderProfile(sender), context.getInt(0),
 						context.getSenderLang()).getName();
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_REMOVED"));
 		Ql.verbose(sender.getName() + " removed quest '" + name + "'.");
@@ -81,7 +82,7 @@ public class ModificationCommands {
 			usage = "<new name>",
 			permission = QConfiguration.PERM_MODIFY)
 	public void name(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.changeQuestName(profMan.getProfile(sender.getName()), context.getString(0),
+		qMan.changeQuestName(profMan.getSenderProfile(sender), context.getString(0),
 				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().get("Q_RENAMED").replaceAll("%q", context.getString(0)));
@@ -100,8 +101,7 @@ public class ModificationCommands {
 			active = qMan.toggleQuest(context.getInt(0), context.getSenderLang());
 		}
 		else {
-			active =
-					qMan.toggleQuest(profMan.getProfile(sender.getName()), context.getSenderLang());
+			active = qMan.toggleQuest(profMan.getSenderProfile(sender), context.getSenderLang());
 		}
 		if(active) {
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_ACTIVATED"));
@@ -120,7 +120,7 @@ public class ModificationCommands {
 			usage = "<quest ID>",
 			permission = QConfiguration.PERM_MODIFY)
 	public void select(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		profMan.selectQuest(profMan.getProfile(sender.getName()), qMan.getQuest(context.getInt(0)));
+		profMan.selectQuest(profMan.getSenderProfile(sender), qMan.getQuest(context.getInt(0)));
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_SELECTED"));
 	}
 	
@@ -132,8 +132,7 @@ public class ModificationCommands {
 			desc = "quest description manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@QNestedCommand(DescCommands.class)
-	public void desc(final QCommandContext context, final CommandSender sender) throws QuesterException {
-	}
+	public void desc(final QCommandContext context, final CommandSender sender) throws QuesterException {}
 	
 	@QCommandLabels({ "location", "loc" })
 	@QCommand(
@@ -141,8 +140,7 @@ public class ModificationCommands {
 			desc = "quest location manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@QNestedCommand(LocationCommands.class)
-	public void location(final QCommandContext context, final CommandSender sender) throws QCommandException {
-	}
+	public void location(final QCommandContext context, final CommandSender sender) throws QCommandException {}
 	
 	@QCommandLabels({ "modifier", "mod" })
 	@QCommand(
@@ -150,8 +148,7 @@ public class ModificationCommands {
 			desc = "quest modifier manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@QNestedCommand(ModifierCommands.class)
-	public void modifier(final QCommandContext context, final CommandSender sender) throws QCommandException {
-	}
+	public void modifier(final QCommandContext context, final CommandSender sender) throws QCommandException {}
 	
 	@QCommandLabels({ "world" })
 	@QCommand(
@@ -159,8 +156,7 @@ public class ModificationCommands {
 			desc = "world restriction manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@QNestedCommand(WorldCommands.class)
-	public void world(final QCommandContext context, final CommandSender sender) throws QCommandException {
-	}
+	public void world(final QCommandContext context, final CommandSender sender) throws QCommandException {}
 	
 	@QCommandLabels({ "holder", "hol" })
 	@QCommand(
@@ -168,8 +164,7 @@ public class ModificationCommands {
 			desc = "quest holder manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@QNestedCommand(HolderCommands.class)
-	public void holder(final QCommandContext context, final CommandSender sender) throws QCommandException {
-	}
+	public void holder(final QCommandContext context, final CommandSender sender) throws QCommandException {}
 	
 	@QCommandLabels({ "condition", "con" })
 	@QCommand(
@@ -177,8 +172,7 @@ public class ModificationCommands {
 			desc = "condition manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@QNestedCommand(ConditionCommands.class)
-	public void condition(final QCommandContext context, final CommandSender sender) throws QCommandException {
-	}
+	public void condition(final QCommandContext context, final CommandSender sender) throws QCommandException {}
 	
 	@QCommandLabels({ "event", "evt" })
 	@QCommand(
@@ -186,8 +180,7 @@ public class ModificationCommands {
 			desc = "event manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@QNestedCommand(QeventCommands.class)
-	public void event(final QCommandContext context, final CommandSender sender) throws QCommandException {
-	}
+	public void event(final QCommandContext context, final CommandSender sender) throws QCommandException {}
 	
 	@QCommandLabels({ "objective", "obj" })
 	@QCommand(
@@ -195,6 +188,5 @@ public class ModificationCommands {
 			desc = "objective manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@QNestedCommand(ObjectiveCommands.class)
-	public void objective(final QCommandContext context, final CommandSender sender) throws QCommandException {
-	}
+	public void objective(final QCommandContext context, final CommandSender sender) throws QCommandException {}
 }

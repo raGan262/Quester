@@ -27,7 +27,7 @@ public final class PointQevent extends Qevent {
 	
 	@Override
 	protected void run(final Player player, final Quester plugin) {
-		final PlayerProfile prof = plugin.getProfileManager().getProfile(player.getName());
+		final PlayerProfile prof = plugin.getProfileManager().getProfile(player);
 		plugin.getProfileManager().addPoints(prof, amount);
 	}
 	

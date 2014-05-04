@@ -38,7 +38,7 @@ public final class ObjectiveCompleteQevent extends Qevent {
 	protected void run(final Player player, final Quester plugin) {
 		try {
 			final ProfileManager profMan = plugin.getProfileManager();
-			final PlayerProfile prof = profMan.getProfile(player.getName());
+			final PlayerProfile prof = profMan.getProfile(player);
 			final int[] prog = prof.getProgress().getProgress();
 			if(objective >= 0 && objective < prog.length) {
 				final int req = prof.getQuest().getObjective(objective).getTargetAmount();
@@ -50,7 +50,7 @@ public final class ObjectiveCompleteQevent extends Qevent {
 					else {
 						profMan.setProgress(prof, objective, req);
 						profMan.complete(player, as,
-								plugin.getLanguageManager().getPlayerLang(player.getName()), false);
+								plugin.getLanguageManager().getLang(prof.getLanguage()), false);
 					}
 				}
 				else {

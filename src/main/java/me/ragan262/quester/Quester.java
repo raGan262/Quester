@@ -24,6 +24,7 @@ import me.ragan262.quester.exceptions.*;
 import me.ragan262.quester.holder.QuestHolderManager;
 import me.ragan262.quester.holder.QuesterTrait;
 import me.ragan262.quester.lang.LanguageManager;
+import me.ragan262.quester.lang.QuesterLang;
 import me.ragan262.quester.listeners.*;
 import me.ragan262.quester.objectives.*;
 import me.ragan262.quester.profiles.ProfileListener;
@@ -94,7 +95,6 @@ public class Quester extends JavaPlugin {
 		ElementManager.setInstance(elements);
 		quests = new QuestManager(this);
 		profiles = new ProfileManager(this);
-		quests.setProfileManager(profiles); // loading conflicts...
 		holders = new QuestHolderManager(this);
 		commands = new CommandManager(langs, getLogger(), QConfiguration.displayedCmd, this);
 		
@@ -210,6 +210,8 @@ public class Quester extends JavaPlugin {
 	public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
 		if(label.equalsIgnoreCase("q") || label.equalsIgnoreCase("quest")
 				|| label.equalsIgnoreCase("quester")) {
+			final QuesterLang senderLang =
+					langs.getLang(profiles.getSenderProfile(sender).getLanguage());
 			try {
 				commands.execute(args, sender);
 			}
@@ -219,8 +221,7 @@ public class Quester extends JavaPlugin {
 			catch (final QCommandException e) {
 				if(e instanceof QUsageException) {
 					sender.sendMessage(ChatColor.RED + e.getMessage());
-					sender.sendMessage(ChatColor.RED
-							+ langs.getPlayerLang(sender.getName()).get("USAGE_LABEL")
+					sender.sendMessage(ChatColor.RED + senderLang.get("USAGE_LABEL")
 							+ ((QUsageException) e).getUsage());
 				}
 				else if(e instanceof QPermissionException) {

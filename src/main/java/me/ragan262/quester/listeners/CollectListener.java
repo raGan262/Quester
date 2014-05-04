@@ -32,7 +32,7 @@ public class CollectListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPickup(final PlayerPickupItemEvent event) {
 		final Player player = event.getPlayer();
-		final PlayerProfile prof = profMan.getProfile(player.getName());
+		final PlayerProfile prof = profMan.getProfile(player);
 		final Quest quest = prof.getQuest();
 		if(quest != null) {
 			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
@@ -40,8 +40,7 @@ public class CollectListener implements Listener {
 			}
 			final List<Objective> objs = quest.getObjectives();
 			for(int i = 0; i < objs.size(); i++) {
-				final int[] progress =
-						profMan.getProfile(player.getName()).getProgress().getProgress();
+				final int[] progress = prof.getProgress().getProgress();
 				// check if Objective is type COLLECT
 				if(objs.get(i).getType().equalsIgnoreCase("COLLECT")) {
 					if(!profMan.isObjectiveActive(prof, i)) {

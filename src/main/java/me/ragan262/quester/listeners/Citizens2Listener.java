@@ -50,7 +50,8 @@ public class Citizens2Listener implements Listener {
 			final QuestHolder qh =
 					holMan.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
 			final Player player = event.getClicker();
-			final QuesterLang lang = langMan.getPlayerLang(player.getName());
+			final PlayerProfile prof = profMan.getProfile(player);
+			final QuesterLang lang = langMan.getLang(prof.getLanguage());
 			if(!Util.permCheck(player, QConfiguration.PERM_USE_NPC, true, lang)) {
 				return;
 			}
@@ -75,12 +76,12 @@ public class Citizens2Listener implements Listener {
 			
 			final Quest quest = qm.getQuest(holMan.getOne(qh));
 			if(quest != null) {
-				if(profMan.getProfile(player.getName()).hasQuest(quest)) {
+				if(prof.hasQuest(quest)) {
 					return;
 				}
 				else {
 					try {
-						qm.showQuest(player, quest.getName(), lang);
+						qm.showQuest(player, quest, lang);
 						return;
 					}
 					catch (final QuesterException ignore) {}
@@ -115,7 +116,8 @@ public class Citizens2Listener implements Listener {
 			final QuestHolder qh =
 					holMan.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
 			final Player player = event.getClicker();
-			final QuesterLang lang = langMan.getPlayerLang(player.getName());
+			final PlayerProfile prof = profMan.getProfile(player);
+			final QuesterLang lang = langMan.getLang(prof.getLanguage());
 			if(!Util.permCheck(player, QConfiguration.PERM_USE_NPC, true, lang)) {
 				return;
 			}
@@ -123,7 +125,7 @@ public class Citizens2Listener implements Listener {
 			// If player has perms and holds blaze rod
 			if(isOP) {
 				if(player.getItemInHand().getTypeId() == 369) {
-					final int sel = profMan.getProfile(player.getName()).getHolderID();
+					final int sel = prof.getHolderID();
 					if(sel < 0) {
 						player.sendMessage(ChatColor.RED + lang.get("ERROR_HOL_NOT_SELECTED"));
 					}
@@ -145,7 +147,7 @@ public class Citizens2Listener implements Listener {
 			qh.interact(player.getName());
 			final List<Integer> qsts = qh.getQuests();
 			
-			final Quest currentQuest = profMan.getProfile(player.getName()).getQuest();
+			final Quest currentQuest = prof.getQuest();
 			if(!player.isSneaking()) {
 				final int questID = currentQuest == null ? -1 : currentQuest.getID();
 				// player has quest and quest giver does not accept this quest
@@ -193,7 +195,7 @@ public class Citizens2Listener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onAnyClick(final NPCRightClickEvent event) {
 		final Player player = event.getClicker();
-		final PlayerProfile prof = profMan.getProfile(player.getName());
+		final PlayerProfile prof = profMan.getProfile(player);
 		final Quest quest = prof.getQuest();
 		if(quest != null) {
 			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
@@ -221,10 +223,10 @@ public class Citizens2Listener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onNpcDeath(final NPCDeathEvent event) {
 		final Player player = event.getNPC().getBukkitEntity().getKiller();
-		if(player == null) {
+		if(player == null || !Util.isPlayer(player)) {
 			return;
 		}
-		final PlayerProfile prof = profMan.getProfile(player.getName());
+		final PlayerProfile prof = profMan.getProfile(player);
 		final Quest quest = prof.getQuest();
 		if(quest != null) {
 			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {

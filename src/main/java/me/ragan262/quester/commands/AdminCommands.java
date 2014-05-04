@@ -169,7 +169,7 @@ public class AdminCommands {
 				if(unset.length > 0
 						&& (player = Bukkit.getServer().getPlayerExact(prof.getName())) != null) {
 					player.sendMessage(Quester.LABEL
-							+ langMan.getPlayerLang(player.getName()).get("MSG_Q_SOME_CANCELLED"));
+							+ langMan.getLang(prof.getLanguage()).get("MSG_Q_SOME_CANCELLED"));
 					player.sendMessage(Quester.LABEL + ChatColor.WHITE + Util.implode(unset, ','));
 				}
 			}
@@ -199,8 +199,7 @@ public class AdminCommands {
 			desc = "player profile modification commands",
 			permission = QConfiguration.PERM_ADMIN)
 	@QNestedCommand(PlayerCommands.class)
-	public void player(final QCommandContext context, final CommandSender sender) {
-	}
+	public void player(final QCommandContext context, final CommandSender sender) {}
 	
 	@QCommandLabels({ "message", "msg" })
 	@QCommand(
@@ -208,6 +207,5 @@ public class AdminCommands {
 			desc = "custom messages manipulation",
 			permission = QConfiguration.PERM_ADMIN)
 	@QNestedCommand(MessageCommands.class)
-	public void message(final QCommandContext context, final CommandSender sender) {
-	}
+	public void message(final QCommandContext context, final CommandSender sender) {}
 }

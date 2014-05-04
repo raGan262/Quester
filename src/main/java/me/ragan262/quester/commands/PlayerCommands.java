@@ -27,6 +27,7 @@ import me.ragan262.quester.utils.Util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -41,36 +42,33 @@ public class PlayerCommands {
 	}
 	
 	private static PlayerProfile getProfileSafe(final ProfileManager pMan, final String playerName, final QuesterLang lang) throws QCommandException {
-		if(!pMan.hasProfile(playerName)) {
+		final OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
+		if(!pMan.hasProfile(player)) {
 			throw new QCommandException(lang.get("INFO_PROFILE_NOT_EXIST").replaceAll("%p",
 					playerName));
 		}
-		return pMan.getProfile(playerName);
+		return pMan.getProfile(player);
 	}
 	
 	@QCommandLabels({ "completed", "compl" })
 	@QCommand(section = "Admin", desc = "modification of completed quests")
 	@QNestedCommand(PlayerCommands.CompletedCommands.class)
-	public void completed(final QCommandContext context, final CommandSender sender) {
-	}
+	public void completed(final QCommandContext context, final CommandSender sender) {}
 	
 	@QCommandLabels({ "quest", "q" })
 	@QCommand(section = "Admin", desc = "player quest manipulation")
 	@QNestedCommand(PlayerCommands.QuestCommands.class)
-	public void quest(final QCommandContext context, final CommandSender sender) {
-	}
+	public void quest(final QCommandContext context, final CommandSender sender) {}
 	
 	@QCommandLabels({ "reputation", "rep" })
 	@QCommand(section = "Admin", desc = "reputation modification")
 	@QNestedCommand(PlayerCommands.ReputationCommands.class)
-	public void reputation(final QCommandContext context, final CommandSender sender) {
-	}
+	public void reputation(final QCommandContext context, final CommandSender sender) {}
 	
 	@QCommandLabels({ "progress", "prog" })
 	@QCommand(section = "Admin", desc = "progress modification")
 	@QNestedCommand(PlayerCommands.ProgressCommands.class)
-	public void progress(final QCommandContext context, final CommandSender sender) {
-	}
+	public void progress(final QCommandContext context, final CommandSender sender) {}
 	
 	@QCommandLabels({ "lang" })
 	@QCommand(
@@ -89,7 +87,7 @@ public class PlayerCommands {
 				langName = null;
 			}
 			if(profMan.setProfileLanguage(prof, langName)) {
-				lang = langMan.getPlayerLang(sender.getName());
+				lang = langMan.getLang(prof.getLanguage());
 				sender.sendMessage(ChatColor.GREEN
 						+ lang.get("PROF_LANGUAGE_SET").replaceAll("%p", prof.getName()));
 			}
@@ -101,7 +99,7 @@ public class PlayerCommands {
 		else {
 			sender.sendMessage(ChatColor.BLUE
 					+ context.getSenderLang().get("PROF_LANGUAGE").replaceAll("%p", prof.getName())
-					+ ": " + ChatColor.RESET + langMan.getPlayerLangName(prof.getName()));
+					+ ": " + ChatColor.RESET + langMan.getLang(prof.getLanguage()).getName());
 		}
 	}
 	
@@ -121,7 +119,7 @@ public class PlayerCommands {
 				prof = getProfileSafe(profMan, context.getString(0), context.getSenderLang());
 			}
 			else {
-				prof = profMan.getProfile(sender.getName());
+				prof = profMan.getSenderProfile(sender);
 			}
 			sender.sendMessage(ChatColor.BLUE
 					+ context.getSenderLang().get("INFO_PROFILE_COMPLETED")
@@ -145,7 +143,7 @@ public class PlayerCommands {
 			}
 			else {
 				pattern = context.getString(0).toLowerCase();
-				prof = profMan.getProfile(sender.getName());
+				prof = profMan.getSenderProfile(sender);
 			}
 			sender.sendMessage(ChatColor.BLUE
 					+ context.getSenderLang().get("INFO_PROFILE_COMPLETED")
@@ -231,7 +229,7 @@ public class PlayerCommands {
 				if(player != null) {
 					player.sendMessage(Quester.LABEL
 							+ langMan
-									.getPlayerLang(player.getName())
+									.getLang(prof.getLanguage())
 									.get("MSG_Q_STARTED")
 									.replaceAll("%q",
 											ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
@@ -268,7 +266,7 @@ public class PlayerCommands {
 				profMan.unassignQuest(prof, index);
 				if(player != null) {
 					player.sendMessage(Quester.LABEL
-							+ langMan.getPlayerLang(player.getName()).get("MSG_Q_CANCELLED")
+							+ langMan.getLang(prof.getLanguage()).get("MSG_Q_CANCELLED")
 									.replaceAll("%q", ChatColor.GOLD + quest + ChatColor.BLUE));
 				}
 			}
@@ -305,7 +303,7 @@ public class PlayerCommands {
 					throw new QCommandException(lang.get("ERROR_CMD_PLAYER_OFFLINE").replaceAll(
 							"%p", context.getString(0)));
 				}
-				prof = profMan.getProfile(player.getName());
+				prof = profMan.getProfile(player);
 			}
 			else {
 				player = null;
