@@ -236,6 +236,20 @@ public class ProfileManager {
 	}
 	
 	public void startQuest(final Player player, final Quest quest, final ActionSource as, final QuesterLang senderLang) throws QuesterException {
+		startQuest(player, quest, as, senderLang, false);
+	}
+
+	public void startQuest(final Player player, final int questID, final ActionSource as, final QuesterLang lang, final boolean disableAdminCheck) throws QuesterException {
+		final Quest qst = qMan.getQuest(questID);
+		startQuest(player, qst, as, lang, disableAdminCheck);
+	}
+	
+	public void startQuest(final Player player, final String questName, final ActionSource as, final QuesterLang lang, final boolean disableAdminCheck) throws QuesterException {
+		final Quest qst = qMan.getQuest(questName);
+		startQuest(player, qst, as, lang, disableAdminCheck);
+	}
+
+	public void startQuest(final Player player, final Quest quest, final ActionSource as, final QuesterLang senderLang, final boolean disableAdminCheck) throws QuesterException {
 		final String playerName = player.getName();
 		if(quest == null) {
 			throw new QuestException(senderLang.get("ERROR_Q_NOT_EXIST"));
@@ -253,8 +267,8 @@ public class ProfileManager {
 		if(as.is(ActionSource.COMMAND) && quest.hasFlag(QuestFlag.HIDDEN)) {
 			throw new QuestException(senderLang.get("ERROR_Q_NOT_CMD"));
 		}
-		if(!as.is(ActionSource.ADMIN)
-				&& !Util.permCheck(player, QConfiguration.PERM_ADMIN, false, null)) {
+		if(!disableAdminCheck || (!as.is(ActionSource.ADMIN)
+				&& !Util.permCheck(player, QConfiguration.PERM_ADMIN, false, null))) {
 			for(final Condition con : quest.getConditions()) {
 				if(!con.isMet(player, plugin)) {
 					throw new ConditionException(con.inShow(player, senderLang));
