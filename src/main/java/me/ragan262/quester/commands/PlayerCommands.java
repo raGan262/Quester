@@ -217,7 +217,7 @@ public class PlayerCommands {
 				desc = "forces quest start",
 				min = 2,
 				max = 2,
-				usage = "<player> <quest> (-e)")
+				usage = "<player> <quest> (-ef)")
 		public void start(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
 			final Player player = Bukkit.getPlayerExact(context.getString(0));
 			final QuesterLang lang = context.getSenderLang();
@@ -242,8 +242,9 @@ public class PlayerCommands {
 					throw new QCommandException(lang.get("ERROR_CMD_PLAYER_OFFLINE").replaceAll(
 							"%p", context.getString(0)));
 				}
+				final boolean disableAdminCheck = context.hasFlag('f');
 				profMan.startQuest(player, context.getString(1), ActionSource.adminSource(sender),
-						lang);
+						lang, disableAdminCheck);
 			}
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("PROF_QUEST_STARTED"));
 		}
