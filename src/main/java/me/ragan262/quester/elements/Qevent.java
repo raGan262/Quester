@@ -3,6 +3,7 @@ package me.ragan262.quester.elements;
 import java.lang.reflect.Method;
 
 import me.ragan262.quester.Quester;
+import me.ragan262.quester.elements.ElementManager.ElementType;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
 
@@ -132,7 +133,8 @@ public abstract class Qevent extends Element {
 		
 		Qevent qev = null;
 		
-		final Class<? extends Qevent> c = ElementManager.getInstance().getEventClass(type);
+		final Class<? extends Element> c =
+				ElementManager.getInstance().getElementClass(ElementType.EVENT, type);
 		if(c != null) {
 			try {
 				final Method load = c.getDeclaredMethod("load", StorageKey.class);

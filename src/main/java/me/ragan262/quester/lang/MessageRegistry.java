@@ -39,6 +39,7 @@ class MessageRegistry {
 		messages.put("INFO_CONDITIONS", "Conditions");
 		messages.put("INFO_OBJECTIVES", "Objectives");
 		messages.put("INFO_EVENTS", "Events");
+		messages.put("INFO_TRIGGERS", "Triggers");
 		messages.put("INFO_QUEST_LIST", "Quest list");
 		messages.put("INFO_QUEST_INFO", "Quest info");
 		messages.put("INFO_PROGRESS", "%q progress");
@@ -115,6 +116,8 @@ class MessageRegistry {
 		messages.put("OBJ_DESC_REMOVE", "Description of objective %id removed."); // %id = objective ID;
 		messages.put("OBJ_PREREQ_ADD", "Prerequisites to objective %id added."); // %id = objective ID
 		messages.put("OBJ_PREREQ_REMOVE", "Prerequisites of objective %id removed."); // %id = objective ID
+		messages.put("OBJ_TRIG_ADD", "Triggers of objective %id added."); // %id = objective ID
+		messages.put("OBJ_TRIG_REMOVE", "Triggers of objective %id removed."); // %id = objective ID
 		
 		messages.put("CON_ADD", "%type condition added."); // %type = condition type
 		messages.put("CON_SET", "%type condition set."); // %type = condition type
@@ -128,6 +131,11 @@ class MessageRegistry {
 		messages.put("EVT_LIST", "Available event types");
 		messages.put("EVT_REMOVE", "Event %id removed."); // %id = event ID
 		messages.put("EVT_SPECIFY", "Specify occasion and delay.");
+		
+		messages.put("TRIG_ADD", "%type trigger added."); // %type = event type
+		messages.put("TRIG_SET", "%type trigger set."); // %type = event type
+		messages.put("TRIG_LIST", "Available trigger types");
+		messages.put("TRIG_REMOVE", "Trigger %id removed."); // %id = event ID
 		
 		messages.put("ERROR_CUSTOM", "Something is wrong.");
 		messages.put("ERROR_CMD_BAD_ID", "ID must be non-negative number.");
@@ -193,6 +201,7 @@ class MessageRegistry {
 		messages.put("ERROR_REW_NOT_EXIST", "Reward does not exist.");
 		messages.put("ERROR_REW_CANT_DO", "Not enough space to recieve quest rewards.");
 		messages.put("ERROR_EVT_NOT_EXIST", "Event does not exist.");
+		messages.put("ERROR_TRIG_NOT_EXIST", "Trigger does not exist.");
 		messages.put("ERROR_PROF_Q_ALREADY_DONE", "Player already completed this quest.");
 		messages.put("ERROR_WHY", "Why would you want to do this ?");
 		messages.put("ERROR_INTERESTING",

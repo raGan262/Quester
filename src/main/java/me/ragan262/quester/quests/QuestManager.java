@@ -16,6 +16,7 @@ import me.ragan262.quester.Quester;
 import me.ragan262.quester.elements.Condition;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.Qevent;
+import me.ragan262.quester.elements.Trigger;
 import me.ragan262.quester.exceptions.*;
 import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.lang.QuesterLang;
@@ -285,6 +286,11 @@ public class QuestManager {
 		final Quest quest = issuer.getSelected();
 		modifyCheck(quest, lang);
 		quest.addObjective(newObjective);
+		for(int i = 0; i < quest.getTriggers().size(); i++) {
+			if(quest.getTrigger(i).isGlobal()) {
+				newObjective.addTrigger(i);
+			}
+		}
 	}
 	
 	public void setQuestObjective(final PlayerProfile issuer, final int id, final Objective newObjective, final QuesterLang lang) throws QuesterException {
@@ -297,6 +303,11 @@ public class QuestManager {
 		quest.setObjective(id, newObjective);
 		for(final int prerequisity : oldObj.getPrerequisites()) {
 			newObjective.addPrerequisity(prerequisity);
+		}
+		for(int i = 0; i < quest.getTriggers().size(); i++) {
+			if(quest.getTrigger(i).isGlobal()) {
+				newObjective.addTrigger(i);
+			}
 		}
 	}
 	
@@ -391,8 +402,35 @@ public class QuestManager {
 			throw new ObjectiveException(lang.get("ERROR_OBJ_NOT_EXIST"));
 		}
 		for(final int i : prereq) {
-			if(i >= objs.size() || i < 0 || i != id) {
+			if(i < objs.size() && i >= 0 && i != id) {
 				objs.get(id).addPrerequisity(i);
+			}
+		}
+	}
+	
+	public void removeObjectiveTriggers(final PlayerProfile issuer, final int id, final Set<Integer> trigs, final QuesterLang lang) throws QuesterException {
+		final Quest quest = issuer.getSelected();
+		modifyCheck(quest, lang);
+		final List<Objective> objs = quest.getObjectives();
+		if(id >= objs.size() || id < 0) {
+			throw new ObjectiveException(lang.get("ERROR_OBJ_NOT_EXIST"));
+		}
+		for(final int i : trigs) {
+			objs.get(id).removeTrigger(i);
+		}
+	}
+	
+	public void addObjectiveTriggers(final PlayerProfile issuer, final int id, final Set<Integer> trigs, final QuesterLang lang) throws QuesterException {
+		final Quest quest = issuer.getSelected();
+		modifyCheck(quest, lang);
+		final List<Objective> objs = quest.getObjectives();
+		if(id >= objs.size() || id < 0) {
+			throw new ObjectiveException(lang.get("ERROR_OBJ_NOT_EXIST"));
+		}
+		final int trigSize = quest.getTriggers().size();
+		for(final int i : trigs) {
+			if(i < trigSize && i >= 0) {
+				objs.get(id).addTrigger(i);
 			}
 		}
 	}
@@ -480,6 +518,45 @@ public class QuestManager {
 		}
 	}
 	
+	public void addQuestTrigger(final PlayerProfile issuer, final Trigger newTrigger, final QuesterLang lang) throws QuesterException {
+		final Quest quest = issuer.getSelected();
+		modifyCheck(quest, lang);
+		quest.addTrigger(newTrigger);
+		if(newTrigger.isGlobal()) {
+			final int id = quest.getTriggers().size() - 1;
+			for(final Objective o : quest.getObjectives()) {
+				o.addTrigger(id);
+			}
+		}
+	}
+	
+	public void setQuestTrigger(final PlayerProfile issuer, final int triggerID, final Trigger newTrigger, final QuesterLang lang) throws QuesterException {
+		final Quest quest = issuer.getSelected();
+		modifyCheck(quest, lang);
+		quest.setTrigger(triggerID, newTrigger);
+		if(newTrigger.isGlobal()) {
+			for(final Objective o : quest.getObjectives()) {
+				o.addTrigger(triggerID);
+			}
+		}
+	}
+	
+	public void removeQuestTrigger(final PlayerProfile issuer, final int id, final QuesterLang lang) throws QuesterException {
+		final Quest quest = issuer.getSelected();
+		modifyCheck(quest, lang);
+		final Trigger t = quest.removeTrigger(id);
+		if(t == null) {
+			throw new QeventException(lang.get("ERROR_TRIG_NOT_EXIST"));
+		}
+		else {
+			if(t.isGlobal()) {
+				for(final Objective o : quest.getObjectives()) {
+					o.removeTrigger(id);
+				}
+			}
+		}
+	}
+	
 	public boolean areConditionsMet(final Player player, final String questName, final QuesterLang lang) throws QuesterException {
 		return areConditionsMet(player, getQuest(questName), lang);
 	}
@@ -489,7 +566,7 @@ public class QuestManager {
 			throw new QuestException(lang.get("ERROR_Q_NOT_EXIST"));
 		}
 		for(final Condition c : quest.getConditions()) {
-			if(!c.isMet(player, plugin)) {
+			if(!c.isMet(player)) {
 				return false;
 			}
 		}
@@ -537,7 +614,7 @@ public class QuestManager {
 		ChatColor color = ChatColor.WHITE;
 		for(int i = 0; i < cons.size(); i++) {
 			if(player != null) {
-				color = cons.get(i).isMet(player, plugin) ? ChatColor.GREEN : ChatColor.RED;
+				color = cons.get(i).isMet(player) ? ChatColor.GREEN : ChatColor.RED;
 			}
 			sender.sendMessage(color + " - " + cons.get(i).inShow(player, lang));
 		}
@@ -596,6 +673,13 @@ public class QuestManager {
 					+ quest.getWorldNames());
 		}
 		int i;
+		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_TRIGGERS") + ":");
+		i = 0;
+		for(final Trigger t : quest.getTriggers()) {
+			sender.sendMessage(" [" + i + "] " + t.inInfo());
+			i++;
+			
+		}
 		final Map<Integer, Map<Integer, Qevent>> qmap = quest.getQeventMap();
 		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_EVENTS") + ":");
 		for(i = -1; i > -4; i--) {

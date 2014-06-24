@@ -48,7 +48,9 @@ public class QuestProgress {
 		for(int i = 0; i < objectives.size(); i++) {
 			if(objectives.get(i).isComplete(progress[i])) {
 				objectiveStatuses[i] = ObjectiveStatus.COMPLETED;
-				continue;
+			}
+			else {
+				objectiveStatuses[i] = ObjectiveStatus.INACTIVE;
 			}
 		}
 		objectives:

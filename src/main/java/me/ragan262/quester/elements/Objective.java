@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
+import me.ragan262.quester.elements.ElementManager.ElementType;
 import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.lang.QuesterLang;
 import me.ragan262.quester.storage.StorageKey;
@@ -21,6 +22,7 @@ public abstract class Objective extends Element {
 	private boolean hidden = false;
 	private boolean displayProgress = true;
 	private final Set<Integer> prerequisites = new HashSet<Integer>();
+	private final Set<Integer> triggers = new HashSet<Integer>();
 	
 	public Set<Integer> getPrerequisites() {
 		return prerequisites;
@@ -34,10 +36,25 @@ public abstract class Objective extends Element {
 		prerequisites.remove(pre);
 	}
 	
+	public Set<Integer> getTriggers() {
+		return triggers;
+	}
+	
+	public void addTrigger(final int newTrig) {
+		triggers.add(newTrig);
+	}
+	
+	public void removeTrigger(final int trig) {
+		triggers.remove(trig);
+	}
+	
 	private String coloredDesc(final LanguageManager langMan) {
 		String result = "";
 		if(!prerequisites.isEmpty()) {
-			result += " PRE: " + SerUtils.serializePrerequisites(prerequisites, ",");
+			result += " PRE: " + SerUtils.serializeIntSet(prerequisites, ",");
+		}
+		if(!triggers.isEmpty()) {
+			result += " TRIG: " + SerUtils.serializeIntSet(triggers, ",");
 		}
 		if(!desc.isEmpty()) {
 			result += "\n  - ";
@@ -165,7 +182,10 @@ public abstract class Objective extends Element {
 			}
 		}
 		if(!prerequisites.isEmpty()) {
-			key.setString("prerequisites", SerUtils.serializePrerequisites(prerequisites));
+			key.setString("prerequisites", SerUtils.serializeIntSet(prerequisites));
+		}
+		if(!triggers.isEmpty()) {
+			key.setString("triggers", SerUtils.serializeIntSet(triggers));
 		}
 		if(hidden) {
 			key.setBoolean("hidden", hidden);
@@ -189,7 +209,8 @@ public abstract class Objective extends Element {
 		
 		Objective obj = null;
 		
-		final Class<? extends Objective> c = ElementManager.getInstance().getObjectiveClass(type);
+		final Class<? extends Element> c =
+				ElementManager.getInstance().getElementClass(ElementType.OBJECTIVE, type);
 		if(c != null) {
 			try {
 				final Method load = c.getDeclaredMethod("load", StorageKey.class);
@@ -208,7 +229,7 @@ public abstract class Objective extends Element {
 				
 				try {
 					final Set<Integer> prereq =
-							SerUtils.deserializePrerequisites(key.getString("prerequisites"));
+							SerUtils.deserializeIntSet(key.getString("prerequisites"));
 					for(final int i : prereq) {
 						obj.addPrerequisity(i);
 					}
@@ -216,6 +237,16 @@ public abstract class Objective extends Element {
 				catch (final NullPointerException ignore) {}
 				catch (final Exception ex) {
 					Ql.debug("Failed to load prerequisites. (" + type + ")");
+				}
+				try {
+					final Set<Integer> trig = SerUtils.deserializeIntSet(key.getString("triggers"));
+					for(final int i : trig) {
+						obj.addTrigger(i);
+					}
+				}
+				catch (final NullPointerException ignore) {}
+				catch (final Exception ex) {
+					Ql.debug("Failed to load triggers. (" + type + ")");
 				}
 			}
 			catch (final Exception e) {

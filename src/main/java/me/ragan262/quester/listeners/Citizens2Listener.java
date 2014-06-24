@@ -6,6 +6,8 @@ import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.elements.Objective;
+import me.ragan262.quester.elements.Trigger;
+import me.ragan262.quester.elements.TriggerContext;
 import me.ragan262.quester.exceptions.HolderException;
 import me.ragan262.quester.exceptions.QuesterException;
 import me.ragan262.quester.holder.QuestHolder;
@@ -200,11 +202,25 @@ public class Citizens2Listener implements Listener {
 				return;
 			}
 			final List<Objective> objs = quest.getObjectives();
+			final TriggerContext context = new TriggerContext("NPC_CLICK");
+			context.put("CLICKEDNPC", event.getNPC().getId());
+			objectives:
 			for(int i = 0; i < objs.size(); i++) {
-				if(objs.get(i).getType().equalsIgnoreCase("NPC")) {
-					if(!profMan.isObjectiveActive(prof, i)) {
-						continue;
+				if(!profMan.isObjectiveActive(prof, i)) {
+					continue;
+				}
+				// check triggers
+				for(final int trigId : objs.get(i).getTriggers()) {
+					final Trigger trig = quest.getTrigger(trigId);
+					if(trig != null) {
+						if(trig.evaluate(player, context) && objs.get(i).tryToComplete(player)) {
+							profMan.incProgress(player, ActionSource.triggerSource(trig), i);
+							break objectives;
+						}
 					}
+				}
+				// check objectives
+				if(objs.get(i).getType().equalsIgnoreCase("NPC")) {
 					final NpcObjective obj = (NpcObjective) objs.get(i);
 					if(obj.checkNpc(event.getNPC().getId())) {
 						profMan.incProgress(player, ActionSource.listenerSource(event), i);

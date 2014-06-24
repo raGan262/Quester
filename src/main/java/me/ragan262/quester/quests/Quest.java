@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import me.ragan262.quester.elements.Condition;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.Qevent;
+import me.ragan262.quester.elements.Trigger;
 import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.lang.QuesterLang;
 import me.ragan262.quester.storage.StorageKey;
@@ -26,6 +27,7 @@ public class Quest {
 	private final List<Objective> objectives = new ArrayList<Objective>();
 	private final List<Condition> conditions = new ArrayList<Condition>();
 	private final List<Qevent> qevents = new ArrayList<Qevent>();
+	private final List<Trigger> triggers = new ArrayList<Trigger>();
 	private final Set<String> worlds = new HashSet<String>();
 	private final Set<QuestFlag> flags = new HashSet<QuestFlag>();
 	private String description = "";
@@ -135,6 +137,8 @@ public class Quest {
 		range = rng;
 	}
 	
+	/* OBJECTIVE METHODS */
+	
 	public Objective getObjective(final int id) {
 		if(id < objectives.size() && id >= 0) {
 			return objectives.get(id);
@@ -172,6 +176,10 @@ public class Quest {
 		objectives.set(objectiveID, newObjective);
 	}
 	
+	/* ----------------- */
+	
+	/* CONDITION METHODS */
+	
 	public Condition getCondition(final int id) {
 		if(id < conditions.size()) {
 			return conditions.get(id);
@@ -198,6 +206,40 @@ public class Quest {
 	void setCondition(final int conditionID, final Condition newCondition) {
 		conditions.set(conditionID, newCondition);
 	}
+	
+	/* ----------------- */
+	
+	/* TRIGGER METHODS */
+	
+	public Trigger getTrigger(final int id) {
+		if(id < triggers.size()) {
+			return triggers.get(id);
+		}
+		return null;
+	}
+	
+	public List<Trigger> getTriggers() {
+		return new ArrayList<Trigger>(triggers);
+	}
+	
+	Trigger removeTrigger(final int id) {
+		if(id < triggers.size() && id >= 0) {
+			return triggers.remove(id);
+		}
+		return null;
+	}
+	
+	void addTrigger(final Trigger newTrigger) {
+		triggers.add(newTrigger);
+	}
+	
+	void setTrigger(final int triggerID, final Trigger newTrigger) {
+		triggers.set(triggerID, newTrigger);
+	}
+	
+	/* ----------------- */
+	
+	/* QEVENT METHODS */
 	
 	public Qevent getQevent(final int id) {
 		if(id < qevents.size()) {
@@ -247,6 +289,8 @@ public class Quest {
 	void setQevent(final int qeventID, final Qevent newQevent) {
 		qevents.set(qeventID, newQevent);
 	}
+	
+	/* ----------------- */
 	
 	public String getWorldNames() {
 		return Util.implode(worlds.toArray(new String[0]), ',');
@@ -308,6 +352,12 @@ public class Quest {
 			final StorageKey subKey = key.getSubKey("events");
 			for(int i = 0; i < qevents.size(); i++) {
 				qevents.get(i).serialize(subKey.getSubKey(String.valueOf(i)));
+			}
+		}
+		if(!triggers.isEmpty()) {
+			final StorageKey subKey = key.getSubKey("triggers");
+			for(int i = 0; i < triggers.size(); i++) {
+				triggers.get(i).serialize(subKey.getSubKey(String.valueOf(i)));
 			}
 		}
 	}
@@ -410,6 +460,23 @@ public class Quest {
 						quest.error = true;
 						Ql.severe("Error occured when deserializing event ID:" + i + " in quest '"
 								+ quest.getName() + "'.");
+					}
+				}
+			}
+			
+			Trigger trig = null;
+			if(key.getSubKey("triggers").hasSubKeys()) {
+				final StorageKey subKey = key.getSubKey("triggers");
+				final List<StorageKey> keys = subKey.getSubKeys();
+				for(int i = 0; i < keys.size(); i++) {
+					trig = Trigger.deserialize(subKey.getSubKey(String.valueOf(i)));
+					if(trig != null) {
+						quest.addTrigger(trig);
+					}
+					else {
+						quest.error = true;
+						Ql.severe("Error occured when deserializing trigger ID:" + i
+								+ " in quest '" + quest.getName() + "'.");
 					}
 				}
 			}

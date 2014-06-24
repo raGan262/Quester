@@ -8,6 +8,7 @@ import me.ragan262.quester.commandbase.QNestedCommand;
 import me.ragan262.quester.commandbase.exceptions.QCommandException;
 import me.ragan262.quester.elements.Condition;
 import me.ragan262.quester.elements.ElementManager;
+import me.ragan262.quester.elements.ElementManager.ElementType;
 import me.ragan262.quester.exceptions.ConditionException;
 import me.ragan262.quester.exceptions.ElementException;
 import me.ragan262.quester.exceptions.QuesterException;
@@ -32,14 +33,15 @@ public class ConditionCommands {
 	
 	private Condition getCondition(final String type, final QCommandContext subContext, final QuesterLang lang) throws ConditionException, QCommandException, QuesterException {
 		
-		if(!eMan.isCondition(type)) {
+		if(!eMan.elementExists(ElementType.CONDITION, type)) {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.get("ERROR_CON_NOT_EXIST"));
 			subContext.getSender().sendMessage(
 					ChatColor.RED + lang.get("CON_LIST") + ": " + ChatColor.WHITE
-							+ eMan.getConditionList());
+							+ eMan.getElementList(ElementType.CONDITION));
 			throw new ConditionException(lang.get("ERROR_CON_NOT_EXIST"));
 		}
-		final Condition con = eMan.getConditionFromCommand(type, subContext);
+		final Condition con =
+				(Condition) eMan.getElementFromCommand(ElementType.CONDITION, type, subContext);
 		if(con == null) {
 			throw new ElementException(lang.get("ERROR_ELEMENT_FAIL"));
 		}
@@ -106,14 +108,13 @@ public class ConditionCommands {
 	@QCommandLabels({ "desc" })
 	@QCommand(section = "QMod", desc = "condition description manipulation")
 	@QNestedCommand(ConditionDescCommands.class)
-	public void desc(final QCommandContext context, final CommandSender sender) throws QuesterException {
-	}
+	public void desc(final QCommandContext context, final CommandSender sender) throws QuesterException {}
 	
 	@QCommandLabels({ "list", "l" })
 	@QCommand(section = "QMod", max = 0, desc = "condition list")
 	public void list(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		sender.sendMessage(ChatColor.RED + context.getSenderLang().get("CON_LIST") + ": "
-				+ ChatColor.WHITE + eMan.getConditionList());
+				+ ChatColor.WHITE + eMan.getElementList(ElementType.CONDITION));
 	}
 	
 	public static class ConditionDescCommands {

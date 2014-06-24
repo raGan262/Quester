@@ -132,8 +132,7 @@ public class ModificationCommands {
 			desc = "quest description manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@QNestedCommand(DescCommands.class)
-	public void desc(final QCommandContext context, final CommandSender sender) throws QuesterException {
-	}
+	public void desc(final QCommandContext context, final CommandSender sender) throws QuesterException {}
 	
 	@QCommandLabels({ "location", "loc" })
 	@QCommand(
@@ -141,8 +140,7 @@ public class ModificationCommands {
 			desc = "quest location manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@QNestedCommand(LocationCommands.class)
-	public void location(final QCommandContext context, final CommandSender sender) throws QCommandException {
-	}
+	public void location(final QCommandContext context, final CommandSender sender) throws QCommandException {}
 	
 	@QCommandLabels({ "modifier", "mod" })
 	@QCommand(
@@ -150,8 +148,7 @@ public class ModificationCommands {
 			desc = "quest modifier manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@QNestedCommand(ModifierCommands.class)
-	public void modifier(final QCommandContext context, final CommandSender sender) throws QCommandException {
-	}
+	public void modifier(final QCommandContext context, final CommandSender sender) throws QCommandException {}
 	
 	@QCommandLabels({ "world" })
 	@QCommand(
@@ -159,8 +156,7 @@ public class ModificationCommands {
 			desc = "world restriction manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@QNestedCommand(WorldCommands.class)
-	public void world(final QCommandContext context, final CommandSender sender) throws QCommandException {
-	}
+	public void world(final QCommandContext context, final CommandSender sender) throws QCommandException {}
 	
 	@QCommandLabels({ "holder", "hol" })
 	@QCommand(
@@ -168,8 +164,7 @@ public class ModificationCommands {
 			desc = "quest holder manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@QNestedCommand(HolderCommands.class)
-	public void holder(final QCommandContext context, final CommandSender sender) throws QCommandException {
-	}
+	public void holder(final QCommandContext context, final CommandSender sender) throws QCommandException {}
 	
 	@QCommandLabels({ "condition", "con" })
 	@QCommand(
@@ -177,8 +172,7 @@ public class ModificationCommands {
 			desc = "condition manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@QNestedCommand(ConditionCommands.class)
-	public void condition(final QCommandContext context, final CommandSender sender) throws QCommandException {
-	}
+	public void condition(final QCommandContext context, final CommandSender sender) throws QCommandException {}
 	
 	@QCommandLabels({ "event", "evt" })
 	@QCommand(
@@ -186,8 +180,7 @@ public class ModificationCommands {
 			desc = "event manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@QNestedCommand(QeventCommands.class)
-	public void event(final QCommandContext context, final CommandSender sender) throws QCommandException {
-	}
+	public void event(final QCommandContext context, final CommandSender sender) throws QCommandException {}
 	
 	@QCommandLabels({ "objective", "obj" })
 	@QCommand(
@@ -195,6 +188,13 @@ public class ModificationCommands {
 			desc = "objective manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@QNestedCommand(ObjectiveCommands.class)
-	public void objective(final QCommandContext context, final CommandSender sender) throws QCommandException {
-	}
+	public void objective(final QCommandContext context, final CommandSender sender) throws QCommandException {}
+	
+	@QCommandLabels({ "trigger", "trig" })
+	@QCommand(
+			section = "QMod",
+			desc = "trigger manipulation",
+			permission = QConfiguration.PERM_MODIFY)
+	@QNestedCommand(TriggerCommands.class)
+	public void trigger(final QCommandContext context, final CommandSender sender) throws QCommandException {}
 }

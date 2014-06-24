@@ -1,7 +1,6 @@
 package me.ragan262.quester.conditions;
 
 import me.ragan262.quester.QConfiguration;
-import me.ragan262.quester.Quester;
 import me.ragan262.quester.commandbase.QCommand;
 import me.ragan262.quester.commandbase.QCommandContext;
 import me.ragan262.quester.commandbase.exceptions.QCommandException;
@@ -33,7 +32,7 @@ public final class TimeCondition extends Condition {
 	}
 	
 	@Override
-	public boolean isMet(final Player player, final Quester plugin) {
+	public boolean isMet(final Player player) {
 		World w;
 		if(world.isEmpty()) {
 			w = player.getWorld();

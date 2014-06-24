@@ -8,6 +8,7 @@ import me.ragan262.quester.commandbase.QCommandLabels;
 import me.ragan262.quester.commandbase.exceptions.QCommandException;
 import me.ragan262.quester.elements.ElementManager;
 import me.ragan262.quester.elements.Qevent;
+import me.ragan262.quester.elements.ElementManager.ElementType;
 import me.ragan262.quester.exceptions.ElementException;
 import me.ragan262.quester.exceptions.QeventException;
 import me.ragan262.quester.exceptions.QuesterException;
@@ -43,14 +44,14 @@ public class QeventCommands {
 		catch (final IllegalArgumentException e) {
 			throw new QCommandException(e.getMessage());
 		}
-		if(!eMan.isEvent(type)) {
+		if(!eMan.elementExists(ElementType.EVENT, type)) {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.get("ERROR_EVT_NOT_EXIST"));
 			subContext.getSender().sendMessage(
 					ChatColor.RED + lang.get("EVT_LIST") + ": " + ChatColor.WHITE
-							+ eMan.getEventList());
+							+ eMan.getElementList(ElementType.EVENT));
 			throw new QeventException(lang.get("ERROR_EVT_NOT_EXIST"));
 		}
-		final Qevent evt = eMan.getEventFromCommand(type, subContext);
+		final Qevent evt = (Qevent) eMan.getElementFromCommand(ElementType.EVENT, type, subContext);
 		if(evt != null) {
 			evt.setOccasion(occasion[0], occasion[1]);
 		}
@@ -116,7 +117,7 @@ public class QeventCommands {
 			section = "QMod",
 			desc = "adds an event",
 			min = 2,
-			usage = "{<occasion>} <event type> [args]")
+			usage = "{<occasion>} <evt type> [args]")
 	public void add(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
 		final QuesterLang lang = context.getSenderLang();
 		final String type = context.getString(1);
@@ -155,7 +156,7 @@ public class QeventCommands {
 	}
 	
 	@QCommandLabels({ "remove", "r" })
-	@QCommand(section = "QMod", desc = "removes event", min = 1, max = 1, usage = "<event ID>")
+	@QCommand(section = "QMod", desc = "removes event", min = 1, max = 1, usage = "<evt ID>")
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.removeQuestQevent(profMan.getProfile(sender.getName()), context.getInt(0),
 				context.getSenderLang());
@@ -167,6 +168,6 @@ public class QeventCommands {
 	@QCommand(section = "QMod", max = 0, desc = "event list")
 	public void list(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		sender.sendMessage(ChatColor.RED + context.getSenderLang().get("EVT_LIST") + ": "
-				+ ChatColor.WHITE + eMan.getEventList());
+				+ ChatColor.WHITE + eMan.getElementList(ElementType.EVENT));
 	}
 }

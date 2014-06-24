@@ -3,8 +3,11 @@ package me.ragan262.quester.elements;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.lang.Validate;
 
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.commandbase.QCommand;
@@ -18,8 +21,34 @@ import me.ragan262.quester.utils.Util;
 
 public class ElementManager {
 	
-	final class ElementInfo<E> {
-		private Class<? extends E> clss;
+	public static enum ElementType {
+		OBJECTIVE(Objective.class), CONDITION(Condition.class), EVENT(Qevent.class), TRIGGER(Trigger.class);
+		
+		private static final Map<Class<? extends Element>, ElementType> byClass = new HashMap<>();
+		
+		private final Class<? extends Element> clss;
+		
+		private ElementType(final Class<? extends Element> clss) {
+			this.clss = clss;
+		}
+		
+		public Class<? extends Element> getAssociatedClass() {
+			return clss;
+		}
+		
+		public static ElementType getByClass(final Class<?> clss) {
+			return byClass.get(clss);
+		}
+		
+		static {
+			for(final ElementType type : values()) {
+				byClass.put(type.getAssociatedClass(), type);
+			}
+		}
+	}
+	
+	final class ElementInfo {
+		private Class<? extends Element> clss;
 		private String usage;
 		private Method method;
 		private QCommand command;
@@ -27,12 +56,14 @@ public class ElementManager {
 	
 	private static ElementManager instance = null;
 	
-	private final Map<String, ElementInfo<Condition>> conditions =
-			new HashMap<String, ElementInfo<Condition>>();
-	private final Map<String, ElementInfo<Objective>> objectives =
-			new HashMap<String, ElementInfo<Objective>>();
-	private final Map<String, ElementInfo<Qevent>> events =
-			new HashMap<String, ElementInfo<Qevent>>();
+	private final Map<ElementType, Map<String, ElementInfo>> elements = new EnumMap<>(
+			ElementType.class);
+	
+	public ElementManager() {
+		for(final ElementType key : ElementType.values()) {
+			elements.put(key, new HashMap<String, ElementInfo>());
+		}
+	}
 	
 	public static ElementManager getInstance() {
 		return instance;
@@ -42,100 +73,45 @@ public class ElementManager {
 		instance = eMan;
 	}
 	
-	public Class<? extends Condition> getConditionClass(final String type) {
-		final ElementInfo<Condition> ei = conditions.get(type.toUpperCase());
+	public Class<? extends Element> getElementClass(final ElementType elementType, final String type) {
+		Validate.notNull(elementType, "Element type cannot be null.");
+		final ElementInfo ei = elements.get(elementType).get(type.toUpperCase());
 		if(ei == null) {
 			return null;
 		}
 		return ei.clss;
 	}
 	
-	public Class<? extends Objective> getObjectiveClass(final String type) {
-		final ElementInfo<Objective> ei = objectives.get(type.toUpperCase());
-		if(ei == null) {
-			return null;
-		}
-		return ei.clss;
+	public boolean elementExists(final ElementType elementType, final String type) {
+		Validate.notNull(elementType, "Element type cannot be null.");
+		return elements.get(elementType).containsKey(type.toUpperCase());
 	}
 	
-	public Class<? extends Qevent> getEventClass(final String type) {
-		final ElementInfo<Qevent> ei = events.get(type.toUpperCase());
-		if(ei == null) {
-			return null;
-		}
-		return ei.clss;
-	}
-	
-	public boolean isCondition(final String type) {
-		return conditions.containsKey(type.toUpperCase());
-	}
-	
-	public boolean isObjective(final String type) {
-		return objectives.containsKey(type.toUpperCase());
-	}
-	
-	public boolean isEvent(final String type) {
-		return events.containsKey(type.toUpperCase());
-	}
-	
-	public String getConditionUsage(final String type) {
-		final ElementInfo<Condition> ei = conditions.get(type.toUpperCase());
+	public String getElementUsage(final ElementType elementType, final String type) {
+		Validate.notNull(elementType, "Element type cannot be null.");
+		final ElementInfo ei = elements.get(elementType).get(type.toUpperCase());
 		if(ei == null) {
 			return null;
 		}
 		return ei.usage;
 	}
 	
-	public String getObjectiveUsage(final String type) {
-		final ElementInfo<Objective> ei = objectives.get(type.toUpperCase());
-		if(ei == null) {
-			return null;
-		}
-		return ei.usage;
-	}
-	
-	public String getEventUsage(final String type) {
-		final ElementInfo<Qevent> ei = events.get(type.toUpperCase());
-		if(ei == null) {
-			return null;
-		}
-		return ei.usage;
-	}
-	
-	public QCommand getConditionCommand(final String type) {
-		final ElementInfo<Condition> ei = conditions.get(type.toUpperCase());
+	public QCommand getElementCommand(final ElementType elementType, final String type) {
+		Validate.notNull(elementType, "Element type cannot be null.");
+		final ElementInfo ei = elements.get(elementType).get(type.toUpperCase());
 		if(ei == null) {
 			return null;
 		}
 		return ei.command;
 	}
 	
-	public QCommand getObjectiveHelp(final String type) {
-		final ElementInfo<Objective> ei = objectives.get(type.toUpperCase());
-		if(ei == null) {
-			return null;
+	public String getElementList(final ElementType elementType) {
+		Validate.notNull(elementType, "Element type cannot be null.");
+		final Map<String, ElementInfo> map = elements.get(elementType);
+		if(map == null) {
+			return "";
 		}
-		return ei.command;
-	}
-	
-	public QCommand getEventHelp(final String type) {
-		final ElementInfo<Qevent> ei = events.get(type.toUpperCase());
-		if(ei == null) {
-			return null;
-		}
-		return ei.command;
-	}
-	
-	public String getConditionList() {
-		return Util.implode(conditions.keySet().toArray(new String[0]), ',');
-	}
-	
-	public String getObjectiveList() {
-		return Util.implode(objectives.keySet().toArray(new String[0]), ',');
-	}
-	
-	public String getEventList() {
-		return Util.implode(events.keySet().toArray(new String[0]), ',');
+		return Util.implode(map.keySet().toArray(new String[0]), ',');
 	}
 	
 	private String getParentArgs(final String[] args) {
@@ -147,7 +123,7 @@ public class ElementManager {
 		return result.toString();
 	}
 	
-	private Element getFromCommand(final ElementInfo<? extends Element> ei, final QCommandContext context) throws QCommandException, QuesterException {
+	private Element getFromCommand(final ElementInfo ei, final QCommandContext context) throws QCommandException, QuesterException {
 		Object obj = null;
 		try {
 			String parent;
@@ -184,31 +160,15 @@ public class ElementManager {
 		return (Element) obj;
 	}
 	
-	public Condition getConditionFromCommand(final String type, final QCommandContext context) throws QCommandException, QuesterException {
-		final ElementInfo<Condition> ei = conditions.get(type.toUpperCase());
+	public Element getElementFromCommand(final ElementType elementType, final String type, final QCommandContext context) throws QCommandException, QuesterException {
+		Validate.notNull(elementType, "Element type cannot be null.");
+		final ElementInfo ei = elements.get(elementType).get(type.toUpperCase());
 		if(ei != null && context != null) {
-			return (Condition) getFromCommand(ei, context);
+			return getFromCommand(ei, context);
 		}
 		return null;
 	}
 	
-	public Objective getObjectiveFromCommand(final String type, final QCommandContext context) throws QCommandException, QuesterException {
-		final ElementInfo<Objective> ei = objectives.get(type.toUpperCase());
-		if(ei != null && context != null) {
-			return (Objective) getFromCommand(ei, context);
-		}
-		return null;
-	}
-	
-	public Qevent getEventFromCommand(final String type, final QCommandContext context) throws QCommandException, QuesterException {
-		final ElementInfo<Qevent> ei = events.get(type.toUpperCase());
-		if(ei != null && context != null) {
-			return (Qevent) getFromCommand(ei, context);
-		}
-		return null;
-	}
-	
-	@SuppressWarnings("unchecked")
 	public void register(final Class<? extends Element> clss) throws ElementException {
 		if(!clss.isAnnotationPresent(QElement.class)) {
 			throw new ElementException("Annotation not present.");
@@ -220,23 +180,12 @@ public class ElementManager {
 				throw new ElementException(
 						"Incorrect load method modifiers, expected \"protected static\".");
 			}
-			if(clss.getSuperclass() == Condition.class) {
-				if(load.getReturnType() != Condition.class) {
-					throw new ElementException("Load method does not return Condition.");
+			final ElementType type = ElementType.getByClass(clss.getSuperclass());
+			if(type != null) {
+				if(load.getReturnType() != type.getAssociatedClass()) {
+					throw new ElementException("Load method does not return " + type.name() + ".");
 				}
-				registerCondition((Class<? extends Condition>) clss);
-			}
-			else if(clss.getSuperclass() == Qevent.class) {
-				if(load.getReturnType() != Qevent.class) {
-					throw new ElementException("Load method does not return Event.");
-				}
-				registerEvent((Class<? extends Qevent>) clss);
-			}
-			else if(clss.getSuperclass() == Objective.class) {
-				if(load.getReturnType() != Objective.class) {
-					throw new ElementException("Load method does not return Objective.");
-				}
-				registerObjective((Class<? extends Objective>) clss);
+				registerElement(type, clss);
 			}
 			else {
 				throw new ElementException("Unknown element type.");
@@ -250,69 +199,27 @@ public class ElementManager {
 		}
 	}
 	
-	private void registerCondition(final Class<? extends Condition> clss) throws NoSuchMethodException, SecurityException, ElementException {
+	private void registerElement(final ElementType elementType, final Class<? extends Element> clss) throws NoSuchMethodException, SecurityException, ElementException {
 		final Method fromCommand = clss.getDeclaredMethod("fromCommand", QCommandContext.class);
 		
 		final String type = clss.getAnnotation(QElement.class).value().toUpperCase();
-		if(conditions.containsKey(type)) {
-			throw new ElementException("Condition of the same type already registered.");
+		final Map<String, ElementInfo> map = elements.get(elementType);
+		if(map.containsKey(type)) {
+			throw new ElementException(elementType.name() + " of the same type already registered.");
 		}
 		
 		if(!Modifier.isStatic(fromCommand.getModifiers())) {
 			throw new ElementException("Incorrect fromCommand method modifiers, expected static.");
 		}
-		if(fromCommand.getReturnType() != Condition.class) {
-			throw new ElementException("fromCommand method does not return Condition.");
+		if(fromCommand.getReturnType() != elementType.getAssociatedClass()) {
+			throw new ElementException("fromCommand method does not return " + elementType.name()
+					+ ".");
 		}
-		final ElementInfo<Condition> ei = new ElementInfo<Condition>();
+		final ElementInfo ei = new ElementInfo();
 		ei.clss = clss;
 		ei.command = fromCommand.getAnnotation(QCommand.class);
 		ei.method = fromCommand;
 		ei.usage = ei.command.usage();
-		conditions.put(type, ei);
-	}
-	
-	private void registerEvent(final Class<? extends Qevent> clss) throws NoSuchMethodException, SecurityException, ElementException {
-		final Method fromCommand = clss.getDeclaredMethod("fromCommand", QCommandContext.class);
-		
-		final String type = clss.getAnnotation(QElement.class).value().toUpperCase();
-		if(events.containsKey(type)) {
-			throw new ElementException("Event of the same type already registered.");
-		}
-		
-		if(!Modifier.isStatic(fromCommand.getModifiers())) {
-			throw new ElementException("Incorrect fromCommand method modifiers, expected static.");
-		}
-		if(fromCommand.getReturnType() != Qevent.class) {
-			throw new ElementException("fromCommand method does not return Qevent.");
-		}
-		final ElementInfo<Qevent> ei = new ElementInfo<Qevent>();
-		ei.clss = clss;
-		ei.command = fromCommand.getAnnotation(QCommand.class);
-		ei.method = fromCommand;
-		ei.usage = ei.command.usage();
-		events.put(type, ei);
-	}
-	
-	private void registerObjective(final Class<? extends Objective> clss) throws NoSuchMethodException, SecurityException, ElementException {
-		final Method fromCommand = clss.getDeclaredMethod("fromCommand", QCommandContext.class);
-		
-		final String type = clss.getAnnotation(QElement.class).value().toUpperCase();
-		if(objectives.containsKey(type)) {
-			throw new ElementException("Objective of the same type already registered.");
-		}
-		
-		if(!Modifier.isStatic(fromCommand.getModifiers())) {
-			throw new ElementException("Incorrect fromCommand method modifiers, expected static.");
-		}
-		if(fromCommand.getReturnType() != Objective.class) {
-			throw new ElementException("fromCommand method does not return Objective.");
-		}
-		final ElementInfo<Objective> ei = new ElementInfo<Objective>();
-		ei.clss = clss;
-		ei.command = fromCommand.getAnnotation(QCommand.class);
-		ei.method = fromCommand;
-		ei.usage = ei.command.usage();
-		objectives.put(type, ei);
+		map.put(type, ei);
 	}
 }

@@ -22,7 +22,7 @@ public final class MoneyCondition extends Condition {
 	}
 	
 	@Override
-	public boolean isMet(final Player player, final Quester plugin) {
+	public boolean isMet(final Player player) {
 		if(!Quester.vault) {
 			return true;
 		}

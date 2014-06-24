@@ -43,9 +43,6 @@ public class ProgressQevent extends Qevent {
 		if(obj < 0) {
 			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_BAD_ID"));
 		}
-		if(amt < 1) {
-			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_POSITIVE"));
-		}
 		return new ProgressQevent(obj, amt);
 	}
 	

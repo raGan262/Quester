@@ -2,7 +2,7 @@ package me.ragan262.quester.elements;
 
 import java.lang.reflect.Method;
 
-import me.ragan262.quester.Quester;
+import me.ragan262.quester.elements.ElementManager.ElementType;
 import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.lang.QuesterLang;
 import me.ragan262.quester.storage.StorageKey;
@@ -66,7 +66,7 @@ public abstract class Condition extends Element {
 	
 	protected abstract String info();
 	
-	public abstract boolean isMet(Player player, Quester plugin);
+	public abstract boolean isMet(Player player);
 	
 	public String inShow(final Player player, final QuesterLang lang) {
 		if(!desc.isEmpty()) {
@@ -125,7 +125,8 @@ public abstract class Condition extends Element {
 		
 		Condition con = null;
 		
-		final Class<? extends Condition> c = ElementManager.getInstance().getConditionClass(type);
+		final Class<? extends Element> c =
+				ElementManager.getInstance().getElementClass(ElementType.CONDITION, type);
 		if(c != null) {
 			try {
 				final Method load = c.getDeclaredMethod("load", StorageKey.class);

@@ -51,26 +51,22 @@ public class PlayerCommands {
 	@QCommandLabels({ "completed", "compl" })
 	@QCommand(section = "Admin", desc = "modification of completed quests")
 	@QNestedCommand(PlayerCommands.CompletedCommands.class)
-	public void completed(final QCommandContext context, final CommandSender sender) {
-	}
+	public void completed(final QCommandContext context, final CommandSender sender) {}
 	
 	@QCommandLabels({ "quest", "q" })
 	@QCommand(section = "Admin", desc = "player quest manipulation")
 	@QNestedCommand(PlayerCommands.QuestCommands.class)
-	public void quest(final QCommandContext context, final CommandSender sender) {
-	}
+	public void quest(final QCommandContext context, final CommandSender sender) {}
 	
 	@QCommandLabels({ "reputation", "rep" })
 	@QCommand(section = "Admin", desc = "reputation modification")
 	@QNestedCommand(PlayerCommands.ReputationCommands.class)
-	public void reputation(final QCommandContext context, final CommandSender sender) {
-	}
+	public void reputation(final QCommandContext context, final CommandSender sender) {}
 	
 	@QCommandLabels({ "progress", "prog" })
 	@QCommand(section = "Admin", desc = "progress modification")
 	@QNestedCommand(PlayerCommands.ProgressCommands.class)
-	public void progress(final QCommandContext context, final CommandSender sender) {
-	}
+	public void progress(final QCommandContext context, final CommandSender sender) {}
 	
 	@QCommandLabels({ "lang" })
 	@QCommand(
@@ -192,7 +188,14 @@ public class PlayerCommands {
 		public void remove(final QCommandContext context, final CommandSender sender) throws QCommandException {
 			final PlayerProfile prof =
 					getProfileSafe(profMan, context.getString(0), context.getSenderLang());
-			profMan.removeCompletedQuest(prof, context.getString(1));
+			if("ALL".equalsIgnoreCase(context.getString(1))) {
+				for(final String q : prof.getCompletedQuests()) {
+					profMan.removeCompletedQuest(prof, q);
+				}
+			}
+			else {
+				profMan.removeCompletedQuest(prof, context.getString(1));
+			}
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("PROF_COMP_REMOVED"));
 		}
 	}

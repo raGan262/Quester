@@ -45,7 +45,7 @@ public class QuesterLang {
 				final StackTraceElement st = Thread.currentThread().getStackTrace()[2];
 				Ql.debug("Class " + st.getClassName() + " requested unknown message '" + key
 						+ "' on line " + st.getLineNumber() + ".");
-				result = messages.get("MSG_UNKNOWN_MESSAGE");
+				result = messages.get("MSG_UNKNOWN_MESSAGE") + " (" + key + ")";
 			}
 		}
 		return result;

@@ -316,7 +316,7 @@ public class SerUtils {
 		return sound;
 	}
 	
-	public static Set<Integer> parsePrerequisites(final String[] args, final int from) {
+	public static Set<Integer> parseIntSet(final String[] args, final int from) {
 		final Set<Integer> result = new HashSet<Integer>();
 		for(int i = from; i < args.length; i++) {
 			try {
@@ -327,7 +327,7 @@ public class SerUtils {
 		return result;
 	}
 	
-	public static Set<Integer> deserializePrerequisites(final String arg) throws NumberFormatException {
+	public static Set<Integer> deserializeIntSet(final String arg) throws NumberFormatException {
 		final Set<Integer> result = new HashSet<Integer>();
 		final String[] args = arg.split(";");
 		for(int i = 0; i < args.length; i++) {
@@ -336,7 +336,7 @@ public class SerUtils {
 		return result;
 	}
 	
-	public static String serializePrerequisites(final Set<Integer> prereq, final String glue) {
+	public static String serializeIntSet(final Set<Integer> prereq, final String glue) {
 		String result = "";
 		boolean first = true;
 		for(final int i : prereq) {
@@ -351,8 +351,8 @@ public class SerUtils {
 		return result;
 	}
 	
-	public static String serializePrerequisites(final Set<Integer> prereq) {
-		return serializePrerequisites(prereq, ";");
+	public static String serializeIntSet(final Set<Integer> prereq) {
+		return serializeIntSet(prereq, ";");
 	}
 	
 	public static int[] deserializeOccasion(final String arg, final QuesterLang lang) throws IllegalArgumentException {

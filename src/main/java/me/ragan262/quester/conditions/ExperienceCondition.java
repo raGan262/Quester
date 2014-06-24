@@ -1,6 +1,5 @@
 package me.ragan262.quester.conditions;
 
-import me.ragan262.quester.Quester;
 import me.ragan262.quester.commandbase.QCommand;
 import me.ragan262.quester.commandbase.QCommandContext;
 import me.ragan262.quester.commandbase.exceptions.QCommandException;
@@ -30,7 +29,7 @@ public final class ExperienceCondition extends Condition {
 	}
 	
 	@Override
-	public boolean isMet(final Player player, final Quester plugin) {
+	public boolean isMet(final Player player) {
 		final ExpManager expMan = new ExpManager(player);
 		int value = expMan.getCurrentExp();
 		if(isLevel) {

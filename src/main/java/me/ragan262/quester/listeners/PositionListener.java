@@ -3,8 +3,11 @@ package me.ragan262.quester.listeners;
 import java.util.List;
 
 import me.ragan262.quester.ActionSource;
+import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.elements.Objective;
+import me.ragan262.quester.elements.Trigger;
+import me.ragan262.quester.elements.TriggerContext;
 import me.ragan262.quester.exceptions.QuesterException;
 import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.objectives.RegionObjective;
@@ -41,11 +44,24 @@ public class PositionListener implements Runnable {
 					continue;
 				}
 				final List<Objective> objs = quest.getObjectives();
+				final TriggerContext context = new TriggerContext("LOCATION");
+				objectives:
 				for(int i = 0; i < objs.size(); i++) {
-					if(objs.get(i).getType().equalsIgnoreCase("REGION")) {
-						if(!profMan.isObjectiveActive(prof, i)) {
-							continue;
+					if(!profMan.isObjectiveActive(prof, i)) {
+						continue;
+					}
+					// check triggers
+					for(final int trigId : objs.get(i).getTriggers()) {
+						final Trigger trig = quest.getTrigger(trigId);
+						if(trig != null) {
+							if(trig.evaluate(player, context) && objs.get(i).tryToComplete(player)) {
+								profMan.incProgress(player, ActionSource.triggerSource(trig), i);
+								break objectives;
+							}
 						}
+					}
+					// check objectives
+					if(objs.get(i).getType().equalsIgnoreCase("REGION")) {
 						final RegionObjective obj = (RegionObjective) objs.get(i);
 						if(obj.checkLocation(player.getLocation())) {
 							profMan.incProgress(player, ActionSource.otherSource(null), i);
@@ -55,7 +71,7 @@ public class PositionListener implements Runnable {
 				}
 				
 			}
-			else {
+			if(prof.getQuestAmount() < QConfiguration.maxQuests) {
 				final Location loc = player.getLocation();
 				for(final int ID : qMan.questLocations.keySet()) {
 					final Quest qst = qMan.getQuest(ID);
@@ -67,6 +83,7 @@ public class PositionListener implements Runnable {
 								profMan.startQuest(player, qst.getName(),
 										ActionSource.otherSource(null),
 										langMan.getPlayerLang(player.getName()));
+								break;
 							}
 							catch (final QuesterException e) {}
 						}

@@ -30,6 +30,7 @@ import me.ragan262.quester.profiles.ProfileListener;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.qevents.*;
 import me.ragan262.quester.quests.QuestManager;
+import me.ragan262.quester.triggers.*;
 import me.ragan262.quester.utils.DatabaseConnection;
 import me.ragan262.quester.utils.Ql;
 import net.citizensnpcs.api.CitizensAPI;
@@ -426,7 +427,11 @@ public class Quester extends JavaPlugin {
 				NpcKillObjective.class,
 				DropObjective.class,
 				ChatObjective.class,
-				DummyObjective.class };
+				DummyObjective.class,
+				
+				// triggers
+				NpcTrigger.class,
+				RegionTrigger.class };
 		for(final Class<? extends Element> clss : classes) {
 			try {
 				elements.register(clss);

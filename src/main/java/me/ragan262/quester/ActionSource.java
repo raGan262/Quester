@@ -1,6 +1,7 @@
 package me.ragan262.quester;
 
 import me.ragan262.quester.elements.Qevent;
+import me.ragan262.quester.elements.Trigger;
 import me.ragan262.quester.holder.QuestHolder;
 
 import org.bukkit.command.CommandSender;
@@ -15,6 +16,7 @@ public class ActionSource {
 	public static final int EVENT = 4;
 	public static final int OTHER = 5;
 	public static final int ADMIN = 6;
+	public static final int TRIGGER = 7;
 	
 	public static final ActionSource BLANKSOURCE = new ActionSource(ActionSource.OTHER, null);
 	public static final ActionSource QUESTERSOURCE = new ActionSource(ActionSource.QUESTER, null);
@@ -73,6 +75,10 @@ public class ActionSource {
 	
 	public static ActionSource otherSource(final Object sourceObject) {
 		return new ActionSource(ActionSource.OTHER, sourceObject);
+	}
+	
+	public static ActionSource triggerSource(final Trigger trigger) {
+		return new ActionSource(ActionSource.TRIGGER, trigger);
 	}
 	
 	private static void validate(final Object o) {
