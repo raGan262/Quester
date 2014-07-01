@@ -63,7 +63,6 @@ public class Quester extends JavaPlugin {
 	
 	public static boolean citizens2 = false;
 	public static boolean vault = false;
-	public static boolean denizen = false;
 	
 	public static final String LABEL = ChatColor.BLUE + "[" + ChatColor.GOLD + "Quester"
 			+ ChatColor.BLUE + "] ";
@@ -120,9 +119,6 @@ public class Quester extends JavaPlugin {
 		
 		if(setupCitizens()) {
 			Ql.info("Citizens 2 found and hooked...");
-		}
-		if(setupDenizen()) {
-			Ql.info("Denizen found and hooked...");
 		}
 		
 		setupListeners();
@@ -203,7 +199,6 @@ public class Quester extends JavaPlugin {
 		econ = null;
 		citizens2 = false;
 		vault = false;
-		denizen = false;
 	}
 	
 	@Override
@@ -315,24 +310,6 @@ public class Quester extends JavaPlugin {
 		factory.registerTrait(info);
 		citizens2 = true;
 		return true;
-	}
-	
-	private boolean setupDenizen() {
-		if(citizens2) {
-			denizen = getServer().getPluginManager().getPlugin("Denizen") != null;
-		}
-		if(denizen) {
-			try {
-				denizen = Class.forName("net.aufdemrand.denizen.npc.dNPC") != null;
-			}
-			catch (final Exception e) {
-				denizen = false;
-			}
-			if(!denizen) {
-				Ql.warning("Incorrect denizen version found. Supported version is 0.8.8 or newer.");
-			}
-		}
-		return denizen;
 	}
 	
 	private void setupListeners() {
