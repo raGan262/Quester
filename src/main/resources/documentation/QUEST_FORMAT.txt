@@ -1,0 +1,517 @@
+# QUESTER QUEST FORMAT
+
+# old format - quest name in lowercase
+{unique quest id}:
+    # MANDATORY
+    name: Unique Quest Name
+    # OPTIONAL
+    description: Quest description.
+    # OPTIONAL
+    # {location} format - http://dev.bukkit.org/bukkit-plugins/quester/pages/special-arguments/#w-location
+    location: {location}
+    # OPTIONAL - read/save only if location is present
+    # DEFAULTS TO 1, if value 0 or lower is read, it is set 1
+    range: {range in blocks (int)}
+    # OPTIONAL, array of worlds
+    worlds:
+      - {worldname1}
+      - {worldname2}
+    # OPTIONAL - COMMA separated list, key will probably change to modifiers
+    flags: {flag1},{flag2},{flag3}
+    # DEPRECATED - has higher priority than main key ID, because of old format quests with numeric names
+    ID: {unique quest id}
+    # OPTIONAL
+    conditions:
+        # condition ids must start with 0 and increment by one
+        {unique condition id}:
+            # MANDATORY
+            type: {condition type}
+            # OPTIONAL
+            description: Custom condition description.
+            #
+            # per-condition data go here
+            #
+    objectives:
+        # objective ids must start with 0 and increment by one
+        {unique objective id}:
+            # MANDATORY
+            type: {objective type}
+            # OPTIONAL
+            description: Custom objective description.
+            # OPTIONAL - SEMICOLON separated list of prerequisites
+            prerequisites: {id1};{id2};{id3}
+            # OPTIONAL - DEFAULTS TO false
+            hidden: {true/false}
+            # OPTIONAL - DEFAULTS TO true
+            progress: {true/false}
+            #
+            # per-objective data go here
+            #
+    events:
+        # event ids must start with 0 and increment by one
+        {unique event id}:
+            # MANDATORY
+            type: {event type}
+            # MANDATORY
+            occassion: {occassion}
+            # OPTIONAL - DEFAULTS TO 0
+            delay: {delay in seconds}
+            #
+            # per-event data go here
+            #
+
+#
+# INVALID VALUES IN OPTIONAL FIELDS ARE REPLACED WITH THE DEFAULT VALUES
+# INVALID VALUES IN OPTIONAL FIELDS WITH NO DEFAULT VALUE ARE READ AS EMPTY
+# INVALID VALUES IN MANDATORY FIELDS RESULT IN INVALID ELEMENT
+#
+
+
+########################
+#      CONDITIONS      #
+########################
+
+##### EXPERIENCE
+
+    # MANDATORY
+    amount: {positive (int)}
+    # OPTIONAL - DEFAULTS TO FALSE
+    inverted: {true/false}
+    # OPTIONAL - DEFAULTS TO FAlSE
+    islevel: {true/false}
+
+##### ITEM
+
+    # MANDATORY
+    # {item}/{block} format - http://dev.bukkit.org/bukkit-plugins/quester/pages/special-arguments/#w-item-block
+    item: {item}
+    # OPTIONAL - DEFAULTS TO 1
+    amount: {positive (int)}
+    # OPTIONAL - DEFAULTS TO FALSE
+    inverted: {true/false}
+    # OPTIONAL - DEFAULTS TO FAlSE
+    questitem: {true/false}
+
+##### MONEY
+
+    # MANDATORY
+    amount: {any (double)}
+    # OPTIONAL - DEFAULTS TO FALSE
+    inverted: {true/false}
+
+##### PERMISSION
+
+    # MANDATORY
+    perm: {permission string}
+
+##### POINT
+
+    # MANDATORY
+    amount: {any (int)}
+    # OPTIONAL - DEFAULTS TO FALSE
+    inverted: {true/false}
+
+##### QUEST
+
+    # MANDATORY
+    quest: 
+    # OPTIONAL
+    time: {any (int)}
+    # OPTIONAL - DEFAULTS TO FALSE
+    running: {true/false}
+    # OPTIONAL - DEFAULTS TO FAlSE
+    inverted: {true/false}
+
+##### QUESTNOT
+    # DEPRECATED - deserialization produces inverted QUEST with the same data
+
+    # MANDATORY
+    quest: {quest name (case insensitive)}
+    # OPTIONAL
+    time: {any (int)}
+    # OPTIONAL - DEFAULTS TO FALSE
+    running: {true/false}
+
+##### SLOT
+
+    # MANDATORY
+    amount: {positive (int)}
+
+##### TIME
+
+    # MANDATORY
+    # time in ticks (18000 - midnight, 6000 - noon)
+    from: {any (int)}
+    # MANDATORY
+    # time in ticks
+    to: {any (int)}
+    # OPTIONAL - invalid world name is ignored
+    world: {world name}
+            
+
+########################
+#      OBJECTIVES      #
+########################
+
+##### ACTION
+
+    # OPTIONAL
+    block: {block}
+    # OPTIONAL
+    hand: {item}
+    # OPTIONAL - DEFAULTS TO 0
+    # 0 - ANY, 1 - LEFT, 2 - RIGHT, 3 - PUSH
+    click: {click}
+    # OPTIONAL
+    location: {location}
+    # OPTIONAL - DEFAULTS TO 0
+    range: {non-negative (int)}
+
+##### BOSS
+    # EpicBoss objective
+
+    # MANDATORY
+    amount: {positive (int)}
+    # MANDATORY
+    boss: {boss name}
+
+##### BREAK
+
+    # OPTIONAL
+    # OBJECTIVE WILL FAIL IF INCORRECT VALUE IS PROVIDED
+    block: {block}
+    # OPTIONAL - DEFAULTS TO 1
+    amount: {positive (int)}
+    # OPTIONAL
+    # only item ID is taken into account
+    inhand: {item}
+
+##### COLLECT
+
+    # MANDATORY
+    item: {item}
+    # MANDATORY
+    amount: {positive (int)}
+
+##### CRAFT
+
+    # MANDATORY
+    item: {item}
+    # OPTIONAL - DEFAULTS TO 1
+    amount: {positive (int)}
+
+##### SMELT
+
+    # MANDATORY
+    item: {item}
+    # OPTIONAL - DEFAULTS TO 1
+    amount: {positive (int)}
+
+##### DEATH
+
+    # OPTIONAL
+    location: {location}
+    # OPTIONAL - DEFAULTS TO 1
+    amount: {positive (int)}
+    # OPTIONAL - DEFAULTS TO 5
+    range: {positive (int)}
+
+##### DROP
+
+    # MANDATORY
+    item: {item}
+    # MANDATORY
+    amount: {positive (int)}
+    # OPTIONAL
+    location: {location}
+    # OPTIONAL - DEFAULTS TO 2.0 - read only if location if present
+    range: {positive (double)}
+
+##### DYE
+
+    # OPTIONAL - DEFAULTS TO 1
+    amount: {positive (int)}
+    # OPTIONAL
+    # {dyecolor} format - correct dyecolor name or dye data number (from getByDyeData())
+    # http://jd.bukkit.org/rb/doxygen/d2/d1c/enumorg_1_1bukkit_1_1DyeColor.html
+    color: {dyecolor}
+
+##### SHEAR
+
+    # OPTIONAL - DEFAULTS TO 1
+    amount: {positive (int)}
+    # OPTIONAL
+    color: {dyecolor}
+
+##### ENCHANT
+
+    # MANDATORY
+    # {enchants} format - http://dev.bukkit.org/bukkit-plugins/quester/pages/special-arguments/#w-enchants
+    # correct bukkit enchantment name or ID (getById(), getByName())
+    # http://jd.bukkit.org/rb/doxygen/dd/d17/classorg_1_1bukkit_1_1enchantments_1_1Enchantment.html
+    enchants: {enchants}
+    # MANDATORY
+    amount: {positive (int)}
+    # OPTIONAL
+    location: {location}
+
+##### EXP
+
+    # MANDATORY
+    amount: {positive (int)}
+
+##### FISH
+
+    # MANDATORY
+    amount: {positive (int)}
+
+##### CHAT
+
+    # MANDATORY
+    regex: {string regex to match}
+    # OPTIONAL - DEFAULTS TO false
+    inverted: {true/false}
+
+##### ITEM
+
+    # MANDATORY
+    item: {item}
+    # OPTIONAL
+    enchants: {enchants}
+    # OPTIONAL - DEFAULTS TO 1
+    amount: {positive (int)}
+    # OPTIONAL - DEFAULTS TO false
+    questitem: {true/false}
+
+##### LOCATION
+    # DEPRECATED - deserialization produces REGION objective with the same sphere region
+
+    # MANDATORY
+    location: {location}
+    # OPTIONAL - DEFAULTS TO 3
+    range: {positive (int)}
+    # OPTIONAL - DEFAULTS TO false
+    inverted: {true/false}
+
+##### MILK
+
+    # MANDATORY
+    amount: {positive (int)}
+
+##### MOBKILL
+
+    # OPTIONAL
+    # {entity} format - correct entity name or entity ID (while entity ID >= 50)
+    # http://jd.bukkit.org/rb/doxygen/d7/dbf/enumorg_1_1bukkit_1_1entity_1_1EntityType.html
+    entity: {entity}
+    # OPTIONAL - DEFAULTS TO 1
+    amount: {positive (int)}
+
+##### TAME
+
+    # OPTIONAL
+    entity: {entity}
+    # OPTIONAL - DEFAULTS TO 1
+    amount: {positive (int)}
+
+##### MONEY
+
+    # MANDATORY
+    amount: {positive (double)}
+
+##### NPCKILL
+
+    # OPTIONAL
+    name: {npc name}
+    # OPTIONAL - DEFAULTS TO 1
+    amount: {positive (int)}
+
+##### NPC
+
+    # MANDATORY
+    id: {non-negative (int)}
+    # OPTIONAL - DEFAULTS TO false
+    cancel: {true/false}
+
+##### PLACE
+
+    # MANDATORY
+    block: {block} 
+    # OPTIONAL - DEFAULTS TO 1
+    amount: {positive (int)}
+
+##### PLAYERKILL
+
+    # OPTIONAL
+    # if perm: true, then name is permission string
+    name: {player name OR permission string}
+    # OPTIONAL - DEFAULTS TO 1
+    amount: {positive (int)}
+    # OPTIONAL - DEFAULTS TO false
+    perm: {true/false}
+
+##### REGION
+
+    # MANDATORY
+    # {region} format:
+    # SPHERE|{location}|{non-negative (double)}
+    # CUBOID|{location}|{location}
+    # WORLD|{world name}
+    # ANYWHERE
+    region: {region}
+    # OPTIONAL - DEFAULTS TO false
+    inverted: {true/false}
+
+##### WORLD
+    # DEPRECATED - deserialization produces REGION objective with the same world region
+
+    # MANDATORY
+    world: {world name}
+    # OPTIONAL - DEFAULTS TO false
+    inverted: {true/false}
+
+##### DUMMY
+
+    # MANDATORY
+    amount: {positive (int)}
+    # OPTIONAL - used only for better orientation in quest info
+    name: {objective name}
+	
+
+########################
+#        EVENTS        #
+########################
+
+#
+# DOES NOT CONTAIN DSCRIPT EVENT
+#
+
+##### CANCEL
+
+    # NOTHING
+
+##### CMD
+
+    # MANDATORY
+    command: {command without leading slash}
+
+##### EFFECT
+
+    # MANDATORY
+    # {potion effect} format - http://dev.bukkit.org/bukkit-plugins/quester/pages/special-arguments/#w-potion-effect
+    # http://jd.bukkit.org/rb/doxygen/d3/d70/classorg_1_1bukkit_1_1potion_1_1PotionEffectType.html#pub-static-attribs
+    # WARNING - 0.7 uses semicolon instead of a colon (it's not backwards compatible atm (build #24))
+    effect: {potion effect}
+
+##### EXP
+
+    # MANDATORY
+    amount: {non-zero (int)}
+    # OPTIONAL - DEFAULTS TO false
+    islevel: {true/false}
+
+##### EXPLOSION
+
+    # OPTIONAL - DEEFAULTS TO player's location
+    location: {location}
+    # OPTIONAL - DEFAULTS TO 0
+    range: {non-negative (int)}
+    # OPTIONAL - DEFAULTS TO false
+    damage: {true/false}
+
+##### LIGHTNING
+
+    # OPTIONAL - DEEFAULTS TO player's location
+    location: {location}
+    # OPTIONAL - DEFAULTS TO 0
+    range: {non-negative (int)}
+    # OPTIONAL - DEFAULTS TO false
+    damage: {true/false}
+
+##### ITEM
+
+    # MANDATORY
+    item: {item}
+    # OPTIONAL - DEFAULTS TO 1
+    amount: {positive (int)}
+    # OPTIONAL
+    enchants: {enchants}
+    # OPTIONAL - DEFAULTS TO false
+    inverted: {true/false}
+    # OPTIONAL - DEFAULTS TO false
+    quest: {true/false}
+
+##### MSG
+
+    # MANDATORY
+    message: {message string}
+
+##### MONEY
+
+    # MANDATORY
+    amount: {non-zero (double)}
+
+##### OBJCOM
+
+    # MANDATORY
+    objective: {non-negative (int)}
+    # OPTIONAL - DEFAULTS TO false
+    runevents: {true/false}
+
+##### POINT
+
+    # MANDATORY
+    amount: {non-zero (int)}
+
+##### QUEST
+
+    # MANDATORY
+    quest: {quest name (case insensitive)}
+
+##### BLOCK
+
+    # MANDATORY
+    block: {block}
+    # MANDATORY
+    location: {location}
+
+##### SOUND
+
+    # MANDATORY
+    # {sound} format - correct case insesnsitive sound name
+    # http://jd.bukkit.org/rb/doxygen/d3/dfe/enumorg_1_1bukkit_1_1Sound.html#pub-attribs
+    sound: {sound}
+    # OPTIONAL - DEEFAULTS TO player's location
+    location: {location}
+    # OPTIONAL - DEFAULTS TO 1.0
+    volume: {non-negative (float)}
+    # OPTIONAL - DEFAULTS TO 1.0
+    pitch: {non-negative (float)}
+
+##### SPAWN
+
+    # MANDATORY
+    entity: {entity}
+    # OPTIONAL - DEFAULTS TO 1
+    amount: {positive (int)}
+    # OPTIONAL - DEEFAULTS TO player's location
+    location: {location}
+    # OPTIONAL - DEFAULTS TO 0
+    range: {non-negative (int)}
+
+##### TELE
+
+    # MANDATORY
+    location: {location}
+
+##### TOGGLE
+
+    # MANDATORY
+    quest: {quest name (case insensitive)}
+
+##### PROGRESS
+
+    # MANDATORY
+    objective: {non-negative (int)}
+    # OPTIONAL - DEFAULTS TO 1
+    amount: {positive (int)}

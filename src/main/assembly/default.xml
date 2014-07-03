@@ -16,4 +16,11 @@
       <filtered>false</filtered>
     </file>
   </files>
+  <fileSets>
+    <fileSet>
+      <directory>${basedir}/src/main/resources/documentation</directory>
+      <outputDirectory>documentation</outputDirectory>
+      <filtered>false</filtered>
+    </fileSet>
+  </fileSets>
 </assembly>
