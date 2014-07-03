@@ -96,7 +96,6 @@ public class Quester extends JavaPlugin {
 		ElementManager.setInstance(elements);
 		quests = new QuestManager(this);
 		profiles = new ProfileManager(this);
-		quests.setProfileManager(profiles); // loading conflicts...
 		holders = new QuestHolderManager(this);
 		commands = new CommandManager(langs, getLogger(), QConfiguration.displayedCmd, this);
 		

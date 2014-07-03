@@ -35,7 +35,6 @@ import org.bukkit.entity.Player;
 public class QuestManager {
 	
 	private LanguageManager langMan = null;
-	private ProfileManager profMan = null;
 	private final File dataFolder;
 	private final Logger logger;
 	private Storage questStorage = null;
@@ -47,19 +46,15 @@ public class QuestManager {
 	private int questID = -1;
 	
 	public QuestManager(final Quester plugin) {
-		this(plugin.getLanguageManager(), null, plugin.getDataFolder(), plugin.getLogger());
+		this(plugin.getLanguageManager(), plugin.getDataFolder(), plugin.getLogger());
 	}
 	
-	public QuestManager(final LanguageManager langMan, final ProfileManager profMan, final File dataFolder, final Logger logger) {
+	public QuestManager(final LanguageManager langMan, final File dataFolder, final Logger logger) {
 		this.langMan = langMan;
 		this.dataFolder = dataFolder;
 		this.logger = logger;
 		final File file = new File(dataFolder, "quests.yml");
 		questStorage = new ConfigStorage(file, logger, null);
-	}
-	
-	public void setProfileManager(final ProfileManager profMan) {
-		this.profMan = profMan;
 	}
 	
 	// QUEST ID MANIPULATION
@@ -160,7 +155,6 @@ public class QuestManager {
 		assignQuestID(quest);
 		quests.put(quest.getID(), quest);
 		questNames.put(questName.toLowerCase(), quest.getID());
-		profMan.selectQuest(issuer, quest);
 		return quest;
 	}
 	
@@ -179,7 +173,7 @@ public class QuestManager {
 		q.addFlag(QuestFlag.ACTIVE);
 	}
 	
-	public void deactivateQuest(final Quest quest) {
+	public void deactivateQuest(final Quest quest, final ProfileManager profMan) {
 		quest.removeFlag(QuestFlag.ACTIVE);
 		for(final PlayerProfile prof : profMan.getProfiles()) {
 			if(prof.hasQuest(quest)) {
@@ -194,24 +188,16 @@ public class QuestManager {
 		profMan.saveProfiles();
 	}
 	
-	public boolean toggleQuest(final PlayerProfile issuer, final QuesterLang lang) throws QuesterException {
-		return toggleQuest(issuer.getSelected(), lang);
-	}
-	
-	public boolean toggleQuest(final int questID, final QuesterLang lang) throws QuesterException {
-		return toggleQuest(getQuest(questID), lang);
-	}
-	
-	public boolean toggleQuest(final Quest q, final QuesterLang lang) throws QuesterException {
-		if(q == null) {
+	public boolean toggleQuest(final Quest quest, final QuesterLang lang, final ProfileManager profMan) throws QuesterException {
+		if(quest == null) {
 			throw new QuestException(lang.get("ERROR_Q_NOT_EXIST"));
 		}
-		if(q.hasFlag(QuestFlag.ACTIVE)) {
-			deactivateQuest(q);
+		if(quest.hasFlag(QuestFlag.ACTIVE)) {
+			deactivateQuest(quest, profMan);
 			return false;
 		}
 		else {
-			activateQuest(q);
+			activateQuest(quest);
 			return true;
 		}
 	}

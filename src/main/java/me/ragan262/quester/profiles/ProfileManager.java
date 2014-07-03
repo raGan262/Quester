@@ -453,7 +453,7 @@ public class ProfileManager {
 			}
 		}
 		if(quest.hasFlag(QuestFlag.ONLYFIRST)) {
-			qMan.deactivateQuest(quest);
+			qMan.deactivateQuest(quest, this);
 		}
 	}
 	
