@@ -36,7 +36,7 @@ public abstract class Trigger extends Element {
 	
 	public boolean execute(final Player player, final Quester plugin) {
 		for(final Condition c : conditions) {
-			if(!c.isMet(player, plugin)) {
+			if(!c.isMet(player)) {
 				// TODO run conditions' events
 				return false;
 			}

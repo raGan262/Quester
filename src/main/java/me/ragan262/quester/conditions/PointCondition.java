@@ -27,8 +27,8 @@ public final class PointCondition extends Condition {
 	}
 	
 	@Override
-	public boolean isMet(final Player player, final Quester plugin) {
-		return plugin.getProfileManager().getProfile(player.getName()).getPoints() >= amount != inverted;
+	public boolean isMet(final Player player) {
+		return Quester.getInstance().getProfileManager().getProfile(player.getName()).getPoints() >= amount != inverted;
 	}
 	
 	@Override

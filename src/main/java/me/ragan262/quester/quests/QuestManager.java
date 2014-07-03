@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
@@ -39,7 +40,8 @@ public class QuestManager {
 	
 	private LanguageManager langMan = null;
 	private ProfileManager profMan = null;
-	private Quester plugin = null;
+	private final File dataFolder;
+	private final Logger logger;
 	private Storage questStorage = null;
 	
 	private final Map<Integer, Quest> quests = new TreeMap<Integer, Quest>();
@@ -49,10 +51,15 @@ public class QuestManager {
 	private int questID = -1;
 	
 	public QuestManager(final Quester plugin) {
-		langMan = plugin.getLanguageManager();
-		this.plugin = plugin;
-		final File file = new File(plugin.getDataFolder(), "quests.yml");
-		questStorage = new ConfigStorage(file, plugin.getLogger(), null);
+		this(plugin.getLanguageManager(), null, plugin.getDataFolder(), plugin.getLogger());
+	}
+	
+	public QuestManager(final LanguageManager langMan, final ProfileManager profMan, final File dataFolder, final Logger logger) {
+		this.langMan = langMan;
+		this.dataFolder = dataFolder;
+		this.logger = logger;
+		final File file = new File(dataFolder, "quests.yml");
+		questStorage = new ConfigStorage(file, logger, null);
 	}
 	
 	public void setProfileManager(final ProfileManager profMan) {
@@ -489,7 +496,7 @@ public class QuestManager {
 			throw new QuestException(lang.get("ERROR_Q_NOT_EXIST"));
 		}
 		for(final Condition c : quest.getConditions()) {
-			if(!c.isMet(player, plugin)) {
+			if(!c.isMet(player)) {
 				return false;
 			}
 		}
@@ -537,7 +544,7 @@ public class QuestManager {
 		ChatColor color = ChatColor.WHITE;
 		for(int i = 0; i < cons.size(); i++) {
 			if(player != null) {
-				color = cons.get(i).isMet(player, plugin) ? ChatColor.GREEN : ChatColor.RED;
+				color = cons.get(i).isMet(player) ? ChatColor.GREEN : ChatColor.RED;
 			}
 			sender.sendMessage(color + " - " + cons.get(i).inShow(player, lang));
 		}
@@ -696,9 +703,9 @@ public class QuestManager {
 	public boolean loadQuests(final String fileName) {
 		Storage storage = questStorage;
 		if(fileName != null) {
-			final File storageFile = new File(plugin.getDataFolder(), fileName);
+			final File storageFile = new File(dataFolder, fileName);
 			if(storageFile.exists()) {
-				storage = new ConfigStorage(storageFile, plugin.getLogger(), null);
+				storage = new ConfigStorage(storageFile, logger, null);
 			}
 			else {
 				return false;
@@ -775,8 +782,7 @@ public class QuestManager {
 		
 		if(QConfiguration.autoBackup && errorHappened) {
 			try {
-				final File backupDir =
-						new File(plugin.getDataFolder() + File.separator + "backups");
+				final File backupDir = new File(dataFolder + File.separator + "backups");
 				if(!backupDir.isDirectory()) {
 					backupDir.mkdir();
 				}
