@@ -40,37 +40,25 @@ public class PlayerCommands {
 		langMan = plugin.getLanguageManager();
 	}
 	
-	private static PlayerProfile getProfileSafe(final ProfileManager pMan, final String playerName, final QuesterLang lang) throws QCommandException {
-		if(!pMan.hasProfile(playerName)) {
-			throw new QCommandException(lang.get("INFO_PROFILE_NOT_EXIST").replaceAll("%p",
-					playerName));
-		}
-		return pMan.getProfile(playerName);
-	}
-	
 	@QCommandLabels({ "completed", "compl" })
 	@QCommand(section = "Admin", desc = "modification of completed quests")
 	@QNestedCommand(PlayerCommands.CompletedCommands.class)
-	public void completed(final QCommandContext context, final CommandSender sender) {
-	}
+	public void completed(final QCommandContext context, final CommandSender sender) {}
 	
 	@QCommandLabels({ "quest", "q" })
 	@QCommand(section = "Admin", desc = "player quest manipulation")
 	@QNestedCommand(PlayerCommands.QuestCommands.class)
-	public void quest(final QCommandContext context, final CommandSender sender) {
-	}
+	public void quest(final QCommandContext context, final CommandSender sender) {}
 	
 	@QCommandLabels({ "reputation", "rep" })
 	@QCommand(section = "Admin", desc = "reputation modification")
 	@QNestedCommand(PlayerCommands.ReputationCommands.class)
-	public void reputation(final QCommandContext context, final CommandSender sender) {
-	}
+	public void reputation(final QCommandContext context, final CommandSender sender) {}
 	
 	@QCommandLabels({ "progress", "prog" })
 	@QCommand(section = "Admin", desc = "progress modification")
 	@QNestedCommand(PlayerCommands.ProgressCommands.class)
-	public void progress(final QCommandContext context, final CommandSender sender) {
-	}
+	public void progress(final QCommandContext context, final CommandSender sender) {}
 	
 	@QCommandLabels({ "lang" })
 	@QCommand(
@@ -79,9 +67,9 @@ public class PlayerCommands {
 			min = 1,
 			max = 2,
 			usage = "<player> [language]")
-	public void lang(final QCommandContext context, final CommandSender sender) throws QCommandException {
+	public void lang(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
 		final PlayerProfile prof =
-				getProfileSafe(profMan, context.getString(0), context.getSenderLang());
+				profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 		if(context.length() > 1) {
 			final QuesterLang lang;
 			String langName = context.getString(1);
@@ -115,10 +103,10 @@ public class PlayerCommands {
 		
 		@QCommandLabels({ "list", "l" })
 		@QCommand(section = "Admin", desc = "lists completed quests", max = 1, usage = "[player]")
-		public void list(final QCommandContext context, final CommandSender sender) throws QCommandException {
+		public void list(final QCommandContext context, final CommandSender sender) throws QuesterException {
 			final PlayerProfile prof;
 			if(context.length() > 0) {
-				prof = getProfileSafe(profMan, context.getString(0), context.getSenderLang());
+				prof = profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			}
 			else {
 				prof = profMan.getProfile(sender.getName());
@@ -136,12 +124,12 @@ public class PlayerCommands {
 				min = 1,
 				max = 2,
 				usage = "[player] <partial quest name>")
-		public void find(final QCommandContext context, final CommandSender sender) throws QCommandException {
+		public void find(final QCommandContext context, final CommandSender sender) throws QuesterException {
 			final PlayerProfile prof;
 			final String pattern;
 			if(context.length() > 1) {
 				pattern = context.getString(1).toLowerCase();
-				prof = getProfileSafe(profMan, context.getString(0), context.getSenderLang());
+				prof = profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			}
 			else {
 				pattern = context.getString(0).toLowerCase();
@@ -168,9 +156,9 @@ public class PlayerCommands {
 				min = 2,
 				max = 3,
 				usage = "<player> <quest> [time]")
-		public void add(final QCommandContext context, final CommandSender sender) throws QCommandException {
+		public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
 			final PlayerProfile prof =
-					getProfileSafe(profMan, context.getString(0), context.getSenderLang());
+					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			long time = System.currentTimeMillis();
 			if(context.length() > 2) {
 				final int totake = context.getInt(2) * 1000;
@@ -189,9 +177,9 @@ public class PlayerCommands {
 				min = 2,
 				max = 2,
 				usage = "<player> <quest>")
-		public void remove(final QCommandContext context, final CommandSender sender) throws QCommandException {
+		public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
 			final PlayerProfile prof =
-					getProfileSafe(profMan, context.getString(0), context.getSenderLang());
+					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			profMan.removeCompletedQuest(prof, context.getString(1));
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("PROF_COMP_REMOVED"));
 		}
@@ -222,7 +210,7 @@ public class PlayerCommands {
 			final Player player = Bukkit.getPlayerExact(context.getString(0));
 			final QuesterLang lang = context.getSenderLang();
 			if(context.hasFlag('e')) {
-				final PlayerProfile prof = getProfileSafe(profMan, context.getString(0), lang);
+				final PlayerProfile prof = profMan.getProfileSafe(context.getString(0), lang);
 				final Quest quest = qMan.getQuest(context.getString(1));
 				if(quest == null) {
 					throw new QuestException(lang.get("ERROR_Q_NOT_EXIST"));
@@ -264,7 +252,7 @@ public class PlayerCommands {
 				if(index < 0) {
 					throw new QuestException(lang.get("ERROR_Q_NOT_ASSIGNED"));
 				}
-				final PlayerProfile prof = getProfileSafe(profMan, context.getString(0), lang);
+				final PlayerProfile prof = profMan.getProfileSafe(context.getString(0), lang);
 				final String quest = prof.getQuest(index).getName();
 				profMan.unassignQuest(prof, index);
 				if(player != null) {
@@ -310,7 +298,7 @@ public class PlayerCommands {
 			}
 			else {
 				player = null;
-				prof = getProfileSafe(profMan, context.getString(0), lang);
+				prof = profMan.getProfileSafe(context.getString(0), lang);
 			}
 			if(context.hasFlag('f') && prof.isCompleted(quest.getName())) {
 				throw new QCommandException(lang.get("ERROR_PROF_Q_ALREADY_DONE"));
@@ -349,9 +337,9 @@ public class PlayerCommands {
 				min = 2,
 				max = 2,
 				usage = "<player> <points>")
-		public void set(final QCommandContext context, final CommandSender sender) throws QCommandException {
+		public void set(final QCommandContext context, final CommandSender sender) throws QuesterException {
 			final PlayerProfile prof =
-					getProfileSafe(profMan, context.getString(0), context.getSenderLang());
+					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			final int points = context.getInt(1);
 			profMan.addPoints(prof, points - prof.getPoints());
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("PROF_REPUTATION_SET"));
@@ -364,9 +352,9 @@ public class PlayerCommands {
 				min = 2,
 				max = 2,
 				usage = "<player> <points>")
-		public void add(final QCommandContext context, final CommandSender sender) throws QCommandException {
+		public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
 			final PlayerProfile prof =
-					getProfileSafe(profMan, context.getString(0), context.getSenderLang());
+					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			final int points = context.getInt(1);
 			profMan.addPoints(prof, points);
 			sender.sendMessage(ChatColor.GREEN
@@ -391,9 +379,9 @@ public class PlayerCommands {
 				min = 1,
 				max = 2,
 				usage = "<player> [index]")
-		public void get(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+		public void get(final QCommandContext context, final CommandSender sender) throws QuesterException {
 			final PlayerProfile prof =
-					getProfileSafe(profMan, context.getString(0), context.getSenderLang());
+					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			final QuesterLang lang = context.getSenderLang();
 			final int index;
 			if(context.length() > 1) {
@@ -431,9 +419,9 @@ public class PlayerCommands {
 				min = 3,
 				max = 4,
 				usage = "<player> [index] <obj id> <progress>")
-		public void set(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+		public void set(final QCommandContext context, final CommandSender sender) throws QuesterException {
 			final PlayerProfile prof =
-					getProfileSafe(profMan, context.getString(0), context.getSenderLang());
+					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			final QuesterLang lang = context.getSenderLang();
 			final int offset;
 			final int index;

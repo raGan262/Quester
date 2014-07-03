@@ -15,8 +15,11 @@ import me.ragan262.quester.commandbase.exceptions.QCommandException;
 import me.ragan262.quester.commandbase.exceptions.QPermissionException;
 import me.ragan262.quester.exceptions.QuesterException;
 import me.ragan262.quester.lang.LanguageManager;
+import me.ragan262.quester.lang.Messenger;
 import me.ragan262.quester.lang.QuesterLang;
+import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.profiles.ProfileManager;
+import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.quests.QuestManager;
 import me.ragan262.quester.utils.Util;
 
@@ -30,11 +33,13 @@ public class UserCommands {
 	final ProfileManager profMan;
 	final Quester plugin;
 	final LanguageManager langMan;
+	final Messenger messenger;
 	
 	public UserCommands(final Quester plugin) {
 		qMan = plugin.getQuestManager();
 		profMan = plugin.getProfileManager();
 		langMan = plugin.getLanguageManager();
+		messenger = plugin.getMessenger();
 		this.plugin = plugin;
 	}
 	
@@ -120,11 +125,14 @@ public class UserCommands {
 			usage = "\"[quest name]\"",
 			permission = QConfiguration.PERM_USE_SHOW)
 	public void show(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		String quest = "";
+		Quest quest = null;
 		if(context.length() > 0) {
-			quest = context.getString(0);
+			quest = qMan.getQuest(context.getString(0));
 		}
-		qMan.showQuest(sender, quest, context.getSenderLang());
+		else {
+			quest = profMan.getProfile(sender.getName()).getSelected();
+		}
+		messenger.showQuest(sender, quest);
 	}
 	
 	@QCommandLabels({ "list" })
@@ -135,10 +143,10 @@ public class UserCommands {
 			permission = QConfiguration.PERM_USE_LIST)
 	public void list(final QCommandContext context, final CommandSender sender) {
 		if(Util.permCheck(sender, QConfiguration.PERM_MODIFY, false, null)) {
-			qMan.showFullQuestList(sender, context.getSenderLang());
+			messenger.showFullQuestList(sender, qMan);
 		}
 		else {
-			qMan.showQuestList(sender, context.getSenderLang());
+			messenger.showQuestList(sender, qMan, profMan);
 		}
 	}
 	
@@ -151,10 +159,12 @@ public class UserCommands {
 			permission = QConfiguration.PERM_USE_PROFILE)
 	public void profile(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		if(Util.permCheck(sender, QConfiguration.PERM_ADMIN, false, null) && context.length() > 0) {
-			profMan.showProfile(sender, context.getString(0), context.getSenderLang());
+			final PlayerProfile prof =
+					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
+			messenger.showProfile(sender, prof);
 		}
 		else {
-			profMan.showProfile(sender);
+			messenger.showProfile(sender, profMan.getProfile(sender.getName()));
 		}
 	}
 	
@@ -257,7 +267,7 @@ public class UserCommands {
 		if(context.length() > 0) {
 			index = context.getInt(0);
 		}
-		profMan.showProgress((Player) sender, index, context.getSenderLang());
+		messenger.showProgress((Player) sender, profMan.getProfile(sender.getName()), index);
 	}
 	
 	@QCommandLabels({ "quests" })
@@ -269,10 +279,11 @@ public class UserCommands {
 			permission = QConfiguration.PERM_USE_QUESTS)
 	public void quests(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		if(Util.permCheck(sender, QConfiguration.PERM_ADMIN, false, null) && context.length() > 0) {
-			profMan.showTakenQuests(sender, context.getString(0), context.getSenderLang());
+			messenger.showTakenQuests(sender,
+					profMan.getProfileSafe(context.getString(0), context.getSenderLang()));
 		}
 		else {
-			profMan.showTakenQuests(sender);
+			messenger.showTakenQuests(sender, profMan.getProfile(sender.getName()));
 		}
 	}
 	

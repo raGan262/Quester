@@ -369,6 +369,14 @@ public class PlayerProfile {
 		return prof;
 	}
 	
+	private static class DummyProfile extends PlayerProfile {
+		
+		DummyProfile(final String player) {
+			super("DUMMY_PLAYERPROFILE");
+		}
+		
+	}
+	
 	// is used to serialize profiles into database
 	static class SerializedPlayerProfile {
 		

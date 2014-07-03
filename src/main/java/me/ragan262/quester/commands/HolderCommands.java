@@ -4,9 +4,13 @@ import me.ragan262.quester.Quester;
 import me.ragan262.quester.commandbase.QCommand;
 import me.ragan262.quester.commandbase.QCommandContext;
 import me.ragan262.quester.commandbase.QCommandLabels;
+import me.ragan262.quester.exceptions.HolderException;
 import me.ragan262.quester.exceptions.QuesterException;
+import me.ragan262.quester.holder.QuestHolder;
 import me.ragan262.quester.holder.QuestHolderManager;
+import me.ragan262.quester.lang.Messenger;
 import me.ragan262.quester.profiles.ProfileManager;
+import me.ragan262.quester.quests.QuestManager;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -15,10 +19,14 @@ public class HolderCommands {
 	
 	final QuestHolderManager holMan;
 	final ProfileManager profMan;
+	final QuestManager qMan;
+	final Messenger messenger;
 	
 	public HolderCommands(final Quester plugin) {
 		holMan = plugin.getHolderManager();
 		profMan = plugin.getProfileManager();
+		qMan = plugin.getQuestManager();
+		messenger = plugin.getMessenger();
 	}
 	
 	@QCommandLabels({ "create", "c" })
@@ -76,7 +84,7 @@ public class HolderCommands {
 	@QCommandLabels({ "list", "l" })
 	@QCommand(section = "Mod", desc = "lists quest holders", max = 0)
 	public void list(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		holMan.showHolderList(sender, context.getSenderLang());
+		messenger.showHolderList(sender, holMan);
 	}
 	
 	@QCommandLabels({ "info", "i" })
@@ -87,11 +95,24 @@ public class HolderCommands {
 			max = 1,
 			usage = "[holder ID]")
 	public void info(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		int id = -1;
+		int id;;
 		if(context.length() > 0) {
 			id = context.getInt(0);
 		}
-		holMan.showHolderInfo(sender, id, context.getSenderLang());
+		else {
+			id = profMan.getProfile(sender.getName()).getHolderID();
+		}
+		final QuestHolder qh = holMan.getHolder(id);
+		if(qh == null) {
+			if(id < 0) {
+				throw new HolderException(context.getSenderLang().get("ERROR_HOL_NOT_SELECTED"));
+			}
+			else {
+				throw new HolderException(context.getSenderLang().get("ERROR_HOL_NOT_EXIST"));
+			}
+		}
+		sender.sendMessage(ChatColor.GOLD + "Holder ID: " + ChatColor.RESET + id);
+		messenger.showHolderQuestsModify(qh, sender, qMan);
 	}
 	
 	@QCommandLabels({ "select", "sel" })

@@ -11,7 +11,9 @@ import me.ragan262.quester.holder.QuestHolder;
 import me.ragan262.quester.holder.QuestHolderManager;
 import me.ragan262.quester.holder.QuesterSign;
 import me.ragan262.quester.lang.LanguageManager;
+import me.ragan262.quester.lang.Messenger;
 import me.ragan262.quester.lang.QuesterLang;
+import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.quests.QuestManager;
@@ -31,16 +33,18 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class SignListeners implements Listener {
 	
-	private QuestManager qm = null;
+	private QuestManager qMan = null;
 	private QuestHolderManager holMan = null;
 	private LanguageManager langMan = null;
 	private ProfileManager profMan = null;
+	private Messenger messenger = null;
 	
 	public SignListeners(final Quester plugin) {
-		qm = plugin.getQuestManager();
+		qMan = plugin.getQuestManager();
 		langMan = plugin.getLanguageManager();
 		holMan = plugin.getHolderManager();
 		profMan = plugin.getProfileManager();
+		messenger = plugin.getMessenger();
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -59,14 +63,12 @@ public class SignListeners implements Listener {
 				player.sendMessage(Quester.LABEL + lang.get("SIGN_UNREGISTERED"));
 				return;
 			}
-			else {
-				final Sign sign = (Sign) block.getState();
-				if(!sign.getLine(0).equals(ChatColor.BLUE + "[Quester]")) {
-					block.breakNaturally();
-					holMan.removeSign(block.getLocation());
-					player.sendMessage(Quester.LABEL + lang.get("SIGN_UNREGISTERED"));
-					return;
-				}
+			final Sign sign = (Sign) block.getState();
+			if(!sign.getLine(0).equals(ChatColor.BLUE + "[Quester]")) {
+				block.breakNaturally();
+				holMan.removeSign(block.getLocation());
+				player.sendMessage(Quester.LABEL + lang.get("SIGN_UNREGISTERED"));
+				return;
 			}
 			
 			if(!Util.permCheck(player, QConfiguration.PERM_USE_SIGN, true, lang)) {
@@ -99,14 +101,14 @@ public class SignListeners implements Listener {
 				}
 				qh.interact(player.getName());
 				
-				final Quest quest = qm.getQuest(holMan.getOne(qh));
+				final Quest quest = qMan.getQuest(holMan.getOne(qh));
 				if(quest != null) {
 					if(profMan.getProfile(player.getName()).hasQuest(quest)) {
 						return;
 					}
 					else {
 						try {
-							qm.showQuest(player, quest.getName(), lang);
+							messenger.showQuest(player, quest);
 							return;
 						}
 						catch (final QuesterException ignore) {}
@@ -127,10 +129,10 @@ public class SignListeners implements Listener {
 				player.sendMessage(Util.line(ChatColor.BLUE, lang.get("SIGN_HEADER"),
 						ChatColor.GOLD));
 				if(isOp) {
-					holMan.showQuestsModify(qh, player);
+					messenger.showHolderQuestsModify(qh, player, qMan);
 				}
 				else {
-					holMan.showQuestsUse(qh, player);
+					messenger.showHolderQuestsUse(qh, player, qMan);
 				}
 				
 			}
@@ -160,7 +162,8 @@ public class SignListeners implements Listener {
 				qh.interact(player.getName());
 				final List<Integer> qsts = qh.getQuests();
 				
-				final Quest currentQuest = profMan.getProfile(player.getName()).getQuest();
+				final PlayerProfile prof = profMan.getProfile(player.getName());
+				final Quest currentQuest = prof.getQuest();
 				if(!player.isSneaking()) {
 					final int questID = currentQuest == null ? -1 : currentQuest.getID();
 					// player has quest and quest giver does not accept this quest
@@ -175,7 +178,7 @@ public class SignListeners implements Listener {
 						}
 						catch (final QuesterException e) {
 							try {
-								profMan.showProgress(player, lang);
+								messenger.showProgress(player, prof);
 							}
 							catch (final QuesterException f) {
 								player.sendMessage(ChatColor.DARK_PURPLE
@@ -190,9 +193,9 @@ public class SignListeners implements Listener {
 					selected = qh.getSelectedId(player.getName());
 				}
 				// player doesn't have quest
-				if(qm.isQuestActive(selected)) {
+				if(qMan.isQuestActive(selected)) {
 					try {
-						profMan.startQuest(player, qm.getQuestName(selected),
+						profMan.startQuest(player, qMan.getQuestName(selected),
 								ActionSource.holderSource(qh), lang);
 					}
 					catch (final QuesterException e) {

@@ -24,6 +24,7 @@ import me.ragan262.quester.exceptions.*;
 import me.ragan262.quester.holder.QuestHolderManager;
 import me.ragan262.quester.holder.QuesterTrait;
 import me.ragan262.quester.lang.LanguageManager;
+import me.ragan262.quester.lang.Messenger;
 import me.ragan262.quester.listeners.*;
 import me.ragan262.quester.objectives.*;
 import me.ragan262.quester.profiles.ProfileListener;
@@ -52,6 +53,7 @@ public class Quester extends JavaPlugin {
 	public static Economy econ = null;
 	
 	private LanguageManager langs = null;
+	private Messenger messages = null;
 	private QuestManager quests = null;
 	private ProfileManager profiles = null;
 	private QuestHolderManager holders = null;
@@ -89,6 +91,7 @@ public class Quester extends JavaPlugin {
 		// Managers
 		loadLangs();
 		
+		messages = new Messenger(langs);
 		elements = new ElementManager();
 		ElementManager.setInstance(elements);
 		quests = new QuestManager(this);
@@ -259,6 +262,10 @@ public class Quester extends JavaPlugin {
 	
 	public LanguageManager getLanguageManager() {
 		return langs;
+	}
+	
+	public Messenger getMessenger() {
+		return messages;
 	}
 	
 	public QuestHolderManager getHolderManager() {

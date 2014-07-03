@@ -12,6 +12,7 @@ import me.ragan262.quester.holder.QuestHolder;
 import me.ragan262.quester.holder.QuestHolderManager;
 import me.ragan262.quester.holder.QuesterTrait;
 import me.ragan262.quester.lang.LanguageManager;
+import me.ragan262.quester.lang.Messenger;
 import me.ragan262.quester.lang.QuesterLang;
 import me.ragan262.quester.objectives.NpcKillObjective;
 import me.ragan262.quester.objectives.NpcObjective;
@@ -32,16 +33,18 @@ import org.bukkit.event.Listener;
 
 public class Citizens2Listener implements Listener {
 	
-	private QuestManager qm = null;
+	private QuestManager qMan = null;
 	private QuestHolderManager holMan = null;
 	private LanguageManager langMan = null;
 	private ProfileManager profMan = null;
+	private Messenger messenger = null;
 	
 	public Citizens2Listener(final Quester plugin) {
-		qm = plugin.getQuestManager();
+		qMan = plugin.getQuestManager();
 		langMan = plugin.getLanguageManager();
 		holMan = plugin.getHolderManager();
 		profMan = plugin.getProfileManager();
+		messenger = plugin.getMessenger();
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -73,14 +76,14 @@ public class Citizens2Listener implements Listener {
 			}
 			qh.interact(player.getName());
 			
-			final Quest quest = qm.getQuest(holMan.getOne(qh));
+			final Quest quest = qMan.getQuest(holMan.getOne(qh));
 			if(quest != null) {
 				if(profMan.getProfile(player.getName()).hasQuest(quest)) {
 					return;
 				}
 				else {
 					try {
-						qm.showQuest(player, quest.getName(), lang);
+						messenger.showQuest(player, quest);
 						return;
 					}
 					catch (final QuesterException ignore) {}
@@ -101,10 +104,10 @@ public class Citizens2Listener implements Listener {
 			player.sendMessage(Util.line(ChatColor.BLUE, event.getNPC().getName() + "'s quests",
 					ChatColor.GOLD));
 			if(isOp) {
-				holMan.showQuestsModify(qh, player);
+				messenger.showHolderQuestsModify(qh, player, qMan);
 			}
 			else {
-				holMan.showQuestsUse(qh, player);
+				messenger.showHolderQuestsUse(qh, player, qMan);
 			}
 		}
 	}
@@ -145,7 +148,8 @@ public class Citizens2Listener implements Listener {
 			qh.interact(player.getName());
 			final List<Integer> qsts = qh.getQuests();
 			
-			final Quest currentQuest = profMan.getProfile(player.getName()).getQuest();
+			final PlayerProfile prof = profMan.getProfile(player.getName());
+			final Quest currentQuest = prof.getQuest();
 			if(!player.isSneaking()) {
 				final int questID = currentQuest == null ? -1 : currentQuest.getID();
 				// player has quest and quest giver does not accept this quest
@@ -160,7 +164,7 @@ public class Citizens2Listener implements Listener {
 					}
 					catch (final QuesterException e) {
 						try {
-							profMan.showProgress(player, lang);
+							messenger.showProgress(player, prof);
 						}
 						catch (final QuesterException f) {
 							player.sendMessage(ChatColor.DARK_PURPLE
@@ -175,9 +179,9 @@ public class Citizens2Listener implements Listener {
 				selected = qh.getSelectedId(player.getName());
 			}
 			// player doesn't have quest
-			if(qm.isQuestActive(selected)) {
+			if(qMan.isQuestActive(selected)) {
 				try {
-					profMan.startQuest(player, qm.getQuest(selected),
+					profMan.startQuest(player, qMan.getQuest(selected),
 							ActionSource.holderSource(qh), lang);
 				}
 				catch (final QuesterException e) {

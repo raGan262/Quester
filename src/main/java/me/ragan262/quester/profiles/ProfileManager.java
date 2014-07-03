@@ -29,6 +29,7 @@ import me.ragan262.quester.events.QuestStartEvent;
 import me.ragan262.quester.exceptions.ConditionException;
 import me.ragan262.quester.exceptions.CustomException;
 import me.ragan262.quester.exceptions.ObjectiveException;
+import me.ragan262.quester.exceptions.ProfileException;
 import me.ragan262.quester.exceptions.QuestException;
 import me.ragan262.quester.exceptions.QuesterException;
 import me.ragan262.quester.lang.LanguageManager;
@@ -48,11 +49,11 @@ import me.ragan262.quester.utils.Util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ProfileManager {
 	
+	private final String consoleName;
 	private Storage profileStorage = null;
 	private QuestManager qMan = null;
 	private LanguageManager langMan = null;
@@ -64,6 +65,7 @@ public class ProfileManager {
 	private List<Integer> sortedRanks = new ArrayList<Integer>();
 	
 	public ProfileManager(final Quester plugin) {
+		consoleName = Bukkit.getConsoleSender().getName();
 		this.plugin = plugin;
 		qMan = plugin.getQuestManager();
 		langMan = plugin.getLanguageManager();
@@ -74,7 +76,7 @@ public class ProfileManager {
 	private PlayerProfile createProfile(final String playerName) {
 		final PlayerProfile prof = new PlayerProfile(playerName);
 		final Player player = Bukkit.getPlayerExact(playerName);
-		if(!playerName.equalsIgnoreCase("console") && (player == null || !Util.isPlayer(player))) {
+		if(!playerName.equals(consoleName) && (player == null || !Util.isPlayer(player))) {
 			Ql.warning("Smeone/Something tried to get profile of a non-player.");
 			Ql.debug("Contact Quester author and show him this exception.", new CustomException(
 					"player name: " + playerName));
@@ -107,6 +109,14 @@ public class ProfileManager {
 	
 	public PlayerProfile[] getProfiles() {
 		return profiles.values().toArray(new PlayerProfile[0]);
+	}
+	
+	public PlayerProfile getProfileSafe(final String playerName, final QuesterLang lang) throws QuesterException {
+		if(!hasProfile(playerName)) {
+			throw new ProfileException(lang.get("INFO_PROFILE_NOT_EXIST").replaceAll("%p",
+					playerName));
+		}
+		return getProfile(playerName);
 	}
 	
 	public PlayerProfile getProfile(final String playerName) {
@@ -514,99 +524,6 @@ public class ProfileManager {
 			}
 		}
 		return unset.toArray(new String[0]);
-	}
-	
-	// DISPLAY METHODS
-	
-	public void showProfile(final CommandSender sender) {
-		showProfile(sender, sender.getName(), langMan.getPlayerLang(sender.getName()));
-	}
-	
-	public void showProfile(final CommandSender sender, final String name, final QuesterLang lang) {
-		if(!hasProfile(name)) {
-			sender.sendMessage(ChatColor.RED
-					+ lang.get("INFO_PROFILE_NOT_EXIST").replaceAll("%p", name));
-			return;
-		}
-		final PlayerProfile prof = getProfile(name);
-		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_NAME") + ": " + ChatColor.GOLD
-				+ prof.getName());
-		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_PROFILE_POINTS") + ": "
-				+ ChatColor.WHITE + prof.getPoints());
-		if(QConfiguration.useRank) {
-			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_PROFILE_RANK") + ": "
-					+ ChatColor.GOLD + prof.getRank());
-		}
-		
-	}
-	
-	public void showProgress(final Player player, final QuesterLang lang) throws QuesterException {
-		showProgress(player, -1, lang);
-	}
-	
-	public void showProgress(final Player player, final int index, final QuesterLang lang) throws QuesterException {
-		Quest quest = null;
-		QuestProgress progress = null;
-		final PlayerProfile prof = getProfile(player.getName());
-		if(index < 0) {
-			progress = prof.getProgress();
-		}
-		else {
-			progress = prof.getProgress(index);
-		}
-		if(progress == null) {
-			throw new QuestException(lang.get("ERROR_Q_NOT_ASSIGNED"));
-		}
-		quest = progress.getQuest();
-		
-		if(!quest.hasFlag(QuestFlag.HIDDENOBJS)) {
-			player.sendMessage(lang.get("INFO_PROGRESS").replaceAll("%q",
-					ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
-			final List<Objective> objs = quest.getObjectives();
-			for(int i = 0; i < objs.size(); i++) {
-				if(!objs.get(i).isHidden()) {
-					if(progress.getObjectiveStatus(i) == ObjectiveStatus.COMPLETED) {
-						player.sendMessage(ChatColor.GREEN + " - "
-								+ lang.get("INFO_PROGRESS_COMPLETED"));
-					}
-					else {
-						final boolean active =
-								progress.getObjectiveStatus(i) == ObjectiveStatus.ACTIVE;
-						if(active || !QConfiguration.ordOnlyCurrent) {
-							final ChatColor col = active ? ChatColor.YELLOW : ChatColor.RED;
-							player.sendMessage(col + " - "
-									+ objs.get(i).inShow(progress.getProgress()[i], lang));
-						}
-					}
-				}
-			}
-		}
-		else {
-			player.sendMessage(Quester.LABEL + lang.get("INFO_PROGRESS_HIDDEN"));
-		}
-	}
-	
-	public void showTakenQuests(final CommandSender sender) {
-		showTakenQuests(sender, sender.getName(), langMan.getPlayerLang(sender.getName()));
-	}
-	
-	public void showTakenQuests(final CommandSender sender, final String name, final QuesterLang lang) {
-		if(!hasProfile(name)) {
-			sender.sendMessage(ChatColor.RED
-					+ lang.get("INFO_PROFILE_NOT_EXIST").replaceAll("%p", name));
-			return;
-		}
-		final PlayerProfile prof = getProfile(name);
-		sender.sendMessage(ChatColor.BLUE
-				+ (sender.getName().equalsIgnoreCase(name) ? lang.get("INFO_QUESTS") + ": " : lang
-						.get("INFO_QUESTS_OTHER").replaceAll("%p", prof.getName()) + ": ") + "("
-				+ lang.get("INFO_LIMIT") + ": " + QConfiguration.maxQuests + ")");
-		final int current = prof.getQuestProgressIndex();
-		for(int i = 0; i < prof.getQuestAmount(); i++) {
-			sender.sendMessage("[" + i + "] " + (current == i ? ChatColor.GREEN : ChatColor.YELLOW)
-					+ prof.getProgress(i).getQuest().getName());
-		}
-		
 	}
 	
 	// STORAGE
