@@ -61,6 +61,7 @@ public class ProfileManager {
 	// unfortunately, non-player senders share one profile 
 	//(CB always provides fake offline players with the same UUID)
 	private final OfflinePlayer senderPlayer;
+	private final PlayerProfile senderProfile;
 	
 	private File profileStorageFile = null;
 	private QuestManager qMan = null;
@@ -77,14 +78,8 @@ public class ProfileManager {
 		qMan = plugin.getQuestManager();
 		langMan = plugin.getLanguageManager();
 		profileStorageFile = new File(plugin.getDataFolder(), "profiles.yml");
-		senderPlayer = Bukkit.getOfflinePlayer("Quester:Sender");
-		if(senderPlayer == null) {
-			Ql.debug("senderPlayer is null.");
-		}
-		else {
-			Ql.debug("senderPlayer is " + senderPlayer.getName() + " UUID "
-					+ senderPlayer.getUniqueId());
-		}
+		senderPlayer = Bukkit.getOfflinePlayer("Quester:Console");
+		senderProfile = new PlayerProfile(senderPlayer);
 	}
 	
 	private PlayerProfile createProfile(final OfflinePlayer player) {
@@ -128,16 +123,16 @@ public class ProfileManager {
 			return getProfile((Player) sender);
 		}
 		else {
-			return getProfile(senderPlayer);
+			return getProfile(null);
 		}
 	}
 	
 	public PlayerProfile getProfile(final OfflinePlayer player) {
-		if(player == null) {
-			return null;
+		if(player == null || !(player instanceof Player)) {
+			return senderProfile;
 		}
 		PlayerProfile prof = profiles.get(player.getUniqueId());
-		if(prof == null && player instanceof Player) {
+		if(prof == null) {
 			prof = createProfile(player);
 			prof.setChanged();
 		}
