@@ -38,8 +38,7 @@ public final class QuestNotCondition extends Condition {
 	
 	@Override
 	public boolean isMet(final Player player) {
-		final PlayerProfile profile =
-				Quester.getInstance().getProfileManager().getProfile(player.getName());
+		final PlayerProfile profile = Quester.getInstance().getProfileManager().getProfile(player);
 		if(running) {
 			return !profile.hasQuest(quest);
 		}

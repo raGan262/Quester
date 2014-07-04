@@ -6,24 +6,24 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
-import me.ragan262.quester.Quester;
 import me.ragan262.quester.exceptions.CustomException;
 import me.ragan262.quester.exceptions.HolderException;
 import me.ragan262.quester.exceptions.QuesterException;
 import me.ragan262.quester.lang.QuesterLang;
-import me.ragan262.quester.profiles.ProfileManager;
+import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.quests.QuestManager;
 import me.ragan262.quester.storage.ConfigStorage;
 import me.ragan262.quester.storage.Storage;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
+
 import org.bukkit.Location;
 
 public class QuestHolderManager {
 	
-	private ProfileManager profMan = null;
-	private QuestManager qMan = null;
+	private final QuestManager qMan;
 	
 	private Storage holderStorage = null;
 	
@@ -32,11 +32,10 @@ public class QuestHolderManager {
 	
 	private int holderID = -1;
 	
-	public QuestHolderManager(final Quester plugin) {
-		qMan = plugin.getQuestManager();
-		profMan = plugin.getProfileManager();
-		final File file = new File(plugin.getDataFolder(), "holders.yml");
-		holderStorage = new ConfigStorage(file, plugin.getLogger(), null);
+	public QuestHolderManager(final QuestManager qMan, final File dataFolder, final Logger logger) {
+		this.qMan = qMan;
+		final File file = new File(dataFolder, "holders.yml");
+		holderStorage = new ConfigStorage(file, logger, null);
 	}
 	
 	public Map<Integer, QuestHolder> getHolders() {
@@ -100,24 +99,24 @@ public class QuestHolderManager {
 		holderIds.remove(ID);
 	}
 	
-	public void addHolderQuest(final String issuer, final int questID, final QuesterLang lang) throws QuesterException {
-		final QuestHolder qh = getHolder(profMan.getProfile(issuer).getHolderID());
+	public void addHolderQuest(final PlayerProfile issuer, final int questID, final QuesterLang lang) throws QuesterException {
+		final QuestHolder qh = getHolder(issuer.getHolderID());
 		if(qh == null) {
 			throw new HolderException(lang.get("ERROR_HOL_NOT_EXIST"));
 		}
 		qh.addQuest(questID);
 	}
 	
-	public void removeHolderQuest(final String issuer, final int questID, final QuesterLang lang) throws QuesterException {
-		final QuestHolder qh = getHolder(profMan.getProfile(issuer).getHolderID());
+	public void removeHolderQuest(final PlayerProfile issuer, final int questID, final QuesterLang lang) throws QuesterException {
+		final QuestHolder qh = getHolder(issuer.getHolderID());
 		if(qh == null) {
 			throw new HolderException(lang.get("ERROR_HOL_NOT_EXIST"));
 		}
 		qh.removeQuest(questID);
 	}
 	
-	public void moveHolderQuest(final String issuer, final int which, final int where, final QuesterLang lang) throws QuesterException {
-		final QuestHolder qh = getHolder(profMan.getProfile(issuer).getHolderID());
+	public void moveHolderQuest(final PlayerProfile issuer, final int which, final int where, final QuesterLang lang) throws QuesterException {
+		final QuestHolder qh = getHolder(issuer.getHolderID());
 		if(qh == null) {
 			throw new HolderException(lang.get("ERROR_HOL_NOT_SELECTED"));
 		}

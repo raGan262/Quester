@@ -9,9 +9,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
 
 import javax.management.InstanceNotFoundException;
 
@@ -42,48 +45,51 @@ import me.ragan262.quester.quests.QuestManager;
 import me.ragan262.quester.storage.ConfigStorage;
 import me.ragan262.quester.storage.Storage;
 import me.ragan262.quester.storage.StorageKey;
-import me.ragan262.quester.utils.CaseAgnosticSet;
 import me.ragan262.quester.utils.DatabaseConnection;
 import me.ragan262.quester.utils.Ql;
 import me.ragan262.quester.utils.Util;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ProfileManager {
 	
-	private final String consoleName;
+	// unfortunately, non-player senders share one profile 
+	//(CB always provides fake offline players with the same UUID)
+	private final OfflinePlayer senderPlayer;
+	
 	private Storage profileStorage = null;
 	private QuestManager qMan = null;
 	private LanguageManager langMan = null;
 	private Quester plugin = null;
 	private final Random randGen = new Random();
 	
-	private final Map<String, PlayerProfile> profiles = new HashMap<String, PlayerProfile>();
+	private final Map<UUID, PlayerProfile> profiles = new HashMap<UUID, PlayerProfile>();
 	private Map<Integer, String> ranks = new HashMap<Integer, String>();
 	private List<Integer> sortedRanks = new ArrayList<Integer>();
 	
 	public ProfileManager(final Quester plugin) {
-		consoleName = Bukkit.getConsoleSender().getName();
 		this.plugin = plugin;
 		qMan = plugin.getQuestManager();
 		langMan = plugin.getLanguageManager();
 		final File file = new File(plugin.getDataFolder(), "profiles.yml");
 		profileStorage = new ConfigStorage(file, plugin.getLogger(), null);
+		senderPlayer = Bukkit.getOfflinePlayer("Quester:Sender");
 	}
 	
-	private PlayerProfile createProfile(final String playerName) {
-		final PlayerProfile prof = new PlayerProfile(playerName);
-		final Player player = Bukkit.getPlayerExact(playerName);
-		if(!playerName.equals(consoleName) && (player == null || !Util.isPlayer(player))) {
+	private PlayerProfile createProfile(final OfflinePlayer player) {
+		if(player instanceof Player && !Util.isPlayer((Player) player)) {
 			Ql.warning("Smeone/Something tried to get profile of a non-player.");
 			Ql.debug("Contact Quester author and show him this exception.", new CustomException(
-					"player name: " + playerName));
+					"player name: " + player.getName()));
+			return null;
 		}
-		else {
-			profiles.put(playerName.toLowerCase(), prof);
-		}
+		final PlayerProfile prof = new PlayerProfile(player);
+		profiles.put(player.getUniqueId(), prof);
 		return prof;
 	}
 	
@@ -111,28 +117,39 @@ public class ProfileManager {
 		return profiles.values().toArray(new PlayerProfile[0]);
 	}
 	
-	public PlayerProfile getProfileSafe(final String playerName, final QuesterLang lang) throws QuesterException {
-		if(!hasProfile(playerName)) {
-			throw new ProfileException(lang.get("INFO_PROFILE_NOT_EXIST").replaceAll("%p",
-					playerName));
+	public PlayerProfile getSenderProfile(final CommandSender sender) {
+		if(sender instanceof Player) {
+			return getProfile((Player) sender);
 		}
-		return getProfile(playerName);
+		else {
+			return getProfile(senderPlayer);
+		}
 	}
 	
-	public PlayerProfile getProfile(final String playerName) {
-		if(playerName == null) {
+	public PlayerProfile getProfile(final OfflinePlayer player) {
+		if(player == null) {
 			return null;
 		}
-		PlayerProfile prof = profiles.get(playerName.toLowerCase());
-		if(prof == null) {
-			prof = createProfile(playerName);
+		PlayerProfile prof = profiles.get(player.getUniqueId());
+		if(prof == null && player instanceof Player) {
+			prof = createProfile(player);
 			prof.setChanged();
 		}
 		return prof;
 	}
 	
-	public boolean hasProfile(final String playerName) {
-		return profiles.containsKey(playerName.toLowerCase());
+	public PlayerProfile getProfileSafe(final String player, final QuesterLang lang) throws ProfileException {
+		@SuppressWarnings("deprecation")
+		final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
+		if(!hasProfile(offlinePlayer)
+				|| offlinePlayer.getUniqueId().equals(senderPlayer.getUniqueId())) {
+			throw new ProfileException(lang.get("INFO_PROFILE_NOT_EXIST"));
+		}
+		return getProfile(offlinePlayer);
+	}
+	
+	public boolean hasProfile(final OfflinePlayer player) {
+		return profiles.containsKey(player.getUniqueId());
 	}
 	
 	public Map<Integer, String> getRanks() {
@@ -226,8 +243,13 @@ public class ProfileManager {
 	}
 	
 	public boolean setProfileLanguage(final PlayerProfile profile, final String language) {
-		if(langMan.setPlayerLang(profile.getName(), language)) {
-			profile.setLanguage(language == null ? "" : language);
+		Validate.notNull(profile, "Profile can't be null.");
+		if(language == null) {
+			profile.setLanguage("");
+			return true;
+		}
+		if(langMan.hasLang(language)) {
+			profile.setLanguage(language);
 			return true;
 		}
 		return false;
@@ -235,36 +257,15 @@ public class ProfileManager {
 	
 	// QUEST PROGRESS METHODS
 	
-	public void startQuest(final Player player, final int questID, final ActionSource as, final QuesterLang lang) throws QuesterException {
-		final Quest qst = qMan.getQuest(questID);
-		startQuest(player, qst, as, lang);
-	}
-	
-	public void startQuest(final Player player, final String questName, final ActionSource as, final QuesterLang lang) throws QuesterException {
-		final Quest qst = qMan.getQuest(questName);
-		startQuest(player, qst, as, lang);
-	}
-	
 	public void startQuest(final Player player, final Quest quest, final ActionSource as, final QuesterLang senderLang) throws QuesterException {
 		startQuest(player, quest, as, senderLang, false);
 	}
 	
-	public void startQuest(final Player player, final int questID, final ActionSource as, final QuesterLang lang, final boolean disableAdminCheck) throws QuesterException {
-		final Quest qst = qMan.getQuest(questID);
-		startQuest(player, qst, as, lang, disableAdminCheck);
-	}
-	
-	public void startQuest(final Player player, final String questName, final ActionSource as, final QuesterLang lang, final boolean disableAdminCheck) throws QuesterException {
-		final Quest qst = qMan.getQuest(questName);
-		startQuest(player, qst, as, lang, disableAdminCheck);
-	}
-	
 	public void startQuest(final Player player, final Quest quest, final ActionSource as, final QuesterLang senderLang, final boolean disableAdminCheck) throws QuesterException {
-		final String playerName = player.getName();
 		if(quest == null) {
 			throw new QuestException(senderLang.get("ERROR_Q_NOT_EXIST"));
 		}
-		final PlayerProfile prof = getProfile(playerName);
+		final PlayerProfile prof = getProfile(player);
 		if(prof.hasQuest(quest)) {
 			throw new QuestException(senderLang.get("ERROR_Q_ASSIGNED"));
 		}
@@ -295,17 +296,17 @@ public class ProfileManager {
 		}
 		
 		assignQuest(prof, quest);
-		final QuesterLang playerLang = langMan.getPlayerLang(playerName);
+		final QuesterLang playerLang = langMan.getLang(prof.getLanguage());
 		if(QConfiguration.progMsgStart) {
 			player.sendMessage(Quester.LABEL
 					+ playerLang.get("MSG_Q_STARTED").replaceAll("%q",
 							ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 		}
-		final String description = quest.getDescription(playerName, playerLang);
+		final String description = quest.getDescription(player.getName(), playerLang);
 		if(!description.isEmpty() && !quest.hasFlag(QuestFlag.NODESC)) {
 			player.sendMessage(description);
 		}
-		Ql.verbose(playerName + " started quest '" + quest.getName() + "'.");
+		Ql.verbose(player.getName() + " started quest '" + quest.getName() + "'.");
 		for(final Qevent qv : quest.getQevents()) {
 			if(qv.getOccasion() == -1) {
 				qv.execute(player, plugin);
@@ -318,7 +319,7 @@ public class ProfileManager {
 		final ArrayList<Quest> chosenQuests = new ArrayList<Quest>();
 		for(final Quest quest : allQuests) {
 			if(quest.hasFlag(QuestFlag.ACTIVE) && !quest.hasFlag(QuestFlag.HIDDEN)
-					&& !getProfile(player.getName()).hasQuest(quest)
+					&& !getProfile(player).hasQuest(quest)
 					&& qMan.areConditionsMet(player, quest, lang)) {
 				chosenQuests.add(quest);
 			}
@@ -328,7 +329,7 @@ public class ProfileManager {
 			throw new QuestException(lang.get("ERROR_Q_NONE_ACTIVE"));
 		}
 		final int id = randGen.nextInt(chosenQuests.size());
-		startQuest(player, chosenQuests.get(id).getName(), as, lang);
+		startQuest(player, chosenQuests.get(id), as, lang);
 	}
 	
 	public void cancelQuest(final Player player, final ActionSource as, final QuesterLang lang) throws QuesterException {
@@ -337,7 +338,7 @@ public class ProfileManager {
 	
 	public void cancelQuest(final Player player, final int index, ActionSource as, final QuesterLang lang) throws QuesterException {
 		Quest quest = null;
-		final PlayerProfile prof = getProfile(player.getName());
+		final PlayerProfile prof = getProfile(player);
 		if(index < 0) {
 			if(prof.getProgress() != null) {
 				quest = prof.getProgress().getQuest();
@@ -364,7 +365,7 @@ public class ProfileManager {
 		unassignQuest(prof, index);
 		if(QConfiguration.progMsgCancel) {
 			player.sendMessage(Quester.LABEL
-					+ langMan.getPlayerLang(player.getName()).get("MSG_Q_CANCELLED")
+					+ langMan.getLang(prof.getLanguage()).get("MSG_Q_CANCELLED")
 							.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 		}
 		Ql.verbose(player.getName() + "'s quest '" + quest.getName() + "' was cancelled. "
@@ -381,7 +382,7 @@ public class ProfileManager {
 	}
 	
 	public void complete(final Player player, ActionSource as, final QuesterLang lang, final boolean checkObjs) throws QuesterException {
-		final PlayerProfile prof = getProfile(player.getName());
+		final PlayerProfile prof = getProfile(player);
 		final Quest quest = prof.getQuest();
 		if(quest == null) {
 			throw new QuestException(lang.get("ERROR_Q_NOT_ASSIGNED"));
@@ -412,7 +413,7 @@ public class ProfileManager {
 	}
 	
 	private boolean completeObjective(final Player player, final ActionSource as, final QuesterLang lang) throws QuesterException {
-		final PlayerProfile prof = getProfile(player.getName());
+		final PlayerProfile prof = getProfile(player);
 		final Quest quest = prof.getQuest();
 		final List<Objective> objs = quest.getObjectives();
 		
@@ -432,14 +433,14 @@ public class ProfileManager {
 	}
 	
 	public void completeQuest(final Player player, final ActionSource as, final QuesterLang lang) throws QuesterException {
-		final PlayerProfile prof = getProfile(player.getName());
+		final PlayerProfile prof = getProfile(player);
 		final Quest quest = prof.getQuest();
 		
 		unassignQuest(prof);
 		addCompletedQuest(prof, quest.getName());
 		if(QConfiguration.progMsgDone) {
 			player.sendMessage(Quester.LABEL
-					+ langMan.getPlayerLang(player.getName()).get("MSG_Q_COMPLETED")
+					+ langMan.getLang(prof.getLanguage()).get("MSG_Q_COMPLETED")
 							.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
 		}
 		Ql.verbose(player.getName() + " completed quest '" + quest.getName() + "'.");
@@ -470,8 +471,8 @@ public class ProfileManager {
 	}
 	
 	public void incProgress(final Player player, final ActionSource as, final int objectiveId, final int amount, final boolean checkAll) {
-		final QuesterLang lang = langMan.getPlayerLang(player.getName());
-		final PlayerProfile prof = getProfile(player.getName());
+		final PlayerProfile prof = getProfile(player);
+		final QuesterLang lang = langMan.getLang(prof.getLanguage());
 		final QuestProgress prog = prof.getProgress();
 		if(prog == null || objectiveId < 0 || objectiveId >= prog.getSize()) {
 			return;
@@ -562,12 +563,7 @@ public class ProfileManager {
 	
 	void loadProfile(final PlayerProfile prof) {
 		updateRank(prof);
-		if(!prof.getLanguage().isEmpty()) {
-			if(!langMan.setPlayerLang(prof.getName(), prof.getLanguage())) {
-				prof.setLanguage("");
-			}
-		}
-		profiles.put(prof.getName().toLowerCase(), prof);
+		profiles.put(prof.getId(), prof);
 	}
 	
 	public void loadProfiles() {
@@ -632,11 +628,11 @@ public class ProfileManager {
 										PlayerProfile.deserialize(sp.getStoragekey(), qMan);
 								if(prof != null) {
 									updateRank(prof);
-									profiles.put(prof.getName().toLowerCase(), prof);
+									profiles.put(prof.getId(), prof);
 									count++;
 								}
 								else {
-									Ql.info("Invalid profile '" + sp.name + "'");
+									Ql.info("Invalid profile '" + sp.uid.toString() + "'");
 								}
 							}
 							Ql.debug("Deserialized " + count + " profiles.");
@@ -696,8 +692,8 @@ public class ProfileManager {
 			}
 			default: {
 				final StorageKey pKey = profileStorage.getKey("");
-				for(final String p : profiles.keySet()) {
-					profiles.get(p).serialize(pKey.getSubKey(p));
+				for(final UUID uid : profiles.keySet()) {
+					profiles.get(uid).serialize(pKey.getSubKey(uid.toString()));
 				}
 				profileStorage.save();
 			}
@@ -721,7 +717,7 @@ public class ProfileManager {
 				PreparedStatement stmt = null;
 				ResultSet rs = null;
 				try {
-					final CaseAgnosticSet stored = new CaseAgnosticSet();
+					final Set<String> stored = new HashSet<String>();
 					conn = DatabaseConnection.getConnection();
 					stmt = conn.prepareStatement("SELECT `name` FROM `quester-profiles`");
 					rs = stmt.executeQuery();
@@ -732,7 +728,7 @@ public class ProfileManager {
 					rs.close();
 					stmt.close();
 					for(final SerializedPlayerProfile sp : serps) {
-						final boolean isStored = stored.contains(sp.name);
+						final boolean isStored = stored.contains(sp.uid.toString());
 						try {
 							if(!isStored || sp.changed) { // only save if it has changed, or is not stored
 								stmt =
@@ -745,7 +741,7 @@ public class ProfileManager {
 							}
 						}
 						catch (final SQLException e) {
-							System.out.println("Failed to save profile " + sp.name);
+							System.out.println("Failed to save profile " + sp.uid.toString());
 							if(QConfiguration.debug) {
 								e.printStackTrace();
 							}

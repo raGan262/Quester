@@ -182,7 +182,7 @@ public class QuestManager {
 				final Player player = Bukkit.getServer().getPlayerExact(prof.getName());
 				if(player != null) {
 					player.sendMessage(Quester.LABEL
-							+ langMan.getPlayerLang(player.getName()).get("MSG_Q_DEACTIVATED"));
+							+ langMan.getLang(prof.getLanguage()).get("MSG_Q_DEACTIVATED"));
 				}
 			}
 		}

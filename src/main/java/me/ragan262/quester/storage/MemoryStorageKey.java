@@ -11,7 +11,11 @@ public class MemoryStorageKey extends StorageKey {
 	private final ConfigurationSection root;
 	
 	public MemoryStorageKey() {
-		super("");
+		this("");
+	}
+	
+	public MemoryStorageKey(final String path) {
+		super(path);
 		root = new MemoryConfiguration();
 	}
 	

@@ -30,7 +30,7 @@ public class PlaceListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onBreak(final BlockPlaceEvent event) {
 		final Player player = event.getPlayer();
-		final PlayerProfile prof = profMan.getProfile(player.getName());
+		final PlayerProfile prof = profMan.getProfile(player);
 		final Quest quest = prof.getQuest();
 		if(quest != null) {
 			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {

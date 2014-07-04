@@ -36,7 +36,7 @@ public class LocationCommands {
 			if(range < 1) {
 				throw new NumberFormatException();
 			}
-			qMan.setQuestLocation(profMan.getProfile(sender.getName()),
+			qMan.setQuestLocation(profMan.getSenderProfile(sender),
 					SerUtils.getLoc(sender, context.getString(0)), range, context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_LOC_SET"));
 		}
@@ -51,7 +51,7 @@ public class LocationCommands {
 	@QCommandLabels({ "remove", "r" })
 	@QCommand(section = "QMod", desc = "removes quest location", max = 0)
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.removeQuestLocation(profMan.getProfile(sender.getName()), context.getSenderLang());
+		qMan.removeQuestLocation(profMan.getSenderProfile(sender), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_LOC_REMOVED"));
 	}
 }

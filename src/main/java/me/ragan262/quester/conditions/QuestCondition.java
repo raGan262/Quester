@@ -40,7 +40,7 @@ public final class QuestCondition extends Condition {
 		long seconds = 0;
 		if(player != null && time > 0) {
 			final PlayerProfile profile =
-					Quester.getInstance().getProfileManager().getProfile(player.getName());
+					Quester.getInstance().getProfileManager().getProfile(player);
 			final long elapsed =
 					System.currentTimeMillis() / 1000 - profile.getCompletionTime(quest);
 			
@@ -62,8 +62,7 @@ public final class QuestCondition extends Condition {
 	
 	@Override
 	public boolean isMet(final Player player) {
-		final PlayerProfile profile =
-				Quester.getInstance().getProfileManager().getProfile(player.getName());
+		final PlayerProfile profile = Quester.getInstance().getProfileManager().getProfile(player);
 		if(running) {
 			return profile.hasQuest(quest) != inverted;
 		}

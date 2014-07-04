@@ -37,7 +37,7 @@ public class CraftSmeltListener implements Listener {
 			return;
 		}
 		final Player player = (Player) event.getWhoClicked();
-		final PlayerProfile prof = profMan.getProfile(player.getName());
+		final PlayerProfile prof = profMan.getProfile(player);
 		final Quest quest = prof.getQuest();
 		if(quest != null) {
 			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
@@ -94,7 +94,7 @@ public class CraftSmeltListener implements Listener {
 			return;
 		}
 		final Player player = (Player) event.getWhoClicked();
-		final PlayerProfile prof = profMan.getProfile(player.getName());
+		final PlayerProfile prof = profMan.getProfile(player);
 		final Quest quest = prof.getQuest();
 		if(quest != null) {
 			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {

@@ -128,7 +128,7 @@ public class QeventCommands {
 		catch (final QeventException e) {
 			return;
 		}
-		qMan.addQuestQevent(profMan.getProfile(sender.getName()), qevent, lang);
+		qMan.addQuestQevent(profMan.getSenderProfile(sender), qevent, lang);
 		sender.sendMessage(ChatColor.GREEN
 				+ lang.get("EVT_ADD").replaceAll("%type", type.toUpperCase()));
 	}
@@ -150,7 +150,7 @@ public class QeventCommands {
 		catch (final QeventException e) {
 			return;
 		}
-		qMan.setQuestQevent(profMan.getProfile(sender.getName()), qeventID, qevent, lang);
+		qMan.setQuestQevent(profMan.getSenderProfile(sender), qeventID, qevent, lang);
 		sender.sendMessage(ChatColor.GREEN
 				+ lang.get("EVT_SET").replaceAll("%type", type.toUpperCase()));
 	}
@@ -158,7 +158,7 @@ public class QeventCommands {
 	@QCommandLabels({ "remove", "r" })
 	@QCommand(section = "QMod", desc = "removes event", min = 1, max = 1, usage = "<evt ID>")
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.removeQuestQevent(profMan.getProfile(sender.getName()), context.getInt(0),
+		qMan.removeQuestQevent(profMan.getSenderProfile(sender), context.getInt(0),
 				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().get("EVT_REMOVE").replaceAll("%id", context.getString(0)));

@@ -33,8 +33,7 @@ public class DescCommands {
 		if(context.length() > 0) {
 			desc = context.getString(0);
 		}
-		qMan.setQuestDescription(profMan.getProfile(sender.getName()), desc,
-				context.getSenderLang());
+		qMan.setQuestDescription(profMan.getSenderProfile(sender), desc, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_DESC_SET"));
 	}
 	
@@ -46,7 +45,7 @@ public class DescCommands {
 			max = 1,
 			usage = "<description to add>")
 	public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.addQuestDescription(profMan.getProfile(sender.getName()), context.getString(0),
+		qMan.addQuestDescription(profMan.getSenderProfile(sender), context.getString(0),
 				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_DESC_SET"));
 	}

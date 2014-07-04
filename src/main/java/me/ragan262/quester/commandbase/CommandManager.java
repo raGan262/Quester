@@ -158,9 +158,10 @@ public class CommandManager {
 			System.arraycopy(args, 0, parentArgs, 0, level + 1);
 			System.arraycopy(args, level + 1, realArgs, 0, args.length - level - 1);
 			
+			// TODO fix default lang - extend improved command manager
 			final QCommandContext context =
 					new QCommandContext(realArgs, parentArgs, sender, this,
-							langMan.getPlayerLang(sender.getName()));
+							langMan.getDefaultLang());
 			
 			if(context.length() < cmd.min()) {
 				throw new QUsageException("Not enough argmunents.", getUsage(args, level, method));

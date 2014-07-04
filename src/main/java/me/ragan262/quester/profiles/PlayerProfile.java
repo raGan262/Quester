@@ -8,7 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 import java.util.regex.Pattern;
+
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
 import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.quests.QuestManager;
@@ -19,6 +23,7 @@ import me.ragan262.quester.utils.Ql;
 public class PlayerProfile {
 	
 	private final String name;
+	private final UUID uid;
 	private final Map<String, Integer> completed;
 	private WeakReference<Quest> selected;
 	private int holder;
@@ -29,8 +34,9 @@ public class PlayerProfile {
 	private boolean changed;
 	private String language;
 	
-	PlayerProfile(final String player) {
-		name = player;
+	PlayerProfile(final OfflinePlayer player) {
+		name = player.getName();
+		uid = player.getUniqueId();
 		completed = new HashMap<String, Integer>();
 		current = null;
 		progresses = new ArrayList<QuestProgress>();
@@ -44,6 +50,10 @@ public class PlayerProfile {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public UUID getId() {
+		return uid;
 	}
 	
 	void addCompleted(final String questName) {
@@ -252,8 +262,6 @@ public class PlayerProfile {
 	
 	void serialize(final StorageKey key) {
 		
-		key.setString("name", name);
-		
 		key.removeKey("points");
 		if(points != 0) {
 			key.setInt("points", points);
@@ -295,14 +303,23 @@ public class PlayerProfile {
 	
 	static PlayerProfile deserialize(final StorageKey key, final QuestManager qMan) {
 		PlayerProfile prof = null;
+		OfflinePlayer player = null;
 		
-		if(key.getString("name") != null) {
-			prof = new PlayerProfile(key.getString("name"));
+		try {
+			player = Bukkit.getOfflinePlayer(UUID.fromString(key.getName()));
 		}
-		else {
-			Ql.verbose("Profile name not found.");
+		catch (final Exception ignore) {
+			// compatibility
+			if(key.getString("name") != null) {
+				player = Bukkit.getOfflinePlayer(key.getString("name"));
+			}
+		}
+		if(player == null) {
+			Ql.verbose("Could not retrieve player.");
 			return null;
 		}
+		
+		prof = new PlayerProfile(player);
 		
 		prof.addPoints(key.getInt("points", 0));
 		
@@ -375,7 +392,7 @@ public class PlayerProfile {
 		static final String delimiter1 = "~~";
 		static final String delimiter2 = "|";
 		
-		final String name;
+		final UUID uid;
 		final int current;
 		final String progresses;
 		final String completed;
@@ -386,7 +403,7 @@ public class PlayerProfile {
 		private String updateQuerry = null;
 		
 		SerializedPlayerProfile(final PlayerProfile prof) {
-			name = prof.name;
+			uid = prof.getId();
 			current = prof.getQuestProgressIndex();
 			StringBuilder sb = new StringBuilder();
 			boolean run = false;
@@ -417,7 +434,16 @@ public class PlayerProfile {
 		}
 		
 		SerializedPlayerProfile(final ResultSet rs) throws SQLException {
-			name = rs.getString("name");
+			final String id = rs.getString("name");
+			UUID tempId = null;
+			try {
+				tempId = UUID.fromString(id);
+			}
+			catch (final IllegalArgumentException e) {
+				// backwards compatibility
+				tempId = Bukkit.getOfflinePlayer(id).getUniqueId();
+			}
+			uid = tempId;
 			current = rs.getInt("current");
 			progresses = rs.getString("quests");
 			completed = rs.getString("completed");
@@ -427,8 +453,7 @@ public class PlayerProfile {
 		
 		StorageKey getStoragekey() {
 			boolean err = false;
-			final StorageKey result = new MemoryStorageKey();
-			result.setString("name", name);
+			final StorageKey result = new MemoryStorageKey(uid.toString());
 			
 			if(current >= 0) {
 				result.setInt("active", current);
@@ -477,8 +502,8 @@ public class PlayerProfile {
 			}
 			
 			if(err) {
-				Ql.warning("Error occurred when loading " + name
-						+ "'s profile. Switch to debug mode for more details.");
+				Ql.warning("Error occurred when loading profile " + uid.toString()
+						+ ". Switch to debug mode for more details.");
 			}
 			
 			return result;
@@ -489,9 +514,8 @@ public class PlayerProfile {
 				insertQuerry =
 						String.format(
 								"INSERT INTO `%s`(`name`, `completed`, `current`, `quests`, `reputation`) VALUES ('%s','%s',%d,'%s','%s')",
-								tableName, name.replaceAll("'", "\\\\'"),
-								completed.replaceAll("'", "\\\\'"), current, progresses,
-								reputation.replaceAll("'", "\\\\'"));
+								tableName, uid.toString(), completed.replaceAll("'", "\\\\'"),
+								current, progresses, reputation.replaceAll("'", "\\\\'"));
 			}
 			return insertQuerry;
 		}
@@ -502,7 +526,7 @@ public class PlayerProfile {
 						String.format(
 								"UPDATE `%s` SET `completed`='%s',`current`=%d,`quests`='%s',`reputation`='%s' WHERE `name`='%s'",
 								tableName, completed.replaceAll("'", "\\\\'"), current, progresses,
-								reputation.replaceAll("'", "\\\\'"), name.replaceAll("'", "\\\\'"));
+								reputation.replaceAll("'", "\\\\'"), uid.toString());
 			}
 			return updateQuerry;
 		}

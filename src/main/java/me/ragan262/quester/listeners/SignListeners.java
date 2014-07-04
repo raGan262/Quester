@@ -33,7 +33,7 @@ public class SignListeners extends QuestHolderActionHandler<QuesterSign> impleme
 	
 	@Override
 	public String getHeaderText(final Player player, final QuestHolder qh, final QuesterSign data) {
-		return langMan.getPlayerLang(player.getName()).get("SIGN_HEADER");
+		return langMan.getLang(profMan.getProfile(player).getLanguage()).get("SIGN_HEADER");
 	}
 	
 	@Override
@@ -65,7 +65,7 @@ public class SignListeners extends QuestHolderActionHandler<QuesterSign> impleme
 			return;
 		}
 		
-		final QuesterLang lang = langMan.getPlayerLang(player.getName());
+		final QuesterLang lang = langMan.getLang(profMan.getProfile(player).getLanguage());
 		if(!isSign(block)) {
 			holMan.removeSign(block.getLocation());
 			player.sendMessage(Quester.LABEL + lang.get("SIGN_UNREGISTERED"));
@@ -91,6 +91,7 @@ public class SignListeners extends QuestHolderActionHandler<QuesterSign> impleme
 		}
 		else {
 			onRightClick(player, qHolder, qSign);
+			
 		}
 	}
 	
@@ -103,14 +104,15 @@ public class SignListeners extends QuestHolderActionHandler<QuesterSign> impleme
 		
 		final Sign sign = (Sign) block.getState();
 		if(holMan.getSign(sign.getLocation()) != null) {
-			final QuesterLang lang = langMan.getPlayerLang(event.getPlayer().getName());
+			final Player p = event.getPlayer();
+			final QuesterLang lang = langMan.getLang(profMan.getProfile(p).getLanguage());
 			if(!event.getPlayer().isSneaking()
-					|| !Util.permCheck(event.getPlayer(), QConfiguration.PERM_MODIFY, false, null)) {
+					|| !Util.permCheck(p, QConfiguration.PERM_MODIFY, false, null)) {
 				event.setCancelled(true);
 				return;
 			}
 			holMan.removeSign(sign.getLocation());
-			event.getPlayer().sendMessage(Quester.LABEL + lang.get("SIGN_UNREGISTERED"));;
+			p.sendMessage(Quester.LABEL + lang.get("SIGN_UNREGISTERED"));;
 		}
 	}
 	
@@ -118,7 +120,8 @@ public class SignListeners extends QuestHolderActionHandler<QuesterSign> impleme
 	public void onSignChange(final SignChangeEvent event) {
 		final Block block = event.getBlock();
 		if(event.getLine(0).equals("[Quester]")) {
-			final QuesterLang lang = langMan.getPlayerLang(event.getPlayer().getName());
+			final QuesterLang lang =
+					langMan.getLang(profMan.getProfile(event.getPlayer()).getLanguage());
 			if(!Util.permCheck(event.getPlayer(), QConfiguration.PERM_MODIFY, true, lang)) {
 				block.breakNaturally();
 			}

@@ -36,7 +36,7 @@ public class PositionListener implements Runnable {
 	@Override
 	public void run() {
 		for(final Player player : Bukkit.getServer().getOnlinePlayers()) {
-			final PlayerProfile prof = profMan.getProfile(player.getName());
+			final PlayerProfile prof = profMan.getProfile(player);
 			final Quest quest = prof.getQuest();
 			if(quest != null) {
 				// LOCATION CHECK
@@ -80,9 +80,8 @@ public class PositionListener implements Runnable {
 						if(loc2.distanceSquared(loc) <= qst.getRange() * qst.getRange()
 								&& qst.hasFlag(QuestFlag.ACTIVE)) {
 							try {
-								profMan.startQuest(player, qst.getName(),
-										ActionSource.otherSource(null),
-										langMan.getPlayerLang(player.getName()));
+								profMan.startQuest(player, qst, ActionSource.otherSource(null),
+										langMan.getLang(prof.getLanguage()));
 								break;
 							}
 							catch (final QuesterException e) {}

@@ -17,6 +17,7 @@ public class QuesterLang {
 	
 	private final File file;
 	private final String fileName;
+	private final String name;
 	private final MessageRegistry registry;
 	
 	QuesterLang(final File file, final MessageRegistry registry) {
@@ -29,12 +30,17 @@ public class QuesterLang {
 			fileName = file.getName();
 		}
 		else {
-			fileName = "NULL";
+			fileName = "NULLLANG";
 		}
+		name = fileName.substring(0, fileName.length() - 4);
 	}
 	
 	public File getFile() {
 		return file;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	public String get(final String key) {

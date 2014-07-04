@@ -15,6 +15,7 @@ import me.ragan262.quester.objectives.NpcKillObjective;
 import me.ragan262.quester.objectives.NpcObjective;
 import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.quests.Quest;
+import me.ragan262.quester.utils.Util;
 import net.citizensnpcs.api.event.NPCDeathEvent;
 import net.citizensnpcs.api.event.NPCLeftClickEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
@@ -56,8 +57,7 @@ public class Citizens2Listener extends QuestHolderActionHandler<NPC> implements 
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
 			final QuestHolder qh =
 					holMan.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
-			final Player player = event.getClicker();
-			onLeftClick(player, qh, event.getNPC());
+			onLeftClick(event.getClicker(), qh, event.getNPC());
 		}
 	}
 	
@@ -66,15 +66,14 @@ public class Citizens2Listener extends QuestHolderActionHandler<NPC> implements 
 		if(event.getNPC().hasTrait(QuesterTrait.class)) {
 			final QuestHolder qh =
 					holMan.getHolder(event.getNPC().getTrait(QuesterTrait.class).getHolderID());
-			final Player player = event.getClicker();
-			onRightClick(player, qh, event.getNPC());
+			onRightClick(event.getClicker(), qh, event.getNPC());
 		}
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onAnyClick(final NPCRightClickEvent event) {
 		final Player player = event.getClicker();
-		final PlayerProfile prof = profMan.getProfile(player.getName());
+		final PlayerProfile prof = profMan.getProfile(player);
 		final Quest quest = prof.getQuest();
 		if(quest != null) {
 			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
@@ -118,10 +117,10 @@ public class Citizens2Listener extends QuestHolderActionHandler<NPC> implements 
 		// npc must be spawned to die, or no?
 		@SuppressWarnings("deprecation")
 		final Player player = event.getNPC().getBukkitEntity().getKiller();
-		if(player == null) {
+		if(player == null || !Util.isPlayer(player)) {
 			return;
 		}
-		final PlayerProfile prof = profMan.getProfile(player.getName());
+		final PlayerProfile prof = profMan.getProfile(player);
 		final Quest quest = prof.getQuest();
 		if(quest != null) {
 			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {

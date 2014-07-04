@@ -52,7 +52,8 @@ public abstract class QuestHolderActionHandler<T> {
 	}
 	
 	public void onLeftClick(final Player player, final QuestHolder qHolder, final T data) {
-		final QuesterLang lang = langMan.getPlayerLang(player.getName());
+		final PlayerProfile prof = profMan.getProfile(player);
+		final QuesterLang lang = langMan.getLang(prof.getLanguage());
 		if(!Util.permCheck(player, getUsePermission(), true, lang)) {
 			return;
 		}
@@ -74,12 +75,12 @@ public abstract class QuestHolderActionHandler<T> {
 		
 		final Quest quest = qMan.getQuest(holMan.getOne(qHolder));
 		if(quest != null) {
-			if(profMan.getProfile(player.getName()).hasQuest(quest)) {
+			if(prof.hasQuest(quest)) {
 				return;
 			}
 			else {
 				try {
-					messenger.showQuest(player, quest);
+					messenger.showQuest(player, quest, lang);
 					return;
 				}
 				catch (final QuesterException ignore) {}
@@ -108,11 +109,11 @@ public abstract class QuestHolderActionHandler<T> {
 	}
 	
 	public void onRightClick(final Player player, final QuestHolder qHolder, final T data) {
-		final QuesterLang lang = langMan.getPlayerLang(player.getName());
+		final PlayerProfile prof = profMan.getProfile(player);
+		final QuesterLang lang = langMan.getLang(prof.getLanguage());
 		if(!Util.permCheck(player, getUsePermission(), true, lang)) {
 			return;
 		}
-		final PlayerProfile prof = profMan.getProfile(player.getName());
 		final boolean isOP = Util.permCheck(player, QConfiguration.PERM_MODIFY, false, null);
 		// If player has perms and holds blaze rod
 		if(isOP && isQuestHolderItem(player.getItemInHand())) {
@@ -152,7 +153,7 @@ public abstract class QuestHolderActionHandler<T> {
 				}
 				catch (final QuesterException e) {
 					try {
-						messenger.showProgress(player, prof);
+						messenger.showProgress(player, prof, lang);
 					}
 					catch (final QuesterException f) {
 						player.sendMessage(ChatColor.DARK_PURPLE + lang.get("ERROR_INTERESTING"));

@@ -64,7 +64,7 @@ public class TriggerCommands {
 		catch (final TriggerException e) {
 			return;
 		}
-		qMan.addQuestTrigger(profMan.getProfile(sender.getName()), trig, lang);
+		qMan.addQuestTrigger(profMan.getSenderProfile(sender), trig, lang);
 		sender.sendMessage(ChatColor.GREEN
 				+ lang.get("TRIG_ADD").replaceAll("%type", type.toUpperCase()));
 	}
@@ -86,7 +86,7 @@ public class TriggerCommands {
 		catch (final TriggerException e) {
 			return;
 		}
-		qMan.setQuestTrigger(profMan.getProfile(sender.getName()), triggerID, trig, lang);
+		qMan.setQuestTrigger(profMan.getSenderProfile(sender), triggerID, trig, lang);
 		sender.sendMessage(ChatColor.GREEN
 				+ lang.get("TRIG_SET").replaceAll("%type", type.toUpperCase()));
 	}
@@ -94,7 +94,7 @@ public class TriggerCommands {
 	@QCommandLabels({ "remove", "r" })
 	@QCommand(section = "QMod", desc = "removes trigger", min = 1, max = 1, usage = "<trig ID>")
 	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.removeQuestTrigger(profMan.getProfile(sender.getName()), context.getInt(0),
+		qMan.removeQuestTrigger(profMan.getSenderProfile(sender), context.getInt(0),
 				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().get("TRIG_REMOVE")

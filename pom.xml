@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>me.ragan262</groupId>
   <artifactId>quester</artifactId>
-  <version>0.7.2pixel-SNAPSHOT</version>
+  <version>0.7-2-SNAPSHOT</version>
   <name>Quester</name>
   <description>Quester provides ability to create highly customizable quests directly in game.</description>
   

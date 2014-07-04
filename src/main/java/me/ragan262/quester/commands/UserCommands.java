@@ -130,9 +130,9 @@ public class UserCommands {
 			quest = qMan.getQuest(context.getString(0));
 		}
 		else {
-			quest = profMan.getProfile(sender.getName()).getSelected();
+			quest = profMan.getSenderProfile(sender).getSelected();
 		}
-		messenger.showQuest(sender, quest);
+		messenger.showQuest(sender, quest, context.getSenderLang());
 	}
 	
 	@QCommandLabels({ "list" })
@@ -143,10 +143,10 @@ public class UserCommands {
 			permission = QConfiguration.PERM_USE_LIST)
 	public void list(final QCommandContext context, final CommandSender sender) {
 		if(Util.permCheck(sender, QConfiguration.PERM_MODIFY, false, null)) {
-			messenger.showFullQuestList(sender, qMan);
+			messenger.showFullQuestList(sender, qMan, context.getSenderLang());
 		}
 		else {
-			messenger.showQuestList(sender, qMan, profMan);
+			messenger.showQuestList(sender, qMan, profMan, context.getSenderLang());
 		}
 	}
 	
@@ -161,10 +161,11 @@ public class UserCommands {
 		if(Util.permCheck(sender, QConfiguration.PERM_ADMIN, false, null) && context.length() > 0) {
 			final PlayerProfile prof =
 					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
-			messenger.showProfile(sender, prof);
+			messenger.showProfile(sender, prof, context.getSenderLang());
 		}
 		else {
-			messenger.showProfile(sender, profMan.getProfile(sender.getName()));
+			messenger
+					.showProfile(sender, profMan.getSenderProfile(sender), context.getSenderLang());
 		}
 	}
 	
@@ -191,7 +192,8 @@ public class UserCommands {
 			}
 		}
 		else if(Util.permCheck(sender, QConfiguration.PERM_USE_START_PICK, false, null)) {
-			profMan.startQuest((Player) sender, context.getString(0), as, context.getSenderLang());
+			profMan.startQuest((Player) sender, qMan.getQuest(context.getString(0)), as,
+					context.getSenderLang());
 		}
 		else {
 			throw new QPermissionException();
@@ -246,7 +248,7 @@ public class UserCommands {
 			sender.sendMessage(context.getSenderLang().get("MSG_ONLY_PLAYER"));
 			return;
 		}
-		if(profMan.switchQuest(profMan.getProfile(sender.getName()), context.getInt(0))) {
+		if(profMan.switchQuest(profMan.getSenderProfile(sender), context.getInt(0))) {
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_SWITCHED"));
 		}
 	}
@@ -267,7 +269,8 @@ public class UserCommands {
 		if(context.length() > 0) {
 			index = context.getInt(0);
 		}
-		messenger.showProgress((Player) sender, profMan.getProfile(sender.getName()), index);
+		messenger.showProgress((Player) sender, profMan.getSenderProfile(sender), index,
+				context.getSenderLang());
 	}
 	
 	@QCommandLabels({ "quests" })
@@ -278,19 +281,21 @@ public class UserCommands {
 			usage = "[player]",
 			permission = QConfiguration.PERM_USE_QUESTS)
 	public void quests(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		final PlayerProfile prof;
 		if(Util.permCheck(sender, QConfiguration.PERM_ADMIN, false, null) && context.length() > 0) {
-			messenger.showTakenQuests(sender,
-					profMan.getProfileSafe(context.getString(0), context.getSenderLang()));
+			prof = profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 		}
 		else {
-			messenger.showTakenQuests(sender, profMan.getProfile(sender.getName()));
+			prof = profMan.getSenderProfile(sender);
 		}
+		messenger.showTakenQuests(sender, prof, context.getSenderLang());
 	}
 	
 	@QCommandLabels({ "langs" })
 	@QCommand(section = "User", desc = "shows available languages", max = 0)
 	public void langs(final QCommandContext context, final CommandSender sender) {
-		final String playerLang = langMan.getPlayerLangName(sender.getName());
+		final String playerLang =
+				langMan.getLang(profMan.getSenderProfile(sender).getLanguage()).getName();
 		final Set<String> langSet = langMan.getLangSet();
 		String toAdd = null;
 		for(final Iterator<String> i = langSet.iterator(); i.hasNext();) {
@@ -321,7 +326,7 @@ public class UserCommands {
 		if(langName.equalsIgnoreCase("reset")) {
 			langName = null;
 		}
-		if(profMan.setProfileLanguage(profMan.getProfile(sender.getName()), langName)) {
+		if(profMan.setProfileLanguage(profMan.getSenderProfile(sender), langName)) {
 			lang = langMan.getLang(langName);
 			sender.sendMessage(ChatColor.GREEN + lang.get("MSG_LANG_SET"));
 		}

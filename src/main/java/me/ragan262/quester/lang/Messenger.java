@@ -47,9 +47,7 @@ public class Messenger {
 	
 	// QUEST RELATED MESSAGES
 	
-	public void showQuest(final CommandSender sender, final Quest quest) throws QuesterException {
-		
-		final QuesterLang lang = langMan.getPlayerLang(sender.getName());
+	public void showQuest(final CommandSender sender, final Quest quest, final QuesterLang lang) throws QuesterException {
 		
 		if(quest == null) {
 			throw new QuestException(lang.get("ERROR_Q_NOT_EXIST"));
@@ -93,8 +91,7 @@ public class Messenger {
 		}
 	}
 	
-	public void showQuestInfo(final CommandSender sender, final Quest quest) throws QuesterException {
-		final QuesterLang lang = langMan.getPlayerLang(sender.getName());
+	public void showQuestInfo(final CommandSender sender, final Quest quest, final QuesterLang lang) throws QuesterException {
 		if(quest == null) {
 			throw new QuestException(lang.get("ERROR_Q_NOT_EXIST"));
 		}
@@ -156,10 +153,9 @@ public class Messenger {
 		}
 	}
 	
-	public void showQuestList(final CommandSender sender, final QuestManager qMan, final ProfileManager profMan) {
+	public void showQuestList(final CommandSender sender, final QuestManager qMan, final ProfileManager profMan, final QuesterLang lang) {
 		Player player = null;
-		final PlayerProfile prof = profMan.getProfile(sender.getName());
-		final QuesterLang lang = langMan.getPlayerLang(sender.getName());
+		final PlayerProfile prof = profMan.getSenderProfile(sender);
 		if(sender instanceof Player) {
 			player = (Player) sender;
 		}
@@ -190,8 +186,7 @@ public class Messenger {
 		}
 	}
 	
-	public void showFullQuestList(final CommandSender sender, final QuestManager qMan) {
-		final QuesterLang lang = langMan.getPlayerLang(sender.getName());
+	public void showFullQuestList(final CommandSender sender, final QuestManager qMan, final QuesterLang lang) {
 		sender.sendMessage(Util.line(ChatColor.BLUE, lang.get("INFO_QUEST_LIST"), ChatColor.GOLD));
 		for(final Quest quest : qMan.getQuests()) {
 			final ChatColor color =
@@ -204,8 +199,7 @@ public class Messenger {
 	
 	// PROFILE RELATED MESSAGES
 	
-	public void showProfile(final CommandSender sender, final PlayerProfile prof) {
-		final QuesterLang lang = langMan.getPlayerLang(sender.getName());
+	public void showProfile(final CommandSender sender, final PlayerProfile prof, final QuesterLang lang) {
 		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_NAME") + ": " + ChatColor.GOLD
 				+ prof.getName());
 		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_PROFILE_POINTS") + ": "
@@ -217,14 +211,13 @@ public class Messenger {
 		
 	}
 	
-	public void showProgress(final Player player, final PlayerProfile prof) throws QuesterException {
-		showProgress(player, prof, -1);
+	public void showProgress(final Player player, final PlayerProfile prof, final QuesterLang lang) throws QuesterException {
+		showProgress(player, prof, -1, lang);
 	}
 	
-	public void showProgress(final Player player, final PlayerProfile prof, final int index) throws QuesterException {
+	public void showProgress(final Player player, final PlayerProfile prof, final int index, final QuesterLang lang) throws QuesterException {
 		Quest quest = null;
 		QuestProgress progress = null;
-		final QuesterLang lang = langMan.getPlayerLang(player.getName());
 		if(index < 0) {
 			progress = prof.getProgress();
 		}
@@ -263,8 +256,7 @@ public class Messenger {
 		}
 	}
 	
-	public void showTakenQuests(final CommandSender sender, final PlayerProfile prof) {
-		final QuesterLang lang = langMan.getPlayerLang(sender.getName());
+	public void showTakenQuests(final CommandSender sender, final PlayerProfile prof, final QuesterLang lang) {
 		sender.sendMessage(ChatColor.BLUE
 				+ (sender.getName().equalsIgnoreCase(prof.getName()) ? lang.get("INFO_QUESTS")
 						+ ": " : lang.get("INFO_QUESTS_OTHER").replaceAll("%p", prof.getName())
@@ -280,9 +272,8 @@ public class Messenger {
 	
 	// HOLDER RELATED MESSAGES
 	
-	public void showHolderList(final CommandSender sender, final QuestHolderManager holMan) {
-		sender.sendMessage(Util.line(ChatColor.BLUE,
-				langMan.getPlayerLang(sender.getName()).get("INFO_HOLDER_LIST"), ChatColor.GOLD));
+	public void showHolderList(final CommandSender sender, final QuestHolderManager holMan, final QuesterLang lang) {
+		sender.sendMessage(Util.line(ChatColor.BLUE, lang.get("INFO_HOLDER_LIST"), ChatColor.GOLD));
 		for(final int id : holMan.getHolders().keySet()) {
 			sender.sendMessage(ChatColor.BLUE + "[" + id + "]" + ChatColor.GOLD + " "
 					+ holMan.getHolder(id).getName());

@@ -29,7 +29,7 @@ public class TameListener implements Listener {
 	public void onTame(final EntityTameEvent event) {
 		if(event.getOwner() instanceof Player) {
 			final Player player = (Player) event.getOwner();
-			final PlayerProfile prof = profMan.getProfile(player.getName());
+			final PlayerProfile prof = profMan.getProfile(player);
 			final Quest quest = prof.getQuest();
 			if(quest != null) {
 				if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {

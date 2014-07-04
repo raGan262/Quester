@@ -40,7 +40,9 @@ public final class MessageQevent extends Qevent {
 	protected void run(final Player player, final Quester plugin) {
 		if(isCustomMessage) {
 			final String msg =
-					plugin.getLanguageManager().getPlayerLang(player.getName()).getCustom(message);
+					plugin.getLanguageManager()
+							.getLang(plugin.getProfileManager().getProfile(player).getLanguage())
+							.getCustom(message);
 			player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg)
 					.replaceAll("\\\\n", "\n").replace("%p", player.getName()));
 		}
