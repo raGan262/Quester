@@ -92,6 +92,7 @@ public class QuestHolderManager {
 		final QuestHolder qh = new QuestHolder(name);
 		final int id = getNewHolderID();
 		holderIds.put(id, qh);
+		qh.setId(id);
 		return id;
 	}
 	
@@ -233,6 +234,7 @@ public class QuestHolderManager {
 					if(holderIds.get(id) != null) {
 						Ql.info("Duplicate holder index: '" + subKey.getName() + "'");
 					}
+					qh.setId(id);
 					holderIds.put(id, qh);
 				}
 				catch (final NumberFormatException e) {

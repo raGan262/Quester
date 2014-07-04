@@ -15,9 +15,18 @@ public class QuestHolder {
 	private String name;
 	private final Map<String, Long> interactions = new HashMap<String, Long>();
 	private final Map<String, Integer> selected = new HashMap<String, Integer>();
+	private int id = -1;
 	
 	public QuestHolder(final String name) {
 		this.name = name;
+	}
+	
+	public int getId() {
+		return id;
+	}
+	
+	void setId(final int newId) {
+		id = newId;
 	}
 	
 	public void interact(final String interacter) {
