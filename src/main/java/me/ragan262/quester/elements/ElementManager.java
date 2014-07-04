@@ -17,6 +17,7 @@ import me.ragan262.quester.commandbase.exceptions.QUsageException;
 import me.ragan262.quester.exceptions.ElementException;
 import me.ragan262.quester.exceptions.QuesterException;
 import me.ragan262.quester.storage.StorageKey;
+import me.ragan262.quester.utils.Ql;
 import me.ragan262.quester.utils.Util;
 
 public class ElementManager {
@@ -171,6 +172,10 @@ public class ElementManager {
 	}
 	
 	public void register(final Class<? extends Element> clss) throws ElementException {
+		register(clss, false);
+	}
+	
+	public void register(final Class<? extends Element> clss, final boolean force) throws ElementException {
 		if(!clss.isAnnotationPresent(QElement.class)) {
 			throw new ElementException("Annotation not present.");
 		}
@@ -186,7 +191,7 @@ public class ElementManager {
 				if(load.getReturnType() != type.getAssociatedClass()) {
 					throw new ElementException("Load method does not return " + type.name() + ".");
 				}
-				registerElement(type, clss);
+				registerElement(type, clss, force);
 			}
 			else {
 				throw new ElementException("Unknown element type.");
@@ -200,21 +205,26 @@ public class ElementManager {
 		}
 	}
 	
-	private void registerElement(final ElementType elementType, final Class<? extends Element> clss) throws NoSuchMethodException, SecurityException, ElementException {
+	private void registerElement(final ElementType elementType, final Class<? extends Element> clss, final boolean force) throws NoSuchMethodException, SecurityException, ElementException {
 		final Method fromCommand = clss.getDeclaredMethod("fromCommand", QCommandContext.class);
 		
 		final String type = clss.getAnnotation(QElement.class).value().toUpperCase();
 		final Map<String, ElementInfo> map = elements.get(elementType);
 		if(map.containsKey(type)) {
-			throw new ElementException(elementType.name() + " of the same type already registered.");
+			if(!force) {
+				throw new ElementException(elementType.name()
+						+ " of the same type already registered.");
+			}
+			Ql.info(elementType.name() + " " + type + " has been replaced by class "
+					+ clss.getCanonicalName());
 		}
 		
 		if(!Modifier.isStatic(fromCommand.getModifiers())) {
 			throw new ElementException("Incorrect fromCommand method modifiers, expected static.");
 		}
 		if(fromCommand.getReturnType() != elementType.getAssociatedClass()) {
-			throw new ElementException("fromCommand method does not return " + elementType.name()
-					+ ".");
+			throw new ElementException("fromCommand method does not return "
+					+ elementType.getAssociatedClass().getSimpleName() + ".");
 		}
 		final ElementInfo ei = new ElementInfo();
 		ei.clss = clss;
