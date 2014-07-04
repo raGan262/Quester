@@ -62,7 +62,7 @@ public class ProfileManager {
 	//(CB always provides fake offline players with the same UUID)
 	private final OfflinePlayer senderPlayer;
 	
-	private Storage profileStorage = null;
+	private File profileStorageFile = null;
 	private QuestManager qMan = null;
 	private LanguageManager langMan = null;
 	private Quester plugin = null;
@@ -76,9 +76,15 @@ public class ProfileManager {
 		this.plugin = plugin;
 		qMan = plugin.getQuestManager();
 		langMan = plugin.getLanguageManager();
-		final File file = new File(plugin.getDataFolder(), "profiles.yml");
-		profileStorage = new ConfigStorage(file, plugin.getLogger(), null);
+		profileStorageFile = new File(plugin.getDataFolder(), "profiles.yml");
 		senderPlayer = Bukkit.getOfflinePlayer("Quester:Sender");
+		if(senderPlayer == null) {
+			Ql.debug("senderPlayer is null.");
+		}
+		else {
+			Ql.debug("senderPlayer is " + senderPlayer.getName() + " UUID "
+					+ senderPlayer.getUniqueId());
+		}
 	}
 	
 	private PlayerProfile createProfile(final OfflinePlayer player) {
@@ -577,6 +583,8 @@ public class ProfileManager {
 				break;
 			}
 			default: {
+				final Storage profileStorage =
+						new ConfigStorage(profileStorageFile, plugin.getLogger(), null);
 				profileStorage.load();
 				final StorageKey mainKey = profileStorage.getKey("");
 				PlayerProfile prof;
@@ -691,6 +699,8 @@ public class ProfileManager {
 				break;
 			}
 			default: {
+				final Storage profileStorage =
+						new ConfigStorage(profileStorageFile, plugin.getLogger(), null);
 				final StorageKey pKey = profileStorage.getKey("");
 				for(final UUID uid : profiles.keySet()) {
 					profiles.get(uid).serialize(pKey.getSubKey(uid.toString()));
