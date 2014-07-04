@@ -24,7 +24,8 @@ public class ElementManager {
 	public static enum ElementType {
 		OBJECTIVE(Objective.class), CONDITION(Condition.class), EVENT(Qevent.class), TRIGGER(Trigger.class);
 		
-		private static final Map<Class<? extends Element>, ElementType> byClass = new HashMap<>();
+		private static final Map<Class<? extends Element>, ElementType> byClass =
+				new HashMap<Class<? extends Element>, ElementType>();
 		
 		private final Class<? extends Element> clss;
 		
@@ -56,8 +57,8 @@ public class ElementManager {
 	
 	private static ElementManager instance = null;
 	
-	private final Map<ElementType, Map<String, ElementInfo>> elements = new EnumMap<>(
-			ElementType.class);
+	private final Map<ElementType, Map<String, ElementInfo>> elements =
+			new EnumMap<ElementType, Map<String, ElementInfo>>(ElementType.class);
 	
 	public ElementManager() {
 		for(final ElementType key : ElementType.values()) {

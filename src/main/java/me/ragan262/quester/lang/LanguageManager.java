@@ -37,7 +37,7 @@ public class LanguageManager {
 	private String defaultLangName = "english";
 	private final MessageRegistry registry = new MessageRegistry();
 	
-	public LanguageManager(final Quester plugin, final File localFolder, final String defaultLang) {
+	public LanguageManager(final Quester plugin, final File localFolder) {
 		logger = plugin.getLogger();
 		if(!localFolder.isDirectory()) {
 			if(!localFolder.mkdir()) {
@@ -45,9 +45,6 @@ public class LanguageManager {
 			}
 		}
 		this.localFolder = localFolder;
-		if(defaultLang != null) {
-			defaultLangName = defaultLang;
-		}
 		final QuesterLang defLang = new QuesterLang(null, registry);
 		defLang.addDefaults();
 		LanguageManager.defaultLang = defLang;

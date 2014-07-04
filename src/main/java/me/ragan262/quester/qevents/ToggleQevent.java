@@ -53,7 +53,7 @@ public final class ToggleQevent extends Qevent {
 			if(warning != null) {
 				Ql.warning(warning);
 			}
-			qm.toggleQuest(q, LanguageManager.defaultLang);
+			qm.toggleQuest(q, LanguageManager.defaultLang, plugin.getProfileManager());
 		}
 		catch (final QuesterException e) {
 			Ql.warning("Event failed to toggle quest. Reason: "

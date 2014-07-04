@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
@@ -22,25 +23,21 @@ import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.lang.QuesterLang;
 import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.profiles.ProfileManager;
-import me.ragan262.quester.profiles.QuestProgress;
 import me.ragan262.quester.storage.ConfigStorage;
 import me.ragan262.quester.storage.Storage;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
-import me.ragan262.quester.utils.SerUtils;
 import me.ragan262.quester.utils.Util;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class QuestManager {
 	
 	private LanguageManager langMan = null;
-	private ProfileManager profMan = null;
-	private Quester plugin = null;
+	private final File dataFolder;
+	private final Logger logger;
 	private Storage questStorage = null;
 	
 	private final Map<Integer, Quest> quests = new TreeMap<Integer, Quest>();
@@ -50,14 +47,15 @@ public class QuestManager {
 	private int questID = -1;
 	
 	public QuestManager(final Quester plugin) {
-		langMan = plugin.getLanguageManager();
-		this.plugin = plugin;
-		final File file = new File(plugin.getDataFolder(), "quests.yml");
-		questStorage = new ConfigStorage(file, plugin.getLogger(), null);
+		this(plugin.getLanguageManager(), plugin.getDataFolder(), plugin.getLogger());
 	}
 	
-	public void setProfileManager(final ProfileManager profMan) {
-		this.profMan = profMan;
+	public QuestManager(final LanguageManager langMan, final File dataFolder, final Logger logger) {
+		this.langMan = langMan;
+		this.dataFolder = dataFolder;
+		this.logger = logger;
+		final File file = new File(dataFolder, "quests.yml");
+		questStorage = new ConfigStorage(file, logger, null);
 	}
 	
 	// QUEST ID MANIPULATION
@@ -158,7 +156,6 @@ public class QuestManager {
 		assignQuestID(quest);
 		quests.put(quest.getID(), quest);
 		questNames.put(questName.toLowerCase(), quest.getID());
-		profMan.selectQuest(issuer, quest);
 		return quest;
 	}
 	
@@ -177,7 +174,7 @@ public class QuestManager {
 		q.addFlag(QuestFlag.ACTIVE);
 	}
 	
-	public void deactivateQuest(final Quest quest) {
+	public void deactivateQuest(final Quest quest, final ProfileManager profMan) {
 		quest.removeFlag(QuestFlag.ACTIVE);
 		for(final PlayerProfile prof : profMan.getProfiles()) {
 			if(prof.hasQuest(quest)) {
@@ -192,24 +189,16 @@ public class QuestManager {
 		profMan.saveProfiles();
 	}
 	
-	public boolean toggleQuest(final PlayerProfile issuer, final QuesterLang lang) throws QuesterException {
-		return toggleQuest(issuer.getSelected(), lang);
-	}
-	
-	public boolean toggleQuest(final int questID, final QuesterLang lang) throws QuesterException {
-		return toggleQuest(getQuest(questID), lang);
-	}
-	
-	public boolean toggleQuest(final Quest q, final QuesterLang lang) throws QuesterException {
-		if(q == null) {
+	public boolean toggleQuest(final Quest quest, final QuesterLang lang, final ProfileManager profMan) throws QuesterException {
+		if(quest == null) {
 			throw new QuestException(lang.get("ERROR_Q_NOT_EXIST"));
 		}
-		if(q.hasFlag(QuestFlag.ACTIVE)) {
-			deactivateQuest(q);
+		if(quest.hasFlag(QuestFlag.ACTIVE)) {
+			deactivateQuest(quest, profMan);
 			return false;
 		}
 		else {
-			activateQuest(q);
+			activateQuest(quest);
 			return true;
 		}
 	}
@@ -574,194 +563,6 @@ public class QuestManager {
 		return true;
 	}
 	
-	// MESSENGER METHODS
-	
-	public void showQuest(final CommandSender sender, final String questName, final QuesterLang lang) throws QuesterException {
-		Quest qst = null;
-		if(questName.isEmpty()) {
-			final QuestProgress prog = profMan.getProfile(sender.getName()).getProgress();
-			if(prog != null) {
-				qst = prog.getQuest();
-			}
-		}
-		else {
-			qst = getQuest(questName);
-		}
-		
-		if(qst == null) {
-			throw new QuestException(lang.get("ERROR_Q_NOT_EXIST"));
-		}
-		if(!qst.hasFlag(QuestFlag.ACTIVE) || qst.hasFlag(QuestFlag.HIDDEN)) {
-			if(!Util.permCheck(sender, QConfiguration.PERM_MODIFY, false, null)) {
-				throw new QuestException(lang.get("ERROR_Q_NOT_EXIST"));
-			}
-		}
-		Player player = null;
-		if(sender instanceof Player) {
-			player = (Player) sender;
-		}
-		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_NAME") + ": " + ChatColor.GOLD
-				+ qst.getName());
-		final String string = qst.getDescription(sender.getName(), lang);
-		if(!string.isEmpty()) {
-			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_DESCRIPTION") + ": "
-					+ ChatColor.WHITE + string);
-		}
-		final List<Condition> cons = qst.getConditions();
-		if(!cons.isEmpty()) {
-			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_CONDITIONS") + ":");
-		}
-		ChatColor color = ChatColor.WHITE;
-		for(int i = 0; i < cons.size(); i++) {
-			if(player != null) {
-				color = cons.get(i).isMet(player) ? ChatColor.GREEN : ChatColor.RED;
-			}
-			sender.sendMessage(color + " - " + cons.get(i).inShow(player, lang));
-		}
-		if(!qst.hasFlag(QuestFlag.HIDDENOBJS)) {
-			final List<Objective> objs = qst.getObjectives();
-			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_OBJECTIVES") + ":");
-			for(int i = 0; i < objs.size(); i++) {
-				if(!objs.get(i).isHidden()
-						&& (objs.get(i).getPrerequisites().isEmpty() || !QConfiguration.ordOnlyCurrent)) {
-					sender.sendMessage(ChatColor.WHITE + " - " + objs.get(i).inShow(0, lang));
-				}
-			}
-		}
-	}
-	
-	public void showQuestInfo(final CommandSender sender, final QuesterLang lang) throws QuesterException {
-		showQuestInfo(sender, profMan.getProfile(sender.getName()).getSelected(), lang);
-	}
-	
-	public void showQuestInfo(final CommandSender sender, final int id, final QuesterLang lang) throws QuesterException {
-		showQuestInfo(sender, getQuest(id), lang);
-	}
-	
-	public void showQuestInfo(final CommandSender sender, final String questName, final QuesterLang lang) throws QuesterException {
-		showQuestInfo(sender, getQuest(questName), lang);
-	}
-	
-	public void showQuestInfo(final CommandSender sender, final Quest quest, final QuesterLang lang) throws QuesterException {
-		if(quest == null) {
-			throw new QuestException(lang.get("ERROR_Q_NOT_EXIST"));
-		}
-		
-		sender.sendMessage(Util.line(ChatColor.BLUE, lang.get("INFO_QUEST_INFO"), ChatColor.GOLD));
-		
-		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_NAME") + ": " + "[" + quest.getID()
-				+ "]" + ChatColor.GOLD + quest.getName());
-		String msgString = quest.getRawDescription();
-		if(!msgString.isEmpty()) {
-			final ChatColor color =
-					langMan.customMessageExists(LanguageManager.getCustomMessageKey(msgString))
-							? ChatColor.GREEN : ChatColor.RED;
-			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_DESCRIPTION") + ": " + color
-					+ msgString);
-		}
-		if(quest.hasLocation()) {
-			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_LOCATION") + ": " + ChatColor.WHITE
-					+ SerUtils.displayLocation(quest.getLocation()));
-		}
-		msgString = QuestFlag.stringize(quest.getFlags());
-		if(!msgString.isEmpty()) {
-			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_FLAGS") + ": " + ChatColor.WHITE
-					+ msgString);
-		}
-		if(!quest.getWorlds().isEmpty()) {
-			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_WORLDS") + ": " + ChatColor.WHITE
-					+ quest.getWorldNames());
-		}
-		int i;
-		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_TRIGGERS") + ":");
-		i = 0;
-		for(final Trigger t : quest.getTriggers()) {
-			sender.sendMessage(" [" + i + "] " + t.inInfo());
-			i++;
-			
-		}
-		final Map<Integer, Map<Integer, Qevent>> qmap = quest.getQeventMap();
-		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_EVENTS") + ":");
-		for(i = -1; i > -4; i--) {
-			if(qmap.get(i) != null) {
-				sender.sendMessage(ChatColor.GOLD + " " + Qevent.parseOccasion(i) + ":");
-				for(final int j : qmap.get(i).keySet()) {
-					sender.sendMessage("  <" + j + "> " + qmap.get(i).get(j).inInfo());
-				}
-			}
-		}
-		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_CONDITIONS") + ":");
-		i = 0;
-		for(final Condition c : quest.getConditions()) {
-			sender.sendMessage(" [" + i + "] " + c.inInfo(langMan));
-			i++;
-			
-		}
-		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_OBJECTIVES") + ":");
-		i = 0;
-		for(final Objective o : quest.getObjectives()) {
-			final String color = o.isHidden() ? ChatColor.YELLOW + "" : "";
-			sender.sendMessage(color + " [" + i + "] " + o.inInfo(langMan));
-			if(qmap.get(i) != null) {
-				for(final int j : qmap.get(i).keySet()) {
-					sender.sendMessage("  <" + j + "> " + qmap.get(i).get(j).inInfo());
-				}
-			}
-			i++;
-		}
-	}
-	
-	public void showQuestList(final CommandSender sender, final QuesterLang lang) {
-		Player player = null;
-		if(sender instanceof Player) {
-			player = (Player) sender;
-		}
-		else {
-			showFullQuestList(sender, lang);
-			return;
-		}
-		sender.sendMessage(Util.line(ChatColor.BLUE, lang.get("INFO_QUEST_LIST"), ChatColor.GOLD));
-		ChatColor color = ChatColor.RED;
-		final PlayerProfile prof = profMan.getProfile(player.getName());
-		Quest quest = null;
-		for(final int i : getQuestIds()) {
-			quest = getQuest(i);
-			if(quest.hasFlag(QuestFlag.ACTIVE) && !quest.hasFlag(QuestFlag.HIDDEN)) {
-				try {
-					if(prof.hasQuest(quest)) {
-						color = ChatColor.YELLOW;
-					}
-					else if(prof.isCompleted(quest.getName())
-							&& !quest.hasFlag(QuestFlag.REPEATABLE)) {
-						color = ChatColor.GREEN;
-					}
-					else if(areConditionsMet(player, quest, lang)) {
-						color = ChatColor.BLUE;
-					}
-					else {
-						color = ChatColor.RED;
-					}
-				}
-				catch (final Exception e) {
-					e.printStackTrace();
-				}
-				sender.sendMessage(ChatColor.GOLD + "* " + color + quest.getName());
-			}
-		}
-	}
-	
-	public void showFullQuestList(final CommandSender sender, final QuesterLang lang) {
-		sender.sendMessage(Util.line(ChatColor.BLUE, lang.get("INFO_QUEST_LIST"), ChatColor.GOLD));
-		Quest q = null;
-		for(final int i : getQuestIds()) {
-			q = getQuest(i);
-			final ChatColor color = q.hasFlag(QuestFlag.ACTIVE) ? ChatColor.GREEN : ChatColor.RED;
-			final ChatColor color2 =
-					q.hasFlag(QuestFlag.HIDDEN) ? ChatColor.YELLOW : ChatColor.BLUE;
-			sender.sendMessage(color2 + "[" + q.getID() + "]" + color + q.getName());
-		}
-	}
-	
 	public void saveQuests() {
 		for(final StorageKey subKey : questStorage.getKey("").getSubKeys()) {
 			subKey.removeKey("");
@@ -780,9 +581,9 @@ public class QuestManager {
 	public boolean loadQuests(final String fileName) {
 		Storage storage = questStorage;
 		if(fileName != null) {
-			final File storageFile = new File(plugin.getDataFolder(), fileName);
+			final File storageFile = new File(dataFolder, fileName);
 			if(storageFile.exists()) {
-				storage = new ConfigStorage(storageFile, plugin.getLogger(), null);
+				storage = new ConfigStorage(storageFile, logger, null);
 			}
 			else {
 				return false;
@@ -859,8 +660,7 @@ public class QuestManager {
 		
 		if(QConfiguration.autoBackup && errorHappened) {
 			try {
-				final File backupDir =
-						new File(plugin.getDataFolder() + File.separator + "backups");
+				final File backupDir = new File(dataFolder + File.separator + "backups");
 				if(!backupDir.isDirectory()) {
 					backupDir.mkdir();
 				}

@@ -24,6 +24,7 @@ import me.ragan262.quester.exceptions.*;
 import me.ragan262.quester.holder.QuestHolderManager;
 import me.ragan262.quester.holder.QuesterTrait;
 import me.ragan262.quester.lang.LanguageManager;
+import me.ragan262.quester.lang.Messenger;
 import me.ragan262.quester.listeners.*;
 import me.ragan262.quester.objectives.*;
 import me.ragan262.quester.profiles.ProfileListener;
@@ -53,18 +54,18 @@ public class Quester extends JavaPlugin {
 	public static Economy econ = null;
 	
 	private LanguageManager langs = null;
+	private Messenger messages = null;
 	private QuestManager quests = null;
 	private ProfileManager profiles = null;
 	private QuestHolderManager holders = null;
 	private ElementManager elements = null;
 	private CommandManager commands = null;
 	
-	private boolean loaded = false;
+	private boolean enabled = false;
 	private int saveID = 0;
 	
 	public static boolean citizens2 = false;
 	public static boolean vault = false;
-	public static boolean denizen = false;
 	
 	public static final String LABEL = ChatColor.BLUE + "[" + ChatColor.GOLD + "Quester"
 			+ ChatColor.BLUE + "] ";
@@ -74,10 +75,29 @@ public class Quester extends JavaPlugin {
 	}
 	
 	@Override
+	public void onLoad() {
+		try {
+			langs =
+					new LanguageManager(this, new File(getDataFolder() + File.separator + "local"
+							+ File.separator));
+		}
+		catch (final Exception e) {
+			Ql.severe("Failed to load languages.");
+			getServer().getPluginManager().disablePlugin(this);
+			return;
+		}
+		
+		langs.loadCustomMessages(new File(getDataFolder(), "messages.yml"));
+		
+		elements = new ElementManager();
+		ElementManager.setInstance(elements);
+		registerElements();
+	}
+	
+	@Override
 	public void onEnable() {
-		
+		// initialize and load configuration
 		Ql.init(this);
-		
 		QConfiguration.createInstance(this);
 		try {
 			QConfiguration.loadData();
@@ -88,23 +108,21 @@ public class Quester extends JavaPlugin {
 			return;
 		}
 		
-		// Managers
-		loadLangs();
+		// load languages
+		final int langCount = langs.loadLangs();
+		Ql.info(langCount + (langCount == 1 ? " language" : " languages") + " loaded.");
+		langs.setDefaultLang(QConfiguration.defaultLang);
+		Ql.info("Default language is " + langs.getDefaultLangName() + ".");
+		langs.saveLanguages();
 		
-		elements = new ElementManager();
-		ElementManager.setInstance(elements);
+		// create managers
+		messages = new Messenger(langs);
 		quests = new QuestManager(this);
 		profiles = new ProfileManager(this);
-		quests.setProfileManager(profiles); // loading conflicts...
 		holders = new QuestHolderManager(this);
 		commands = new CommandManager(langs, getLogger(), QConfiguration.displayedCmd, this);
 		
-		registerElements();
-		if(QConfiguration.useRank) {
-			profiles.loadRanks();
-		}
-		holders.loadHolders();
-		
+		// metrics
 		if(QConfiguration.useMetrics) {
 			try {
 				final Metrics metrics = new Metrics(this);
@@ -115,6 +133,7 @@ public class Quester extends JavaPlugin {
 			}
 		}
 		
+		// hooks
 		if(setupEconomy()) {
 			Ql.info("Vault found and hooked...");
 		}
@@ -122,16 +141,15 @@ public class Quester extends JavaPlugin {
 		if(setupCitizens()) {
 			Ql.info("Citizens 2 found and hooked...");
 		}
-		if(setupDenizen()) {
-			Ql.info("Denizen found and hooked...");
-		}
 		
+		// listeners and commands
 		setupListeners();
 		
 		commands.register(UserCommands.class);
 		commands.register(AdminCommands.class);
 		commands.register(ModificationCommands.class);
 		
+		// mysql initialization
 		if(QConfiguration.profileStorageType == StorageType.MYSQL) {
 			Connection conn = null;
 			Statement stmt = null;
@@ -172,28 +190,23 @@ public class Quester extends JavaPlugin {
 			}
 		}
 		
-		if(getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-			@Override
-			public void run() {
-				langs.saveLanguages();
-				quests.loadQuests();
-				profiles.loadProfiles(QConfiguration.profileStorageType, false);
-				holders.checkHolders();
-				
-			}
-		}, 1L) == -1) {
-			Ql.severe("Failed to schedule loading task. Disabling Quester...");
-			getServer().getPluginManager().disablePlugin(this);
-			return;
+		// load data
+		if(QConfiguration.useRank) {
+			profiles.loadRanks();
 		}
+		holders.loadHolders();
+		quests.loadQuests();
+		profiles.loadProfiles(QConfiguration.profileStorageType, false);
+		holders.checkHolders();
 		
+		// saving task
 		startSaving();
-		loaded = true;
+		enabled = true;
 	}
 	
 	@Override
 	public void onDisable() {
-		if(loaded) {
+		if(enabled) {
 			stopSaving();
 			quests.saveQuests();
 			profiles.saveProfiles(QConfiguration.profileStorageType, false);
@@ -204,7 +217,6 @@ public class Quester extends JavaPlugin {
 		econ = null;
 		citizens2 = false;
 		vault = false;
-		denizen = false;
 	}
 	
 	@Override
@@ -267,25 +279,12 @@ public class Quester extends JavaPlugin {
 		return langs;
 	}
 	
-	public QuestHolderManager getHolderManager() {
-		return holders;
+	public Messenger getMessenger() {
+		return messages;
 	}
 	
-	private void loadLangs() {
-		try {
-			langs =
-					new LanguageManager(this, new File(getDataFolder() + File.separator + "local"
-							+ File.separator), QConfiguration.defaultLang);
-		}
-		catch (final Exception e) {
-			Ql.severe("Failed to load languages.");
-			getServer().getPluginManager().disablePlugin(this);
-			return;
-		}
-		langs.loadCustomMessages(new File(getDataFolder(), "messages.yml"));
-		
-		final int langCount = langs.loadLangs();
-		Ql.info(langCount + (langCount == 1 ? " language" : " languages") + " loaded.");
+	public QuestHolderManager getHolderManager() {
+		return holders;
 	}
 	
 	private boolean setupEconomy() {
@@ -318,29 +317,8 @@ public class Quester extends JavaPlugin {
 		return true;
 	}
 	
-	private boolean setupDenizen() {
-		if(citizens2) {
-			denizen = getServer().getPluginManager().getPlugin("Denizen") != null;
-		}
-		if(denizen) {
-			try {
-				denizen = Class.forName("net.aufdemrand.denizen.npc.dNPC") != null;
-			}
-			catch (final Exception e) {
-				denizen = false;
-			}
-			if(!denizen) {
-				Ql.warning("Incorrect denizen version found. Supported version is 0.8.8 or newer.");
-			}
-		}
-		return denizen;
-	}
-	
 	private void setupListeners() {
-		// OLD LISTENER
-		// getServer().getPluginManager().registerEvents(new MoveListener(), this);
-		
-		// NEW CHECKER
+		// POSIITON CHECKER
 		final PositionListener posCheck = new PositionListener(this);
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, posCheck, 20, 20);
 		
@@ -361,10 +339,12 @@ public class Quester extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new DyeListener(this), this);
 		getServer().getPluginManager().registerEvents(new ChatListener(this), this);
 		getServer().getPluginManager().registerEvents(new QuestItemListener(), this);
+		getServer().getPluginManager().registerEvents(new ProfileListener(this), this);
+		
+		// hooks
 		if(citizens2) {
 			getServer().getPluginManager().registerEvents(new Citizens2Listener(this), this);
 		}
-		getServer().getPluginManager().registerEvents(new ProfileListener(this), this);
 	}
 	
 	private void registerElements() {

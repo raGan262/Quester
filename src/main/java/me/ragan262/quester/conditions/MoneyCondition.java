@@ -26,7 +26,7 @@ public final class MoneyCondition extends Condition {
 		if(!Quester.vault) {
 			return true;
 		}
-		return Quester.econ.getBalance(player.getName()) >= amount != inverted;
+		return Quester.econ.getBalance(player) >= amount != inverted;
 	}
 	
 	@Override

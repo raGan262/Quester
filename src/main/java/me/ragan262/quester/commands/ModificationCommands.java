@@ -8,7 +8,10 @@ import me.ragan262.quester.commandbase.QCommandLabels;
 import me.ragan262.quester.commandbase.QNestedCommand;
 import me.ragan262.quester.commandbase.exceptions.QCommandException;
 import me.ragan262.quester.exceptions.QuesterException;
+import me.ragan262.quester.lang.Messenger;
+import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.profiles.ProfileManager;
+import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.quests.QuestManager;
 import me.ragan262.quester.utils.Ql;
 
@@ -19,10 +22,12 @@ public class ModificationCommands {
 	
 	final QuestManager qMan;
 	final ProfileManager profMan;
+	final Messenger messenger;
 	
 	public ModificationCommands(final Quester plugin) {
 		qMan = plugin.getQuestManager();
 		profMan = plugin.getProfileManager();
+		messenger = plugin.getMessenger();
 	}
 	
 	@QCommandLabels({ "info" })
@@ -34,10 +39,10 @@ public class ModificationCommands {
 			permission = QConfiguration.PERM_MODIFY)
 	public void info(final QCommandContext context, final CommandSender sender) throws QuesterException {
 		if(context.length() > 0) {
-			qMan.showQuestInfo(sender, context.getInt(0), context.getSenderLang());
+			messenger.showQuestInfo(sender, qMan.getQuest(context.getInt(0)));
 		}
 		else {
-			qMan.showQuestInfo(sender, context.getSenderLang());
+			messenger.showQuestInfo(sender, profMan.getProfile(sender.getName()).getSelected());
 		}
 	}
 	
@@ -50,8 +55,9 @@ public class ModificationCommands {
 			usage = "<quest name>",
 			permission = QConfiguration.PERM_MODIFY)
 	public void create(final QCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.createQuest(profMan.getProfile(sender.getName()), context.getString(0),
-				context.getSenderLang());
+		final PlayerProfile prof = profMan.getProfile(sender.getName());
+		final Quest quest = qMan.createQuest(prof, context.getString(0), context.getSenderLang());
+		profMan.selectQuest(prof, quest);
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_CREATED"));
 		Ql.verbose(sender.getName() + " created quest '" + context.getString(0) + "'.");
 	}
@@ -97,11 +103,14 @@ public class ModificationCommands {
 	public void i(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
 		boolean active;
 		if(context.length() > 0) {
-			active = qMan.toggleQuest(context.getInt(0), context.getSenderLang());
+			active =
+					qMan.toggleQuest(qMan.getQuest(context.getInt(0)), context.getSenderLang(),
+							profMan);
 		}
 		else {
 			active =
-					qMan.toggleQuest(profMan.getProfile(sender.getName()), context.getSenderLang());
+					qMan.toggleQuest(profMan.getProfile(sender.getName()).getSelected(),
+							context.getSenderLang(), profMan);
 		}
 		if(active) {
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_ACTIVATED"));

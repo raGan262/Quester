@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>me.ragan262</groupId>
   <artifactId>quester</artifactId>
-  <version>0.7.1pixel-SNAPSHOT</version>
+  <version>0.7.2pixel-SNAPSHOT</version>
   <name>Quester</name>
   <description>Quester provides ability to create highly customizable quests directly in game.</description>
   
@@ -41,23 +41,18 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.7.2-R0.3</version>
+      <version>1.7.9-R0.2</version>
     </dependency>
     <dependency>
       <groupId>net.citizensnpcs</groupId>
       <artifactId>citizensapi</artifactId>
-      <version>2.0.11-SNAPSHOT</version>
+      <version>2.0.13-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>net.milkbowl.vault</groupId>
       <artifactId>VaultAPI</artifactId>
       <version>1.4</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.aufdemrand</groupId>
-      <artifactId>denizen</artifactId>
-      <version>0.9.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.mcstats.bukkit</groupId>
@@ -93,8 +88,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.1</version>
           <configuration>
-            <source>1.7</source>
-            <target>1.7</target>
+            <source>1.6</source>
+            <target>1.6</target>
           </configuration>
       </plugin>
       

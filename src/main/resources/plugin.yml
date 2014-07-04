@@ -4,35 +4,37 @@ description: ${project.description}
 author: raGan
 website: http://dev.bukkit.org/server-mods/quester/
 main: me.ragan262.quester.Quester
-softdepend: [Vault, Citizens, Denizen]
+softdepend: [Vault, Citizens]
 commands:
     q:
         description: Main (and only) quester command.
         aliases: [quest, quester]
 permissions:
-    quester.admin:
+    quester.*:
         children:
+            quester.admin: true
             quester.modify: true
-            quester.use: true
+            quester.use.*: true
+    quester.admin:
         default: op
     quester.modify:
         default: op
-    quester.use:
+    quester.use.*:
         children:
             quester.use.help: true
-            quester.use.start: true
             quester.use.npc: true
             quester.use.sign: true
             quester.use.list: true
             quester.use.show: true
             quester.use.profile: true
+            quester.use.start.*: true
             quester.use.done: true
             quester.use.cancel: true
             quester.use.progress: true
             quester.use.quests: true
             quester.use.switch: true
         default: true
-    quester.use.start:
+    quester.use.start.*:
         children:
             quester.use.start.pick: true
             quester.use.start.random: true
