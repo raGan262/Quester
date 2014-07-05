@@ -144,7 +144,7 @@ public class ProfileManager {
 		final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
 		if(!hasProfile(offlinePlayer)
 				|| offlinePlayer.getUniqueId().equals(senderPlayer.getUniqueId())) {
-			throw new ProfileException(lang.get("INFO_PROFILE_NOT_EXIST"));
+			throw new ProfileException(lang.get("INFO_PROFILE_NOT_EXIST").replaceAll("%p", player));
 		}
 		return getProfile(offlinePlayer);
 	}
