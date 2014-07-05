@@ -1,8 +1,8 @@
 package me.ragan262.quester.qevents;
 
+import me.ragan262.commandmanager.annotations.Command;
 import me.ragan262.quester.Quester;
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.lang.LanguageManager;
@@ -51,8 +51,8 @@ public final class MessageQevent extends Qevent {
 		}
 	}
 	
-	@QCommand(min = 1, max = 1, usage = "<message>")
-	public static Qevent fromCommand(final QCommandContext context) {
+	@Command(min = 1, max = 1, usage = "<message>")
+	public static Qevent fromCommand(final QuesterCommandContext context) {
 		return new MessageQevent(context.getString(0));
 	}
 	

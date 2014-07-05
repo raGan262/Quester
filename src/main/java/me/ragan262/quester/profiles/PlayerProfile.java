@@ -11,14 +11,14 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-
 import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.quests.QuestManager;
 import me.ragan262.quester.storage.MemoryStorageKey;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
+
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
 public class PlayerProfile {
 	

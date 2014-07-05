@@ -1,8 +1,8 @@
 package me.ragan262.quester.conditions;
 
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Condition;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
@@ -39,8 +39,8 @@ public final class PermissionCondition extends Condition {
 		return perm;
 	}
 	
-	@QCommand(min = 1, max = 1, usage = "<permission>")
-	public static Condition fromCommand(final QCommandContext context) throws QCommandException {
+	@Command(min = 1, max = 1, usage = "<permission>")
+	public static Condition fromCommand(final QuesterCommandContext context) throws CommandException {
 		final String perm = context.getString(0);
 		return new PermissionCondition(perm);
 	}

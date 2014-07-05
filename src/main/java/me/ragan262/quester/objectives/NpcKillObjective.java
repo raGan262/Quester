@@ -1,8 +1,8 @@
 package me.ragan262.quester.objectives;
 
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
@@ -35,8 +35,8 @@ public final class NpcKillObjective extends Objective {
 		return (name == null ? "ANY" : name) + "; AMT: " + amount;
 	}
 	
-	@QCommand(min = 1, max = 2, usage = "<name> [amount]")
-	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
+	@Command(min = 1, max = 2, usage = "<name> [amount]")
+	public static Objective fromCommand(final QuesterCommandContext context) throws CommandException {
 		int amt = 1;
 		String name = null;
 		if(!context.getString(0).equalsIgnoreCase("ANY")) {
@@ -45,7 +45,7 @@ public final class NpcKillObjective extends Objective {
 		if(context.length() > 1) {
 			amt = context.getInt(1);
 			if(amt < 1) {
-				throw new QCommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_POSITIVE"));
+				throw new CommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_POSITIVE"));
 			}
 		}
 		return new NpcKillObjective(name, amt);

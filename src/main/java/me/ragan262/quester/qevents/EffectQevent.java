@@ -1,8 +1,8 @@
 package me.ragan262.quester.qevents;
 
+import me.ragan262.commandmanager.annotations.Command;
 import me.ragan262.quester.Quester;
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
@@ -33,8 +33,8 @@ public class EffectQevent extends Qevent {
 		player.addPotionEffect(effect, true);
 	}
 	
-	@QCommand(min = 1, max = 1, usage = "{<potion effect>}")
-	public static Qevent fromCommand(final QCommandContext context) {
+	@Command(min = 1, max = 1, usage = "{<potion effect>}")
+	public static Qevent fromCommand(final QuesterCommandContext context) {
 		final PotionEffect eff = SerUtils.parseEffect(context.getString(0));
 		return new EffectQevent(eff);
 	}

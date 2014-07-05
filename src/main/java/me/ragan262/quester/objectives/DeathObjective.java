@@ -1,8 +1,8 @@
 package me.ragan262.quester.objectives;
 
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
@@ -46,20 +46,20 @@ public final class DeathObjective extends Objective {
 		return "LOC: " + locStr + "; AMT: " + amount + "; RNG: " + range;
 	}
 	
-	@QCommand(min = 1, max = 3, usage = "<amount> {[location]} [range]")
-	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
+	@Command(min = 1, max = 3, usage = "<amount> {[location]} [range]")
+	public static Objective fromCommand(final QuesterCommandContext context) throws CommandException {
 		Location loc = null;
 		int rng = 5;
 		final int amt = Integer.parseInt(context.getString(0));
 		if(amt < 1) {
-			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_POSITIVE"));
+			throw new CommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_POSITIVE"));
 		}
 		if(context.length() > 1) {
 			loc = SerUtils.getLoc(context.getPlayer(), context.getString(1));
 			if(context.length() > 2) {
 				rng = context.getInt(2);
 				if(rng < 1) {
-					throw new QCommandException(context.getSenderLang().get("ERROR_CMD_RANGE_INVALID"));
+					throw new CommandException(context.getSenderLang().get("ERROR_CMD_RANGE_INVALID"));
 				}
 			}
 		}

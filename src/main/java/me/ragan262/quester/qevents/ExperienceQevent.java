@@ -1,9 +1,9 @@
 package me.ragan262.quester.qevents;
 
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.Quester;
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
@@ -45,11 +45,11 @@ public final class ExperienceQevent extends Qevent {
 		}
 	}
 	
-	@QCommand(min = 1, max = 1, usage = "<amount> (-l)")
-	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
+	@Command(min = 1, max = 1, usage = "<amount> (-l)")
+	public static Qevent fromCommand(final QuesterCommandContext context) throws CommandException {
 		final int amt = context.getInt(0);
 		if(amt == 0) {
-			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_NONZERO"));
+			throw new CommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_NONZERO"));
 		}
 		return new ExperienceQevent(amt, context.hasFlag('l'));
 	}

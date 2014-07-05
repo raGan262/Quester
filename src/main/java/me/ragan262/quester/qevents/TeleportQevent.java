@@ -1,9 +1,9 @@
 package me.ragan262.quester.qevents;
 
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.Quester;
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
@@ -39,12 +39,12 @@ public final class TeleportQevent extends Qevent {
 		player.getWorld().playEffect(loc, Effect.ENDER_SIGNAL, 1);
 	}
 	
-	@QCommand(min = 1, max = 1, usage = "{<location>}")
-	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
+	@Command(min = 1, max = 1, usage = "{<location>}")
+	public static Qevent fromCommand(final QuesterCommandContext context) throws CommandException {
 		final Location loc =
 				SerUtils.getLoc(context.getPlayer(), context.getString(0), context.getSenderLang());
 		if(loc == null) {
-			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_LOC_INVALID"));
+			throw new CommandException(context.getSenderLang().get("ERROR_CMD_LOC_INVALID"));
 		}
 		return new TeleportQevent(loc);
 	}

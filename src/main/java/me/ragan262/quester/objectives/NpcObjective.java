@@ -1,8 +1,8 @@
 package me.ragan262.quester.objectives;
 
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
@@ -33,12 +33,12 @@ public final class NpcObjective extends Objective {
 		return index + "; CANCEL: " + cancel;
 	}
 	
-	@QCommand(min = 1, max = 1, usage = "<id> (-c)")
-	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
+	@Command(min = 1, max = 1, usage = "<id> (-c)")
+	public static Objective fromCommand(final QuesterCommandContext context) throws CommandException {
 		final int id = context.getInt(0);
 		final boolean ccl = context.hasFlag('c');
 		if(id < 0) {
-			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_BAD_ID"));
+			throw new CommandException(context.getSenderLang().get("ERROR_CMD_BAD_ID"));
 		}
 		return new NpcObjective(id, ccl);
 	}

@@ -1,14 +1,14 @@
 package me.ragan262.quester.triggers;
 
-import org.bukkit.entity.Player;
-
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Trigger;
 import me.ragan262.quester.elements.TriggerContext;
 import me.ragan262.quester.storage.StorageKey;
+
+import org.bukkit.entity.Player;
 
 @QElement("NPC")
 public class NpcTrigger extends Trigger {
@@ -35,11 +35,11 @@ public class NpcTrigger extends Trigger {
 		return false;
 	}
 	
-	@QCommand(min = 1, max = 1, usage = "<id>")
-	public static Trigger fromCommand(final QCommandContext context) throws QCommandException {
+	@Command(min = 1, max = 1, usage = "<id>")
+	public static Trigger fromCommand(final QuesterCommandContext context) throws CommandException {
 		final int id = context.getInt(0);
 		if(id < 0) {
-			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_BAD_ID"));
+			throw new CommandException(context.getSenderLang().get("ERROR_CMD_BAD_ID"));
 		}
 		return new NpcTrigger(id);
 	}

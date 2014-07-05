@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import me.ragan262.quester.QConfiguration;
-import me.ragan262.quester.Quester;
 import me.ragan262.quester.QConfiguration.StorageType;
+import me.ragan262.quester.Quester;
 import me.ragan262.quester.profiles.PlayerProfile.SerializedPlayerProfile;
 import me.ragan262.quester.quests.QuestManager;
 import me.ragan262.quester.utils.DatabaseConnection;

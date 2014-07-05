@@ -1,13 +1,10 @@
 package me.ragan262.quester.commands;
 
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.annotations.CommandLabels;
+import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.Quester;
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.QCommandLabels;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.ElementManager;
 import me.ragan262.quester.elements.ElementManager.ElementType;
 import me.ragan262.quester.elements.Trigger;
@@ -18,6 +15,9 @@ import me.ragan262.quester.exceptions.TriggerException;
 import me.ragan262.quester.lang.QuesterLang;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.QuestManager;
+
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 
 public class TriggerCommands {
 	
@@ -33,7 +33,7 @@ public class TriggerCommands {
 		this.plugin = plugin;
 	}
 	
-	private Trigger getTrigger(final String type, final QCommandContext subContext, final QuesterLang lang) throws QCommandException, ObjectiveException, QuesterException {
+	private Trigger getTrigger(final String type, final QuesterCommandContext subContext, final QuesterLang lang) throws CommandException, ObjectiveException, QuesterException {
 		if(!eMan.elementExists(ElementType.TRIGGER, type)) {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.get("ERROR_TRIG_NOT_EXIST"));
 			subContext.getSender().sendMessage(
@@ -52,9 +52,9 @@ public class TriggerCommands {
 		return trig;
 	}
 	
-	@QCommandLabels({ "add", "a" })
-	@QCommand(section = "QMod", desc = "adds a trigger", min = 1, usage = "<trig type> [args]")
-	public void add(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+	@CommandLabels({ "add", "a" })
+	@Command(section = "QMod", desc = "adds a trigger", min = 1, usage = "<trig type> [args]")
+	public void add(final QuesterCommandContext context, final CommandSender sender) throws CommandException, QuesterException {
 		final QuesterLang lang = context.getSenderLang();
 		final String type = context.getString(0);
 		Trigger trig;
@@ -69,13 +69,13 @@ public class TriggerCommands {
 				+ lang.get("TRIG_ADD").replaceAll("%type", type.toUpperCase()));
 	}
 	
-	@QCommandLabels({ "set", "s" })
-	@QCommand(
+	@CommandLabels({ "set", "s" })
+	@Command(
 			section = "QMod",
 			desc = "sets a trigger",
 			min = 2,
 			usage = "<trig ID> <trig type> [args]")
-	public void set(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+	public void set(final QuesterCommandContext context, final CommandSender sender) throws CommandException, QuesterException {
 		final QuesterLang lang = context.getSenderLang();
 		final String type = context.getString(2);
 		final int triggerID = context.getInt(0);
@@ -91,9 +91,9 @@ public class TriggerCommands {
 				+ lang.get("TRIG_SET").replaceAll("%type", type.toUpperCase()));
 	}
 	
-	@QCommandLabels({ "remove", "r" })
-	@QCommand(section = "QMod", desc = "removes trigger", min = 1, max = 1, usage = "<trig ID>")
-	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
+	@CommandLabels({ "remove", "r" })
+	@Command(section = "QMod", desc = "removes trigger", min = 1, max = 1, usage = "<trig ID>")
+	public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.removeQuestTrigger(profMan.getSenderProfile(sender), context.getInt(0),
 				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
@@ -101,9 +101,9 @@ public class TriggerCommands {
 						.replaceAll("%id", context.getString(0)));
 	}
 	
-	@QCommandLabels({ "list", "l" })
-	@QCommand(section = "QMod", max = 0, desc = "trigger list")
-	public void list(final QCommandContext context, final CommandSender sender) throws QuesterException {
+	@CommandLabels({ "list", "l" })
+	@Command(section = "QMod", max = 0, desc = "trigger list")
+	public void list(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		sender.sendMessage(ChatColor.RED + context.getSenderLang().get("TRIG_LIST") + ": "
 				+ ChatColor.WHITE + eMan.getElementList(ElementType.TRIGGER));
 	}

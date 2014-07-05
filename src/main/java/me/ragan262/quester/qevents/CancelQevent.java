@@ -1,9 +1,9 @@
 package me.ragan262.quester.qevents;
 
+import me.ragan262.commandmanager.annotations.Command;
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.Quester;
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.exceptions.QuesterException;
@@ -38,8 +38,8 @@ public final class CancelQevent extends Qevent {
 		}
 	}
 	
-	@QCommand(max = 0)
-	public static Qevent fromCommand(final QCommandContext context) {
+	@Command(max = 0)
+	public static Qevent fromCommand(final QuesterCommandContext context) {
 		return new CancelQevent();
 	}
 	

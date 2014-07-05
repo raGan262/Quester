@@ -3,9 +3,9 @@ package me.ragan262.quester.objectives;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
@@ -65,8 +65,8 @@ public final class EnchantObjective extends Objective {
 		return itm + enchs;
 	}
 	
-	@QCommand(min = 1, max = 3, usage = "{<item>} [amount] {[enchants]}")
-	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
+	@Command(min = 1, max = 3, usage = "{<item>} [amount] {[enchants]}")
+	public static Objective fromCommand(final QuesterCommandContext context) throws CommandException {
 		Map<Integer, Integer> enchs = null;
 		int amt = 1;
 		final int[] itm = SerUtils.parseItem(context.getString(0));
@@ -74,7 +74,7 @@ public final class EnchantObjective extends Objective {
 		if(context.length() > 1) {
 			amt = context.getInt(1);
 			if(amt < 1) {
-				throw new QCommandException(context.getSenderLang().get("ERROR_CMD_ENCH_LEVEL"));
+				throw new CommandException(context.getSenderLang().get("ERROR_CMD_ENCH_LEVEL"));
 			}
 			if(context.length() > 2) {
 				enchs = SerUtils.parseEnchants(context.getString(2));

@@ -1,9 +1,9 @@
 package me.ragan262.quester.qevents;
 
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.Quester;
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.exceptions.QuestException;
@@ -61,8 +61,8 @@ public final class ToggleQevent extends Qevent {
 		}
 	}
 	
-	@QCommand(min = 1, max = 1, usage = "<quest name>")
-	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
+	@Command(min = 1, max = 1, usage = "<quest name>")
+	public static Qevent fromCommand(final QuesterCommandContext context) throws CommandException {
 		final Quester plugin = (Quester) Bukkit.getPluginManager().getPlugin("Quester");
 		
 		if(plugin.getQuestManager().getQuest(context.getString(0)) == null) {

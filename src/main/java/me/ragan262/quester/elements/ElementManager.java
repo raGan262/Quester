@@ -7,18 +7,18 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.Validate;
-
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
+import me.ragan262.commandmanager.exceptions.UsageException;
 import me.ragan262.quester.QConfiguration;
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
-import me.ragan262.quester.commandbase.exceptions.QUsageException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.exceptions.ElementException;
 import me.ragan262.quester.exceptions.QuesterException;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
 import me.ragan262.quester.utils.Util;
+
+import org.apache.commons.lang.Validate;
 
 public class ElementManager {
 	
@@ -53,7 +53,7 @@ public class ElementManager {
 		private Class<? extends Element> clss;
 		private String usage;
 		private Method method;
-		private QCommand command;
+		private Command command;
 	}
 	
 	private static ElementManager instance = null;
@@ -98,7 +98,7 @@ public class ElementManager {
 		return ei.usage;
 	}
 	
-	public QCommand getElementCommand(final ElementType elementType, final String type) {
+	public Command getElementCommand(final ElementType elementType, final String type) {
 		Validate.notNull(elementType, "Element type cannot be null.");
 		final ElementInfo ei = elements.get(elementType).get(type.toUpperCase());
 		if(ei == null) {
@@ -125,18 +125,18 @@ public class ElementManager {
 		return result.toString();
 	}
 	
-	private Element getFromCommand(final ElementInfo ei, final QCommandContext context) throws QCommandException, QuesterException {
+	private Element getFromCommand(final ElementInfo ei, final QuesterCommandContext context) throws CommandException, QuesterException {
 		Object obj = null;
 		try {
 			String parent;
 			if(context.length() < ei.command.min()) {
 				parent = getParentArgs(context.getParentArgs());
-				throw new QUsageException(context.getSenderLang().get("ERROR_CMD_ARGS_NOT_ENOUGH"),
+				throw new UsageException(context.getSenderLang().get("ERROR_CMD_ARGS_NOT_ENOUGH"),
 						parent + ei.usage);
 			}
 			if(!(ei.command.max() < 0) && context.length() > ei.command.max()) {
 				parent = getParentArgs(context.getParentArgs());
-				throw new QUsageException(context.getSenderLang().get("ERROR_CMD_ARGS_TOO_MANY"),
+				throw new UsageException(context.getSenderLang().get("ERROR_CMD_ARGS_TOO_MANY"),
 						ei.usage);
 			}
 			
@@ -146,14 +146,14 @@ public class ElementManager {
 			e.printStackTrace();
 		}
 		catch (final InvocationTargetException e) {
-			if(e.getCause() instanceof QCommandException) {
-				throw (QCommandException) e.getCause();
+			if(e.getCause() instanceof CommandException) {
+				throw (CommandException) e.getCause();
 			}
 			else if(e.getCause() instanceof QuesterException) {
 				throw (QuesterException) e.getCause();
 			}
 			else if(e.getCause() instanceof IllegalArgumentException) {
-				throw new QCommandException(e.getCause().getMessage());
+				throw new CommandException(e.getCause().getMessage());
 			}
 			else {
 				e.printStackTrace();
@@ -162,7 +162,7 @@ public class ElementManager {
 		return (Element) obj;
 	}
 	
-	public Element getElementFromCommand(final ElementType elementType, final String type, final QCommandContext context) throws QCommandException, QuesterException {
+	public Element getElementFromCommand(final ElementType elementType, final String type, final QuesterCommandContext context) throws CommandException, QuesterException {
 		Validate.notNull(elementType, "Element type cannot be null.");
 		final ElementInfo ei = elements.get(elementType).get(type.toUpperCase());
 		if(ei != null && context != null) {
@@ -206,7 +206,8 @@ public class ElementManager {
 	}
 	
 	private void registerElement(final ElementType elementType, final Class<? extends Element> clss, final boolean force) throws NoSuchMethodException, SecurityException, ElementException {
-		final Method fromCommand = clss.getDeclaredMethod("fromCommand", QCommandContext.class);
+		final Method fromCommand =
+				clss.getDeclaredMethod("fromCommand", QuesterCommandContext.class);
 		
 		final String type = clss.getAnnotation(QElement.class).value().toUpperCase();
 		final Map<String, ElementInfo> map = elements.get(elementType);
@@ -228,7 +229,7 @@ public class ElementManager {
 		}
 		final ElementInfo ei = new ElementInfo();
 		ei.clss = clss;
-		ei.command = fromCommand.getAnnotation(QCommand.class);
+		ei.command = fromCommand.getAnnotation(Command.class);
 		ei.method = fromCommand;
 		ei.usage = ei.command.usage();
 		map.put(type, ei);

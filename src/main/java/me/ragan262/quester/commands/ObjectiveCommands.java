@@ -2,15 +2,15 @@ package me.ragan262.quester.commands;
 
 import java.util.Set;
 
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.annotations.CommandLabels;
+import me.ragan262.commandmanager.annotations.NestedCommand;
+import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.Quester;
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.QCommandLabels;
-import me.ragan262.quester.commandbase.QNestedCommand;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.ElementManager;
-import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.ElementManager.ElementType;
+import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.exceptions.ElementException;
 import me.ragan262.quester.exceptions.ObjectiveException;
 import me.ragan262.quester.exceptions.QuesterException;
@@ -34,7 +34,7 @@ public class ObjectiveCommands {
 		profMan = plugin.getProfileManager();
 	}
 	
-	private Objective getObjective(final String type, final QCommandContext subContext, final QuesterLang lang) throws QCommandException, ObjectiveException, QuesterException {
+	private Objective getObjective(final String type, final QuesterCommandContext subContext, final QuesterLang lang) throws CommandException, ObjectiveException, QuesterException {
 		if(!eMan.elementExists(ElementType.OBJECTIVE, type)) {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.get("ERROR_OBJ_NOT_EXIST"));
 			subContext.getSender().sendMessage(
@@ -54,13 +54,13 @@ public class ObjectiveCommands {
 		return obj;
 	}
 	
-	@QCommandLabels({ "add", "a" })
-	@QCommand(
+	@CommandLabels({ "add", "a" })
+	@Command(
 			section = "QMod",
 			desc = "adds an objective",
 			min = 1,
 			usage = "<objective type> [args] (-h)")
-	public void add(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+	public void add(final QuesterCommandContext context, final CommandSender sender) throws CommandException, QuesterException {
 		final QuesterLang lang = context.getSenderLang();
 		final String type = context.getString(0);
 		Objective obj;
@@ -75,13 +75,13 @@ public class ObjectiveCommands {
 				+ lang.get("OBJ_ADD").replaceAll("%type", type.toUpperCase()));
 	}
 	
-	@QCommandLabels({ "set", "s" })
-	@QCommand(
+	@CommandLabels({ "set", "s" })
+	@Command(
 			section = "QMod",
 			desc = "sets an objective",
 			min = 2,
 			usage = "<obj ID> <obj type> [args] (-h)")
-	public void set(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+	public void set(final QuesterCommandContext context, final CommandSender sender) throws CommandException, QuesterException {
 		final QuesterLang lang = context.getSenderLang();
 		final int objectiveID = context.getInt(0);
 		final String type = context.getString(1);
@@ -98,35 +98,35 @@ public class ObjectiveCommands {
 				+ lang.get("OBJ_SET").replaceAll("%type", type.toUpperCase()));
 	}
 	
-	@QCommandLabels({ "remove", "r" })
-	@QCommand(
+	@CommandLabels({ "remove", "r" })
+	@Command(
 			section = "QMod",
 			desc = "removes objective",
 			min = 1,
 			max = 1,
 			usage = "<objective ID>")
-	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
+	public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.removeQuestObjective(profMan.getSenderProfile(sender), context.getInt(0),
 				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().get("OBJ_REMOVE").replaceAll("%id", context.getString(0)));
 	}
 	
-	@QCommandLabels({ "list", "l" })
-	@QCommand(section = "QMod", max = 0, desc = "objective list")
-	public void list(final QCommandContext context, final CommandSender sender) throws QuesterException {
+	@CommandLabels({ "list", "l" })
+	@Command(section = "QMod", max = 0, desc = "objective list")
+	public void list(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		sender.sendMessage(ChatColor.RED + context.getSenderLang().get("OBJ_LIST") + ": "
 				+ ChatColor.WHITE + eMan.getElementList(ElementType.OBJECTIVE));
 	}
 	
-	@QCommandLabels({ "swap" })
-	@QCommand(
+	@CommandLabels({ "swap" })
+	@Command(
 			section = "QMod",
 			min = 2,
 			max = 2,
 			desc = "swaps two objectives",
 			usage = "<obj ID 1> <obj ID 2>")
-	public void swap(final QCommandContext context, final CommandSender sender) throws QuesterException {
+	public void swap(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.swapQuestObjectives(profMan.getSenderProfile(sender), context.getInt(0),
 				context.getInt(1), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
@@ -134,14 +134,14 @@ public class ObjectiveCommands {
 						.replaceAll("%id2", context.getString(1)));
 	}
 	
-	@QCommandLabels({ "move" })
-	@QCommand(
+	@CommandLabels({ "move" })
+	@Command(
 			section = "QMod",
 			min = 2,
 			max = 2,
 			desc = "moves an objective",
 			usage = "<ID from> <ID to>")
-	public void move(final QCommandContext context, final CommandSender sender) throws QuesterException {
+	public void move(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.moveQuestObjective(profMan.getSenderProfile(sender), context.getInt(0),
 				context.getInt(1), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
@@ -149,20 +149,20 @@ public class ObjectiveCommands {
 						.replaceAll("%id2", context.getString(1)));
 	}
 	
-	@QCommandLabels({ "desc" })
-	@QCommand(section = "QMod", desc = "objective description manipulation")
-	@QNestedCommand(ObjectiveDescCommands.class)
-	public void desc(final QCommandContext context, final CommandSender sender) throws QuesterException {}
+	@CommandLabels({ "desc" })
+	@Command(section = "QMod", desc = "objective description manipulation")
+	@NestedCommand(ObjectiveDescCommands.class)
+	public void desc(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {}
 	
-	@QCommandLabels({ "prereq" })
-	@QCommand(section = "QMod", desc = "objective prerequisites manipulation")
-	@QNestedCommand(ObjectivePrereqCommands.class)
-	public void prereq(final QCommandContext context, final CommandSender sender) throws QuesterException {}
+	@CommandLabels({ "prereq" })
+	@Command(section = "QMod", desc = "objective prerequisites manipulation")
+	@NestedCommand(ObjectivePrereqCommands.class)
+	public void prereq(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {}
 	
-	@QCommandLabels({ "trigger", "trig" })
-	@QCommand(section = "QMod", desc = "objective triggers manipulation")
-	@QNestedCommand(ObjectiveTrigCommands.class)
-	public void trig(final QCommandContext context, final CommandSender sender) throws QuesterException {}
+	@CommandLabels({ "trigger", "trig" })
+	@Command(section = "QMod", desc = "objective triggers manipulation")
+	@NestedCommand(ObjectiveTrigCommands.class)
+	public void trig(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {}
 	
 	public static class ObjectiveDescCommands {
 		
@@ -174,14 +174,14 @@ public class ObjectiveCommands {
 			profMan = plugin.getProfileManager();
 		}
 		
-		@QCommandLabels({ "add", "a" })
-		@QCommand(
+		@CommandLabels({ "add", "a" })
+		@Command(
 				section = "QMod",
 				desc = "adds to objective description",
 				min = 2,
 				max = 2,
 				usage = "<objective ID> <description>")
-		public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		public void add(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 			qMan.addObjectiveDescription(profMan.getSenderProfile(sender), context.getInt(0),
 					context.getString(1), context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
@@ -189,14 +189,14 @@ public class ObjectiveCommands {
 							.replaceAll("%id", context.getString(0)));
 		}
 		
-		@QCommandLabels({ "remove", "r" })
-		@QCommand(
+		@CommandLabels({ "remove", "r" })
+		@Command(
 				section = "QMod",
 				desc = "removes objective description",
 				min = 1,
 				max = 1,
 				usage = "<objective ID>")
-		public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 			qMan.removeObjectiveDescription(profMan.getSenderProfile(sender), context.getInt(0),
 					context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
@@ -215,13 +215,13 @@ public class ObjectiveCommands {
 			profMan = plugin.getProfileManager();
 		}
 		
-		@QCommandLabels({ "add", "a" })
-		@QCommand(
+		@CommandLabels({ "add", "a" })
+		@Command(
 				section = "QMod",
 				desc = "adds objective prerequisites",
 				min = 2,
 				usage = "<objective ID> <prerequisite1>...")
-		public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		public void add(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 			final Set<Integer> prereq = SerUtils.parseIntSet(context.getArgs(), 1);
 			qMan.addObjectivePrerequisites(profMan.getSenderProfile(sender), context.getInt(0),
 					prereq, context.getSenderLang());
@@ -230,13 +230,13 @@ public class ObjectiveCommands {
 							.replaceAll("%id", context.getString(0)));
 		}
 		
-		@QCommandLabels({ "remove", "r" })
-		@QCommand(
+		@CommandLabels({ "remove", "r" })
+		@Command(
 				section = "QMod",
 				desc = "removes objective prerequisites",
 				min = 2,
 				usage = "<objective ID> <prerequisite1>...")
-		public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 			final Set<Integer> prereq = SerUtils.parseIntSet(context.getArgs(), 1);
 			qMan.removeObjectivePrerequisites(profMan.getSenderProfile(sender), context.getInt(0),
 					prereq, context.getSenderLang());
@@ -256,13 +256,13 @@ public class ObjectiveCommands {
 			profMan = plugin.getProfileManager();
 		}
 		
-		@QCommandLabels({ "add", "a" })
-		@QCommand(
+		@CommandLabels({ "add", "a" })
+		@Command(
 				section = "QMod",
 				desc = "adds objective triggers",
 				min = 2,
 				usage = "<objective ID> <trigger ID1>...")
-		public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		public void add(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 			final Set<Integer> prereq = SerUtils.parseIntSet(context.getArgs(), 1);
 			qMan.addObjectiveTriggers(profMan.getSenderProfile(sender), context.getInt(0), prereq,
 					context.getSenderLang());
@@ -271,13 +271,13 @@ public class ObjectiveCommands {
 							.replaceAll("%id", context.getString(0)));
 		}
 		
-		@QCommandLabels({ "remove", "r" })
-		@QCommand(
+		@CommandLabels({ "remove", "r" })
+		@Command(
 				section = "QMod",
 				desc = "removes objective triggers",
 				min = 2,
 				usage = "<objective ID> <trigger ID1>...")
-		public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 			final Set<Integer> prereq = SerUtils.parseIntSet(context.getArgs(), 1);
 			qMan.removeObjectiveTriggers(profMan.getSenderProfile(sender), context.getInt(0),
 					prereq, context.getSenderLang());

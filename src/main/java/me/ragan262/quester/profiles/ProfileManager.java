@@ -20,8 +20,8 @@ import javax.management.InstanceNotFoundException;
 
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.QConfiguration;
-import me.ragan262.quester.Quester;
 import me.ragan262.quester.QConfiguration.StorageType;
+import me.ragan262.quester.Quester;
 import me.ragan262.quester.elements.Condition;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.Qevent;

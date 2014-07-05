@@ -1,8 +1,8 @@
 package me.ragan262.quester.conditions;
 
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Condition;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
@@ -81,8 +81,8 @@ public final class ItemCondition extends Condition {
 		return material.name() + "[" + material.getId() + dataStr + "]; AMT: " + amount + flags;
 	}
 	
-	@QCommand(min = 1, max = 2, usage = "{<item>} <amount> (-qi)")
-	public static Condition fromCommand(final QCommandContext context) throws QCommandException {
+	@Command(min = 1, max = 2, usage = "{<item>} <amount> (-qi)")
+	public static Condition fromCommand(final QuesterCommandContext context) throws CommandException {
 		final int[] itm = SerUtils.parseItem(context.getString(0));
 		final Material mat = Material.getMaterial(itm[0]);
 		final int dat = itm[1];
@@ -94,10 +94,10 @@ public final class ItemCondition extends Condition {
 			}
 		}
 		catch (final NumberFormatException e) {
-			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_ITEM_NUMBERS"));
+			throw new CommandException(context.getSenderLang().get("ERROR_CMD_ITEM_NUMBERS"));
 		}
 		catch (final IllegalArgumentException e) {
-			throw new QCommandException(e.getMessage());
+			throw new CommandException(e.getMessage());
 		}
 		return new ItemCondition(mat, amt, dat, context.hasFlag('i'), context.hasFlag('q'));
 	}

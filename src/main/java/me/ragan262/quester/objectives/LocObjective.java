@@ -1,8 +1,8 @@
 package me.ragan262.quester.objectives;
 
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
@@ -42,17 +42,17 @@ public final class LocObjective extends Objective {
 		return SerUtils.serializeLocString(location) + "; RNG: " + range;
 	}
 	
-	@QCommand(min = 1, max = 2, usage = "{<location>} [range]")
-	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
+	@Command(min = 1, max = 2, usage = "{<location>} [range]")
+	public static Objective fromCommand(final QuesterCommandContext context) throws CommandException {
 		int rng = 3;
 		final Location loc = SerUtils.getLoc(context.getPlayer(), context.getString(0));
 		if(loc == null) {
-			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_LOC_INVALID"));
+			throw new CommandException(context.getSenderLang().get("ERROR_CMD_LOC_INVALID"));
 		}
 		if(context.length() > 1) {
 			rng = context.getInt(1);
 			if(rng < 1) {
-				throw new QCommandException(context.getSenderLang().get("ERROR_CMD_RANGE_INVALID"));
+				throw new CommandException(context.getSenderLang().get("ERROR_CMD_RANGE_INVALID"));
 			}
 		}
 		return new RegionObjective(new Region.Sphere(loc, rng), context.hasFlag('i'));

@@ -1,14 +1,14 @@
 package me.ragan262.quester.commands;
 
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.annotations.CommandLabels;
+import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.QCommandLabels;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.ElementManager;
-import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.elements.ElementManager.ElementType;
+import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.exceptions.ElementException;
 import me.ragan262.quester.exceptions.QeventException;
 import me.ragan262.quester.exceptions.QuesterException;
@@ -36,13 +36,13 @@ public class QeventCommands {
 		this.plugin = plugin;
 	}
 	
-	private Qevent getQevent(final String type, final String occassion, final QCommandContext subContext, final QuesterLang lang) throws QeventException, QCommandException, QuesterException {
+	private Qevent getQevent(final String type, final String occassion, final QuesterCommandContext subContext, final QuesterLang lang) throws QeventException, CommandException, QuesterException {
 		int[] occasion;
 		try {
 			occasion = SerUtils.deserializeOccasion(occassion, lang);
 		}
 		catch (final IllegalArgumentException e) {
-			throw new QCommandException(e.getMessage());
+			throw new CommandException(e.getMessage());
 		}
 		if(!eMan.elementExists(ElementType.EVENT, type)) {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.get("ERROR_EVT_NOT_EXIST"));
@@ -61,16 +61,16 @@ public class QeventCommands {
 		return evt;
 	}
 	
-	@QCommandLabels({ "run" })
-	@QCommand(
+	@CommandLabels({ "run" })
+	@Command(
 			section = "Admin",
 			desc = "runs an event",
 			min = 1,
 			usage = "<event type> [args]",
 			permission = QConfiguration.PERM_ADMIN)
-	public void run(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+	public void run(final QuesterCommandContext context, final CommandSender sender) throws CommandException, QuesterException {
 		if(!(sender instanceof Player)) {
-			throw new QCommandException("This command requires player context.");
+			throw new CommandException("This command requires player context.");
 		}
 		final QuesterLang lang = context.getSenderLang();
 		final String type = context.getString(0);
@@ -84,19 +84,19 @@ public class QeventCommands {
 		qevent.execute(context.getPlayer(), plugin);
 	}
 	
-	@QCommandLabels({ "runas" })
-	@QCommand(
+	@CommandLabels({ "runas" })
+	@Command(
 			section = "Admin",
 			desc = "runs an event as player",
 			min = 3,
 			max = 3,
 			usage = "<player> <quest id> <event id>",
 			permission = QConfiguration.PERM_ADMIN)
-	public void runas(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+	public void runas(final QuesterCommandContext context, final CommandSender sender) throws CommandException, QuesterException {
 		final Player player = Bukkit.getPlayerExact(context.getString(0));
 		final QuesterLang lang = context.getSenderLang();
 		if(player == null) {
-			throw new QCommandException(lang.get("ERROR_CMD_PLAYER_OFFLINE").replaceAll("%p",
+			throw new CommandException(lang.get("ERROR_CMD_PLAYER_OFFLINE").replaceAll("%p",
 					context.getString(0)));
 		}
 		
@@ -112,13 +112,13 @@ public class QeventCommands {
 		qevent.execute(context.getPlayer(), plugin);
 	}
 	
-	@QCommandLabels({ "add", "a" })
-	@QCommand(
+	@CommandLabels({ "add", "a" })
+	@Command(
 			section = "QMod",
 			desc = "adds an event",
 			min = 2,
 			usage = "{<occasion>} <evt type> [args]")
-	public void add(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+	public void add(final QuesterCommandContext context, final CommandSender sender) throws CommandException, QuesterException {
 		final QuesterLang lang = context.getSenderLang();
 		final String type = context.getString(1);
 		Qevent qevent;
@@ -133,13 +133,13 @@ public class QeventCommands {
 				+ lang.get("EVT_ADD").replaceAll("%type", type.toUpperCase()));
 	}
 	
-	@QCommandLabels({ "set", "s" })
-	@QCommand(
+	@CommandLabels({ "set", "s" })
+	@Command(
 			section = "QMod",
 			desc = "sets an event",
 			min = 3,
 			usage = "<evt ID> {<occasion>} <evt type> [args]")
-	public void set(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+	public void set(final QuesterCommandContext context, final CommandSender sender) throws CommandException, QuesterException {
 		final QuesterLang lang = context.getSenderLang();
 		final String type = context.getString(2);
 		final int qeventID = context.getInt(0);
@@ -155,18 +155,18 @@ public class QeventCommands {
 				+ lang.get("EVT_SET").replaceAll("%type", type.toUpperCase()));
 	}
 	
-	@QCommandLabels({ "remove", "r" })
-	@QCommand(section = "QMod", desc = "removes event", min = 1, max = 1, usage = "<evt ID>")
-	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
+	@CommandLabels({ "remove", "r" })
+	@Command(section = "QMod", desc = "removes event", min = 1, max = 1, usage = "<evt ID>")
+	public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.removeQuestQevent(profMan.getSenderProfile(sender), context.getInt(0),
 				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().get("EVT_REMOVE").replaceAll("%id", context.getString(0)));
 	}
 	
-	@QCommandLabels({ "list", "l" })
-	@QCommand(section = "QMod", max = 0, desc = "event list")
-	public void list(final QCommandContext context, final CommandSender sender) throws QuesterException {
+	@CommandLabels({ "list", "l" })
+	@Command(section = "QMod", max = 0, desc = "event list")
+	public void list(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		sender.sendMessage(ChatColor.RED + context.getSenderLang().get("EVT_LIST") + ": "
 				+ ChatColor.WHITE + eMan.getElementList(ElementType.EVENT));
 	}

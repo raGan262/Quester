@@ -1,8 +1,8 @@
 package me.ragan262.quester.objectives;
 
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
@@ -41,14 +41,14 @@ public final class CollectObjective extends Objective {
 		return material.name() + "[" + material.getId() + dataStr + "]; AMT: " + amount;
 	}
 	
-	@QCommand(min = 2, max = 2, usage = "{<item>} <amount>")
-	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
+	@Command(min = 2, max = 2, usage = "{<item>} <amount>")
+	public static Objective fromCommand(final QuesterCommandContext context) throws CommandException {
 		final int[] itm = SerUtils.parseItem(context.getString(0));
 		final Material mat = Material.getMaterial(itm[0]);
 		final int dat = itm[1];
 		final int amt = Integer.parseInt(context.getString(1));
 		if(amt < 1 || dat < -1) {
-			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_ITEM_NUMBERS"));
+			throw new CommandException(context.getSenderLang().get("ERROR_CMD_ITEM_NUMBERS"));
 		}
 		return new CollectObjective(amt, mat, dat);
 	}

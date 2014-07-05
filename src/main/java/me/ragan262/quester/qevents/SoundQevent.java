@@ -1,9 +1,9 @@
 package me.ragan262.quester.qevents;
 
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.Quester;
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
@@ -49,8 +49,8 @@ public final class SoundQevent extends Qevent {
 		temp.getWorld().playSound(temp, sound, volume, pitch);
 	}
 	
-	@QCommand(min = 1, max = 4, usage = "{<sound>} {[location]} [volume] [pitch]")
-	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
+	@Command(min = 1, max = 4, usage = "{<sound>} {[location]} [volume] [pitch]")
+	public static Qevent fromCommand(final QuesterCommandContext context) throws CommandException {
 		final Sound snd = SerUtils.parseSound(context.getString(0));
 		float vol = 1F;
 		float pit = 1F;
@@ -64,7 +64,7 @@ public final class SoundQevent extends Qevent {
 				pit = (float) context.getDouble(3);
 			}
 			if(vol < 0) {
-				throw new QCommandException(context.getSenderLang().get("ERROR_CMD_VOL_PIT"));
+				throw new CommandException(context.getSenderLang().get("ERROR_CMD_VOL_PIT"));
 			}
 		}
 		return new SoundQevent(loc, snd, vol, pit);

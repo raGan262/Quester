@@ -1,11 +1,11 @@
 package me.ragan262.quester.commands;
 
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.annotations.CommandLabels;
+import me.ragan262.commandmanager.annotations.NestedCommand;
+import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.Quester;
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.QCommandLabels;
-import me.ragan262.quester.commandbase.QNestedCommand;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Condition;
 import me.ragan262.quester.elements.ElementManager;
 import me.ragan262.quester.elements.ElementManager.ElementType;
@@ -31,7 +31,7 @@ public class ConditionCommands {
 		profMan = plugin.getProfileManager();
 	}
 	
-	private Condition getCondition(final String type, final QCommandContext subContext, final QuesterLang lang) throws ConditionException, QCommandException, QuesterException {
+	private Condition getCondition(final String type, final QuesterCommandContext subContext, final QuesterLang lang) throws ConditionException, CommandException, QuesterException {
 		
 		if(!eMan.elementExists(ElementType.CONDITION, type)) {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.get("ERROR_CON_NOT_EXIST"));
@@ -48,13 +48,13 @@ public class ConditionCommands {
 		return con;
 	}
 	
-	@QCommandLabels({ "add", "a" })
-	@QCommand(
+	@CommandLabels({ "add", "a" })
+	@Command(
 			section = "QMod",
 			desc = "adds a condition",
 			min = 1,
 			usage = "<condition type> [args]")
-	public void add(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+	public void add(final QuesterCommandContext context, final CommandSender sender) throws CommandException, QuesterException {
 		final QuesterLang lang = context.getSenderLang();
 		final String type = context.getString(0);
 		Condition condition;
@@ -69,13 +69,13 @@ public class ConditionCommands {
 				+ lang.get("CON_ADD").replaceAll("%type", type.toUpperCase()));
 	}
 	
-	@QCommandLabels({ "set", "s" })
-	@QCommand(
+	@CommandLabels({ "set", "s" })
+	@Command(
 			section = "QMod",
 			desc = "adds a condition",
 			min = 2,
 			usage = "<con ID> <con type> [args]")
-	public void set(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+	public void set(final QuesterCommandContext context, final CommandSender sender) throws CommandException, QuesterException {
 		final QuesterLang lang = context.getSenderLang();
 		final int conditionID = context.getInt(0);
 		final String type = context.getString(1);
@@ -91,28 +91,28 @@ public class ConditionCommands {
 				+ lang.get("CON_SET").replaceAll("%type", type.toUpperCase()));
 	}
 	
-	@QCommandLabels({ "remove", "r" })
-	@QCommand(
+	@CommandLabels({ "remove", "r" })
+	@Command(
 			section = "QMod",
 			desc = "removes condition",
 			min = 1,
 			max = 1,
 			usage = "<condition ID>")
-	public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
+	public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		qMan.removeQuestCondition(profMan.getSenderProfile(sender), context.getInt(0),
 				context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().get("CON_REMOVE").replaceAll("%id", context.getString(0)));
 	}
 	
-	@QCommandLabels({ "desc" })
-	@QCommand(section = "QMod", desc = "condition description manipulation")
-	@QNestedCommand(ConditionDescCommands.class)
-	public void desc(final QCommandContext context, final CommandSender sender) throws QuesterException {}
+	@CommandLabels({ "desc" })
+	@Command(section = "QMod", desc = "condition description manipulation")
+	@NestedCommand(ConditionDescCommands.class)
+	public void desc(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {}
 	
-	@QCommandLabels({ "list", "l" })
-	@QCommand(section = "QMod", max = 0, desc = "condition list")
-	public void list(final QCommandContext context, final CommandSender sender) throws QuesterException {
+	@CommandLabels({ "list", "l" })
+	@Command(section = "QMod", max = 0, desc = "condition list")
+	public void list(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		sender.sendMessage(ChatColor.RED + context.getSenderLang().get("CON_LIST") + ": "
 				+ ChatColor.WHITE + eMan.getElementList(ElementType.CONDITION));
 	}
@@ -127,14 +127,14 @@ public class ConditionCommands {
 			profMan = plugin.getProfileManager();
 		}
 		
-		@QCommandLabels({ "add", "a" })
-		@QCommand(
+		@CommandLabels({ "add", "a" })
+		@Command(
 				section = "QMod",
 				desc = "adds to condition description",
 				min = 2,
 				max = 2,
 				usage = "<condition ID> <description>")
-		public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		public void add(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 			qMan.addConditionDescription(profMan.getSenderProfile(sender), context.getInt(0),
 					context.getString(1), context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
@@ -142,14 +142,14 @@ public class ConditionCommands {
 							.replaceAll("%id", context.getString(0)));
 		}
 		
-		@QCommandLabels({ "remove", "r" })
-		@QCommand(
+		@CommandLabels({ "remove", "r" })
+		@Command(
 				section = "QMod",
 				desc = "clears condition description",
 				min = 1,
 				max = 1,
 				usage = "<condition ID>")
-		public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 			qMan.removeConditionDescription(profMan.getSenderProfile(sender), context.getInt(0),
 					context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN

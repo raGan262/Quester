@@ -9,30 +9,98 @@ import java.sql.Statement;
 
 import javax.management.InstanceNotFoundException;
 
+import me.ragan262.commandmanager.CommandManager;
+import me.ragan262.commandmanager.context.ContextFactory;
 import me.ragan262.quester.QConfiguration.StorageType;
-import me.ragan262.quester.commandbase.CommandManager;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
-import me.ragan262.quester.commandbase.exceptions.QPermissionException;
-import me.ragan262.quester.commandbase.exceptions.QUsageException;
+import me.ragan262.quester.commandmanager.QuesterCommandExceptionHandler;
+import me.ragan262.quester.commandmanager.QuesterContextFactory;
 import me.ragan262.quester.commands.AdminCommands;
 import me.ragan262.quester.commands.ModificationCommands;
 import me.ragan262.quester.commands.UserCommands;
-import me.ragan262.quester.conditions.*;
+import me.ragan262.quester.conditions.ExperienceCondition;
+import me.ragan262.quester.conditions.ItemCondition;
+import me.ragan262.quester.conditions.MoneyCondition;
+import me.ragan262.quester.conditions.PermissionCondition;
+import me.ragan262.quester.conditions.PointCondition;
+import me.ragan262.quester.conditions.QuestCondition;
+import me.ragan262.quester.conditions.QuestNotCondition;
+import me.ragan262.quester.conditions.SlotCondition;
+import me.ragan262.quester.conditions.TimeCondition;
 import me.ragan262.quester.elements.Element;
 import me.ragan262.quester.elements.ElementManager;
-import me.ragan262.quester.exceptions.*;
+import me.ragan262.quester.exceptions.ElementException;
 import me.ragan262.quester.holder.QuestHolderManager;
 import me.ragan262.quester.holder.QuesterTrait;
 import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.lang.Messenger;
-import me.ragan262.quester.lang.QuesterLang;
-import me.ragan262.quester.listeners.*;
-import me.ragan262.quester.objectives.*;
+import me.ragan262.quester.listeners.ActionListener;
+import me.ragan262.quester.listeners.BreakListener;
+import me.ragan262.quester.listeners.ChatListener;
+import me.ragan262.quester.listeners.Citizens2Listener;
+import me.ragan262.quester.listeners.CollectListener;
+import me.ragan262.quester.listeners.CraftSmeltListener;
+import me.ragan262.quester.listeners.DeathListener;
+import me.ragan262.quester.listeners.DropListener;
+import me.ragan262.quester.listeners.DyeListener;
+import me.ragan262.quester.listeners.EnchantListener;
+import me.ragan262.quester.listeners.FishListener;
+import me.ragan262.quester.listeners.MilkListener;
+import me.ragan262.quester.listeners.MobKillListener;
+import me.ragan262.quester.listeners.PlaceListener;
+import me.ragan262.quester.listeners.PositionListener;
+import me.ragan262.quester.listeners.QuestItemListener;
+import me.ragan262.quester.listeners.ShearListener;
+import me.ragan262.quester.listeners.SignListeners;
+import me.ragan262.quester.listeners.TameListener;
+import me.ragan262.quester.objectives.ActionObjective;
+import me.ragan262.quester.objectives.BreakObjective;
+import me.ragan262.quester.objectives.ChatObjective;
+import me.ragan262.quester.objectives.CollectObjective;
+import me.ragan262.quester.objectives.CraftObjective;
+import me.ragan262.quester.objectives.DeathObjective;
+import me.ragan262.quester.objectives.DropObjective;
+import me.ragan262.quester.objectives.DummyObjective;
+import me.ragan262.quester.objectives.DyeObjective;
+import me.ragan262.quester.objectives.EnchantObjective;
+import me.ragan262.quester.objectives.ExpObjective;
+import me.ragan262.quester.objectives.FishObjective;
+import me.ragan262.quester.objectives.ItemObjective;
+import me.ragan262.quester.objectives.LocObjective;
+import me.ragan262.quester.objectives.MilkObjective;
+import me.ragan262.quester.objectives.MobKillObjective;
+import me.ragan262.quester.objectives.MoneyObjective;
+import me.ragan262.quester.objectives.NpcKillObjective;
+import me.ragan262.quester.objectives.NpcObjective;
+import me.ragan262.quester.objectives.PlaceObjective;
+import me.ragan262.quester.objectives.PlayerKillObjective;
+import me.ragan262.quester.objectives.RegionObjective;
+import me.ragan262.quester.objectives.ShearObjective;
+import me.ragan262.quester.objectives.SmeltObjective;
+import me.ragan262.quester.objectives.TameObjective;
+import me.ragan262.quester.objectives.WorldObjective;
 import me.ragan262.quester.profiles.ProfileListener;
 import me.ragan262.quester.profiles.ProfileManager;
-import me.ragan262.quester.qevents.*;
+import me.ragan262.quester.qevents.CancelQevent;
+import me.ragan262.quester.qevents.CommandQevent;
+import me.ragan262.quester.qevents.EffectQevent;
+import me.ragan262.quester.qevents.ExperienceQevent;
+import me.ragan262.quester.qevents.ExplosionQevent;
+import me.ragan262.quester.qevents.ItemQevent;
+import me.ragan262.quester.qevents.LightningQevent;
+import me.ragan262.quester.qevents.MessageQevent;
+import me.ragan262.quester.qevents.MoneyQevent;
+import me.ragan262.quester.qevents.ObjectiveCompleteQevent;
+import me.ragan262.quester.qevents.PointQevent;
+import me.ragan262.quester.qevents.ProgressQevent;
+import me.ragan262.quester.qevents.QuestQevent;
+import me.ragan262.quester.qevents.SetBlockQevent;
+import me.ragan262.quester.qevents.SoundQevent;
+import me.ragan262.quester.qevents.SpawnQevent;
+import me.ragan262.quester.qevents.TeleportQevent;
+import me.ragan262.quester.qevents.ToggleQevent;
 import me.ragan262.quester.quests.QuestManager;
-import me.ragan262.quester.triggers.*;
+import me.ragan262.quester.triggers.NpcTrigger;
+import me.ragan262.quester.triggers.RegionTrigger;
 import me.ragan262.quester.utils.DatabaseConnection;
 import me.ragan262.quester.utils.Ql;
 import net.citizensnpcs.api.CitizensAPI;
@@ -121,7 +189,11 @@ public class Quester extends JavaPlugin {
 		quests = new QuestManager(this);
 		profiles = new ProfileManager(this);
 		holders = new QuestHolderManager(quests, getDataFolder(), getLogger());
-		commands = new CommandManager(langs, getLogger(), QConfiguration.displayedCmd, this);
+		
+		// set up command manager
+		final ContextFactory cf = new QuesterContextFactory(langs, profiles);
+		commands = new CommandManager(cf, getLogger(), QConfiguration.displayedCmd, this);
+		commands.setExceptionHandler(new QuesterCommandExceptionHandler(getLogger()));
 		
 		// metrics
 		if(QConfiguration.useMetrics) {
@@ -222,39 +294,8 @@ public class Quester extends JavaPlugin {
 	
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
-		if(label.equalsIgnoreCase("q") || label.equalsIgnoreCase("quest")
-				|| label.equalsIgnoreCase("quester")) {
-			final QuesterLang senderLang =
-					langs.getLang(profiles.getSenderProfile(sender).getLanguage());
-			try {
-				commands.execute(args, sender);
-			}
-			catch (final QuesterException e) {
-				sender.sendMessage(ChatColor.RED + e.getMessage());
-			}
-			catch (final QCommandException e) {
-				if(e instanceof QUsageException) {
-					sender.sendMessage(ChatColor.RED + e.getMessage());
-					sender.sendMessage(ChatColor.RED + senderLang.get("USAGE_LABEL")
-							+ ((QUsageException) e).getUsage());
-				}
-				else if(e instanceof QPermissionException) {
-					sender.sendMessage(ChatColor.RED + langs.getDefaultLang().get("MSG_PERMS"));
-				}
-				else {
-					sender.sendMessage(ChatColor.RED + e.getMessage());
-				}
-			}
-			catch (final NumberFormatException e) {
-				sender.sendMessage(ChatColor.RED + "Number expected, but "
-						+ e.getMessage().replaceFirst(".+ \"", "\"") + " found. ");
-			}
-			catch (final IllegalArgumentException e) {
-				sender.sendMessage(ChatColor.RED + "Invalid argument: '" + e.getMessage() + "'");
-			}
-			return true;
-		}
-		return false;
+		commands.handleCommand(args, sender);
+		return true;
 	}
 	
 	public static Quester getInstance() {

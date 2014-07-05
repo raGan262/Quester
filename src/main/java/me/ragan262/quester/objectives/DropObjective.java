@@ -1,8 +1,8 @@
 package me.ragan262.quester.objectives;
 
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
@@ -59,14 +59,14 @@ public final class DropObjective extends Objective {
 				+ flags;
 	}
 	
-	@QCommand(min = 2, max = 4, usage = "{<item>} <amount> {[location]} [range] (-q)")
-	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
+	@Command(min = 2, max = 4, usage = "{<item>} <amount> {[location]} [range] (-q)")
+	public static Objective fromCommand(final QuesterCommandContext context) throws CommandException {
 		final int[] itm = SerUtils.parseItem(context.getString(0));
 		final Material mat = Material.getMaterial(itm[0]);
 		final int dat = itm[1];
 		final int amt = context.getInt(1);
 		if(amt < 1 || dat < -1) {
-			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_ITEM_NUMBERS"));
+			throw new CommandException(context.getSenderLang().get("ERROR_CMD_ITEM_NUMBERS"));
 		}
 		Location loc = null;
 		double rng = 2.0;
@@ -75,7 +75,7 @@ public final class DropObjective extends Objective {
 			if(context.length() > 3) {
 				rng = context.getDouble(3);
 				if(rng < 0) {
-					throw new QCommandException(context.getSenderLang().get("ERROR_CMD_RANGE_INVALID"));
+					throw new CommandException(context.getSenderLang().get("ERROR_CMD_RANGE_INVALID"));
 				}
 			}
 		}

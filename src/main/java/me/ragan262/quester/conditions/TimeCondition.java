@@ -1,9 +1,9 @@
 package me.ragan262.quester.conditions;
 
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.QConfiguration;
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Condition;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
@@ -63,14 +63,14 @@ public final class TimeCondition extends Condition {
 		return from + "-" + to + "; WORLD: " + (world.isEmpty() ? "PLAYER" : world);
 	}
 	
-	@QCommand(min = 1, max = 2, usage = "<from-to> {[world]}")
-	public static Condition fromCommand(final QCommandContext context) throws QCommandException {
+	@Command(min = 1, max = 2, usage = "<from-to> {[world]}")
+	public static Condition fromCommand(final QuesterCommandContext context) throws CommandException {
 		int from;
 		int to;
 		String world = "";
 		final String[] ss = context.getString(0).split("-");
 		if(ss.length != 2) {
-			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_ARG_CANT_PARSE")
+			throw new CommandException(context.getSenderLang().get("ERROR_CMD_ARG_CANT_PARSE")
 					.replaceAll("%arg", context.getString(0)));
 		}
 		from = Integer.parseInt(ss[0]);
@@ -86,7 +86,7 @@ public final class TimeCondition extends Condition {
 		if(context.length() > 1) {
 			if(context.getString(1).equalsIgnoreCase(QConfiguration.worldLabelThis)) {
 				if(context.getPlayer() == null) {
-					throw new QCommandException(context.getSenderLang().get("ERROR_CMD_WORLD_THIS")
+					throw new CommandException(context.getSenderLang().get("ERROR_CMD_WORLD_THIS")
 							.replaceAll("%this", QConfiguration.worldLabelThis));
 				}
 				world = context.getPlayer().getWorld().getName();
@@ -94,7 +94,7 @@ public final class TimeCondition extends Condition {
 			else {
 				final World x = Bukkit.getServer().getWorld(context.getString(1));
 				if(x == null) {
-					throw new QCommandException(context.getSenderLang().get(
+					throw new CommandException(context.getSenderLang().get(
 							"ERROR_CMD_WORLD_INVALID"));
 				}
 				world = x.getName();

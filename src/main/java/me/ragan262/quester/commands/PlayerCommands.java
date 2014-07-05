@@ -4,13 +4,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.annotations.CommandLabels;
+import me.ragan262.commandmanager.annotations.NestedCommand;
+import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.Quester;
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.QCommandLabels;
-import me.ragan262.quester.commandbase.QNestedCommand;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.exceptions.ObjectiveException;
@@ -27,7 +27,6 @@ import me.ragan262.quester.utils.Util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -41,34 +40,34 @@ public class PlayerCommands {
 		langMan = plugin.getLanguageManager();
 	}
 	
-	@QCommandLabels({ "completed", "compl" })
-	@QCommand(section = "Admin", desc = "modification of completed quests")
-	@QNestedCommand(PlayerCommands.CompletedCommands.class)
-	public void completed(final QCommandContext context, final CommandSender sender) {}
+	@CommandLabels({ "completed", "compl" })
+	@Command(section = "Admin", desc = "modification of completed quests")
+	@NestedCommand(PlayerCommands.CompletedCommands.class)
+	public void completed(final QuesterCommandContext context, final CommandSender sender) {}
 	
-	@QCommandLabels({ "quest", "q" })
-	@QCommand(section = "Admin", desc = "player quest manipulation")
-	@QNestedCommand(PlayerCommands.QuestCommands.class)
-	public void quest(final QCommandContext context, final CommandSender sender) {}
+	@CommandLabels({ "quest", "q" })
+	@Command(section = "Admin", desc = "player quest manipulation")
+	@NestedCommand(PlayerCommands.QuestCommands.class)
+	public void quest(final QuesterCommandContext context, final CommandSender sender) {}
 	
-	@QCommandLabels({ "reputation", "rep" })
-	@QCommand(section = "Admin", desc = "reputation modification")
-	@QNestedCommand(PlayerCommands.ReputationCommands.class)
-	public void reputation(final QCommandContext context, final CommandSender sender) {}
+	@CommandLabels({ "reputation", "rep" })
+	@Command(section = "Admin", desc = "reputation modification")
+	@NestedCommand(PlayerCommands.ReputationCommands.class)
+	public void reputation(final QuesterCommandContext context, final CommandSender sender) {}
 	
-	@QCommandLabels({ "progress", "prog" })
-	@QCommand(section = "Admin", desc = "progress modification")
-	@QNestedCommand(PlayerCommands.ProgressCommands.class)
-	public void progress(final QCommandContext context, final CommandSender sender) {}
+	@CommandLabels({ "progress", "prog" })
+	@Command(section = "Admin", desc = "progress modification")
+	@NestedCommand(PlayerCommands.ProgressCommands.class)
+	public void progress(final QuesterCommandContext context, final CommandSender sender) {}
 	
-	@QCommandLabels({ "lang" })
-	@QCommand(
+	@CommandLabels({ "lang" })
+	@Command(
 			section = "Admin",
 			desc = "gets or sets language",
 			min = 1,
 			max = 2,
 			usage = "<player> [language]")
-	public void lang(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+	public void lang(final QuesterCommandContext context, final CommandSender sender) throws CommandException, QuesterException {
 		final PlayerProfile prof =
 				profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 		if(context.length() > 1) {
@@ -84,7 +83,7 @@ public class PlayerCommands {
 			}
 			else {
 				lang = context.getSenderLang();
-				throw new QCommandException(lang.get("ERROR_CMD_LANG_INVALID"));
+				throw new CommandException(lang.get("ERROR_CMD_LANG_INVALID"));
 			}
 		}
 		else {
@@ -102,9 +101,9 @@ public class PlayerCommands {
 			profMan = plugin.getProfileManager();
 		}
 		
-		@QCommandLabels({ "list", "l" })
-		@QCommand(section = "Admin", desc = "lists completed quests", max = 1, usage = "[player]")
-		public void list(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		@CommandLabels({ "list", "l" })
+		@Command(section = "Admin", desc = "lists completed quests", max = 1, usage = "[player]")
+		public void list(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 			final PlayerProfile prof;
 			if(context.length() > 0) {
 				prof = profMan.getProfileSafe(context.getString(0), context.getSenderLang());
@@ -118,14 +117,14 @@ public class PlayerCommands {
 					+ Util.implode(prof.getCompletedQuests(), ','));
 		}
 		
-		@QCommandLabels({ "find", "f" })
-		@QCommand(
+		@CommandLabels({ "find", "f" })
+		@Command(
 				section = "Admin",
 				desc = "finds completed quests",
 				min = 1,
 				max = 2,
 				usage = "[player] <partial quest name>")
-		public void find(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		public void find(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 			final PlayerProfile prof;
 			final String pattern;
 			if(context.length() > 1) {
@@ -150,14 +149,14 @@ public class PlayerCommands {
 			}
 		}
 		
-		@QCommandLabels({ "add", "a" })
-		@QCommand(
+		@CommandLabels({ "add", "a" })
+		@Command(
 				section = "Admin",
 				desc = "adds to completed quests",
 				min = 2,
 				max = 3,
 				usage = "<player> <quest> [time]")
-		public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		public void add(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 			final PlayerProfile prof =
 					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			long time = System.currentTimeMillis();
@@ -171,14 +170,14 @@ public class PlayerCommands {
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("PROF_COMP_ADDED"));
 		}
 		
-		@QCommandLabels({ "remove", "r" })
-		@QCommand(
+		@CommandLabels({ "remove", "r" })
+		@Command(
 				section = "Admin",
 				desc = "removes completed quest",
 				min = 2,
 				max = 2,
 				usage = "<player> <quest>")
-		public void remove(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 			final PlayerProfile prof =
 					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			profMan.removeCompletedQuest(prof, context.getString(1));
@@ -208,14 +207,14 @@ public class PlayerCommands {
 			this.plugin = plugin;
 		}
 		
-		@QCommandLabels({ "start" })
-		@QCommand(
+		@CommandLabels({ "start" })
+		@Command(
 				section = "Admin",
 				desc = "forces quest start",
 				min = 2,
 				max = 2,
 				usage = "<player> <quest> (-ef)")
-		public void start(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+		public void start(final QuesterCommandContext context, final CommandSender sender) throws CommandException, QuesterException {
 			final Player player = Bukkit.getPlayerExact(context.getString(0));
 			final QuesterLang lang = context.getSenderLang();
 			final Quest quest = qMan.getQuest(context.getString(1));
@@ -236,7 +235,7 @@ public class PlayerCommands {
 			}
 			else {
 				if(player == null) {
-					throw new QCommandException(lang.get("ERROR_CMD_PLAYER_OFFLINE").replaceAll(
+					throw new CommandException(lang.get("ERROR_CMD_PLAYER_OFFLINE").replaceAll(
 							"%p", context.getString(0)));
 				}
 				final boolean disableAdminCheck = context.hasFlag('f');
@@ -246,14 +245,14 @@ public class PlayerCommands {
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("PROF_QUEST_STARTED"));
 		}
 		
-		@QCommandLabels({ "cancel" })
-		@QCommand(
+		@CommandLabels({ "cancel" })
+		@Command(
 				section = "Admin",
 				desc = "forces quest cancel",
 				min = 2,
 				max = 2,
 				usage = "<player> <id> (-e)")
-		public void cancel(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+		public void cancel(final QuesterCommandContext context, final CommandSender sender) throws CommandException, QuesterException {
 			final QuesterLang lang = context.getSenderLang();
 			final Player player = Bukkit.getPlayerExact(context.getString(0));
 			final int index = context.getInt(1);
@@ -272,7 +271,7 @@ public class PlayerCommands {
 			}
 			else {
 				if(player == null) {
-					throw new QCommandException(lang.get("ERROR_CMD_PLAYER_OFFLINE").replaceAll(
+					throw new CommandException(lang.get("ERROR_CMD_PLAYER_OFFLINE").replaceAll(
 							"%p", context.getString(0)));
 				}
 				profMan.cancelQuest(player, index, ActionSource.adminSource(sender), lang);
@@ -281,14 +280,14 @@ public class PlayerCommands {
 					+ context.getSenderLang().get("PROF_QUEST_CANCELLED"));
 		}
 		
-		@QCommandLabels({ "complete", "compl" })
-		@QCommand(
+		@CommandLabels({ "complete", "compl" })
+		@Command(
 				section = "Admin",
 				desc = "forces quest complete",
 				min = 2,
 				max = 2,
 				usage = "<player> <quest> (-ef)")
-		public void complete(final QCommandContext context, final CommandSender sender) throws QCommandException, QuesterException {
+		public void complete(final QuesterCommandContext context, final CommandSender sender) throws CommandException, QuesterException {
 			final QuesterLang lang = context.getSenderLang();
 			final Quest quest = qMan.getQuest(context.getString(1));
 			if(quest == null) {
@@ -300,7 +299,7 @@ public class PlayerCommands {
 			if(runEvents) {
 				player = Bukkit.getPlayerExact(context.getString(0));
 				if(player == null) {
-					throw new QCommandException(lang.get("ERROR_CMD_PLAYER_OFFLINE").replaceAll(
+					throw new CommandException(lang.get("ERROR_CMD_PLAYER_OFFLINE").replaceAll(
 							"%p", context.getString(0)));
 				}
 				prof = profMan.getProfile(player);
@@ -310,7 +309,7 @@ public class PlayerCommands {
 				prof = profMan.getProfileSafe(context.getString(0), lang);
 			}
 			if(context.hasFlag('f') && prof.isCompleted(quest.getName())) {
-				throw new QCommandException(lang.get("ERROR_PROF_Q_ALREADY_DONE"));
+				throw new CommandException(lang.get("ERROR_PROF_Q_ALREADY_DONE"));
 			}
 			final int id = prof.getQuestProgressIndex(quest);
 			if(id >= 0) {
@@ -339,14 +338,14 @@ public class PlayerCommands {
 			profMan = plugin.getProfileManager();
 		}
 		
-		@QCommandLabels({ "set", "s" })
-		@QCommand(
+		@CommandLabels({ "set", "s" })
+		@Command(
 				section = "Admin",
 				desc = "sets quest points",
 				min = 2,
 				max = 2,
 				usage = "<player> <points>")
-		public void set(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		public void set(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 			final PlayerProfile prof =
 					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			final int points = context.getInt(1);
@@ -354,14 +353,14 @@ public class PlayerCommands {
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("PROF_REPUTATION_SET"));
 		}
 		
-		@QCommandLabels({ "add", "a" })
-		@QCommand(
+		@CommandLabels({ "add", "a" })
+		@Command(
 				section = "Admin",
 				desc = "adds quest points",
 				min = 2,
 				max = 2,
 				usage = "<player> <points>")
-		public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		public void add(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 			final PlayerProfile prof =
 					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			final int points = context.getInt(1);
@@ -381,14 +380,14 @@ public class PlayerCommands {
 			qMan = plugin.getQuestManager();
 		}
 		
-		@QCommandLabels({ "get", "g" })
-		@QCommand(
+		@CommandLabels({ "get", "g" })
+		@Command(
 				section = "Admin",
 				desc = "gets quest progress",
 				min = 1,
 				max = 2,
 				usage = "<player> [index]")
-		public void get(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		public void get(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 			final PlayerProfile prof =
 					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			final QuesterLang lang = context.getSenderLang();
@@ -421,14 +420,14 @@ public class PlayerCommands {
 			}
 		}
 		
-		@QCommandLabels({ "set", "s" })
-		@QCommand(
+		@CommandLabels({ "set", "s" })
+		@Command(
 				section = "Admin",
 				desc = "sets quest progress",
 				min = 3,
 				max = 4,
 				usage = "<player> [index] <obj id> <progress>")
-		public void set(final QCommandContext context, final CommandSender sender) throws QuesterException {
+		public void set(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 			final PlayerProfile prof =
 					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			final QuesterLang lang = context.getSenderLang();

@@ -1,9 +1,9 @@
 package me.ragan262.quester.conditions;
 
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.Quester;
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Condition;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.profiles.PlayerProfile;
@@ -68,8 +68,8 @@ public final class QuestNotCondition extends Condition {
 		return quest + tm + run;
 	}
 	
-	@QCommand(min = 1, max = 2, usage = "<quest name> [time in seconds] (-r)")
-	public static Condition fromCommand(final QCommandContext context) throws QCommandException {
+	@Command(min = 1, max = 2, usage = "<quest name> [time in seconds] (-r)")
+	public static Condition fromCommand(final QuesterCommandContext context) throws CommandException {
 		final String qst = context.getString(0);
 		int t = 0;
 		if(context.length() > 1) {

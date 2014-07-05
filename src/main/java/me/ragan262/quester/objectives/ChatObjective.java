@@ -1,8 +1,8 @@
 package me.ragan262.quester.objectives;
 
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
@@ -35,8 +35,8 @@ public final class ChatObjective extends Objective {
 		return "\"" + regex + "\" " + flags;
 	}
 	
-	@QCommand(min = 1, max = 1, usage = "<regex> (-i)")
-	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
+	@Command(min = 1, max = 1, usage = "<regex> (-i)")
+	public static Objective fromCommand(final QuesterCommandContext context) throws CommandException {
 		
 		return new ChatObjective(context.getString(0), context.hasFlag('i'));
 	}

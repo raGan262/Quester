@@ -1,8 +1,8 @@
 package me.ragan262.quester.objectives;
 
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
@@ -50,8 +50,8 @@ public final class BreakObjective extends Objective {
 		return matStr + "; AMT: " + amount + "; HND: " + inHand;
 	}
 	
-	@QCommand(min = 2, max = 3, usage = "{<block>} <amount> [hand]")
-	public static Objective fromCommand(final QCommandContext context) throws QCommandException {
+	@Command(min = 2, max = 3, usage = "{<block>} <amount> [hand]")
+	public static Objective fromCommand(final QuesterCommandContext context) throws CommandException {
 		int hnd = -1;
 		int[] itm;
 		Material mat = null;
@@ -61,13 +61,13 @@ public final class BreakObjective extends Objective {
 			mat = Material.getMaterial(itm[0]);
 			dat = (byte) itm[1];
 			if(mat.getId() > 255) {
-				throw new QCommandException(context.getSenderLang().get("ERROR_CMD_BLOCK_UNKNOWN"));
+				throw new CommandException(context.getSenderLang().get("ERROR_CMD_BLOCK_UNKNOWN"));
 			}
 		}
 		
 		final int amt = Integer.parseInt(context.getString(1));
 		if(amt < 1 || dat < -1) {
-			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_ITEM_NUMBERS"));
+			throw new CommandException(context.getSenderLang().get("ERROR_CMD_ITEM_NUMBERS"));
 		}
 		if(context.length() > 2) {
 			itm = SerUtils.parseItem(context.getString(2));

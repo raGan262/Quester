@@ -1,9 +1,9 @@
 package me.ragan262.quester.qevents;
 
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.Quester;
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
@@ -52,19 +52,19 @@ public final class SpawnQevent extends Qevent {
 		}
 	}
 	
-	@QCommand(min = 3, max = 4, usage = "{<entity>} <amount> {<location>} [range]")
-	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
+	@Command(min = 3, max = 4, usage = "{<entity>} <amount> {<location>} [range]")
+	public static Qevent fromCommand(final QuesterCommandContext context) throws CommandException {
 		final EntityType ent = SerUtils.parseEntity(context.getString(0));
 		final int amt = context.getInt(1);
 		final Location loc = SerUtils.getLoc(context.getSender(), context.getString(2));
 		int rng = 0;
 		if(amt < 1) {
-			throw new QCommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_POSITIVE"));
+			throw new CommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_POSITIVE"));
 		}
 		if(context.length() > 3) {
 			rng = context.getInt(3);
 			if(rng < 0) {
-				throw new QCommandException(context.getSenderLang().get("ERROR_CMD_RANGE_INVALID"));
+				throw new CommandException(context.getSenderLang().get("ERROR_CMD_RANGE_INVALID"));
 			}
 		}
 		return new SpawnQevent(loc, rng, ent, amt);

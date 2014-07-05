@@ -3,10 +3,10 @@ package me.ragan262.quester.commands;
 import java.util.HashSet;
 import java.util.Set;
 
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.annotations.CommandLabels;
 import me.ragan262.quester.Quester;
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.QCommandLabels;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.exceptions.QuesterException;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.QuestFlag;
@@ -38,9 +38,9 @@ public class ModifierCommands {
 		return modifiers.toArray(new QuestFlag[0]);
 	}
 	
-	@QCommandLabels({ "add", "a" })
-	@QCommand(section = "QMod", desc = "adds quest modifier", min = 1, usage = "<modifier1> ...")
-	public void add(final QCommandContext context, final CommandSender sender) throws QuesterException {
+	@CommandLabels({ "add", "a" })
+	@Command(section = "QMod", desc = "adds quest modifier", min = 1, usage = "<modifier1> ...")
+	public void add(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		final QuestFlag[] modArray = getModifiers(context.getArgs());
 		if(modArray.length < 1) {
 			sender.sendMessage(ChatColor.RED + context.getSenderLang().get("ERROR_MOD_UNKNOWN"));
@@ -52,9 +52,9 @@ public class ModifierCommands {
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_MOD_ADDED"));
 	}
 	
-	@QCommandLabels({ "remove", "r" })
-	@QCommand(section = "QMod", desc = "removes quest modifier", min = 1, usage = "<modifier1> ...")
-	public void set(final QCommandContext context, final CommandSender sender) throws QuesterException {
+	@CommandLabels({ "remove", "r" })
+	@Command(section = "QMod", desc = "removes quest modifier", min = 1, usage = "<modifier1> ...")
+	public void set(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		final QuestFlag[] modArray = getModifiers(context.getArgs());
 		qMan.removeQuestFlag(profMan.getSenderProfile(sender), modArray, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_MOD_REMOVED"));

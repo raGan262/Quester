@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import me.ragan262.commandmanager.annotations.Command;
+import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.Quester;
-import me.ragan262.quester.commandbase.QCommand;
-import me.ragan262.quester.commandbase.QCommandContext;
-import me.ragan262.quester.commandbase.exceptions.QCommandException;
+import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
@@ -185,8 +185,8 @@ public final class ItemQevent extends Qevent {
 		return true;
 	}
 	
-	@QCommand(min = 1, max = 3, usage = "{<item>} [amount] {[enchants]} (-i)")
-	public static Qevent fromCommand(final QCommandContext context) throws QCommandException {
+	@Command(min = 1, max = 3, usage = "{<item>} [amount] {[enchants]} (-i)")
+	public static Qevent fromCommand(final QuesterCommandContext context) throws CommandException {
 		Material mat = null;
 		int dat;
 		int amt = 1;
