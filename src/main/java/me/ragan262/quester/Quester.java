@@ -30,13 +30,12 @@ import me.ragan262.quester.elements.Element;
 import me.ragan262.quester.elements.ElementManager;
 import me.ragan262.quester.exceptions.ElementException;
 import me.ragan262.quester.holder.QuestHolderManager;
-import me.ragan262.quester.holder.QuesterTrait;
+import me.ragan262.quester.holder.SignHolderActionHandler;
 import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.lang.Messenger;
 import me.ragan262.quester.listeners.ActionListener;
 import me.ragan262.quester.listeners.BreakListener;
 import me.ragan262.quester.listeners.ChatListener;
-import me.ragan262.quester.listeners.Citizens2Listener;
 import me.ragan262.quester.listeners.CollectListener;
 import me.ragan262.quester.listeners.CraftSmeltListener;
 import me.ragan262.quester.listeners.DeathListener;
@@ -50,7 +49,6 @@ import me.ragan262.quester.listeners.PlaceListener;
 import me.ragan262.quester.listeners.PositionListener;
 import me.ragan262.quester.listeners.QuestItemListener;
 import me.ragan262.quester.listeners.ShearListener;
-import me.ragan262.quester.listeners.SignListeners;
 import me.ragan262.quester.listeners.TameListener;
 import me.ragan262.quester.objectives.ActionObjective;
 import me.ragan262.quester.objectives.BreakObjective;
@@ -103,9 +101,6 @@ import me.ragan262.quester.triggers.NpcTrigger;
 import me.ragan262.quester.triggers.RegionTrigger;
 import me.ragan262.quester.utils.DatabaseConnection;
 import me.ragan262.quester.utils.Ql;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.trait.TraitFactory;
-import net.citizensnpcs.api.trait.TraitInfo;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
@@ -120,6 +115,9 @@ public class Quester extends JavaPlugin {
 	
 	private static Quester instance = null;
 	
+	public static final String LABEL = ChatColor.BLUE + "[" + ChatColor.GOLD + "Quester"
+			+ ChatColor.BLUE + "] ";
+	public static boolean vault = false;
 	public static Economy econ = null;
 	
 	private LanguageManager langs = null;
@@ -132,12 +130,6 @@ public class Quester extends JavaPlugin {
 	
 	private boolean enabled = false;
 	private int saveID = 0;
-	
-	public static boolean citizens2 = false;
-	public static boolean vault = false;
-	
-	public static final String LABEL = ChatColor.BLUE + "[" + ChatColor.GOLD + "Quester"
-			+ ChatColor.BLUE + "] ";
 	
 	public Quester() {
 		instance = this;
@@ -209,10 +201,6 @@ public class Quester extends JavaPlugin {
 		// hooks
 		if(setupEconomy()) {
 			Ql.info("Vault found and hooked...");
-		}
-		
-		if(setupCitizens()) {
-			Ql.info("Citizens 2 found and hooked...");
 		}
 		
 		// listeners and commands
@@ -288,7 +276,6 @@ public class Quester extends JavaPlugin {
 		}
 		DatabaseConnection.close();
 		econ = null;
-		citizens2 = false;
 		vault = false;
 	}
 	
@@ -346,24 +333,12 @@ public class Quester extends JavaPlugin {
 		return true;
 	}
 	
-	private boolean setupCitizens() {
-		try {
-			Class.forName("net.citizensnpcs.api.CitizensAPI");
-		}
-		catch (final Exception e) {
-			return false;
-		}
-		final TraitFactory factory = CitizensAPI.getTraitFactory();
-		final TraitInfo info = TraitInfo.create(QuesterTrait.class).withName("quester");
-		factory.registerTrait(info);
-		citizens2 = true;
-		return true;
-	}
-	
 	private void setupListeners() {
 		// POSIITON CHECKER
 		final PositionListener posCheck = new PositionListener(this);
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, posCheck, 20, 20);
+		
+		getServer().getPluginManager().registerEvents(new SignHolderActionHandler(this), this);
 		
 		getServer().getPluginManager().registerEvents(new BreakListener(this), this);
 		getServer().getPluginManager().registerEvents(new DeathListener(this), this);
@@ -377,17 +352,11 @@ public class Quester extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new CollectListener(this), this);
 		getServer().getPluginManager().registerEvents(new DropListener(this), this);
 		getServer().getPluginManager().registerEvents(new TameListener(this), this);
-		getServer().getPluginManager().registerEvents(new SignListeners(this), this);
 		getServer().getPluginManager().registerEvents(new ActionListener(this), this);
 		getServer().getPluginManager().registerEvents(new DyeListener(this), this);
 		getServer().getPluginManager().registerEvents(new ChatListener(this), this);
 		getServer().getPluginManager().registerEvents(new QuestItemListener(), this);
 		getServer().getPluginManager().registerEvents(new ProfileListener(this), this);
-		
-		// hooks
-		if(citizens2) {
-			getServer().getPluginManager().registerEvents(new Citizens2Listener(this), this);
-		}
 	}
 	
 	private void registerElements() {

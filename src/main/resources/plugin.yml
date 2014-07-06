@@ -4,7 +4,7 @@ description: ${project.description}
 author: raGan
 website: http://dev.bukkit.org/server-mods/quester/
 main: me.ragan262.quester.Quester
-softdepend: [Vault, Citizens]
+softdepend: [Vault]
 commands:
     q:
         description: Main (and only) quester command.

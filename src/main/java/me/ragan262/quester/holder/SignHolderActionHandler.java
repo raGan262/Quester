@@ -1,10 +1,7 @@
-package me.ragan262.quester.listeners;
+package me.ragan262.quester.holder;
 
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
-import me.ragan262.quester.holder.QuestHolder;
-import me.ragan262.quester.holder.QuestHolderActionHandler;
-import me.ragan262.quester.holder.QuesterSign;
 import me.ragan262.quester.lang.QuesterLang;
 import me.ragan262.quester.utils.Util;
 
@@ -21,9 +18,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-public class SignListeners extends QuestHolderActionHandler<QuesterSign> implements Listener {
+public class SignHolderActionHandler extends QuestHolderActionHandler<QuesterSign> implements Listener {
 	
-	public SignListeners(final Quester plugin) {
+	public SignHolderActionHandler(final Quester plugin) {
 		super(plugin);
 	}
 	

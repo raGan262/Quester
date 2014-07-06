@@ -25,7 +25,7 @@ public class NpcTrigger extends Trigger {
 	}
 	
 	@Override
-	public boolean evaluate0(final Player player, final TriggerContext context) {
+	protected boolean evaluate0(final Player player, final TriggerContext context) {
 		if(context.getType().equals("NPC_CLICK")) {
 			try {
 				return index == (Integer) context.get("CLICKEDNPC");
