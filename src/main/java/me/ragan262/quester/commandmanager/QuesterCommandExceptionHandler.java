@@ -18,7 +18,7 @@ public class QuesterCommandExceptionHandler implements CommandExceptionHandler {
 	}
 	
 	@Override
-	public void handleException(final Exception e, final CommandSender sender) {
+	public void handleException(final Throwable e, final CommandSender sender) {
 		if(e instanceof QuesterException) {
 			sender.sendMessage(ChatColor.RED + e.getMessage());
 		}
