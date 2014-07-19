@@ -5,8 +5,8 @@ import me.ragan262.commandmanager.annotations.CommandLabels;
 import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.commandmanager.QuesterCommandContext;
+import me.ragan262.quester.elements.Element;
 import me.ragan262.quester.elements.ElementManager;
-import me.ragan262.quester.elements.ElementManager.ElementType;
 import me.ragan262.quester.elements.Trigger;
 import me.ragan262.quester.exceptions.ElementException;
 import me.ragan262.quester.exceptions.ObjectiveException;
@@ -34,15 +34,15 @@ public class TriggerCommands {
 	}
 	
 	private Trigger getTrigger(final String type, final QuesterCommandContext subContext, final QuesterLang lang) throws CommandException, ObjectiveException, QuesterException {
-		if(!eMan.elementExists(ElementType.TRIGGER, type)) {
+		if(!eMan.elementExists(Element.TRIGGER, type)) {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.get("ERROR_TRIG_NOT_EXIST"));
 			subContext.getSender().sendMessage(
 					ChatColor.RED + lang.get("TRIG_LIST") + ": " + ChatColor.WHITE
-							+ eMan.getElementList(ElementType.TRIGGER));
+							+ eMan.getElementList(Element.TRIGGER));
 			throw new TriggerException(lang.get("ERROR_TRIG_NOT_EXIST"));
 		}
 		final Trigger trig =
-				(Trigger) eMan.getElementFromCommand(ElementType.TRIGGER, type, subContext);
+				(Trigger) eMan.getElementFromCommand(Element.TRIGGER, type, subContext);
 		if(trig == null) {
 			throw new ElementException(lang.get("ERROR_ELEMENT_FAIL"));
 		}
@@ -105,6 +105,6 @@ public class TriggerCommands {
 	@Command(section = "QMod", max = 0, desc = "trigger list")
 	public void list(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		sender.sendMessage(ChatColor.RED + context.getSenderLang().get("TRIG_LIST") + ": "
-				+ ChatColor.WHITE + eMan.getElementList(ElementType.TRIGGER));
+				+ ChatColor.WHITE + eMan.getElementList(Element.TRIGGER));
 	}
 }

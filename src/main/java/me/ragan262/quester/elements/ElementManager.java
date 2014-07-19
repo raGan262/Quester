@@ -3,8 +3,8 @@ package me.ragan262.quester.elements;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import me.ragan262.commandmanager.annotations.Command;
@@ -22,49 +22,24 @@ import org.apache.commons.lang.Validate;
 
 public class ElementManager {
 	
-	public static enum ElementType {
-		OBJECTIVE(Objective.class), CONDITION(Condition.class), EVENT(Qevent.class), TRIGGER(Trigger.class);
-		
-		private static final Map<Class<? extends Element>, ElementType> byClass =
-				new HashMap<Class<? extends Element>, ElementType>();
-		
-		private final Class<? extends Element> clss;
-		
-		private ElementType(final Class<? extends Element> clss) {
-			this.clss = clss;
-		}
-		
-		public Class<? extends Element> getAssociatedClass() {
-			return clss;
-		}
-		
-		public static ElementType getByClass(final Class<?> clss) {
-			return byClass.get(clss);
-		}
-		
-		static {
-			for(final ElementType type : values()) {
-				byClass.put(type.getAssociatedClass(), type);
-			}
-		}
-	}
-	
 	final class ElementInfo {
 		private Class<? extends Element> clss;
 		private String usage;
-		private Method method;
+		private Method commandMethod;
+		private Method loadMethod;
 		private Command command;
 	}
 	
 	private static ElementManager instance = null;
 	
-	private final Map<ElementType, Map<String, ElementInfo>> elements =
-			new EnumMap<ElementType, Map<String, ElementInfo>>(ElementType.class);
+	private final Map<Class<? extends Element>, Map<String, ElementInfo>> elements =
+			new IdentityHashMap<Class<? extends Element>, Map<String, ElementInfo>>();
 	
 	public ElementManager() {
-		for(final ElementType key : ElementType.values()) {
-			elements.put(key, new HashMap<String, ElementInfo>());
-		}
+		elements.put(Element.CONDITION, new HashMap<String, ElementInfo>());
+		elements.put(Element.OBJECTIVE, new HashMap<String, ElementInfo>());
+		elements.put(Element.QEVENT, new HashMap<String, ElementInfo>());
+		elements.put(Element.TRIGGER, new HashMap<String, ElementInfo>());
 	}
 	
 	public static ElementManager getInstance() {
@@ -75,41 +50,41 @@ public class ElementManager {
 		instance = eMan;
 	}
 	
-	public Class<? extends Element> getElementClass(final ElementType elementType, final String type) {
-		Validate.notNull(elementType, "Element type cannot be null.");
-		final ElementInfo ei = elements.get(elementType).get(type.toUpperCase());
+	public Class<? extends Element> getElementClass(final Class<? extends Element> elementClass, final String type) {
+		Validate.notNull(elementClass, "Element type class cannot be null.");
+		final ElementInfo ei = elements.get(elementClass).get(type.toUpperCase());
 		if(ei == null) {
 			return null;
 		}
 		return ei.clss;
 	}
 	
-	public boolean elementExists(final ElementType elementType, final String type) {
-		Validate.notNull(elementType, "Element type cannot be null.");
-		return elements.get(elementType).containsKey(type.toUpperCase());
+	public boolean elementExists(final Class<? extends Element> elementClass, final String type) {
+		Validate.notNull(elementClass, "Element type class cannot be null.");
+		return elements.get(elementClass).containsKey(type.toUpperCase());
 	}
 	
-	public String getElementUsage(final ElementType elementType, final String type) {
-		Validate.notNull(elementType, "Element type cannot be null.");
-		final ElementInfo ei = elements.get(elementType).get(type.toUpperCase());
+	public String getElementUsage(final Class<? extends Element> elementClass, final String type) {
+		Validate.notNull(elementClass, "Element type class cannot be null.");
+		final ElementInfo ei = elements.get(elementClass).get(type.toUpperCase());
 		if(ei == null) {
 			return null;
 		}
 		return ei.usage;
 	}
 	
-	public Command getElementCommand(final ElementType elementType, final String type) {
-		Validate.notNull(elementType, "Element type cannot be null.");
-		final ElementInfo ei = elements.get(elementType).get(type.toUpperCase());
+	public Command getElementCommand(final Class<? extends Element> elementClass, final String type) {
+		Validate.notNull(elementClass, "Element type class cannot be null.");
+		final ElementInfo ei = elements.get(elementClass).get(type.toUpperCase());
 		if(ei == null) {
 			return null;
 		}
 		return ei.command;
 	}
 	
-	public String getElementList(final ElementType elementType) {
-		Validate.notNull(elementType, "Element type cannot be null.");
-		final Map<String, ElementInfo> map = elements.get(elementType);
+	public String getElementList(final Class<? extends Element> elementClass) {
+		Validate.notNull(elementClass, "Element type class cannot be null.");
+		final Map<String, ElementInfo> map = elements.get(elementClass);
 		if(map == null) {
 			return "";
 		}
@@ -140,7 +115,7 @@ public class ElementManager {
 						ei.usage);
 			}
 			
-			obj = ei.method.invoke(null, context);
+			obj = ei.commandMethod.invoke(null, context);
 		}
 		catch (final IllegalAccessException e) {
 			e.printStackTrace();
@@ -162,13 +137,20 @@ public class ElementManager {
 		return (Element) obj;
 	}
 	
-	public Element getElementFromCommand(final ElementType elementType, final String type, final QuesterCommandContext context) throws CommandException, QuesterException {
-		Validate.notNull(elementType, "Element type cannot be null.");
-		final ElementInfo ei = elements.get(elementType).get(type.toUpperCase());
+	public Element getElementFromCommand(final Class<? extends Element> elementclass, final String type, final QuesterCommandContext context) throws CommandException, QuesterException {
+		Validate.notNull(elementclass, "Element type class cannot be null.");
+		final ElementInfo ei = elements.get(elementclass).get(type.toUpperCase());
 		if(ei != null && context != null) {
 			return getFromCommand(ei, context);
 		}
 		return null;
+	}
+	
+	// return type of the method has been check during class registration
+	@SuppressWarnings("unchecked")
+	public <T extends Element> T invokeLoadMethod(final Class<T> elementclass, final String type, final StorageKey key) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		final ElementInfo ei = elements.get(elementclass).get(type.toUpperCase());
+		return (T) ei.loadMethod.invoke(null, key);
 	}
 	
 	public void register(final Class<? extends Element> clss) throws ElementException {
@@ -180,22 +162,11 @@ public class ElementManager {
 			throw new ElementException("Annotation not present.");
 		}
 		try {
-			final Method load = clss.getDeclaredMethod("load", StorageKey.class);
-			if(!Modifier.isStatic(load.getModifiers())
-					|| !Modifier.isProtected(load.getModifiers())) {
-				throw new ElementException(
-						"Incorrect load method modifiers, expected \"protected static\".");
+			final Class<? extends Element> elementClass = getElementClass(clss);
+			if(elementClass == null) {
+				throw new ElementException("Unknown element type class.");
 			}
-			final ElementType type = ElementType.getByClass(clss.getSuperclass());
-			if(type != null) {
-				if(load.getReturnType() != type.getAssociatedClass()) {
-					throw new ElementException("Load method does not return " + type.name() + ".");
-				}
-				registerElement(type, clss, force);
-			}
-			else {
-				throw new ElementException("Unknown element type.");
-			}
+			registerElement(elementClass, clss, force);
 		}
 		catch (final NoSuchMethodException e) {
 			throw new ElementException("Missing fromCommand or load method.");
@@ -205,32 +176,55 @@ public class ElementManager {
 		}
 	}
 	
-	private void registerElement(final ElementType elementType, final Class<? extends Element> clss, final boolean force) throws NoSuchMethodException, SecurityException, ElementException {
+	private Class<? extends Element> getElementClass(final Class<? extends Element> clss) {
+		for(final Class<? extends Element> c : elements.keySet()) {
+			if(c.isAssignableFrom(clss)) {
+				return c;
+			}
+		}
+		return null;
+	}
+	
+	private void registerElement(final Class<? extends Element> elementClass, final Class<? extends Element> clss, final boolean force) throws NoSuchMethodException, SecurityException, ElementException {
+		// check load method
+		final Method load = clss.getDeclaredMethod("load", StorageKey.class);
+		if(!Modifier.isStatic(load.getModifiers()) || !Modifier.isProtected(load.getModifiers())) {
+			throw new ElementException(
+					"Incorrect load method modifiers, expected \"protected static\".");
+		}
+		if(load.getReturnType() != elementClass) {
+			throw new ElementException("Load method does not return "
+					+ elementClass.getSimpleName() + ".");
+		}
+		// check fromcommand method
 		final Method fromCommand =
 				clss.getDeclaredMethod("fromCommand", QuesterCommandContext.class);
-		
-		final String type = clss.getAnnotation(QElement.class).value().toUpperCase();
-		final Map<String, ElementInfo> map = elements.get(elementType);
-		if(map.containsKey(type)) {
-			if(!force) {
-				throw new ElementException(elementType.name()
-						+ " of the same type already registered.");
-			}
-			Ql.info(elementType.name() + " " + type + " has been replaced by class "
-					+ clss.getCanonicalName());
-		}
-		
 		if(!Modifier.isStatic(fromCommand.getModifiers())) {
 			throw new ElementException("Incorrect fromCommand method modifiers, expected static.");
 		}
-		if(fromCommand.getReturnType() != elementType.getAssociatedClass()) {
+		if(fromCommand.getReturnType() != elementClass) {
 			throw new ElementException("fromCommand method does not return "
-					+ elementType.getAssociatedClass().getSimpleName() + ".");
+					+ elementClass.getSimpleName() + ".");
 		}
+		// check if an element of the same type exists
+		final String type = clss.getAnnotation(QElement.class).value().toUpperCase();
+		final Map<String, ElementInfo> map = elements.get(elementClass);
+		if(map.containsKey(type)) {
+			if(!force) {
+				throw new ElementException(elementClass.getSimpleName()
+						+ " of the same type already registered.");
+			}
+			Ql.info(elementClass.getSimpleName() + " " + type + " has been replaced by class "
+					+ clss.getCanonicalName());
+		}
+		// register
 		final ElementInfo ei = new ElementInfo();
 		ei.clss = clss;
+		ei.loadMethod = load;
+		ei.loadMethod.setAccessible(true);
 		ei.command = fromCommand.getAnnotation(Command.class);
-		ei.method = fromCommand;
+		ei.commandMethod = fromCommand;
+		ei.commandMethod.setAccessible(true);
 		ei.usage = ei.command.usage();
 		map.put(type, ei);
 	}

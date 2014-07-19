@@ -7,8 +7,8 @@ import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Condition;
+import me.ragan262.quester.elements.Element;
 import me.ragan262.quester.elements.ElementManager;
-import me.ragan262.quester.elements.ElementManager.ElementType;
 import me.ragan262.quester.exceptions.ConditionException;
 import me.ragan262.quester.exceptions.ElementException;
 import me.ragan262.quester.exceptions.QuesterException;
@@ -33,15 +33,15 @@ public class ConditionCommands {
 	
 	private Condition getCondition(final String type, final QuesterCommandContext subContext, final QuesterLang lang) throws ConditionException, CommandException, QuesterException {
 		
-		if(!eMan.elementExists(ElementType.CONDITION, type)) {
+		if(!eMan.elementExists(Element.CONDITION, type)) {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.get("ERROR_CON_NOT_EXIST"));
 			subContext.getSender().sendMessage(
 					ChatColor.RED + lang.get("CON_LIST") + ": " + ChatColor.WHITE
-							+ eMan.getElementList(ElementType.CONDITION));
+							+ eMan.getElementList(Element.CONDITION));
 			throw new ConditionException(lang.get("ERROR_CON_NOT_EXIST"));
 		}
 		final Condition con =
-				(Condition) eMan.getElementFromCommand(ElementType.CONDITION, type, subContext);
+				(Condition) eMan.getElementFromCommand(Element.CONDITION, type, subContext);
 		if(con == null) {
 			throw new ElementException(lang.get("ERROR_ELEMENT_FAIL"));
 		}
@@ -114,7 +114,7 @@ public class ConditionCommands {
 	@Command(section = "QMod", max = 0, desc = "condition list")
 	public void list(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		sender.sendMessage(ChatColor.RED + context.getSenderLang().get("CON_LIST") + ": "
-				+ ChatColor.WHITE + eMan.getElementList(ElementType.CONDITION));
+				+ ChatColor.WHITE + eMan.getElementList(Element.CONDITION));
 	}
 	
 	public static class ConditionDescCommands {

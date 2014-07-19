@@ -1,10 +1,8 @@
 package me.ragan262.quester.elements;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.ragan262.quester.elements.ElementManager.ElementType;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
 
@@ -90,48 +88,43 @@ public abstract class Trigger extends Element {
 			return null;
 		}
 		
-		Trigger trig = null;
+		final ElementManager eMan = ElementManager.getInstance();
+		if(!eMan.elementExists(Element.TRIGGER, type)) {
+			Ql.severe("Unknown trigger type: '" + type + "'");
+			return null;
+		}
 		
-		final Class<? extends Element> c =
-				ElementManager.getInstance().getElementClass(ElementType.TRIGGER, type);
-		if(c != null) {
-			try {
-				final Method load = c.getDeclaredMethod("load", StorageKey.class);
-				load.setAccessible(true);
-				trig = (Trigger) load.invoke(null, key);
-				if(trig == null) {
-					return null;
-				}
-				
-				trig.global = key.getBoolean("global", false);
-				
-				Condition con = null;
-				if(key.getSubKey("conditions").hasSubKeys()) {
-					final StorageKey subKey = key.getSubKey("conditions");
-					final List<StorageKey> keys = subKey.getSubKeys();
-					for(int i = 0; i < keys.size(); i++) {
-						con = Condition.deserialize(subKey.getSubKey(String.valueOf(i)));
-						if(con != null) {
-							trig.addCondition(con);
-						}
-						else {
-							Ql.severe("Error occured when deserializing condition ID " + i
-									+ "in trigger " + key.getName() + "'.");
-						}
+		try {
+			final Trigger trig = eMan.invokeLoadMethod(Element.TRIGGER, type, key);
+			if(trig == null) {
+				return null;
+			}
+			
+			trig.global = key.getBoolean("global", false);
+			
+			Condition con = null;
+			if(key.getSubKey("conditions").hasSubKeys()) {
+				final StorageKey subKey = key.getSubKey("conditions");
+				final List<StorageKey> keys = subKey.getSubKeys();
+				for(int i = 0; i < keys.size(); i++) {
+					con = Condition.deserialize(subKey.getSubKey(String.valueOf(i)));
+					if(con != null) {
+						trig.addCondition(con);
+					}
+					else {
+						Ql.severe("Error occured when deserializing condition ID " + i
+								+ "in trigger " + key.getName() + "'.");
 					}
 				}
 			}
-			catch (final Exception e) {
-				Ql.severe("Error when deserializing " + c.getSimpleName()
-						+ ". Method load() missing or invalid. " + e.getClass().getName());
-				Ql.debug("Exception follows", e);
-				return null;
-			}
+			
+			return trig;
 		}
-		else {
-			Ql.severe("Unknown trigger type: '" + type + "'");
+		catch (final Exception e) {
+			Ql.severe("Error when deserializing trigger " + type
+					+ ". Method load() missing or invalid. " + e.getClass().getName());
+			Ql.debug("Exception follows", e);
+			return null;
 		}
-		
-		return trig;
 	}
 }

@@ -1,8 +1,5 @@
 package me.ragan262.quester.elements;
 
-import java.lang.reflect.Method;
-
-import me.ragan262.quester.elements.ElementManager.ElementType;
 import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.lang.QuesterLang;
 import me.ragan262.quester.storage.StorageKey;
@@ -123,35 +120,30 @@ public abstract class Condition extends Element {
 			return null;
 		}
 		
-		Condition con = null;
+		final ElementManager eMan = ElementManager.getInstance();
+		if(!eMan.elementExists(Element.CONDITION, type)) {
+			Ql.severe("Unknown condition type: '" + type + "'");
+			return null;
+		}
 		
-		final Class<? extends Element> c =
-				ElementManager.getInstance().getElementClass(ElementType.CONDITION, type);
-		if(c != null) {
-			try {
-				final Method load = c.getDeclaredMethod("load", StorageKey.class);
-				load.setAccessible(true);
-				con = (Condition) load.invoke(null, key);
-				if(con == null) {
-					return null;
-				}
-				
-				final String des = key.getString("description");
-				if(des != null) {
-					con.addDescription(des);
-				}
-			}
-			catch (final Exception e) {
-				Ql.severe("Error when deserializing " + c.getSimpleName()
-						+ ". Method load() missing or invalid. " + e.getClass().getName());
-				Ql.debug("Exception follows", e);
+		try {
+			final Condition con = eMan.invokeLoadMethod(Element.CONDITION, type, key);
+			if(con == null) {
 				return null;
 			}
+			
+			final String des = key.getString("description");
+			if(des != null) {
+				con.addDescription(des);
+			}
+			
+			return con;
 		}
-		else {
-			Ql.severe("Unknown condition type: '" + type + "'");
+		catch (final Exception e) {
+			Ql.severe("Error when deserializing condition " + type
+					+ ". Method load() missing or invalid. " + e.getClass().getName());
+			Ql.debug("Exception follows", e);
+			return null;
 		}
-		
-		return con;
 	}
 }

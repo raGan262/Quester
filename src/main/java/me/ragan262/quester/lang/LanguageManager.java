@@ -39,7 +39,7 @@ public class LanguageManager {
 	public LanguageManager(final Quester plugin, final File localFolder) {
 		logger = plugin.getLogger();
 		if(!localFolder.isDirectory()) {
-			if(!localFolder.mkdir()) {
+			if(!localFolder.mkdirs()) {
 				throw new IllegalArgumentException("Could not create local directory.");
 			}
 		}

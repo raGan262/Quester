@@ -1,9 +1,6 @@
 package me.ragan262.quester.elements;
 
-import java.lang.reflect.Method;
-
 import me.ragan262.quester.Quester;
-import me.ragan262.quester.elements.ElementManager.ElementType;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
 
@@ -131,32 +128,27 @@ public abstract class Qevent extends Element {
 			return null;
 		}
 		
-		Qevent qev = null;
+		final ElementManager eMan = ElementManager.getInstance();
+		if(!eMan.elementExists(Element.TRIGGER, type)) {
+			Ql.severe("Unknown qevent type: '" + type + "'");
+			return null;
+		}
 		
-		final Class<? extends Element> c =
-				ElementManager.getInstance().getElementClass(ElementType.EVENT, type);
-		if(c != null) {
-			try {
-				final Method load = c.getDeclaredMethod("load", StorageKey.class);
-				load.setAccessible(true);
-				qev = (Qevent) load.invoke(null, key);
-				if(qev == null) {
-					return null;
-				}
-				
-				qev.occasion = key.getInt("occasion", -10);
-				qev.delay = key.getInt("delay", 0);
-			}
-			catch (final Exception e) {
-				Ql.severe("Error when deserializing " + c.getSimpleName()
-						+ ". Method load() missing or invalid. " + e.getClass().getName());
-				Ql.debug("Exception follows", e);
+		try {
+			final Qevent qev = eMan.invokeLoadMethod(Element.QEVENT, type, key);
+			if(qev == null) {
 				return null;
 			}
+			
+			qev.occasion = key.getInt("occasion", -10);
+			qev.delay = key.getInt("delay", 0);
+			return qev;
 		}
-		else {
-			Ql.severe("Unknown event type: '" + type + "'");
+		catch (final Exception e) {
+			Ql.severe("Error when deserializing qevent " + type
+					+ ". Method load() missing or invalid. " + e.getClass().getName());
+			Ql.debug("Exception follows", e);
+			return null;
 		}
-		return qev;
 	}
 }

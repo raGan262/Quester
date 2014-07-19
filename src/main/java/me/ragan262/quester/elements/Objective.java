@@ -1,10 +1,8 @@
 package me.ragan262.quester.elements;
 
-import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
-import me.ragan262.quester.elements.ElementManager.ElementType;
 import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.lang.QuesterLang;
 import me.ragan262.quester.storage.StorageKey;
@@ -207,59 +205,55 @@ public abstract class Objective extends Element {
 			return null;
 		}
 		
-		Objective obj = null;
+		final ElementManager eMan = ElementManager.getInstance();
+		if(!eMan.elementExists(Element.OBJECTIVE, type)) {
+			Ql.severe("Unknown objective type: '" + type + "'");
+			return null;
+		}
 		
-		final Class<? extends Element> c =
-				ElementManager.getInstance().getElementClass(ElementType.OBJECTIVE, type);
-		if(c != null) {
-			try {
-				final Method load = c.getDeclaredMethod("load", StorageKey.class);
-				load.setAccessible(true);
-				obj = (Objective) load.invoke(null, key);
-				if(obj == null) {
-					return null;
-				}
-				
-				final String description = key.getString("description");
-				if(description != null) {
-					obj.addDescription(description);
-				}
-				obj.setHidden(key.getBoolean("hidden", false));
-				obj.setDisplayProgress(key.getBoolean("progress", true));
-				
-				try {
-					final Set<Integer> prereq =
-							SerUtils.deserializeIntSet(key.getString("prerequisites"));
-					for(final int i : prereq) {
-						obj.addPrerequisity(i);
-					}
-				}
-				catch (final NullPointerException ignore) {}
-				catch (final Exception ex) {
-					Ql.debug("Failed to load prerequisites. (" + type + ")");
-				}
-				try {
-					final Set<Integer> trig = SerUtils.deserializeIntSet(key.getString("triggers"));
-					for(final int i : trig) {
-						obj.addTrigger(i);
-					}
-				}
-				catch (final NullPointerException ignore) {}
-				catch (final Exception ex) {
-					Ql.debug("Failed to load triggers. (" + type + ")");
-				}
-			}
-			catch (final Exception e) {
-				Ql.severe("Error when deserializing " + c.getSimpleName()
-						+ ". Method load() missing or invalid. " + e.getClass().getName());
-				Ql.debug("Exception follows", e);
+		try {
+			final Objective obj = eMan.invokeLoadMethod(Element.OBJECTIVE, type, key);
+			if(obj == null) {
 				return null;
 			}
+			
+			final String description = key.getString("description");
+			if(description != null) {
+				obj.addDescription(description);
+			}
+			
+			obj.setHidden(key.getBoolean("hidden", false));
+			obj.setDisplayProgress(key.getBoolean("progress", true));
+			try {
+				final Set<Integer> prereq =
+						SerUtils.deserializeIntSet(key.getString("prerequisites"));
+				for(final int i : prereq) {
+					obj.addPrerequisity(i);
+				}
+			}
+			catch (final NullPointerException ignore) {}
+			catch (final Exception ex) {
+				Ql.debug("Failed to load prerequisites. (" + type + ")");
+			}
+			
+			try {
+				final Set<Integer> trig = SerUtils.deserializeIntSet(key.getString("triggers"));
+				for(final int i : trig) {
+					obj.addTrigger(i);
+				}
+			}
+			catch (final NullPointerException ignore) {}
+			catch (final Exception ex) {
+				Ql.debug("Failed to load triggers. (" + type + ")");
+			}
+			
+			return obj;
 		}
-		else {
-			Ql.severe("Unknown objective type: '" + type + "'");
+		catch (final Exception e) {
+			Ql.severe("Error when deserializing objective " + type
+					+ ". Method load() missing or invalid. " + e.getClass().getName());
+			Ql.debug("Exception follows", e);
+			return null;
 		}
-		
-		return obj;
 	}
 }

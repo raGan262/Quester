@@ -8,8 +8,8 @@ import me.ragan262.commandmanager.annotations.NestedCommand;
 import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.commandmanager.QuesterCommandContext;
+import me.ragan262.quester.elements.Element;
 import me.ragan262.quester.elements.ElementManager;
-import me.ragan262.quester.elements.ElementManager.ElementType;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.exceptions.ElementException;
 import me.ragan262.quester.exceptions.ObjectiveException;
@@ -35,15 +35,15 @@ public class ObjectiveCommands {
 	}
 	
 	private Objective getObjective(final String type, final QuesterCommandContext subContext, final QuesterLang lang) throws CommandException, ObjectiveException, QuesterException {
-		if(!eMan.elementExists(ElementType.OBJECTIVE, type)) {
+		if(!eMan.elementExists(Element.OBJECTIVE, type)) {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.get("ERROR_OBJ_NOT_EXIST"));
 			subContext.getSender().sendMessage(
 					ChatColor.RED + lang.get("OBJ_LIST") + ": " + ChatColor.WHITE
-							+ eMan.getElementList(ElementType.OBJECTIVE));
+							+ eMan.getElementList(Element.OBJECTIVE));
 			throw new ObjectiveException(lang.get("ERROR_OBJ_NOT_EXIST"));
 		}
 		final Objective obj =
-				(Objective) eMan.getElementFromCommand(ElementType.OBJECTIVE, type, subContext);
+				(Objective) eMan.getElementFromCommand(Element.OBJECTIVE, type, subContext);
 		if(obj == null) {
 			throw new ElementException(lang.get("ERROR_ELEMENT_FAIL"));
 		}
@@ -116,7 +116,7 @@ public class ObjectiveCommands {
 	@Command(section = "QMod", max = 0, desc = "objective list")
 	public void list(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		sender.sendMessage(ChatColor.RED + context.getSenderLang().get("OBJ_LIST") + ": "
-				+ ChatColor.WHITE + eMan.getElementList(ElementType.OBJECTIVE));
+				+ ChatColor.WHITE + eMan.getElementList(Element.OBJECTIVE));
 	}
 	
 	@CommandLabels({ "swap" })

@@ -6,8 +6,8 @@ import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.commandmanager.QuesterCommandContext;
+import me.ragan262.quester.elements.Element;
 import me.ragan262.quester.elements.ElementManager;
-import me.ragan262.quester.elements.ElementManager.ElementType;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.exceptions.ElementException;
 import me.ragan262.quester.exceptions.QeventException;
@@ -44,14 +44,14 @@ public class QeventCommands {
 		catch (final IllegalArgumentException e) {
 			throw new CommandException(e.getMessage());
 		}
-		if(!eMan.elementExists(ElementType.EVENT, type)) {
+		if(!eMan.elementExists(Element.QEVENT, type)) {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.get("ERROR_EVT_NOT_EXIST"));
 			subContext.getSender().sendMessage(
 					ChatColor.RED + lang.get("EVT_LIST") + ": " + ChatColor.WHITE
-							+ eMan.getElementList(ElementType.EVENT));
+							+ eMan.getElementList(Element.QEVENT));
 			throw new QeventException(lang.get("ERROR_EVT_NOT_EXIST"));
 		}
-		final Qevent evt = (Qevent) eMan.getElementFromCommand(ElementType.EVENT, type, subContext);
+		final Qevent evt = (Qevent) eMan.getElementFromCommand(Element.QEVENT, type, subContext);
 		if(evt != null) {
 			evt.setOccasion(occasion[0], occasion[1]);
 		}
@@ -168,6 +168,6 @@ public class QeventCommands {
 	@Command(section = "QMod", max = 0, desc = "event list")
 	public void list(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		sender.sendMessage(ChatColor.RED + context.getSenderLang().get("EVT_LIST") + ": "
-				+ ChatColor.WHITE + eMan.getElementList(ElementType.EVENT));
+				+ ChatColor.WHITE + eMan.getElementList(Element.QEVENT));
 	}
 }
