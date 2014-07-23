@@ -12,11 +12,10 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 public class ConfigStorage implements Storage {
 	
-	private final YamlConfiguration config;
+	private final Utf8YamlConfiguration config;
 	private final File conFile;
 	private final Logger logger;
 	
@@ -27,7 +26,7 @@ public class ConfigStorage implements Storage {
 		else {
 			this.logger = logger;
 		}
-		config = new YamlConfiguration();
+		config = new Utf8YamlConfiguration();
 		conFile = file;
 		if(!file.exists()) {
 			create(defaultStream);
