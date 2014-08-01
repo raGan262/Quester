@@ -3,7 +3,6 @@ package me.ragan262.quester.elements;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
-
 import org.apache.commons.lang.SerializationException;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -71,6 +70,7 @@ public abstract class Qevent extends Element {
 		
 		if(delay > 0) {
 			new BukkitRunnable() {
+				
 				@Override
 				public void run() {
 					try {
@@ -81,7 +81,7 @@ public abstract class Qevent extends Element {
 						}
 						Qevent.this.run(player, plugin);
 					}
-					catch (final Exception e) {
+					catch(final Exception e) {
 						Ql.warning(getType() + " event external exception. [" + occasion + ":"
 								+ delay + "]");
 						Ql.debug("Exception", e);
@@ -93,7 +93,7 @@ public abstract class Qevent extends Element {
 			try {
 				Qevent.this.run(player, plugin);
 			}
-			catch (final Exception e) {
+			catch(final Exception e) {
 				Ql.warning(getType() + " event external exception. [" + occasion + ":" + delay
 						+ "]");
 				Ql.debug("Exception", e);
@@ -129,7 +129,7 @@ public abstract class Qevent extends Element {
 		}
 		
 		final ElementManager eMan = ElementManager.getInstance();
-		if(!eMan.elementExists(Element.TRIGGER, type)) {
+		if(!eMan.elementExists(Element.QEVENT, type)) {
 			Ql.severe("Unknown qevent type: '" + type + "'");
 			return null;
 		}
@@ -144,7 +144,7 @@ public abstract class Qevent extends Element {
 			qev.delay = key.getInt("delay", 0);
 			return qev;
 		}
-		catch (final Exception e) {
+		catch(final Exception e) {
 			Ql.severe("Error when deserializing qevent " + type
 					+ ". Method load() missing or invalid. " + e.getClass().getName());
 			Ql.debug("Exception follows", e);
