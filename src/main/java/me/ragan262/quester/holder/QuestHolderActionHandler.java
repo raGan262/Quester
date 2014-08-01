@@ -1,7 +1,6 @@
 package me.ragan262.quester.holder;
 
 import java.util.List;
-
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
@@ -15,7 +14,6 @@ import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.quests.QuestManager;
 import me.ragan262.quester.utils.Util;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -83,14 +81,14 @@ public abstract class QuestHolderActionHandler<T> {
 					messenger.showQuest(player, quest, lang);
 					return;
 				}
-				catch (final QuesterException ignore) {}
+				catch(final QuesterException ignore) {}
 			}
 		}
 		
 		try {
 			holMan.selectNext(player.getName(), qHolder, lang);
 		}
-		catch (final HolderException e) {
+		catch(final HolderException e) {
 			player.sendMessage(e.getMessage());
 			if(!isOp) {
 				return;
@@ -98,8 +96,8 @@ public abstract class QuestHolderActionHandler<T> {
 			
 		}
 		
-		player.sendMessage(Util.line(ChatColor.BLUE, getHeaderText(player, qHolder, data),
-				ChatColor.GOLD));
+		player.sendMessage(Util
+				.line(ChatColor.BLUE, getHeaderText(player, qHolder, data), ChatColor.GOLD));
 		if(isOp) {
 			messenger.showHolderQuestsModify(qHolder, player, qMan);
 		}
@@ -122,7 +120,7 @@ public abstract class QuestHolderActionHandler<T> {
 				player.sendMessage(ChatColor.RED + lang.get("ERROR_HOL_NOT_SELECTED"));
 			}
 			else {
-				assignHolder(qHolder, data);
+				assignHolder(selected, data);
 				player.sendMessage(ChatColor.GREEN + lang.get("HOL_ASSIGNED"));
 			}
 			return;
@@ -151,11 +149,11 @@ public abstract class QuestHolderActionHandler<T> {
 				try {
 					profMan.complete(player, ActionSource.holderSource(qHolder), lang);
 				}
-				catch (final QuesterException e) {
+				catch(final QuesterException e) {
 					try {
 						messenger.showProgress(player, prof, lang);
 					}
-					catch (final QuesterException f) {
+					catch(final QuesterException f) {
 						player.sendMessage(ChatColor.DARK_PURPLE + lang.get("ERROR_INTERESTING"));
 					}
 				}
@@ -169,10 +167,10 @@ public abstract class QuestHolderActionHandler<T> {
 		// player doesn't have quest
 		if(qMan.isQuestActive(selected)) {
 			try {
-				profMan.startQuest(player, qMan.getQuest(selected),
-						ActionSource.holderSource(qHolder), lang);
+				profMan.startQuest(player, qMan.getQuest(selected), ActionSource
+						.holderSource(qHolder), lang);
 			}
-			catch (final QuesterException e) {
+			catch(final QuesterException e) {
 				player.sendMessage(e.getMessage());
 			}
 		}
