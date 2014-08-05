@@ -15,6 +15,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 public class ConfigStorage implements Storage {
 	
 	private final Utf8YamlConfiguration config;
+	private final String fileName;
 	private final File conFile;
 	private final Logger logger;
 	
@@ -27,6 +28,8 @@ public class ConfigStorage implements Storage {
 		}
 		config = new Utf8YamlConfiguration();
 		conFile = file;
+		final int id = file.getName().lastIndexOf('.');
+		fileName = id > 0 ? file.getName().substring(0, id) : file.getName();
 		if(defaultStream != null && !file.exists()) {
 			create(defaultStream);
 			save();
@@ -99,8 +102,15 @@ public class ConfigStorage implements Storage {
 	}
 	
 	@Override
-	public StorageKey getKey(final String root) {
-		return new ConfigKey(root);
+	public StorageKey getKey(String root) {
+		if(root == null) {
+			root = "";
+		}
+		final StorageKey key = new ConfigKey(root);
+		if(root.isEmpty()) {
+			key.name = fileName;
+		}
+		return key;
 	}
 	
 	public class ConfigKey extends StorageKey {
