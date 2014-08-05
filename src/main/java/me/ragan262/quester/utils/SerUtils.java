@@ -5,11 +5,9 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.lang.QuesterLang;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -41,17 +39,16 @@ public class SerUtils {
 		
 		if(args[0].equalsIgnoreCase(QConfiguration.locLabelHere)) {
 			if(sender instanceof Player) {
-				return ((Player) sender).getLocation();
+				return ((Player)sender).getLocation();
 			}
 			else {
 				throw new IllegalArgumentException(ChatColor.RED
-						+ lang.get("ERROR_CMD_LOC_HERE").replaceAll("%here",
-								QConfiguration.locLabelHere));
+						+ lang.get("ERROR_CMD_LOC_HERE").replaceAll("%here", QConfiguration.locLabelHere));
 			}
 		}
 		else if(args[0].equalsIgnoreCase(QConfiguration.locLabelBlock)) {
 			if(sender instanceof Player) {
-				final Block block = ((Player) sender).getTargetBlock(null, 5);
+				final Block block = ((Player)sender).getTargetBlock(null, 5);
 				if(block == null) {
 					throw new IllegalArgumentException(ChatColor.RED
 							+ lang.get("ERROR_CMD_LOC_NOBLOCK"));
@@ -60,8 +57,7 @@ public class SerUtils {
 			}
 			else {
 				throw new IllegalArgumentException(ChatColor.RED
-						+ lang.get("ERROR_CMD_LOC_BLOCK").replaceAll("%block",
-								QConfiguration.locLabelBlock));
+						+ lang.get("ERROR_CMD_LOC_BLOCK").replaceAll("%block", QConfiguration.locLabelBlock));
 			}
 		}
 		else if(args[0].equalsIgnoreCase(QConfiguration.locLabelPlayer)) {
@@ -75,7 +71,7 @@ public class SerUtils {
 				y = Double.parseDouble(args[1]);
 				z = Double.parseDouble(args[2]);
 			}
-			catch (final NumberFormatException e) {
+			catch(final NumberFormatException e) {
 				throw new IllegalArgumentException(ChatColor.RED
 						+ lang.get("ERROR_CMD_COORDS_INVALID"));
 			}
@@ -84,7 +80,7 @@ public class SerUtils {
 						+ lang.get("ERROR_CMD_COORDS_INVALID"));
 			}
 			if(sender instanceof Player && args[3].equalsIgnoreCase(QConfiguration.worldLabelThis)) {
-				loc = new Location(((Player) sender).getWorld(), x, y, z);
+				loc = new Location(((Player)sender).getWorld(), x, y, z);
 			}
 			else {
 				final World world = Bukkit.getServer().getWorld(args[3]);
@@ -162,7 +158,7 @@ public class SerUtils {
 	public static String serializeItem(final int mat, final int data) {
 		String str = "";
 		if(data >= 0) {
-			str = ":" + (short) data;
+			str = ":" + (short)data;
 		}
 		return mat + str;
 	}
@@ -183,7 +179,7 @@ public class SerUtils {
 			try {
 				itm[0] = Integer.parseInt(s[0]);
 			}
-			catch (final NumberFormatException e) {
+			catch(final NumberFormatException e) {
 				throw new IllegalArgumentException(lang.get("ERROR_CMD_ITEM_UNKNOWN"));
 			}
 			if(Material.getMaterial(itm[0]) == null) {
@@ -200,7 +196,7 @@ public class SerUtils {
 			try {
 				itm[1] = Integer.parseInt(s[1]);
 			}
-			catch (final NumberFormatException e) {
+			catch(final NumberFormatException e) {
 				throw new IllegalArgumentException(lang.get("ERROR_CMD_ITEM_UNKNOWN"));
 			}
 		}
@@ -219,12 +215,12 @@ public class SerUtils {
 		try {
 			col = DyeColor.valueOf(arg.toUpperCase());
 		}
-		catch (final Exception ignore) {}
+		catch(final Exception ignore) {}
 		if(col == null) {
 			try {
 				col = DyeColor.getByDyeData(Byte.parseByte(arg));
 			}
-			catch (final NumberFormatException ignore) {}
+			catch(final NumberFormatException ignore) {}
 		}
 		return col;
 	}
@@ -254,7 +250,7 @@ public class SerUtils {
 			try {
 				type = PotionEffectType.getById(Integer.parseInt(s[0]));
 			}
-			catch (final NumberFormatException e) {
+			catch(final NumberFormatException e) {
 				throw new IllegalArgumentException(lang.get("ERROR_CMD_EFFECT_UNKNOWN") + "2");
 			}
 			if(type == null) {
@@ -268,7 +264,7 @@ public class SerUtils {
 			}
 			dur *= 20;
 		}
-		catch (final NumberFormatException e) {
+		catch(final NumberFormatException e) {
 			throw new IllegalArgumentException(lang.get("ERROR_CMD_EFFECT_DURATION"));
 		}
 		try {
@@ -279,10 +275,10 @@ public class SerUtils {
 				}
 			}
 		}
-		catch (final NumberFormatException e) {
+		catch(final NumberFormatException e) {
 			throw new IllegalArgumentException(lang.get("ERROR_CMD_EFFECT_AMPLIFIER"));
 		}
-		return new PotionEffect(type, (int) dur, amp);
+		return new PotionEffect(type, (int)dur, amp);
 	}
 	
 	public static String serializeEntity(final EntityType ent) {
@@ -312,7 +308,7 @@ public class SerUtils {
 		try {
 			sound = Sound.valueOf(arg.toUpperCase());
 		}
-		catch (final Exception ignore) {}
+		catch(final Exception ignore) {}
 		return sound;
 	}
 	
@@ -322,7 +318,7 @@ public class SerUtils {
 			try {
 				result.add(Integer.parseInt(args[i]));
 			}
-			catch (final Exception ignore) {}
+			catch(final Exception ignore) {}
 		}
 		return result;
 	}
@@ -366,7 +362,7 @@ public class SerUtils {
 		try {
 			arr[0] = Integer.parseInt(s[0]);
 		}
-		catch (final NumberFormatException ignore) {}
+		catch(final NumberFormatException ignore) {}
 		if(s.length > 1) {
 			arr[1] = Integer.parseInt(s[1]);
 		}
@@ -395,7 +391,7 @@ public class SerUtils {
 				return i;
 			}
 		}
-		catch (final NumberFormatException ignore) {}
+		catch(final NumberFormatException ignore) {}
 		if(arg.equalsIgnoreCase("left")) {
 			return 1;
 		}
@@ -415,9 +411,7 @@ public class SerUtils {
 			return null;
 		}
 		
-		str =
-				String.format(Locale.ENGLISH, "%.1f;%.1f;%.1f;%s", loc.getX(), loc.getY(),
-						loc.getZ(), loc.getWorld().getName());
+		str = String.format(Locale.ENGLISH, "%.1f;%.1f;%.1f;%s", loc.getX(), loc.getY(), loc.getZ(), loc.getWorld().getName());
 		
 		return str;
 	}
@@ -429,10 +423,7 @@ public class SerUtils {
 			return null;
 		}
 		
-		str =
-				String.format(Locale.ENGLISH, "%.2f;%.2f;%.2f;%s;%.2f;%.2f;", loc.getX(),
-						loc.getY(), loc.getZ(), loc.getWorld().getName(), loc.getYaw(),
-						loc.getPitch());
+		str = String.format(Locale.ENGLISH, "%.2f;%.2f;%.2f;%s;%.2f;%.2f;", loc.getX(), loc.getY(), loc.getZ(), loc.getWorld().getName(), loc.getYaw(), loc.getPitch());
 		
 		return str;
 	}
@@ -466,7 +457,7 @@ public class SerUtils {
 			}
 			loc = new Location(world, x, y, z, yaw, pitch);
 		}
-		catch (final Exception e) {
+		catch(final Exception e) {
 			Ql.debug("Error when deserializing location.", e);
 		}
 		

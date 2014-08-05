@@ -14,7 +14,6 @@ import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.quests.QuestManager;
 import me.ragan262.quester.utils.Ql;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -39,12 +38,10 @@ public class ModificationCommands {
 			permission = QConfiguration.PERM_MODIFY)
 	public void info(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		if(context.length() > 0) {
-			messenger.showQuestInfo(sender, qMan.getQuest(context.getInt(0)),
-					context.getSenderLang());
+			messenger.showQuestInfo(sender, qMan.getQuest(context.getInt(0)), context.getSenderLang());
 		}
 		else {
-			messenger.showQuestInfo(sender, profMan.getSenderProfile(sender).getSelected(),
-					context.getSenderLang());
+			messenger.showQuestInfo(sender, profMan.getSenderProfile(sender).getSelected(), context.getSenderLang());
 		}
 	}
 	
@@ -73,9 +70,7 @@ public class ModificationCommands {
 			usage = "<quest ID>",
 			permission = QConfiguration.PERM_MODIFY)
 	public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-		final String name =
-				qMan.removeQuest(profMan.getSenderProfile(sender), context.getInt(0),
-						context.getSenderLang()).getName();
+		final String name = qMan.removeQuest(profMan.getSenderProfile(sender), context.getInt(0), context.getSenderLang()).getName();
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_REMOVED"));
 		Ql.verbose(sender.getName() + " removed quest '" + name + "'.");
 	}
@@ -89,8 +84,7 @@ public class ModificationCommands {
 			usage = "<new name>",
 			permission = QConfiguration.PERM_MODIFY)
 	public void name(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.changeQuestName(profMan.getSenderProfile(sender), context.getString(0),
-				context.getSenderLang());
+		qMan.changeQuestName(profMan.getSenderProfile(sender), context.getString(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().get("Q_RENAMED").replaceAll("%q", context.getString(0)));
 	}
@@ -105,14 +99,10 @@ public class ModificationCommands {
 	public void i(final QuesterCommandContext context, final CommandSender sender) throws CommandException, QuesterException {
 		boolean active;
 		if(context.length() > 0) {
-			active =
-					qMan.toggleQuest(qMan.getQuest(context.getInt(0)), context.getSenderLang(),
-							profMan);
+			active = qMan.toggleQuest(qMan.getQuest(context.getInt(0)), context.getSenderLang(), profMan);
 		}
 		else {
-			active =
-					qMan.toggleQuest(profMan.getSenderProfile(sender).getSelected(),
-							context.getSenderLang(), profMan);
+			active = qMan.toggleQuest(profMan.getSenderProfile(sender).getSelected(), context.getSenderLang(), profMan);
 		}
 		if(active) {
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_ACTIVATED"));

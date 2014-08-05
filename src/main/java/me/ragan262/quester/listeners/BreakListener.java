@@ -1,7 +1,6 @@
 package me.ragan262.quester.listeners;
 
 import java.util.List;
-
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
@@ -10,7 +9,6 @@ import me.ragan262.quester.objectives.BreakObjective;
 import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.Quest;
-
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -43,7 +41,7 @@ public class BreakListener implements Listener {
 					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
-					final BreakObjective obj = (BreakObjective) objs.get(i);
+					final BreakObjective obj = (BreakObjective)objs.get(i);
 					final Block block = event.getBlock();
 					if(obj.checkBlock(block) && obj.checkHand(player.getItemInHand().getTypeId())) {
 						if(QConfiguration.brkNoDrops) {

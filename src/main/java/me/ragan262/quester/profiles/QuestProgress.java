@@ -2,7 +2,6 @@ package me.ragan262.quester.profiles;
 
 import java.util.Arrays;
 import java.util.List;
-
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.storage.StorageKey;
@@ -85,8 +84,7 @@ public class QuestProgress {
 		if(objectiveID >= 0 && objectiveID < progress.length) {
 			progress[objectiveID] = newValue;
 			// if objective status went from not complete to complete or vice versa
-			if(objectiveStatuses[objectiveID] == ObjectiveStatus.COMPLETED != quest.getObjective(
-					objectiveID).isComplete(newValue)) {
+			if(objectiveStatuses[objectiveID] == ObjectiveStatus.COMPLETED != quest.getObjective(objectiveID).isComplete(newValue)) {
 				updateObjectives();
 			}
 			return true;
@@ -114,7 +112,7 @@ public class QuestProgress {
 	@Override
 	public boolean equals(final Object obj) {
 		if(obj != null && obj instanceof QuestProgress) {
-			final QuestProgress prg = (QuestProgress) obj;
+			final QuestProgress prg = (QuestProgress)obj;
 			return quest.equals(prg.quest);
 		}
 		return false;
@@ -150,7 +148,7 @@ public class QuestProgress {
 				throw new Exception("Number of objectives in quest and in progress not matching.");
 			}
 		}
-		catch (final Exception e) {
+		catch(final Exception e) {
 			Ql.info("Invalid or missing progress for quest '" + key.getName() + "' in profile.");
 			Ql.debug("Exception", e);
 			return null;

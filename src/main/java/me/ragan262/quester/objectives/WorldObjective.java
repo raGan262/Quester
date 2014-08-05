@@ -8,7 +8,6 @@ import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Region;
-
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -49,8 +48,7 @@ public final class WorldObjective extends Objective {
 				world = player.getWorld();
 			}
 			else {
-				throw new CommandException(context.getSenderLang().get("ERROR_CMD_WORLD_THIS")
-						.replaceAll("%this", label));
+				throw new CommandException(context.getSenderLang().get("ERROR_CMD_WORLD_THIS").replaceAll("%this", label));
 			}
 		}
 		else {

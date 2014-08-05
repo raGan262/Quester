@@ -8,7 +8,6 @@ import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.SerUtils;
-
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -41,8 +40,7 @@ public final class TeleportQevent extends Qevent {
 	
 	@Command(min = 1, max = 1, usage = "{<location>}")
 	public static Qevent fromCommand(final QuesterCommandContext context) throws CommandException {
-		final Location loc =
-				SerUtils.getLoc(context.getPlayer(), context.getString(0), context.getSenderLang());
+		final Location loc = SerUtils.getLoc(context.getPlayer(), context.getString(0), context.getSenderLang());
 		if(loc == null) {
 			throw new CommandException(context.getSenderLang().get("ERROR_CMD_LOC_INVALID"));
 		}

@@ -3,7 +3,6 @@ package me.ragan262.quester.commandmanager;
 import me.ragan262.commandmanager.CommandManager;
 import me.ragan262.commandmanager.context.CommandContext;
 import me.ragan262.quester.lang.QuesterLang;
-
 import org.bukkit.command.CommandSender;
 
 public class QuesterCommandContext extends CommandContext {

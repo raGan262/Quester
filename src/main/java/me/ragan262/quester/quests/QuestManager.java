@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Logger;
-
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.elements.Condition;
@@ -33,7 +32,6 @@ import me.ragan262.quester.storage.Storage;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
 import me.ragan262.quester.utils.Util;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -672,10 +670,10 @@ public class QuestManager {
 				final String date = new SimpleDateFormat("yy-MM-dd--HH-mm-ss").format(new Date());
 				final File f = new File(backupDir, "quests-" + date + ".yml");
 				f.createNewFile();
-				((ConfigStorage) storage).saveToFile(f);
+				((ConfigStorage)storage).saveToFile(f);
 				Ql.info("Found errors in quests.yml, backup created. Backup name: " + f.getName());
 			}
-			catch (final Exception e) {
+			catch(final Exception e) {
 				Ql.severe("Failed to create quests backup.", e);
 			}
 		}

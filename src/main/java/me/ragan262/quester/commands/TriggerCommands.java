@@ -15,7 +15,6 @@ import me.ragan262.quester.exceptions.TriggerException;
 import me.ragan262.quester.lang.QuesterLang;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.QuestManager;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -36,13 +35,11 @@ public class TriggerCommands {
 	private Trigger getTrigger(final String type, final QuesterCommandContext subContext, final QuesterLang lang) throws CommandException, ObjectiveException, QuesterException {
 		if(!eMan.elementExists(Element.TRIGGER, type)) {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.get("ERROR_TRIG_NOT_EXIST"));
-			subContext.getSender().sendMessage(
-					ChatColor.RED + lang.get("TRIG_LIST") + ": " + ChatColor.WHITE
-							+ eMan.getElementList(Element.TRIGGER));
+			subContext.getSender().sendMessage(ChatColor.RED + lang.get("TRIG_LIST") + ": "
+					+ ChatColor.WHITE + eMan.getElementList(Element.TRIGGER));
 			throw new TriggerException(lang.get("ERROR_TRIG_NOT_EXIST"));
 		}
-		final Trigger trig =
-				(Trigger) eMan.getElementFromCommand(Element.TRIGGER, type, subContext);
+		final Trigger trig = (Trigger)eMan.getElementFromCommand(Element.TRIGGER, type, subContext);
 		if(trig == null) {
 			throw new ElementException(lang.get("ERROR_ELEMENT_FAIL"));
 		}
@@ -61,7 +58,7 @@ public class TriggerCommands {
 		try {
 			trig = getTrigger(type, context.getSubContext(1), lang);
 		}
-		catch (final TriggerException e) {
+		catch(final TriggerException e) {
 			return;
 		}
 		qMan.addQuestTrigger(profMan.getSenderProfile(sender), trig, lang);
@@ -83,7 +80,7 @@ public class TriggerCommands {
 		try {
 			trig = getTrigger(type, context.getSubContext(3), lang);
 		}
-		catch (final TriggerException e) {
+		catch(final TriggerException e) {
 			return;
 		}
 		qMan.setQuestTrigger(profMan.getSenderProfile(sender), triggerID, trig, lang);
@@ -94,11 +91,9 @@ public class TriggerCommands {
 	@CommandLabels({ "remove", "r" })
 	@Command(section = "QMod", desc = "removes trigger", min = 1, max = 1, usage = "<trig ID>")
 	public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.removeQuestTrigger(profMan.getSenderProfile(sender), context.getInt(0),
-				context.getSenderLang());
+		qMan.removeQuestTrigger(profMan.getSenderProfile(sender), context.getInt(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
-				+ context.getSenderLang().get("TRIG_REMOVE")
-						.replaceAll("%id", context.getString(0)));
+				+ context.getSenderLang().get("TRIG_REMOVE").replaceAll("%id", context.getString(0)));
 	}
 	
 	@CommandLabels({ "list", "l" })

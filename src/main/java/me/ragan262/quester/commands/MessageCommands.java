@@ -7,7 +7,6 @@ import me.ragan262.quester.Quester;
 import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.exceptions.QuesterException;
 import me.ragan262.quester.lang.LanguageManager;
-
 import org.bukkit.command.CommandSender;
 
 public class MessageCommands {

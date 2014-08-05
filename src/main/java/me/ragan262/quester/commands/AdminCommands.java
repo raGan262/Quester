@@ -1,9 +1,7 @@
 package me.ragan262.quester.commands;
 
 import java.io.File;
-
 import javax.management.InstanceNotFoundException;
-
 import me.ragan262.commandmanager.annotations.Command;
 import me.ragan262.commandmanager.annotations.CommandLabels;
 import me.ragan262.commandmanager.annotations.NestedCommand;
@@ -17,7 +15,6 @@ import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.QuestManager;
 import me.ragan262.quester.utils.Ql;
 import me.ragan262.quester.utils.Util;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -52,8 +49,7 @@ public class AdminCommands {
 		}
 		if(plugin.startSaving()) {
 			sender.sendMessage(ChatColor.GREEN
-					+ context.getSenderLang().get("MSG_AUTOSAVE_STARTED")
-							.replaceAll("%interval", String.valueOf(QConfiguration.saveInterval)));
+					+ context.getSenderLang().get("MSG_AUTOSAVE_STARTED").replaceAll("%interval", String.valueOf(QConfiguration.saveInterval)));
 		}
 		else {
 			sender.sendMessage(ChatColor.RED + context.getSenderLang().get("MSG_AUTOSAVE_RUNNING"));
@@ -156,7 +152,7 @@ public class AdminCommands {
 			profMan.loadRanks();
 			profMan.updateRanks();
 		}
-		catch (final InstanceNotFoundException e) {
+		catch(final InstanceNotFoundException e) {
 			Ql.info("Failed to reload config: No instance of QConfiguration.");
 		}
 	}

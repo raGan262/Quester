@@ -13,7 +13,6 @@ import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -49,8 +48,7 @@ public final class ObjectiveCompleteQevent extends Qevent {
 					}
 					else {
 						profMan.setProgress(prof, objective, req);
-						profMan.complete(player, as,
-								plugin.getLanguageManager().getLang(prof.getLanguage()), false);
+						profMan.complete(player, as, plugin.getLanguageManager().getLang(prof.getLanguage()), false);
 					}
 				}
 				else {
@@ -62,7 +60,7 @@ public final class ObjectiveCompleteQevent extends Qevent {
 																				// not exist
 			}
 		}
-		catch (final QuesterException e) {
+		catch(final QuesterException e) {
 			Ql.warning("Event failed to complete objective. Reason: "
 					+ ChatColor.stripColor(e.getMessage()));
 		}

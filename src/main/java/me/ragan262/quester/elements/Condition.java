@@ -4,7 +4,6 @@ import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.lang.QuesterLang;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
-
 import org.apache.commons.lang.SerializationException;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -74,8 +73,7 @@ public abstract class Condition extends Element {
 			else {
 				actualDesc = desc;
 			}
-			return ChatColor
-					.translateAlternateColorCodes('&', parseDescription(player, actualDesc));
+			return ChatColor.translateAlternateColorCodes('&', parseDescription(player, actualDesc));
 		}
 		return show();
 	}
@@ -139,7 +137,7 @@ public abstract class Condition extends Element {
 			
 			return con;
 		}
-		catch (final Exception e) {
+		catch(final Exception e) {
 			Ql.severe("Error when deserializing condition " + type
 					+ ". Method load() missing or invalid. " + e.getClass().getName());
 			Ql.debug("Exception follows", e);

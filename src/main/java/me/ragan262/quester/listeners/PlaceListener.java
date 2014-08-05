@@ -1,7 +1,6 @@
 package me.ragan262.quester.listeners;
 
 import java.util.List;
-
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
@@ -11,7 +10,6 @@ import me.ragan262.quester.objectives.PlaceObjective;
 import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.Quest;
-
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -45,7 +43,7 @@ public class PlaceListener implements Listener {
 						if(!profMan.isObjectiveActive(prof, i)) {
 							continue;
 						}
-						final BreakObjective obj = (BreakObjective) objs.get(i);
+						final BreakObjective obj = (BreakObjective)objs.get(i);
 						// compare block ID
 						if(obj.checkBlock(event.getBlock())) {
 							profMan.incProgress(player, ActionSource.listenerSource(event), i, -1);
@@ -60,7 +58,7 @@ public class PlaceListener implements Listener {
 					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
-					final PlaceObjective obj = (PlaceObjective) objs.get(i);
+					final PlaceObjective obj = (PlaceObjective)objs.get(i);
 					// compare block ID
 					if(block.getTypeId() == obj.getMaterial().getId()) {
 						// if DATA >= 0 compare

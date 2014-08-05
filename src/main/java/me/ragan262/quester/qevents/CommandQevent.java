@@ -7,7 +7,6 @@ import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Util;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -27,8 +26,7 @@ public final class CommandQevent extends Qevent {
 	
 	@Override
 	protected void run(final Player player, final Quester plugin) {
-		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),
-				command.replace("%p", player.getName()));
+		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command.replace("%p", player.getName()));
 	}
 	
 	@Command(min = 1, usage = "<command>")

@@ -2,7 +2,6 @@ package me.ragan262.quester.utils;
 
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
-
 import org.bukkit.entity.Player;
 
 /**
@@ -23,6 +22,7 @@ import org.bukkit.entity.Player;
  * 
  */
 public class ExpManager {
+	
 	// this is to stop the lookup tables growing without control
 	private static int hardMaxLevel = 100000;
 	
@@ -138,7 +138,7 @@ public class ExpManager {
 	 *            Amount of XP, may be negative
 	 */
 	public void changeExp(final int amt) {
-		changeExp((double) amt);
+		changeExp((double)amt);
 	}
 	
 	/**
@@ -173,7 +173,7 @@ public class ExpManager {
 	}
 	
 	private void setExp(final double base, final double amt) {
-		int xp = (int) (base + amt);
+		int xp = (int)(base + amt);
 		
 		if(xp < 0) {
 			xp = 0;
@@ -189,11 +189,11 @@ public class ExpManager {
 		}
 		// Increment total experience - this should force the server to send an update packet
 		if(xp > base) {
-			player.setTotalExperience(player.getTotalExperience() + xp - (int) base);
+			player.setTotalExperience(player.getTotalExperience() + xp - (int)base);
 		}
 		
 		final double pct = (base - getXpForLevel(newLvl) + amt) / xpRequiredForNextLevel[newLvl];
-		player.setExp((float) pct);
+		player.setExp((float)pct);
 	}
 	
 	/**
@@ -205,8 +205,8 @@ public class ExpManager {
 		final Player player = getPlayer();
 		
 		final int lvl = player.getLevel();
-		final int cur =
-				getXpForLevel(lvl) + Math.round(xpRequiredForNextLevel[lvl] * player.getExp());
+		final int cur = getXpForLevel(lvl)
+				+ Math.round(xpRequiredForNextLevel[lvl] * player.getExp());
 		return cur;
 	}
 	
@@ -219,8 +219,8 @@ public class ExpManager {
 		final Player player = getPlayer();
 		
 		final int lvl = player.getLevel();
-		final double cur =
-				getXpForLevel(lvl) + (double) (xpRequiredForNextLevel[lvl] * player.getExp());
+		final double cur = getXpForLevel(lvl)
+				+ (double)(xpRequiredForNextLevel[lvl] * player.getExp());
 		return cur;
 	}
 	

@@ -7,7 +7,6 @@ import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.SerUtils;
-
 import org.bukkit.Location;
 
 @QElement("DEATH")
@@ -30,19 +29,18 @@ public final class DeathObjective extends Objective {
 	
 	@Override
 	protected String show(final int progress) {
-		final String locStr =
-				location == null ? "anywhere " : String.format("max %d blocks from %.1f %.1f %.1f("
-						+ location.getWorld().getName() + ") ", range, location.getX(),
-						location.getY(), location.getZ());
+		final String locStr = location == null
+				? "anywhere "
+				: String.format("max %d blocks from %.1f %.1f %.1f("
+						+ location.getWorld().getName() + ") ", range, location.getX(), location.getY(), location.getZ());
 		return "Die " + locStr + String.valueOf(amount - progress) + "x.";
 	}
 	
 	@Override
 	protected String info() {
-		final String locStr =
-				location == null ? "ANY" : String.format("%.1f %.1f %.1f("
-						+ location.getWorld().getName() + ")", location.getX(), location.getY(),
-						location.getZ());
+		final String locStr = location == null
+				? "ANY"
+				: String.format("%.1f %.1f %.1f(" + location.getWorld().getName() + ")", location.getX(), location.getY(), location.getZ());
 		return "LOC: " + locStr + "; AMT: " + amount + "; RNG: " + range;
 	}
 	

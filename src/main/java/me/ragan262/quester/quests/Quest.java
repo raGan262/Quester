@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
 import me.ragan262.quester.elements.Condition;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.Qevent;
@@ -18,7 +17,6 @@ import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
 import me.ragan262.quester.utils.SerUtils;
 import me.ragan262.quester.utils.Util;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
@@ -257,8 +255,7 @@ public class Quest {
 	}
 	
 	public Map<Integer, Map<Integer, Qevent>> getQeventMap(final String type) {
-		final Map<Integer, Map<Integer, Qevent>> result =
-				new HashMap<Integer, Map<Integer, Qevent>>();
+		final Map<Integer, Map<Integer, Qevent>> result = new HashMap<Integer, Map<Integer, Qevent>>();
 		Qevent q = null;
 		int occ = 0;
 		for(int i = 0; i < qevents.size(); i++) {
@@ -390,7 +387,7 @@ public class Quest {
 				try {
 					id = Integer.parseInt(key.getName());
 				}
-				catch (final NumberFormatException ignore) {}
+				catch(final NumberFormatException ignore) {}
 			}
 			if(id >= 0) {
 				quest.setID(id);
@@ -404,8 +401,7 @@ public class Quest {
 			}
 			
 			if(key.getRaw("worlds") instanceof List) {
-				final List<String> strs =
-						(List<String>) key.getRaw("worlds", new ArrayList<String>());
+				final List<String> strs = (List<String>)key.getRaw("worlds", new ArrayList<String>());
 				for(final String s : strs) {
 					if(s != null) {
 						quest.addWorld(s);
@@ -482,7 +478,7 @@ public class Quest {
 			}
 			
 		}
-		catch (final Exception e) {
+		catch(final Exception e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -493,7 +489,7 @@ public class Quest {
 	@Override
 	public boolean equals(final Object obj) {
 		if(obj != null && obj instanceof Quest) {
-			final Quest other = (Quest) obj;
+			final Quest other = (Quest)obj;
 			return name.equals(other.name) && ID == other.ID && flags.equals(other.flags);
 		}
 		return false;

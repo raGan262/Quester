@@ -1,7 +1,6 @@
 package me.ragan262.quester.listeners;
 
 import java.util.List;
-
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.elements.Objective;
@@ -9,7 +8,6 @@ import me.ragan262.quester.objectives.DyeObjective;
 import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.Quest;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -46,9 +44,9 @@ public class DyeListener implements Listener {
 					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
-					final DyeObjective obj = (DyeObjective) objs.get(i);
+					final DyeObjective obj = (DyeObjective)objs.get(i);
 					if(entity.getType() == EntityType.SHEEP) {
-						final Sheep sheep = (Sheep) entity;
+						final Sheep sheep = (Sheep)entity;
 						if(item.getType() == Material.INK_SACK
 								&& obj.checkDye(15 - item.getDurability())
 								&& sheep.getColor().getDyeData() != 15 - item.getDurability()) {

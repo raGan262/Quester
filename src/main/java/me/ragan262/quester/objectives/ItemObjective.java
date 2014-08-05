@@ -2,7 +2,6 @@ package me.ragan262.quester.objectives;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import me.ragan262.commandmanager.annotations.Command;
 import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Objective;
@@ -10,7 +9,6 @@ import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.SerUtils;
 import me.ragan262.quester.utils.Util;
-
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -29,7 +27,7 @@ public final class ItemObjective extends Objective {
 	public ItemObjective(final Material mat, final int amt, final int dat, final Map<Integer, Integer> enchs, final boolean questItem) {
 		material = mat;
 		amount = amt;
-		data = (short) dat;
+		data = (short)dat;
 		if(enchs != null) {
 			enchants = enchs;
 		}
@@ -62,9 +60,8 @@ public final class ItemObjective extends Objective {
 	@Override
 	protected String info() {
 		final String dataStr = data < 0 ? "" : ":" + data;
-		final String itm =
-				material.name() + "[" + material.getId() + dataStr + "]; AMT: " + amount
-						+ "; QST: " + questItem;
+		final String itm = material.name() + "[" + material.getId() + dataStr + "]; AMT: " + amount
+				+ "; QST: " + questItem;
 		String enchs = enchants.isEmpty() ? "" : "\n -- ENCH:";
 		for(final Integer e : enchants.keySet()) {
 			enchs = enchs + " " + Enchantment.getById(e).getName() + ":" + enchants.get(e);
@@ -138,12 +135,12 @@ public final class ItemObjective extends Objective {
 			try {
 				enchs = SerUtils.parseEnchants(key.getString("enchants", ""));
 			}
-			catch (final IllegalArgumentException e) {
+			catch(final IllegalArgumentException e) {
 				enchs = null;
 			}
 			qi = key.getBoolean("questitem", false);
 		}
-		catch (final Exception e) {
+		catch(final Exception e) {
 			return null;
 		}
 		

@@ -9,7 +9,6 @@ import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
 import net.milkbowl.vault.economy.EconomyResponse;
-
 import org.bukkit.entity.Player;
 
 @QElement("MONEY")

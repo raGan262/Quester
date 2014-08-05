@@ -8,7 +8,6 @@ import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.SerUtils;
 import me.ragan262.quester.utils.Util;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -27,7 +26,7 @@ public final class DropObjective extends Objective {
 	public DropObjective(final int amt, final Material mat, final int dat, final Location loc, final double rng, final boolean quest) {
 		amount = amt;
 		material = mat;
-		data = (short) dat;
+		data = (short)dat;
 		questItem = quest;
 		location = loc;
 		range = rng;
@@ -51,9 +50,8 @@ public final class DropObjective extends Objective {
 	@Override
 	protected String info() {
 		final String dataStr = data < 0 ? "" : ":" + data;
-		final String locStr =
-				location == null ? "" : "; LOC: " + SerUtils.displayLocation(location) + "; RNG: "
-						+ range;
+		final String locStr = location == null ? "" : "; LOC: "
+				+ SerUtils.displayLocation(location) + "; RNG: " + range;
 		final String flags = questItem ? " (-q)" : "";
 		return material.name() + "[" + material.getId() + dataStr + "]; AMT: " + amount + locStr
 				+ flags;
@@ -105,7 +103,7 @@ public final class DropObjective extends Objective {
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
 		}
-		catch (final IllegalArgumentException e) {
+		catch(final IllegalArgumentException e) {
 			return null;
 		}
 		amt = key.getInt("amount", 0);

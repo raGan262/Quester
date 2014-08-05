@@ -8,7 +8,6 @@ import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.SerUtils;
 import me.ragan262.quester.utils.Util;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -25,7 +24,7 @@ public final class ItemCondition extends Condition {
 	private ItemCondition(final Material mat, final int amt, final int dat, final boolean invert, final boolean quest) {
 		material = mat;
 		amount = amt;
-		data = (short) dat;
+		data = (short)dat;
 		inverted = invert;
 		questItem = quest;
 	}
@@ -57,8 +56,8 @@ public final class ItemCondition extends Condition {
 	
 	@Override
 	protected String parseDescription(final Player player, final String description) {
-		return description.replaceAll("%amt", amount + "").replaceAll("%data", data + "")
-				.replaceAll("%id", material.getId() + "");
+		return description.replaceAll("%amt", amount + "").replaceAll("%data", data + "").replaceAll("%id", material.getId()
+				+ "");
 	}
 	
 	@Override
@@ -93,10 +92,10 @@ public final class ItemCondition extends Condition {
 				throw new NumberFormatException();
 			}
 		}
-		catch (final NumberFormatException e) {
+		catch(final NumberFormatException e) {
 			throw new CommandException(context.getSenderLang().get("ERROR_CMD_ITEM_NUMBERS"));
 		}
-		catch (final IllegalArgumentException e) {
+		catch(final IllegalArgumentException e) {
 			throw new CommandException(e.getMessage());
 		}
 		return new ItemCondition(mat, amt, dat, context.hasFlag('i'), context.hasFlag('q'));
@@ -128,7 +127,7 @@ public final class ItemCondition extends Condition {
 				amt = 1;
 			}
 		}
-		catch (final Exception e) {
+		catch(final Exception e) {
 			return null;
 		}
 		return new ItemCondition(mat, amt, dat, invert, quest);

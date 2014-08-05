@@ -2,10 +2,8 @@ package me.ragan262.quester.elements;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
-
 import org.apache.commons.lang.SerializationException;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -120,7 +118,7 @@ public abstract class Trigger extends Element {
 			
 			return trig;
 		}
-		catch (final Exception e) {
+		catch(final Exception e) {
 			Ql.severe("Error when deserializing trigger " + type
 					+ ". Method load() missing or invalid. " + e.getClass().getName());
 			Ql.debug("Exception follows", e);

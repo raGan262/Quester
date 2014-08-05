@@ -7,7 +7,6 @@ import me.ragan262.quester.elements.Condition;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.ExpManager;
-
 import org.bukkit.entity.Player;
 
 @QElement("EXP")
@@ -87,11 +86,10 @@ public final class ExperienceCondition extends Condition {
 		try {
 			amt = Integer.parseInt(key.getString("amount"));
 		}
-		catch (final Exception e) {
+		catch(final Exception e) {
 			return null;
 		}
 		
-		return new ExperienceCondition(amt, key.getBoolean("islevel", false), key.getBoolean(
-				"inverted", false));
+		return new ExperienceCondition(amt, key.getBoolean("islevel", false), key.getBoolean("inverted", false));
 	}
 }

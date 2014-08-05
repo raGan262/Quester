@@ -1,7 +1,6 @@
 package me.ragan262.quester.listeners;
 
 import java.util.List;
-
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.elements.Objective;
@@ -14,7 +13,6 @@ import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.quests.QuestFlag;
 import me.ragan262.quester.utils.Util;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -44,10 +42,9 @@ public class DeathListener implements Listener {
 			// DEATH CHECK
 			if(quest.hasFlag(QuestFlag.DEATHCANCEL)) {
 				try {
-					profMan.cancelQuest(player, ActionSource.listenerSource(event),
-							langMan.getLang(prof.getLanguage()));
+					profMan.cancelQuest(player, ActionSource.listenerSource(event), langMan.getLang(prof.getLanguage()));
 				}
-				catch (final QuesterException e) {}
+				catch(final QuesterException e) {}
 				return;
 			}
 			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
@@ -59,7 +56,7 @@ public class DeathListener implements Listener {
 					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
-					final DeathObjective obj = (DeathObjective) objs.get(i);
+					final DeathObjective obj = (DeathObjective)objs.get(i);
 					if(obj.checkDeath(player.getLocation())) {
 						profMan.incProgress(player, ActionSource.listenerSource(event), i);
 						return;
@@ -94,7 +91,7 @@ public class DeathListener implements Listener {
 						continue;
 					}
 					if(objs.get(i).getType().equalsIgnoreCase("PLAYERKILL")) {
-						final PlayerKillObjective obj = (PlayerKillObjective) objs.get(i);
+						final PlayerKillObjective obj = (PlayerKillObjective)objs.get(i);
 						if(obj.checkPlayer(victim)) {
 							profMan.incProgress(killer, ActionSource.listenerSource(event), i);
 							return;

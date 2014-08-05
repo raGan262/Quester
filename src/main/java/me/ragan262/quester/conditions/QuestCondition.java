@@ -1,7 +1,6 @@
 package me.ragan262.quester.conditions;
 
 import java.util.concurrent.TimeUnit;
-
 import me.ragan262.commandmanager.annotations.Command;
 import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.Quester;
@@ -10,7 +9,6 @@ import me.ragan262.quester.elements.Condition;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.storage.StorageKey;
-
 import org.bukkit.entity.Player;
 
 @QElement("QUEST")
@@ -39,25 +37,21 @@ public final class QuestCondition extends Condition {
 		long minutes = 0;
 		long seconds = 0;
 		if(player != null && time > 0) {
-			final PlayerProfile profile =
-					Quester.getInstance().getProfileManager().getProfile(player);
-			final long elapsed =
-					System.currentTimeMillis() / 1000 - profile.getCompletionTime(quest);
+			final PlayerProfile profile = Quester.getInstance().getProfileManager().getProfile(player);
+			final long elapsed = System.currentTimeMillis() / 1000
+					- profile.getCompletionTime(quest);
 			
 			final long toCount = time - elapsed;
 			
 			if(toCount >= 0) {
 				hours = TimeUnit.SECONDS.toHours(toCount);
 				minutes = TimeUnit.SECONDS.toMinutes(toCount) - TimeUnit.HOURS.toMinutes(hours);
-				seconds =
-						toCount - TimeUnit.MINUTES.toSeconds(minutes)
-								- TimeUnit.HOURS.toSeconds(hours);
+				seconds = toCount - TimeUnit.MINUTES.toSeconds(minutes)
+						- TimeUnit.HOURS.toSeconds(hours);
 				
 			}
 		}
-		return description.replaceAll("%qst", quest).replaceAll("%h", String.valueOf(hours))
-				.replaceAll("%m", String.valueOf(minutes))
-				.replaceAll("%s", String.valueOf(seconds));
+		return description.replaceAll("%qst", quest).replaceAll("%h", String.valueOf(hours)).replaceAll("%m", String.valueOf(minutes)).replaceAll("%s", String.valueOf(seconds));
 	}
 	
 	@Override
@@ -146,7 +140,6 @@ public final class QuestCondition extends Condition {
 		
 		time = key.getInt("time");
 		
-		return new QuestCondition(qst, time, key.getBoolean("running", false), key.getBoolean(
-				"inverted", false));
+		return new QuestCondition(qst, time, key.getBoolean("running", false), key.getBoolean("inverted", false));
 	}
 }

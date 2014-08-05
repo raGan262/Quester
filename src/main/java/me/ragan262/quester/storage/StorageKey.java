@@ -100,7 +100,7 @@ public abstract class StorageKey {
 		if(obj == null || getClass() != obj.getClass()) {
 			return false;
 		}
-		final StorageKey other = (StorageKey) obj;
+		final StorageKey other = (StorageKey)obj;
 		if(path == null) {
 			if(other.path != null) {
 				return false;

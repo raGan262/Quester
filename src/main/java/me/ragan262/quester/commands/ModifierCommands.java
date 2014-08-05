@@ -2,7 +2,6 @@ package me.ragan262.quester.commands;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import me.ragan262.commandmanager.annotations.Command;
 import me.ragan262.commandmanager.annotations.CommandLabels;
 import me.ragan262.quester.Quester;
@@ -11,7 +10,6 @@ import me.ragan262.quester.exceptions.QuesterException;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.QuestFlag;
 import me.ragan262.quester.quests.QuestManager;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 

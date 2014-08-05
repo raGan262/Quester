@@ -13,6 +13,6 @@ public class CaseAgnosticSet extends HashSet<String> {
 	
 	@Override
 	public boolean contains(final Object o) {
-		return o instanceof String && super.contains(((String) o).toLowerCase());
+		return o instanceof String && super.contains(((String)o).toLowerCase());
 	}
 }

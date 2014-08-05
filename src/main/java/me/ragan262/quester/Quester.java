@@ -6,9 +6,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import javax.management.InstanceNotFoundException;
-
 import me.ragan262.commandmanager.CommandManager;
 import me.ragan262.commandmanager.context.ContextFactory;
 import me.ragan262.quester.QConfiguration.StorageType;
@@ -102,7 +100,6 @@ import me.ragan262.quester.triggers.RegionTrigger;
 import me.ragan262.quester.utils.DatabaseConnection;
 import me.ragan262.quester.utils.Ql;
 import net.milkbowl.vault.economy.Economy;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -138,11 +135,10 @@ public class Quester extends JavaPlugin {
 	@Override
 	public void onLoad() {
 		try {
-			langs =
-					new LanguageManager(this, new File(getDataFolder() + File.separator + "local"
-							+ File.separator));
+			langs = new LanguageManager(this, new File(getDataFolder() + File.separator + "local"
+					+ File.separator));
 		}
-		catch (final Exception e) {
+		catch(final Exception e) {
 			Ql.severe("Failed to load languages.");
 			getServer().getPluginManager().disablePlugin(this);
 			return;
@@ -163,7 +159,7 @@ public class Quester extends JavaPlugin {
 		try {
 			QConfiguration.loadData();
 		}
-		catch (final InstanceNotFoundException e1) {
+		catch(final InstanceNotFoundException e1) {
 			Ql.severe("DataManager instance exception. Disabling quester...");
 			getPluginLoader().disablePlugin(this);
 			return;
@@ -193,7 +189,7 @@ public class Quester extends JavaPlugin {
 				final Metrics metrics = new Metrics(this);
 				metrics.start();
 			}
-			catch (final IOException e) {
+			catch(final IOException e) {
 				// Failed to submit the statistics :-(
 			}
 		}
@@ -215,8 +211,7 @@ public class Quester extends JavaPlugin {
 			Connection conn = null;
 			Statement stmt = null;
 			try {
-				DatabaseConnection.initialize(QConfiguration.mysqlUrl, QConfiguration.mysqlUser,
-						QConfiguration.mysqlPass);
+				DatabaseConnection.initialize(QConfiguration.mysqlUrl, QConfiguration.mysqlUser, QConfiguration.mysqlPass);
 				Ql.info("Successfully connected to the database...");
 				conn = DatabaseConnection.getConnection();
 				final DatabaseMetaData dmd = conn.getMetaData();
@@ -230,7 +225,7 @@ public class Quester extends JavaPlugin {
 					Ql.verbose("Table created.");
 				}
 			}
-			catch (final Exception e) {
+			catch(final Exception e) {
 				Ql.severe("Failed to connect to the database, falling back to config...");
 				Ql.debug("Error report: ", e);
 				QConfiguration.profileStorageType = StorageType.CONFIG;
@@ -240,13 +235,13 @@ public class Quester extends JavaPlugin {
 					try {
 						conn.close();
 					}
-					catch (final SQLException ignore) {}
+					catch(final SQLException ignore) {}
 				}
 				if(stmt != null) {
 					try {
 						stmt.close();
 					}
-					catch (final SQLException ignore) {}
+					catch(final SQLException ignore) {}
 				}
 			}
 		}
@@ -322,8 +317,7 @@ public class Quester extends JavaPlugin {
 			Ql.warning("Vault not found, economy support disabled.");
 			return false;
 		}
-		final RegisteredServiceProvider<Economy> rsp =
-				getServer().getServicesManager().getRegistration(Economy.class);
+		final RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
 		if(rsp == null) {
 			Ql.warning("Economy plugin not found, economy support disabled.");
 			return false;
@@ -428,7 +422,7 @@ public class Quester extends JavaPlugin {
 			try {
 				elements.register(clss);
 			}
-			catch (final ElementException e) {
+			catch(final ElementException e) {
 				Ql.warning("(" + clss.getSimpleName() + ") Failed to register quester element: "
 						+ e.getMessage());
 			}
@@ -438,15 +432,13 @@ public class Quester extends JavaPlugin {
 	public boolean startSaving() {
 		if(saveID == 0) {
 			if(QConfiguration.saveInterval > 0) {
-				saveID =
-						getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-							
-							@Override
-							public void run() {
-								profiles.saveProfiles();
-							}
-						}, QConfiguration.saveInterval * 20L * 60L,
-								QConfiguration.saveInterval * 20L * 60L);
+				saveID = getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+					
+					@Override
+					public void run() {
+						profiles.saveProfiles();
+					}
+				}, QConfiguration.saveInterval * 20L * 60L, QConfiguration.saveInterval * 20L * 60L);
 			}
 			return true;
 		}

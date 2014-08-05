@@ -1,7 +1,6 @@
 package me.ragan262.quester.listeners;
 
 import java.util.List;
-
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.elements.Objective;
@@ -10,7 +9,6 @@ import me.ragan262.quester.objectives.SmeltObjective;
 import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.Quest;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,7 +34,7 @@ public class CraftSmeltListener implements Listener {
 		if(!(event.getWhoClicked() instanceof Player)) {
 			return;
 		}
-		final Player player = (Player) event.getWhoClicked();
+		final Player player = (Player)event.getWhoClicked();
 		final PlayerProfile prof = profMan.getProfile(player);
 		final Quest quest = prof.getQuest();
 		if(quest != null) {
@@ -51,7 +49,7 @@ public class CraftSmeltListener implements Listener {
 					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
-					final CraftObjective obj = (CraftObjective) objs.get(i);
+					final CraftObjective obj = (CraftObjective)objs.get(i);
 					final ItemStack item = event.getCurrentItem();
 					// check type of click
 					if(event.isShiftClick()) {
@@ -59,15 +57,13 @@ public class CraftSmeltListener implements Listener {
 							// how many results can be crafted
 							final int count = getCraftedAmount(event.getInventory());
 							// how many results can fit into inventory
-							final int spc =
-									(int) Math
-											.floor(getInvSpace(player.getInventory(), item, count)
-													/ item.getAmount());
+							final int spc = (int)Math.floor(getInvSpace(player.getInventory(), item, count)
+									/ item.getAmount());
 							// actual crafted amount
 							final int amtCrafted = Math.min(spc, count);
 							if(amtCrafted > 0) {
-								profMan.incProgress(player, ActionSource.listenerSource(event), i,
-										item.getAmount() * amtCrafted);
+								profMan.incProgress(player, ActionSource.listenerSource(event), i, item.getAmount()
+										* amtCrafted);
 								return;
 							}
 						}
@@ -75,8 +71,7 @@ public class CraftSmeltListener implements Listener {
 					else {
 						final ItemStack inHand = event.getCursor();
 						if(obj.check(item) && checkHand(inHand, item)) {
-							profMan.incProgress(player, ActionSource.listenerSource(event), i,
-									item.getAmount());
+							profMan.incProgress(player, ActionSource.listenerSource(event), i, item.getAmount());
 							return;
 						}
 					}
@@ -93,7 +88,7 @@ public class CraftSmeltListener implements Listener {
 		if(event.getInventory().getType() != InventoryType.FURNACE || event.getRawSlot() != 2) {
 			return;
 		}
-		final Player player = (Player) event.getWhoClicked();
+		final Player player = (Player)event.getWhoClicked();
 		final PlayerProfile prof = profMan.getProfile(player);
 		final Quest quest = prof.getQuest();
 		if(quest != null) {
@@ -107,14 +102,13 @@ public class CraftSmeltListener implements Listener {
 					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
-					final SmeltObjective obj = (SmeltObjective) objs.get(i);
+					final SmeltObjective obj = (SmeltObjective)objs.get(i);
 					final ItemStack item = event.getCurrentItem();
 					if(event.isShiftClick()) {
 						if(obj.check(item)) {
 							final int spc = getInvSpace(player.getInventory(), item, 1);
 							if(spc != 0) {
-								profMan.incProgress(player, ActionSource.listenerSource(event), i,
-										Math.min(item.getAmount(), spc));
+								profMan.incProgress(player, ActionSource.listenerSource(event), i, Math.min(item.getAmount(), spc));
 								return;
 							}
 						}
@@ -122,8 +116,7 @@ public class CraftSmeltListener implements Listener {
 					else {
 						final ItemStack inHand = event.getCursor();
 						if(obj.check(item) && checkHand(inHand, item)) {
-							profMan.incProgress(player, ActionSource.listenerSource(event), i,
-									item.getAmount());
+							profMan.incProgress(player, ActionSource.listenerSource(event), i, item.getAmount());
 							return;
 						}
 					}

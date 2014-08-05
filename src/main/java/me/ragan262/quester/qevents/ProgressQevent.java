@@ -8,7 +8,6 @@ import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
-
 import org.bukkit.entity.Player;
 
 @QElement("PROGRESS")
@@ -29,8 +28,7 @@ public class ProgressQevent extends Qevent {
 	
 	@Override
 	protected void run(final Player player, final Quester plugin) {
-		plugin.getProfileManager().incProgress(player, ActionSource.eventSource(this), objective,
-				amount, false);
+		plugin.getProfileManager().incProgress(player, ActionSource.eventSource(this), objective, amount, false);
 	}
 	
 	@Command(min = 1, max = 2, usage = "<obj id> [amount]")

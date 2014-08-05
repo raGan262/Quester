@@ -8,7 +8,6 @@ import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.SerUtils;
 import me.ragan262.quester.utils.Util;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 

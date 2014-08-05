@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
-
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.storage.ConfigStorage;
 import me.ragan262.quester.storage.Storage;

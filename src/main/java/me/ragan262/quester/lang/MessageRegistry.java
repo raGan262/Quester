@@ -204,8 +204,7 @@ class MessageRegistry {
 		messages.put("ERROR_TRIG_NOT_EXIST", "Trigger does not exist.");
 		messages.put("ERROR_PROF_Q_ALREADY_DONE", "Player already completed this quest.");
 		messages.put("ERROR_WHY", "Why would you want to do this ?");
-		messages.put("ERROR_INTERESTING",
-				"Interesting error, you should definitely notify Quester developer.");
+		messages.put("ERROR_INTERESTING", "Interesting error, you should definitely notify Quester developer.");
 	}
 	
 	boolean registerMessage(final String key, final String message) {

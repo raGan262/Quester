@@ -16,7 +16,6 @@ import me.ragan262.quester.lang.QuesterLang;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.QuestManager;
 import me.ragan262.quester.utils.SerUtils;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -41,17 +40,16 @@ public class QeventCommands {
 		try {
 			occasion = SerUtils.deserializeOccasion(occassion, lang);
 		}
-		catch (final IllegalArgumentException e) {
+		catch(final IllegalArgumentException e) {
 			throw new CommandException(e.getMessage());
 		}
 		if(!eMan.elementExists(Element.QEVENT, type)) {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.get("ERROR_EVT_NOT_EXIST"));
-			subContext.getSender().sendMessage(
-					ChatColor.RED + lang.get("EVT_LIST") + ": " + ChatColor.WHITE
-							+ eMan.getElementList(Element.QEVENT));
+			subContext.getSender().sendMessage(ChatColor.RED + lang.get("EVT_LIST") + ": "
+					+ ChatColor.WHITE + eMan.getElementList(Element.QEVENT));
 			throw new QeventException(lang.get("ERROR_EVT_NOT_EXIST"));
 		}
-		final Qevent evt = (Qevent) eMan.getElementFromCommand(Element.QEVENT, type, subContext);
+		final Qevent evt = (Qevent)eMan.getElementFromCommand(Element.QEVENT, type, subContext);
 		if(evt != null) {
 			evt.setOccasion(occasion[0], occasion[1]);
 		}
@@ -78,7 +76,7 @@ public class QeventCommands {
 		try {
 			qevent = getQevent(type, "0", context.getSubContext(1), lang);
 		}
-		catch (final QeventException e) {
+		catch(final QeventException e) {
 			return;
 		}
 		qevent.execute(context.getPlayer(), plugin);
@@ -96,8 +94,7 @@ public class QeventCommands {
 		final Player player = Bukkit.getPlayerExact(context.getString(0));
 		final QuesterLang lang = context.getSenderLang();
 		if(player == null) {
-			throw new CommandException(lang.get("ERROR_CMD_PLAYER_OFFLINE").replaceAll("%p",
-					context.getString(0)));
+			throw new CommandException(lang.get("ERROR_CMD_PLAYER_OFFLINE").replaceAll("%p", context.getString(0)));
 		}
 		
 		final Qevent qevent;
@@ -106,7 +103,7 @@ public class QeventCommands {
 		try {
 			qevent = qMan.getQuest(questId).getQevent(eventId);
 		}
-		catch (final Exception e) {
+		catch(final Exception e) {
 			throw new QeventException(lang.get("ERROR_EVT_NOT_EXIST"));
 		}
 		qevent.execute(context.getPlayer(), plugin);
@@ -125,7 +122,7 @@ public class QeventCommands {
 		try {
 			qevent = getQevent(type, context.getString(0), context.getSubContext(2), lang);
 		}
-		catch (final QeventException e) {
+		catch(final QeventException e) {
 			return;
 		}
 		qMan.addQuestQevent(profMan.getSenderProfile(sender), qevent, lang);
@@ -147,7 +144,7 @@ public class QeventCommands {
 		try {
 			qevent = getQevent(type, context.getString(1), context.getSubContext(3), lang);
 		}
-		catch (final QeventException e) {
+		catch(final QeventException e) {
 			return;
 		}
 		qMan.setQuestQevent(profMan.getSenderProfile(sender), qeventID, qevent, lang);
@@ -158,8 +155,7 @@ public class QeventCommands {
 	@CommandLabels({ "remove", "r" })
 	@Command(section = "QMod", desc = "removes event", min = 1, max = 1, usage = "<evt ID>")
 	public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.removeQuestQevent(profMan.getSenderProfile(sender), context.getInt(0),
-				context.getSenderLang());
+		qMan.removeQuestQevent(profMan.getSenderProfile(sender), context.getInt(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().get("EVT_REMOVE").replaceAll("%id", context.getString(0)));
 	}

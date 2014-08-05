@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import me.ragan262.commandmanager.CommandHelp;
 import me.ragan262.commandmanager.annotations.Command;
 import me.ragan262.commandmanager.annotations.CommandLabels;
@@ -23,7 +22,6 @@ import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.quests.QuestManager;
 import me.ragan262.quester.utils.Util;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -47,28 +45,16 @@ public class UserCommands {
 	@CommandLabels({ "help" })
 	@Command(section = "User", desc = "displays help", usage = "[arg1] [arg2]...")
 	public void help(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-		final Map<String, List<CommandHelp>> cmds =
-				plugin.getCommandManager().getHelp(context.getArgs(), sender, context.hasFlag('d'));
+		final Map<String, List<CommandHelp>> cmds = plugin.getCommandManager().getHelp(context.getArgs(), sender, context.hasFlag('d'));
 		final QuesterLang lang = context.getSenderLang();
-		final String[][] keys =
+		final String[][] keys = {
+				{ "User", Util.line(ChatColor.BLUE, lang.get("HELP_SECTION_USE"), ChatColor.GOLD) },
+				{ "Mod", Util.line(ChatColor.BLUE, lang.get("HELP_SECTION_MODIFY"), ChatColor.GOLD) },
+				{ "QMod", Util.line(ChatColor.DARK_GRAY, lang.get("HELP_SECTION_MODIFY_SELECTED")) },
 				{
-						{
-								"User",
-								Util.line(ChatColor.BLUE, lang.get("HELP_SECTION_USE"),
-										ChatColor.GOLD) },
-						{
-								"Mod",
-								Util.line(ChatColor.BLUE, lang.get("HELP_SECTION_MODIFY"),
-										ChatColor.GOLD) },
-						{
-								"QMod",
-								Util.line(ChatColor.DARK_GRAY,
-										lang.get("HELP_SECTION_MODIFY_SELECTED")) },
-						{
-								"Hmod",
-								Util.line(ChatColor.DARK_GRAY,
-										lang.get("HELP_SECTION_MODIFY_HOLDER_SELECTED")) },
-						{ "Admin", Util.line(ChatColor.BLUE, lang.get("HELP_SECTION_ADMIN")) } };
+						"Hmod",
+						Util.line(ChatColor.DARK_GRAY, lang.get("HELP_SECTION_MODIFY_HOLDER_SELECTED")) },
+				{ "Admin", Util.line(ChatColor.BLUE, lang.get("HELP_SECTION_ADMIN")) } };
 		StringBuilder sb;
 		for(int i = 0; i < keys.length; i++) {
 			if(cmds.containsKey(keys[i][0])) {
@@ -82,9 +68,7 @@ public class UserCommands {
 		}
 		for(final String s : cmds.keySet()) {
 			sb = new StringBuilder();
-			sb.append(
-					Util.line(ChatColor.BLUE, lang.get("HELP_SECTION_OTHER") + " (" + s + ")",
-							ChatColor.GOLD)).append(ChatColor.RESET).append('\n');
+			sb.append(Util.line(ChatColor.BLUE, lang.get("HELP_SECTION_OTHER") + " (" + s + ")", ChatColor.GOLD)).append(ChatColor.RESET).append('\n');
 			for(final CommandHelp ch : cmds.remove(s)) {
 				sb.append(ch.getFormattedHelp()).append(ChatColor.RESET).append('\n');
 			}
@@ -134,13 +118,11 @@ public class UserCommands {
 			permission = QConfiguration.PERM_USE_PROFILE)
 	public void profile(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		if(Util.permCheck(sender, QConfiguration.PERM_ADMIN, false, null) && context.length() > 0) {
-			final PlayerProfile prof =
-					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
+			final PlayerProfile prof = profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			messenger.showProfile(sender, prof, context.getSenderLang());
 		}
 		else {
-			messenger
-					.showProfile(sender, profMan.getSenderProfile(sender), context.getSenderLang());
+			messenger.showProfile(sender, profMan.getSenderProfile(sender), context.getSenderLang());
 		}
 	}
 	
@@ -167,8 +149,7 @@ public class UserCommands {
 			}
 		}
 		else if(Util.permCheck(sender, QConfiguration.PERM_USE_START_PICK, false, null)) {
-			profMan.startQuest((Player) sender, qMan.getQuest(context.getString(0)), as,
-					context.getSenderLang());
+			profMan.startQuest((Player)sender, qMan.getQuest(context.getString(0)), as, context.getSenderLang());
 		}
 		else {
 			throw new PermissionException(QConfiguration.PERM_USE_START_PICK);
@@ -187,7 +168,7 @@ public class UserCommands {
 			return;
 		}
 		final ActionSource as = ActionSource.commandSource(sender);
-		profMan.complete((Player) sender, as, context.getSenderLang());
+		profMan.complete((Player)sender, as, context.getSenderLang());
 	}
 	
 	@CommandLabels({ "cancel" })
@@ -207,7 +188,7 @@ public class UserCommands {
 			index = context.getInt(0);
 		}
 		final ActionSource as = ActionSource.commandSource(sender);
-		profMan.cancelQuest((Player) sender, index, as, context.getSenderLang());
+		profMan.cancelQuest((Player)sender, index, as, context.getSenderLang());
 	}
 	
 	@CommandLabels({ "switch" })
@@ -244,8 +225,7 @@ public class UserCommands {
 		if(context.length() > 0) {
 			index = context.getInt(0);
 		}
-		messenger.showProgress((Player) sender, profMan.getSenderProfile(sender), index,
-				context.getSenderLang());
+		messenger.showProgress((Player)sender, profMan.getSenderProfile(sender), index, context.getSenderLang());
 	}
 	
 	@CommandLabels({ "quests" })
@@ -269,8 +249,7 @@ public class UserCommands {
 	@CommandLabels({ "langs" })
 	@Command(section = "User", desc = "shows available languages", max = 0)
 	public void langs(final QuesterCommandContext context, final CommandSender sender) {
-		final String playerLang =
-				langMan.getLang(profMan.getSenderProfile(sender).getLanguage()).getName();
+		final String playerLang = langMan.getLang(profMan.getSenderProfile(sender).getLanguage()).getName();
 		final Set<String> langSet = langMan.getLangSet();
 		String toAdd = null;
 		for(final Iterator<String> i = langSet.iterator(); i.hasNext();) {

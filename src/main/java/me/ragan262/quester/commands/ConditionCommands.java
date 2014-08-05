@@ -15,7 +15,6 @@ import me.ragan262.quester.exceptions.QuesterException;
 import me.ragan262.quester.lang.QuesterLang;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.QuestManager;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -35,13 +34,11 @@ public class ConditionCommands {
 		
 		if(!eMan.elementExists(Element.CONDITION, type)) {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.get("ERROR_CON_NOT_EXIST"));
-			subContext.getSender().sendMessage(
-					ChatColor.RED + lang.get("CON_LIST") + ": " + ChatColor.WHITE
-							+ eMan.getElementList(Element.CONDITION));
+			subContext.getSender().sendMessage(ChatColor.RED + lang.get("CON_LIST") + ": "
+					+ ChatColor.WHITE + eMan.getElementList(Element.CONDITION));
 			throw new ConditionException(lang.get("ERROR_CON_NOT_EXIST"));
 		}
-		final Condition con =
-				(Condition) eMan.getElementFromCommand(Element.CONDITION, type, subContext);
+		final Condition con = (Condition)eMan.getElementFromCommand(Element.CONDITION, type, subContext);
 		if(con == null) {
 			throw new ElementException(lang.get("ERROR_ELEMENT_FAIL"));
 		}
@@ -61,7 +58,7 @@ public class ConditionCommands {
 		try {
 			condition = getCondition(type, context.getSubContext(1), lang);
 		}
-		catch (final ConditionException e) {
+		catch(final ConditionException e) {
 			return;
 		}
 		qMan.addQuestCondition(profMan.getSenderProfile(sender), condition, lang);
@@ -83,7 +80,7 @@ public class ConditionCommands {
 		try {
 			condition = getCondition(type, context.getSubContext(2), lang);
 		}
-		catch (final ConditionException e) {
+		catch(final ConditionException e) {
 			return;
 		}
 		qMan.setQuestCondition(profMan.getSenderProfile(sender), conditionID, condition, lang);
@@ -99,8 +96,7 @@ public class ConditionCommands {
 			max = 1,
 			usage = "<condition ID>")
 	public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.removeQuestCondition(profMan.getSenderProfile(sender), context.getInt(0),
-				context.getSenderLang());
+		qMan.removeQuestCondition(profMan.getSenderProfile(sender), context.getInt(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().get("CON_REMOVE").replaceAll("%id", context.getString(0)));
 	}
@@ -135,11 +131,9 @@ public class ConditionCommands {
 				max = 2,
 				usage = "<condition ID> <description>")
 		public void add(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-			qMan.addConditionDescription(profMan.getSenderProfile(sender), context.getInt(0),
-					context.getString(1), context.getSenderLang());
+			qMan.addConditionDescription(profMan.getSenderProfile(sender), context.getInt(0), context.getString(1), context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
-					+ context.getSenderLang().get("CON_DESC_ADD")
-							.replaceAll("%id", context.getString(0)));
+					+ context.getSenderLang().get("CON_DESC_ADD").replaceAll("%id", context.getString(0)));
 		}
 		
 		@CommandLabels({ "remove", "r" })
@@ -150,11 +144,9 @@ public class ConditionCommands {
 				max = 1,
 				usage = "<condition ID>")
 		public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-			qMan.removeConditionDescription(profMan.getSenderProfile(sender), context.getInt(0),
-					context.getSenderLang());
+			qMan.removeConditionDescription(profMan.getSenderProfile(sender), context.getInt(0), context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
-					+ context.getSenderLang().get("CON_DESC_REMOVE")
-							.replaceAll("%id", context.getString(0)));
+					+ context.getSenderLang().get("CON_DESC_REMOVE").replaceAll("%id", context.getString(0)));
 		}
 	}
 }

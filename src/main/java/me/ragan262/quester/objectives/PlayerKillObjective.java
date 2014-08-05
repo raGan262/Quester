@@ -5,7 +5,6 @@ import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
-
 import org.bukkit.entity.Player;
 
 @QElement("PLAYERKILL")

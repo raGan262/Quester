@@ -11,7 +11,6 @@ import me.ragan262.quester.holder.QuestHolderManager;
 import me.ragan262.quester.lang.Messenger;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.QuestManager;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -52,8 +51,7 @@ public class HolderCommands {
 			max = 1,
 			usage = "<quest ID>")
 	public void add(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-		holMan.addHolderQuest(profMan.getSenderProfile(sender), context.getInt(0),
-				context.getSenderLang());
+		holMan.addHolderQuest(profMan.getSenderProfile(sender), context.getInt(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("HOL_Q_ADDED"));
 	}
 	
@@ -65,8 +63,7 @@ public class HolderCommands {
 			max = 1,
 			usage = "<quest ID>")
 	public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-		holMan.removeHolderQuest(profMan.getSenderProfile(sender), context.getInt(0),
-				context.getSenderLang());
+		holMan.removeHolderQuest(profMan.getSenderProfile(sender), context.getInt(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("HOL_Q_REMOVED"));
 	}
 	
@@ -78,8 +75,7 @@ public class HolderCommands {
 			max = 2,
 			usage = "<from> <to>")
 	public void move(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-		holMan.moveHolderQuest(profMan.getSenderProfile(sender), context.getInt(0),
-				context.getInt(1), context.getSenderLang());
+		holMan.moveHolderQuest(profMan.getSenderProfile(sender), context.getInt(0), context.getInt(1), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("HOL_Q_MOVED"));
 	}
 	

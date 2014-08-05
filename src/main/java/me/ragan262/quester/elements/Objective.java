@@ -2,13 +2,11 @@ package me.ragan262.quester.elements;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.lang.QuesterLang;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
 import me.ragan262.quester.utils.SerUtils;
-
 import org.apache.commons.lang.SerializationException;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -143,10 +141,8 @@ public abstract class Objective extends Element {
 			else {
 				actualDesc = desc;
 			}
-			final String partiallyParsed =
-					actualDesc.replaceAll("%r", String.valueOf(getTargetAmount() - progress))
-							.replaceAll("%t", String.valueOf(getTargetAmount()))
-							.replaceAll("%a", String.valueOf(progress));
+			final String partiallyParsed = actualDesc.replaceAll("%r", String.valueOf(getTargetAmount()
+					- progress)).replaceAll("%t", String.valueOf(getTargetAmount())).replaceAll("%a", String.valueOf(progress));
 			return ChatColor.translateAlternateColorCodes('&', parseDescription(partiallyParsed));
 		}
 		return show(progress);
@@ -225,14 +221,13 @@ public abstract class Objective extends Element {
 			obj.setHidden(key.getBoolean("hidden", false));
 			obj.setDisplayProgress(key.getBoolean("progress", true));
 			try {
-				final Set<Integer> prereq =
-						SerUtils.deserializeIntSet(key.getString("prerequisites"));
+				final Set<Integer> prereq = SerUtils.deserializeIntSet(key.getString("prerequisites"));
 				for(final int i : prereq) {
 					obj.addPrerequisity(i);
 				}
 			}
-			catch (final NullPointerException ignore) {}
-			catch (final Exception ex) {
+			catch(final NullPointerException ignore) {}
+			catch(final Exception ex) {
 				Ql.debug("Failed to load prerequisites. (" + type + ")");
 			}
 			
@@ -242,14 +237,14 @@ public abstract class Objective extends Element {
 					obj.addTrigger(i);
 				}
 			}
-			catch (final NullPointerException ignore) {}
-			catch (final Exception ex) {
+			catch(final NullPointerException ignore) {}
+			catch(final Exception ex) {
 				Ql.debug("Failed to load triggers. (" + type + ")");
 			}
 			
 			return obj;
 		}
-		catch (final Exception e) {
+		catch(final Exception e) {
 			Ql.severe("Error when deserializing objective " + type
 					+ ". Method load() missing or invalid. " + e.getClass().getName());
 			Ql.debug("Exception follows", e);

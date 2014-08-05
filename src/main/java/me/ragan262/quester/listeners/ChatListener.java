@@ -1,7 +1,6 @@
 package me.ragan262.quester.listeners;
 
 import java.util.List;
-
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.elements.Objective;
@@ -9,7 +8,6 @@ import me.ragan262.quester.objectives.ChatObjective;
 import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.Quest;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -56,7 +54,7 @@ public class ChatListener implements Listener {
 						if(!profMan.isObjectiveActive(prof, i)) {
 							continue;
 						}
-						if(((ChatObjective) objs.get(i)).matches(event.getMessage())) {
+						if(((ChatObjective)objs.get(i)).matches(event.getMessage())) {
 							profMan.incProgress(player, ActionSource.listenerSource(event), i);
 							return;
 						}

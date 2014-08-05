@@ -2,7 +2,6 @@ package me.ragan262.quester.holder;
 
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.SerUtils;
-
 import org.bukkit.Location;
 
 public class QuesterSign {
@@ -43,7 +42,7 @@ public class QuesterSign {
 			sign = new QuesterSign(loc);
 			sign.setHolderID(key.getInt("holder", -1));
 		}
-		catch (final Exception ignore) {}
+		catch(final Exception ignore) {}
 		
 		return sign;
 	}

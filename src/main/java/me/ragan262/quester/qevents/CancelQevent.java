@@ -10,7 +10,6 @@ import me.ragan262.quester.exceptions.QuesterException;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -29,10 +28,9 @@ public final class CancelQevent extends Qevent {
 	protected void run(final Player player, final Quester plugin) {
 		try {
 			final ProfileManager profMan = plugin.getProfileManager();
-			profMan.cancelQuest(player, ActionSource.eventSource(this), plugin.getLanguageManager()
-					.getLang(profMan.getProfile(player).getLanguage()));
+			profMan.cancelQuest(player, ActionSource.eventSource(this), plugin.getLanguageManager().getLang(profMan.getProfile(player).getLanguage()));
 		}
-		catch (final QuesterException e) {
+		catch(final QuesterException e) {
 			Ql.info("Event failed to cancel " + player.getName() + "'s quest. Reason: "
 					+ ChatColor.stripColor(e.getMessage()));
 		}

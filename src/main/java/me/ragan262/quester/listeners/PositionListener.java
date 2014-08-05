@@ -1,7 +1,6 @@
 package me.ragan262.quester.listeners;
 
 import java.util.List;
-
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
@@ -16,7 +15,6 @@ import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.quests.QuestFlag;
 import me.ragan262.quester.quests.QuestManager;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -62,7 +60,7 @@ public class PositionListener implements Runnable {
 					}
 					// check objectives
 					if(objs.get(i).getType().equalsIgnoreCase("REGION")) {
-						final RegionObjective obj = (RegionObjective) objs.get(i);
+						final RegionObjective obj = (RegionObjective)objs.get(i);
 						if(obj.checkLocation(player.getLocation())) {
 							profMan.incProgress(player, ActionSource.otherSource(null), i);
 							break;
@@ -80,11 +78,10 @@ public class PositionListener implements Runnable {
 						if(loc2.distanceSquared(loc) <= qst.getRange() * qst.getRange()
 								&& qst.hasFlag(QuestFlag.ACTIVE)) {
 							try {
-								profMan.startQuest(player, qst, ActionSource.otherSource(null),
-										langMan.getLang(prof.getLanguage()));
+								profMan.startQuest(player, qst, ActionSource.otherSource(null), langMan.getLang(prof.getLanguage()));
 								break;
 							}
-							catch (final QuesterException e) {}
+							catch(final QuesterException e) {}
 						}
 					}
 				}

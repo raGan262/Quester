@@ -3,9 +3,7 @@ package me.ragan262.quester;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.management.InstanceNotFoundException;
-
 import me.ragan262.quester.storage.ConfigStorage;
 import me.ragan262.quester.storage.Storage;
 import me.ragan262.quester.storage.StorageKey;
@@ -25,8 +23,7 @@ public class QConfiguration {
 	public static boolean autoBackup = true;
 	
 	// MYSQL
-	public static String mysqlUrl =
-			"jdbc:mysql://localhost:3306/minecraft?useUnicode=true&characterEncoding=utf-8";
+	public static String mysqlUrl = "jdbc:mysql://localhost:3306/minecraft?useUnicode=true&characterEncoding=utf-8";
 	public static String mysqlUser = "username";
 	public static String mysqlPass = "password";
 	
@@ -192,10 +189,9 @@ public class QConfiguration {
 			mainKey.setString(path, "minecraft");
 			wrongConfig(path, "minecraft");
 		}
-		QConfiguration.mysqlUrl =
-				"jdbc:mysql://" + mainKey.getString("mysql.host") + ":"
-						+ mainKey.getInt("mysql.port") + "/" + mainKey.getString("mysql.database")
-						+ "?useUnicode=true&characterEncoding=utf-8";
+		QConfiguration.mysqlUrl = "jdbc:mysql://" + mainKey.getString("mysql.host") + ":"
+				+ mainKey.getInt("mysql.port") + "/" + mainKey.getString("mysql.database")
+				+ "?useUnicode=true&characterEncoding=utf-8";
 		
 		path = "mysql.username";
 		temp = mainKey.getString(path, "");
@@ -329,9 +325,8 @@ public class QConfiguration {
 				QConfiguration.questItemInteractable.add(Integer.valueOf(s));
 			}
 		}
-		catch (final Exception ignore) {}
-		mainKey.setString(path,
-				Util.implodeInt(QConfiguration.questItemInteractable.toArray(new Integer[0]), ","));
+		catch(final Exception ignore) {}
+		mainKey.setString(path, Util.implodeInt(QConfiguration.questItemInteractable.toArray(new Integer[0]), ","));
 		
 		saveData();
 	}
@@ -350,7 +345,7 @@ public class QConfiguration {
 			try {
 				return valueOf(name.toUpperCase());
 			}
-			catch (final Exception e) {
+			catch(final Exception e) {
 				return null;
 			}
 		}

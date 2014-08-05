@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import me.ragan262.quester.exceptions.CustomException;
 import me.ragan262.quester.exceptions.HolderException;
 import me.ragan262.quester.exceptions.QuesterException;
@@ -18,7 +17,6 @@ import me.ragan262.quester.storage.ConfigStorage;
 import me.ragan262.quester.storage.Storage;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
-
 import org.bukkit.Location;
 
 public class QuestHolderManager {
@@ -123,7 +121,7 @@ public class QuestHolderManager {
 		try {
 			qh.moveQuest(which, where);
 		}
-		catch (final IndexOutOfBoundsException e) {
+		catch(final IndexOutOfBoundsException e) {
 			throw new CustomException(lang.get("ERROR_CMD_ID_OUT_OF_BOUNDS"));
 		}
 	}
@@ -236,10 +234,10 @@ public class QuestHolderManager {
 					qh.setId(id);
 					holderIds.put(id, qh);
 				}
-				catch (final NumberFormatException e) {
+				catch(final NumberFormatException e) {
 					Ql.info("Not numeric holder index: '" + subKey.getName() + "'");
 				}
-				catch (final Exception e) {
+				catch(final Exception e) {
 					Ql.info("Invalid holder: '" + subKey.getName() + "'");
 				}
 			}

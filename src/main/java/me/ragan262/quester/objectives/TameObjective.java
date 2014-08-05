@@ -7,7 +7,6 @@ import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.SerUtils;
-
 import org.bukkit.entity.EntityType;
 
 @QElement("TAME")
@@ -70,7 +69,7 @@ public final class TameObjective extends Objective {
 		try {
 			ent = SerUtils.parseEntity(key.getString("entity"));
 		}
-		catch (final Exception e) {}
+		catch(final Exception e) {}
 		amt = key.getInt("amount", 1);
 		if(amt < 1) {
 			amt = 1;

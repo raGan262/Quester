@@ -2,7 +2,6 @@ package me.ragan262.quester.elements;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.commons.lang.Validate;
 
 public class TriggerContext {

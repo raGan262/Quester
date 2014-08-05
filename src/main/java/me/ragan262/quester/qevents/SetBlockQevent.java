@@ -8,7 +8,6 @@ import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.SerUtils;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -22,7 +21,7 @@ public final class SetBlockQevent extends Qevent {
 	public SetBlockQevent(final int mat, final int dat, final Location loc) {
 		location = loc;
 		material = mat;
-		data = (byte) dat;
+		data = (byte)dat;
 	}
 	
 	@Override
@@ -68,7 +67,7 @@ public final class SetBlockQevent extends Qevent {
 				return null;
 			}
 		}
-		catch (final Exception e) {
+		catch(final Exception e) {
 			return null;
 		}
 		

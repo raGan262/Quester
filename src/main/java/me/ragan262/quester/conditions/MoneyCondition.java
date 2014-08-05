@@ -7,7 +7,6 @@ import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Condition;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
-
 import org.bukkit.entity.Player;
 
 @QElement("MONEY")
@@ -57,7 +56,7 @@ public final class MoneyCondition extends Condition {
 			final double amt = context.getDouble(0);
 			return new MoneyCondition(amt, context.hasFlag('i'));
 		}
-		catch (final NumberFormatException e) {
+		catch(final NumberFormatException e) {
 			throw new CommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_GENERAL"));
 		}
 	}
@@ -76,7 +75,7 @@ public final class MoneyCondition extends Condition {
 		try {
 			amt = Double.parseDouble(key.getString("amount"));
 		}
-		catch (final Exception e) {
+		catch(final Exception e) {
 			return null;
 		}
 		

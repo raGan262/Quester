@@ -1,7 +1,6 @@
 package me.ragan262.quester.listeners;
 
 import java.util.List;
-
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
@@ -11,7 +10,6 @@ import me.ragan262.quester.objectives.DropObjective;
 import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.Quest;
-
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -51,12 +49,11 @@ public class DropListener implements Listener {
 					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
-					final CollectObjective obj = (CollectObjective) objs.get(i);
+					final CollectObjective obj = (CollectObjective)objs.get(i);
 					final ItemStack item = event.getItemDrop().getItemStack();
 					if(item.getTypeId() == obj.getMaterial().getId()) {
 						if(obj.getData() < 0 || obj.getData() == item.getDurability()) {
-							profMan.incProgress(player, ActionSource.listenerSource(event), i,
-									-item.getAmount());
+							profMan.incProgress(player, ActionSource.listenerSource(event), i, -item.getAmount());
 							collectObj = false;
 						}
 					}
@@ -65,10 +62,9 @@ public class DropListener implements Listener {
 					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
-					final DropObjective obj = (DropObjective) objs.get(i);
+					final DropObjective obj = (DropObjective)objs.get(i);
 					if(obj.isMatching(event.getItemDrop().getItemStack())) {
-						new DropTask(event.getItemDrop(), obj, player, i).runTaskTimer(plugin, 20L,
-								10L);
+						new DropTask(event.getItemDrop(), obj, player, i).runTaskTimer(plugin, 20L, 10L);
 						dropObj = false;
 					}
 				}
@@ -103,8 +99,7 @@ public class DropListener implements Listener {
 			}
 			if(vel.lengthSquared() < 0.001D) {
 				if(obj.isMatching(item.getLocation().getBlock().getLocation())) {
-					profMan.incProgress(player, ActionSource.otherSource(null), id, item
-							.getItemStack().getAmount());
+					profMan.incProgress(player, ActionSource.otherSource(null), id, item.getItemStack().getAmount());
 				}
 				cancel();
 			}

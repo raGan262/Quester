@@ -6,7 +6,6 @@ import me.ragan262.commandmanager.context.ContextFactory;
 import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.lang.QuesterLang;
 import me.ragan262.quester.profiles.ProfileManager;
-
 import org.bukkit.command.CommandSender;
 
 public class QuesterContextFactory implements ContextFactory {

@@ -7,7 +7,6 @@ import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Condition;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
-
 import org.bukkit.entity.Player;
 
 @QElement("POINT")
@@ -49,7 +48,7 @@ public final class PointCondition extends Condition {
 			final int amt = context.getInt(0);
 			return new PointCondition(amt, context.hasFlag('i'));
 		}
-		catch (final NumberFormatException e) {
+		catch(final NumberFormatException e) {
 			throw new CommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_GENERAL"));
 		}
 	}
@@ -68,7 +67,7 @@ public final class PointCondition extends Condition {
 		try {
 			amt = Integer.parseInt(key.getString("amount"));
 		}
-		catch (final Exception e) {
+		catch(final Exception e) {
 			return null;
 		}
 		

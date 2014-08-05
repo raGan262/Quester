@@ -7,7 +7,6 @@ import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.SerUtils;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -40,7 +39,7 @@ public final class ActionObjective extends Objective {
 		else {
 			inHandData = hnddat;
 		}
-		click = (byte) clck;
+		click = (byte)clck;
 		location = loc;
 		range = rng;
 	}
@@ -52,34 +51,31 @@ public final class ActionObjective extends Objective {
 	
 	@Override
 	protected String show(final int progress) {
-		final String clickStr =
-				click == 1 ? "Left-click" : click == 2 ? "Right-click" : click == 3 ? "Walk on"
-						: "Click";
+		final String clickStr = click == 1 ? "Left-click" : click == 2 ? "Right-click" : click == 3
+				? "Walk on" : "Click";
 		String blockStr = block == null ? "" : " " + block.name().toLowerCase().replace('_', ' ');
 		if(blockStr.isEmpty() && click == 3) {
 			blockStr = " pressure plate";
 		}
 		final String datStr = blockData < 0 ? "" : "(data" + blockData + ")";
-		final String handStr =
-				inHand == null ? "" : inHand.getId() == 0 ? " with empty hand " : " with "
-						+ inHand.name().toLowerCase().replace('_', ' ') + " in hand";
+		final String handStr = inHand == null ? "" : inHand.getId() == 0 ? " with empty hand "
+				: " with " + inHand.name().toLowerCase().replace('_', ' ') + " in hand";
 		final String handDatStr = inHandData < 0 ? "" : "(data" + inHandData + ")";
-		final String locStr =
-				location == null ? "" : " " + range + " blocks close to "
-						+ SerUtils.displayLocation(location);
+		final String locStr = location == null ? "" : " " + range + " blocks close to "
+				+ SerUtils.displayLocation(location);
 		return clickStr + blockStr + datStr + handStr + handDatStr + locStr + ".";
 	}
 	
 	@Override
 	protected String info() {
 		final String datStr = blockData < 0 ? "" : ":" + blockData;
-		final String blockStr =
-				block == null ? "ANY" : block.name() + "[" + block.getId() + datStr + "]";
+		final String blockStr = block == null ? "ANY" : block.name() + "[" + block.getId() + datStr
+				+ "]";
 		final String handDatStr = inHandData < 0 ? "" : ":" + inHandData;
-		final String handStr =
-				inHand == null ? "ANY" : inHand.name() + "[" + inHand.getId() + handDatStr + "]";
-		final String clickStr =
-				click == 1 ? "LEFT" : click == 2 ? "RIGHT" : click == 3 ? "PUSH" : "ALL";
+		final String handStr = inHand == null ? "ANY" : inHand.name() + "[" + inHand.getId()
+				+ handDatStr + "]";
+		final String clickStr = click == 1 ? "LEFT" : click == 2 ? "RIGHT" : click == 3 ? "PUSH"
+				: "ALL";
 		return clickStr + "; BLOCK: " + blockStr + "; HAND: " + handStr + "; LOC: "
 				+ SerUtils.displayLocation(location) + "; RNG: " + range;
 	}
@@ -146,13 +142,13 @@ public final class ActionObjective extends Objective {
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
 		}
-		catch (final IllegalArgumentException ignore) {}
+		catch(final IllegalArgumentException ignore) {}
 		try {
 			itm = SerUtils.parseItem(key.getString("hand", ""));
 			hnd = Material.getMaterial(itm[0]);
 			hdat = itm[1];
 		}
-		catch (final IllegalArgumentException ignore) {}
+		catch(final IllegalArgumentException ignore) {}
 		clck = key.getInt("click", 0);
 		loc = SerUtils.deserializeLocString(key.getString("location", ""));
 		rng = key.getInt("range", 0);

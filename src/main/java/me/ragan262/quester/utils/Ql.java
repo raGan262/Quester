@@ -3,7 +3,6 @@ package me.ragan262.quester.utils;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
 
@@ -37,7 +36,7 @@ public final class Ql {
 			try {
 				debugLogger = new QuesterDebugLogger(quester.getServer().getLogger());
 			}
-			catch (final IllegalArgumentException e) {
+			catch(final IllegalArgumentException e) {
 				quester.getLogger().warning("Failed to initialize debug logger.");
 				debugLogger = quester.getLogger();
 			}

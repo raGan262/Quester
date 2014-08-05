@@ -96,8 +96,7 @@ public abstract class QuestHolderActionHandler<T> {
 			
 		}
 		
-		player.sendMessage(Util
-				.line(ChatColor.BLUE, getHeaderText(player, qHolder, data), ChatColor.GOLD));
+		player.sendMessage(Util.line(ChatColor.BLUE, getHeaderText(player, qHolder, data), ChatColor.GOLD));
 		if(isOp) {
 			messenger.showHolderQuestsModify(qHolder, player, qMan);
 		}
@@ -167,8 +166,7 @@ public abstract class QuestHolderActionHandler<T> {
 		// player doesn't have quest
 		if(qMan.isQuestActive(selected)) {
 			try {
-				profMan.startQuest(player, qMan.getQuest(selected), ActionSource
-						.holderSource(qHolder), lang);
+				profMan.startQuest(player, qMan.getQuest(selected), ActionSource.holderSource(qHolder), lang);
 			}
 			catch(final QuesterException e) {
 				player.sendMessage(e.getMessage());

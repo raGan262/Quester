@@ -14,7 +14,6 @@ import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.quests.QuestManager;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -43,7 +42,7 @@ public final class QuestQevent extends Qevent {
 				try {
 					q = qm.getQuest(Integer.valueOf(quest));
 				}
-				catch (final NumberFormatException ignore) {}
+				catch(final NumberFormatException ignore) {}
 				if(q == null) {
 					throw new QuestException(LanguageManager.defaultLang.get("ERROR_Q_NOT_EXIST"));
 				}
@@ -54,10 +53,9 @@ public final class QuestQevent extends Qevent {
 			if(warning != null) {
 				Ql.warning(warning);
 			}
-			plugin.getProfileManager().startQuest(player, q, ActionSource.eventSource(this),
-					LanguageManager.defaultLang);
+			plugin.getProfileManager().startQuest(player, q, ActionSource.eventSource(this), LanguageManager.defaultLang);
 		}
-		catch (final QuesterException e) {
+		catch(final QuesterException e) {
 			Ql.warning("Event failed to give quest to " + player.getName() + ". Reason: "
 					+ ChatColor.stripColor(e.getMessage()));
 		}
@@ -65,12 +63,12 @@ public final class QuestQevent extends Qevent {
 	
 	@Command(min = 1, max = 1, usage = "<quest name>")
 	public static Qevent fromCommand(final QuesterCommandContext context) throws CommandException {
-		final Quester plugin = (Quester) Bukkit.getPluginManager().getPlugin("Quester");
+		final Quester plugin = (Quester)Bukkit.getPluginManager().getPlugin("Quester");
 		
 		if(plugin.getQuestManager().getQuest(context.getString(0)) == null) {
 			
-			context.getSender().sendMessage(
-					ChatColor.YELLOW + context.getSenderLang().get("ERROR_Q_NOT_EXIST"));
+			context.getSender().sendMessage(ChatColor.YELLOW
+					+ context.getSenderLang().get("ERROR_Q_NOT_EXIST"));
 		}
 		return new QuestQevent(context.getString(0));
 	}

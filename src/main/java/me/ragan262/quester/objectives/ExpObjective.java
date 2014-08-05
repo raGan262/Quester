@@ -7,7 +7,6 @@ import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.ExpManager;
-
 import org.bukkit.entity.Player;
 
 @QElement("EXP")

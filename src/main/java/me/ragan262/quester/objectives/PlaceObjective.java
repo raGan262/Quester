@@ -7,7 +7,6 @@ import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.SerUtils;
-
 import org.bukkit.Material;
 
 @QElement("PLACE")
@@ -20,7 +19,7 @@ public final class PlaceObjective extends Objective {
 	public PlaceObjective(final int amt, final Material mat, final int dat) {
 		amount = amt;
 		material = mat;
-		data = (byte) dat;
+		data = (byte)dat;
 	}
 	
 	@Override
@@ -47,7 +46,7 @@ public final class PlaceObjective extends Objective {
 	public static Objective fromCommand(final QuesterCommandContext context) throws CommandException {
 		final int[] itm = SerUtils.parseItem(context.getString(0));
 		final Material mat = Material.getMaterial(itm[0]);
-		final byte dat = (byte) itm[1];
+		final byte dat = (byte)itm[1];
 		if(mat.getId() > 255) {
 			throw new CommandException(context.getSenderLang().get("ERROR_CMD_BLOCK_UNKNOWN"));
 		}
@@ -74,7 +73,7 @@ public final class PlaceObjective extends Objective {
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
 		}
-		catch (final IllegalArgumentException e) {
+		catch(final IllegalArgumentException e) {
 			return null;
 		}
 		amt = key.getInt("amount", 1);

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import me.ragan262.quester.exceptions.HolderException;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Util;
@@ -55,7 +54,7 @@ public class QuestHolder {
 		try {
 			return heldQuests.get(selected.get(name));
 		}
-		catch (final Exception ignore) {}
+		catch(final Exception ignore) {}
 		return -1;
 	}
 	
@@ -128,11 +127,11 @@ public class QuestHolder {
 					i = Integer.parseInt(s);
 					qHolder.addQuest(i);
 				}
-				catch (final NumberFormatException f) {}
+				catch(final NumberFormatException f) {}
 			}
 			
 		}
-		catch (final Exception ignore) {}
+		catch(final Exception ignore) {}
 		
 		return qHolder;
 	}

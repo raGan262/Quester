@@ -7,7 +7,6 @@ import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Trigger;
 import me.ragan262.quester.elements.TriggerContext;
 import me.ragan262.quester.storage.StorageKey;
-
 import org.bukkit.entity.Player;
 
 @QElement("NPC")
@@ -28,9 +27,9 @@ public class NpcTrigger extends Trigger {
 	protected boolean evaluate0(final Player player, final TriggerContext context) {
 		if(context.getType().equals("NPC_CLICK")) {
 			try {
-				return index == (Integer) context.get("CLICKEDNPC");
+				return index == (Integer)context.get("CLICKEDNPC");
 			}
-			catch (final Exception ignore) {}
+			catch(final Exception ignore) {}
 		}
 		return false;
 	}

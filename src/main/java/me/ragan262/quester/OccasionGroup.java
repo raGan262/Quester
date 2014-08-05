@@ -55,7 +55,7 @@ public class OccasionGroup {
 			return false;
 		}
 		if(occasionGroup instanceof OccasionGroup) {
-			final OccasionGroup grp = (OccasionGroup) occasionGroup;
+			final OccasionGroup grp = (OccasionGroup)occasionGroup;
 			if(grp.size() != size()) {
 				return false;
 			}

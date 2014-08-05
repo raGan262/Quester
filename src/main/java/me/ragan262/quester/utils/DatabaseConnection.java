@@ -28,8 +28,7 @@ import java.util.concurrent.Executor;
  */
 public class DatabaseConnection {
 	
-	private static Vector<DatabaseConnection.MyConnection> connections =
-			new Vector<DatabaseConnection.MyConnection>();
+	private static Vector<DatabaseConnection.MyConnection> connections = new Vector<DatabaseConnection.MyConnection>();
 	private static String url, user, pass;
 	private static volatile boolean isValid = false;
 	
@@ -93,8 +92,7 @@ public class DatabaseConnection {
 		// Test connection
 		@SuppressWarnings("resource")
 		// it is closed, really....
-		final MyConnection c =
-				new MyConnection(DriverManager.getConnection(url, username, password));
+		final MyConnection c = new MyConnection(DriverManager.getConnection(url, username, password));
 		if(!c.isValid()) {
 			c.closeQuietly();
 			throw new SQLException("Failed to establish a valid connection.");
@@ -131,7 +129,7 @@ public class DatabaseConnection {
 			try {
 				return conn.isValid(1);
 			}
-			catch (final SQLException ex) {
+			catch(final SQLException ex) {
 				return false;
 			}
 		}
@@ -144,7 +142,7 @@ public class DatabaseConnection {
 					conn.setAutoCommit(true);
 				}
 			}
-			catch (final SQLException ex) {
+			catch(final SQLException ex) {
 				connections.remove(this);
 				closeQuietly();
 			}
@@ -154,7 +152,7 @@ public class DatabaseConnection {
 			try {
 				conn.close();
 			}
-			catch (final SQLException ignore) {}
+			catch(final SQLException ignore) {}
 		}
 		
 		// CUSTOM IMPLEMENTATION
@@ -348,8 +346,7 @@ public class DatabaseConnection {
 		
 		@Override
 		public PreparedStatement prepareStatement(final String sql, final int resultSetType, final int resultSetConcurrency, final int resultSetHoldability) throws SQLException {
-			return conn.prepareStatement(sql, resultSetType, resultSetConcurrency,
-					resultSetHoldability);
+			return conn.prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
 		}
 		
 		@Override

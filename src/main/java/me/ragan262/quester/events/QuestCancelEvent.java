@@ -2,7 +2,6 @@ package me.ragan262.quester.events;
 
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.quests.Quest;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;

@@ -2,7 +2,6 @@ package me.ragan262.quester.storage;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 

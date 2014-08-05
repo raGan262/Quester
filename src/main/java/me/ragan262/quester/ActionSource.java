@@ -3,7 +3,6 @@ package me.ragan262.quester;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.elements.Trigger;
 import me.ragan262.quester.holder.QuestHolder;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Event;
 

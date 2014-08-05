@@ -8,7 +8,6 @@ import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Region;
 import me.ragan262.quester.utils.SerUtils;
-
 import org.bukkit.Location;
 
 /* DEPRECATED - use REGION objective instead */
@@ -31,9 +30,8 @@ public final class LocObjective extends Objective {
 	
 	@Override
 	protected String show(final int progress) {
-		final String locStr =
-				String.format("%d blocks close to %.1f %.1f %.1f(" + location.getWorld().getName()
-						+ ")", range, location.getX(), location.getY(), location.getZ());
+		final String locStr = String.format("%d blocks close to %.1f %.1f %.1f("
+				+ location.getWorld().getName() + ")", range, location.getX(), location.getY(), location.getZ());
 		return "Come at least " + locStr + ".";
 	}
 	

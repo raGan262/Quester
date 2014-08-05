@@ -15,9 +15,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
-
 import javax.management.InstanceNotFoundException;
-
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.QConfiguration.StorageType;
@@ -48,7 +46,6 @@ import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.DatabaseConnection;
 import me.ragan262.quester.utils.Ql;
 import me.ragan262.quester.utils.Util;
-
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -83,10 +80,10 @@ public class ProfileManager {
 	}
 	
 	private PlayerProfile createProfile(final OfflinePlayer player) {
-		if(player instanceof Player && !Util.isPlayer((Player) player)) {
+		if(player instanceof Player && !Util.isPlayer((Player)player)) {
 			Ql.warning("Smeone/Something tried to get profile of a non-player.");
-			Ql.debug("Contact Quester author and show him this exception.", new CustomException(
-					"player name: " + player.getName()));
+			Ql.debug("Contact Quester author and show him this exception.", new CustomException("player name: "
+					+ player.getName()));
 			return null;
 		}
 		final PlayerProfile prof = new PlayerProfile(player);
@@ -120,7 +117,7 @@ public class ProfileManager {
 	
 	public PlayerProfile getSenderProfile(final CommandSender sender) {
 		if(sender instanceof Player) {
-			return getProfile((Player) sender);
+			return getProfile((Player)sender);
 		}
 		else {
 			return getProfile(null);
@@ -194,7 +191,7 @@ public class ProfileManager {
 	}
 	
 	public void addCompletedQuest(final PlayerProfile profile, final String questName, final long timeInMillis) {
-		profile.addCompleted(questName, (int) (timeInMillis / 1000));
+		profile.addCompleted(questName, (int)(timeInMillis / 1000));
 	}
 	
 	public void removeCompletedQuest(final PlayerProfile profile, final String questName) {
@@ -300,8 +297,8 @@ public class ProfileManager {
 		final QuesterLang playerLang = langMan.getLang(prof.getLanguage());
 		if(QConfiguration.progMsgStart) {
 			player.sendMessage(Quester.LABEL
-					+ playerLang.get("MSG_Q_STARTED").replaceAll("%q",
-							ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
+					+ playerLang.get("MSG_Q_STARTED").replaceAll("%q", ChatColor.GOLD
+							+ quest.getName() + ChatColor.BLUE));
 		}
 		final String description = quest.getDescription(player.getName(), playerLang);
 		if(!description.isEmpty() && !quest.hasFlag(QuestFlag.NODESC)) {
@@ -366,8 +363,8 @@ public class ProfileManager {
 		unassignQuest(prof, index);
 		if(QConfiguration.progMsgCancel) {
 			player.sendMessage(Quester.LABEL
-					+ langMan.getLang(prof.getLanguage()).get("MSG_Q_CANCELLED")
-							.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
+					+ langMan.getLang(prof.getLanguage()).get("MSG_Q_CANCELLED").replaceAll("%q", ChatColor.GOLD
+							+ quest.getName() + ChatColor.BLUE));
 		}
 		Ql.verbose(player.getName() + "'s quest '" + quest.getName() + "' was cancelled. "
 				+ "(ActionSource: " + as.getType() + ")");
@@ -441,8 +438,8 @@ public class ProfileManager {
 		addCompletedQuest(prof, quest.getName());
 		if(QConfiguration.progMsgDone) {
 			player.sendMessage(Quester.LABEL
-					+ langMan.getLang(prof.getLanguage()).get("MSG_Q_COMPLETED")
-							.replaceAll("%q", ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
+					+ langMan.getLang(prof.getLanguage()).get("MSG_Q_COMPLETED").replaceAll("%q", ChatColor.GOLD
+							+ quest.getName() + ChatColor.BLUE));
 		}
 		Ql.verbose(player.getName() + " completed quest '" + quest.getName() + "'.");
 		/* QuestCompleteEvent */
@@ -488,8 +485,7 @@ public class ProfileManager {
 				player.sendMessage(Quester.LABEL + lang.get("MSG_OBJ_COMPLETED"));
 			}
 			/* ObjectiveCompleteEvent */
-			final ObjectiveCompleteEvent event =
-					new ObjectiveCompleteEvent(as, player, q, objectiveId);
+			final ObjectiveCompleteEvent event = new ObjectiveCompleteEvent(as, player, q, objectiveId);
 			Bukkit.getServer().getPluginManager().callEvent(event);
 			
 			for(final Qevent qv : q.getQevents()) {
@@ -501,7 +497,7 @@ public class ProfileManager {
 				try {
 					complete(player, as, lang, false);
 				}
-				catch (final QuesterException ignore) {}
+				catch(final QuesterException ignore) {}
 			}
 		}
 		else if(!obj.isHidden() && obj.shouldDisplayProgress() && QConfiguration.progMsg) {
@@ -538,7 +534,7 @@ public class ProfileManager {
 		try {
 			rankKey = QConfiguration.getConfigKey("ranks");
 		}
-		catch (final InstanceNotFoundException e) {
+		catch(final InstanceNotFoundException e) {
 			Ql.severe("DataManager instance exception occured while acessing ranks.");
 		}
 		if(rankKey != null) {
@@ -555,7 +551,7 @@ public class ProfileManager {
 			try {
 				QConfiguration.saveData();
 			}
-			catch (final InstanceNotFoundException ignore) {}
+			catch(final InstanceNotFoundException ignore) {}
 		}
 		Collections.sort(sortedList);
 		ranks = rankMap;
@@ -578,18 +574,22 @@ public class ProfileManager {
 				break;
 			}
 			default: {
-				final Storage profileStorage =
-						new ConfigStorage(profileStorageFile, plugin.getLogger(), null);
+				final Storage profileStorage = new ConfigStorage(profileStorageFile, plugin.getLogger(), null);
 				profileStorage.load();
 				final StorageKey mainKey = profileStorage.getKey("");
 				PlayerProfile prof;
+				int counter = 0;
 				for(final StorageKey subKey : mainKey.getSubKeys()) {
+					counter++;
 					prof = PlayerProfile.deserialize(subKey, qMan);
 					if(prof != null) {
 						loadProfile(prof);
 					}
 					else {
 						Ql.info("Invalid key in profiles.yml: " + subKey.getName());
+					}
+					if(counter % 10 == 0) {
+						Ql.debug(counter + " profiles processed.");
 					}
 				}
 				Ql.verbose(profiles.size() + " profiles loaded.");
@@ -607,8 +607,7 @@ public class ProfileManager {
 				ResultSet rs = null;
 				try {
 					Ql.debug("Loading profiles...");
-					final List<SerializedPlayerProfile> serps =
-							new ArrayList<PlayerProfile.SerializedPlayerProfile>();
+					final List<SerializedPlayerProfile> serps = new ArrayList<PlayerProfile.SerializedPlayerProfile>();
 					conn = DatabaseConnection.getConnection();
 					stmt = conn.prepareStatement("SELECT * FROM `quester-profiles`");
 					rs = stmt.executeQuery();
@@ -616,7 +615,7 @@ public class ProfileManager {
 						try {
 							serps.add(new SerializedPlayerProfile(rs));
 						}
-						catch (final SQLException ignore) {}
+						catch(final SQLException ignore) {}
 					}
 					rs.close();
 					stmt.close();
@@ -627,8 +626,7 @@ public class ProfileManager {
 						public void run() {
 							int count = 0;
 							for(final SerializedPlayerProfile sp : serps) {
-								final PlayerProfile prof =
-										PlayerProfile.deserialize(sp.getStoragekey(), qMan);
+								final PlayerProfile prof = PlayerProfile.deserialize(sp.getStoragekey(), qMan);
 								if(prof != null) {
 									updateRank(prof);
 									profiles.put(prof.getId(), prof);
@@ -649,7 +647,7 @@ public class ProfileManager {
 						deserialization.run();
 					}
 				}
-				catch (final SQLException e) {
+				catch(final SQLException e) {
 					e.printStackTrace();
 				}
 				finally {
@@ -657,19 +655,19 @@ public class ProfileManager {
 						try {
 							conn.close();
 						}
-						catch (final SQLException ignore) {}
+						catch(final SQLException ignore) {}
 					}
 					if(stmt != null) {
 						try {
 							stmt.close();
 						}
-						catch (final SQLException ignore) {}
+						catch(final SQLException ignore) {}
 					}
 					if(rs != null) {
 						try {
 							rs.close();
 						}
-						catch (final SQLException ignore) {}
+						catch(final SQLException ignore) {}
 					}
 				}
 			}
@@ -694,8 +692,7 @@ public class ProfileManager {
 				break;
 			}
 			default: {
-				final Storage profileStorage =
-						new ConfigStorage(profileStorageFile, plugin.getLogger(), null);
+				final Storage profileStorage = new ConfigStorage(profileStorageFile, plugin.getLogger(), null);
 				final StorageKey pKey = profileStorage.getKey("");
 				for(final UUID uid : profiles.keySet()) {
 					profiles.get(uid).serialize(pKey.getSubKey(uid.toString()));
@@ -706,8 +703,7 @@ public class ProfileManager {
 	}
 	
 	private void saveToDatabase(final boolean async) {
-		final List<SerializedPlayerProfile> serps =
-				new ArrayList<PlayerProfile.SerializedPlayerProfile>();
+		final List<SerializedPlayerProfile> serps = new ArrayList<PlayerProfile.SerializedPlayerProfile>();
 		
 		for(final PlayerProfile prof : profiles.values()) {
 			serps.add(new PlayerProfile.SerializedPlayerProfile(prof));
@@ -736,16 +732,15 @@ public class ProfileManager {
 						final boolean isStored = stored.contains(sp.uid.toString());
 						try {
 							if(!isStored || sp.changed) { // only save if it has changed, or is not stored
-								stmt =
-										conn.prepareStatement(isStored ? sp
-												.getUpdateQuerry("quester-profiles") : sp
-												.getInsertQuerry("quester-profiles"));
+								stmt = conn.prepareStatement(isStored
+										? sp.getUpdateQuerry("quester-profiles")
+										: sp.getInsertQuerry("quester-profiles"));
 								stmt.execute();
 								stmt.close();
 								saved++;
 							}
 						}
-						catch (final SQLException e) {
+						catch(final SQLException e) {
 							System.out.println("Failed to save profile " + sp.uid.toString());
 							if(QConfiguration.debug) {
 								e.printStackTrace();
@@ -756,7 +751,7 @@ public class ProfileManager {
 								try {
 									stmt.close();
 								}
-								catch (final SQLException ignore) {}
+								catch(final SQLException ignore) {}
 							}
 						}
 					}
@@ -764,7 +759,7 @@ public class ProfileManager {
 						System.out.println(saved + " profiles saved.");
 					}
 				}
-				catch (final SQLException e) {
+				catch(final SQLException e) {
 					e.printStackTrace();
 				}
 				finally {
@@ -772,19 +767,19 @@ public class ProfileManager {
 						try {
 							conn.close();
 						}
-						catch (final SQLException ignore) {}
+						catch(final SQLException ignore) {}
 					}
 					if(stmt != null) {
 						try {
 							stmt.close();
 						}
-						catch (final SQLException ignore) {}
+						catch(final SQLException ignore) {}
 					}
 					if(rs != null) {
 						try {
 							rs.close();
 						}
-						catch (final SQLException ignore) {}
+						catch(final SQLException ignore) {}
 					}
 				}
 			}

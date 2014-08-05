@@ -4,7 +4,6 @@ import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.lang.QuesterLang;
 import me.ragan262.quester.utils.Util;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -69,7 +68,7 @@ public class SignHolderActionHandler extends QuestHolderActionHandler<QuesterSig
 			return;
 		}
 		
-		final Sign sign = (Sign) block.getState();
+		final Sign sign = (Sign)block.getState();
 		if(!sign.getLine(0).equals(ChatColor.BLUE + "[Quester]")) {
 			block.breakNaturally();
 			holMan.removeSign(block.getLocation());
@@ -99,7 +98,7 @@ public class SignHolderActionHandler extends QuestHolderActionHandler<QuesterSig
 			return;
 		}
 		
-		final Sign sign = (Sign) block.getState();
+		final Sign sign = (Sign)block.getState();
 		if(holMan.getSign(sign.getLocation()) != null) {
 			final Player p = event.getPlayer();
 			final QuesterLang lang = langMan.getLang(profMan.getProfile(p).getLanguage());
@@ -117,8 +116,7 @@ public class SignHolderActionHandler extends QuestHolderActionHandler<QuesterSig
 	public void onSignChange(final SignChangeEvent event) {
 		final Block block = event.getBlock();
 		if(event.getLine(0).equals("[Quester]")) {
-			final QuesterLang lang =
-					langMan.getLang(profMan.getProfile(event.getPlayer()).getLanguage());
+			final QuesterLang lang = langMan.getLang(profMan.getProfile(event.getPlayer()).getLanguage());
 			if(!Util.permCheck(event.getPlayer(), QConfiguration.PERM_MODIFY, true, lang)) {
 				block.breakNaturally();
 			}

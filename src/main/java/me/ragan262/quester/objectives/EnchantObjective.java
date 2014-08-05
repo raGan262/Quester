@@ -2,7 +2,6 @@ package me.ragan262.quester.objectives;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import me.ragan262.commandmanager.annotations.Command;
 import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.commandmanager.QuesterCommandContext;
@@ -11,7 +10,6 @@ import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.SerUtils;
 import me.ragan262.quester.utils.Util;
-
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -55,8 +53,8 @@ public final class EnchantObjective extends Objective {
 	
 	@Override
 	protected String info() {
-		final String mat =
-				material == null ? "ANY ITEM" : material.name() + "[" + material.getId() + "]";
+		final String mat = material == null ? "ANY ITEM" : material.name() + "[" + material.getId()
+				+ "]";
 		final String itm = mat + "; AMT: " + amount;
 		String enchs = enchants.isEmpty() ? "" : "\n -- ENCH:";
 		for(final Integer e : enchants.keySet()) {
@@ -102,14 +100,14 @@ public final class EnchantObjective extends Objective {
 			try {
 				mat = Material.getMaterial(SerUtils.parseItem(key.getString("item"))[0]);
 			}
-			catch (final Exception ignore) {}
+			catch(final Exception ignore) {}
 			amt = key.getInt("amount", 1);
 			if(amt < 1) {
 				amt = 1;
 			}
 			enchs = SerUtils.parseEnchants(key.getString("enchants", ""));
 		}
-		catch (final Exception e) {
+		catch(final Exception e) {
 			return null;
 		}
 		

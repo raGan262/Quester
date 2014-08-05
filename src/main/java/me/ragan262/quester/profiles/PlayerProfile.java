@@ -10,13 +10,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.regex.Pattern;
-
 import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.quests.QuestManager;
 import me.ragan262.quester.storage.MemoryStorageKey;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
-
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
@@ -104,7 +102,7 @@ public class PlayerProfile {
 			current = progresses.get(index);
 			setChanged();
 		}
-		catch (final Exception e) {
+		catch(final Exception e) {
 			return false;
 		}
 		return true;
@@ -187,7 +185,7 @@ public class PlayerProfile {
 			current = null;
 			setChanged();
 		}
-		catch (final Exception ignore) {}
+		catch(final Exception ignore) {}
 	}
 	
 	void unsetQuest(final int index) {
@@ -198,7 +196,7 @@ public class PlayerProfile {
 			progresses.remove(index);
 			setChanged();
 		}
-		catch (final Exception ignore) {}
+		catch(final Exception ignore) {}
 	}
 	
 	public Quest getQuest() {
@@ -308,7 +306,7 @@ public class PlayerProfile {
 		try {
 			player = Bukkit.getOfflinePlayer(UUID.fromString(key.getName()));
 		}
-		catch (final Exception ignore) {
+		catch(final Exception ignore) {
 			// compatibility
 			if(key.getString("name") != null) {
 				player = Bukkit.getOfflinePlayer(key.getString("name"));
@@ -362,7 +360,7 @@ public class PlayerProfile {
 				try {
 					quest = qMan.getQuest(Integer.parseInt(subKey.getName()));
 				}
-				catch (final NumberFormatException e) {
+				catch(final NumberFormatException e) {
 					// compatibility with older format
 					quest = qMan.getQuest(subKey.getName().replaceAll("#%#", "."));
 				}
@@ -420,8 +418,7 @@ public class PlayerProfile {
 			run = false;
 			sb = new StringBuilder();
 			for(final Entry<String, Integer> entry : prof.completed.entrySet()) {
-				sb.append(entry.getKey()).append(delimiter2).append(entry.getValue())
-						.append(delimiter1);
+				sb.append(entry.getKey()).append(delimiter2).append(entry.getValue()).append(delimiter1);
 				run = true;
 			}
 			completed = run ? sb.substring(0, sb.length() - delimiter1.length()) : "";
@@ -439,7 +436,7 @@ public class PlayerProfile {
 			try {
 				tempId = UUID.fromString(id);
 			}
-			catch (final IllegalArgumentException e) {
+			catch(final IllegalArgumentException e) {
 				// backwards compatibility
 				tempId = Bukkit.getOfflinePlayer(id).getUniqueId();
 			}
@@ -466,7 +463,7 @@ public class PlayerProfile {
 					try {
 						temp.setInt(split[0].replaceAll("\\.", "#%#"), Integer.valueOf(split[1]));
 					}
-					catch (final Exception e) {
+					catch(final Exception e) {
 						err = true;
 						Ql.debug("Error in completed '" + s + "'", e);
 					}
@@ -486,17 +483,16 @@ public class PlayerProfile {
 						}
 					}
 				}
-				catch (final Exception e) {
+				catch(final Exception e) {
 					err = true;
 					Ql.debug("Error in progress '" + s + "'", e);
 				}
 			}
 			
 			try {
-				result.setInt("points",
-						Integer.valueOf(reputation.split(Pattern.quote(delimiter2))[1]));
+				result.setInt("points", Integer.valueOf(reputation.split(Pattern.quote(delimiter2))[1]));
 			}
-			catch (final Exception e) {
+			catch(final Exception e) {
 				err = true;
 				Ql.debug("Error in reputation '" + reputation + "'", e);
 			}
@@ -511,22 +507,14 @@ public class PlayerProfile {
 		
 		String getInsertQuerry(final String tableName) {
 			if(insertQuerry == null) {
-				insertQuerry =
-						String.format(
-								"INSERT INTO `%s`(`name`, `completed`, `current`, `quests`, `reputation`) VALUES ('%s','%s',%d,'%s','%s')",
-								tableName, uid.toString(), completed.replaceAll("'", "\\\\'"),
-								current, progresses, reputation.replaceAll("'", "\\\\'"));
+				insertQuerry = String.format("INSERT INTO `%s`(`name`, `completed`, `current`, `quests`, `reputation`) VALUES ('%s','%s',%d,'%s','%s')", tableName, uid.toString(), completed.replaceAll("'", "\\\\'"), current, progresses, reputation.replaceAll("'", "\\\\'"));
 			}
 			return insertQuerry;
 		}
 		
 		String getUpdateQuerry(final String tableName) {
 			if(updateQuerry == null) {
-				updateQuerry =
-						String.format(
-								"UPDATE `%s` SET `completed`='%s',`current`=%d,`quests`='%s',`reputation`='%s' WHERE `name`='%s'",
-								tableName, completed.replaceAll("'", "\\\\'"), current, progresses,
-								reputation.replaceAll("'", "\\\\'"), uid.toString());
+				updateQuerry = String.format("UPDATE `%s` SET `completed`='%s',`current`=%d,`quests`='%s',`reputation`='%s' WHERE `name`='%s'", tableName, completed.replaceAll("'", "\\\\'"), current, progresses, reputation.replaceAll("'", "\\\\'"), uid.toString());
 			}
 			return updateQuerry;
 		}

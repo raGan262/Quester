@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -39,7 +38,7 @@ public class ConfigStorage implements Storage {
 			conFile.getParentFile().mkdirs();
 			conFile.createNewFile();
 		}
-		catch (final IOException ex) {
+		catch(final IOException ex) {
 			logger.severe("Could not create file: " + conFile.getName() + " !");
 		}
 		if(defaultStream != null) {
@@ -47,11 +46,11 @@ public class ConfigStorage implements Storage {
 				config.load(defaultStream);
 				logger.info("Loaded default file: " + conFile.getName() + " !");
 			}
-			catch (final IOException e) {
+			catch(final IOException e) {
 				logger.severe("Could not load default file: " + conFile.getName() + " !");
 				e.printStackTrace();
 			}
-			catch (final InvalidConfigurationException e) {
+			catch(final InvalidConfigurationException e) {
 				logger.severe("Could not load default file: " + conFile.getName() + " !");
 				e.printStackTrace();
 			}
@@ -74,7 +73,7 @@ public class ConfigStorage implements Storage {
 		try {
 			config.save(file);
 		}
-		catch (final IOException ex) {
+		catch(final IOException ex) {
 			logger.severe("Can't write to file '" + conFile.getName() + "'!");
 		}
 	}
@@ -85,7 +84,7 @@ public class ConfigStorage implements Storage {
 			config.load(conFile);
 			return true;
 		}
-		catch (final Exception ex) {
+		catch(final Exception ex) {
 			ex.printStackTrace();
 		}
 		return false;

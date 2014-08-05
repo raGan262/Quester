@@ -1,7 +1,6 @@
 package me.ragan262.quester.listeners;
 
 import java.util.List;
-
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.elements.Objective;
@@ -9,7 +8,6 @@ import me.ragan262.quester.objectives.ShearObjective;
 import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.Quest;
-
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
@@ -30,7 +28,7 @@ public class ShearListener implements Listener {
 	public void onShear(final PlayerShearEntityEvent event) {
 		if(event.getEntity().getType() == EntityType.SHEEP) {
 			final Player player = event.getPlayer();
-			final Sheep sheep = (Sheep) event.getEntity();
+			final Sheep sheep = (Sheep)event.getEntity();
 			final PlayerProfile prof = profMan.getProfile(player);
 			final Quest quest = prof.getQuest();
 			if(quest != null) {
@@ -43,7 +41,7 @@ public class ShearListener implements Listener {
 						if(!profMan.isObjectiveActive(prof, i)) {
 							continue;
 						}
-						final ShearObjective obj = (ShearObjective) objs.get(i);
+						final ShearObjective obj = (ShearObjective)objs.get(i);
 						if(obj.check(sheep.getColor())) {
 							profMan.incProgress(player, ActionSource.listenerSource(event), i);
 							return;

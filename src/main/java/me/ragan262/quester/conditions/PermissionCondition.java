@@ -7,7 +7,6 @@ import me.ragan262.quester.elements.Condition;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Util;
-
 import org.bukkit.entity.Player;
 
 @QElement("PERM")

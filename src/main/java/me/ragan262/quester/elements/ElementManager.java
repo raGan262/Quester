@@ -6,7 +6,6 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
-
 import me.ragan262.commandmanager.annotations.Command;
 import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.commandmanager.exceptions.UsageException;
@@ -17,12 +16,12 @@ import me.ragan262.quester.exceptions.QuesterException;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
 import me.ragan262.quester.utils.Util;
-
 import org.apache.commons.lang.Validate;
 
 public class ElementManager {
 	
 	final class ElementInfo {
+		
 		private Class<? extends Element> clss;
 		private String usage;
 		private Method commandMethod;
@@ -32,8 +31,7 @@ public class ElementManager {
 	
 	private static ElementManager instance = null;
 	
-	private final Map<Class<? extends Element>, Map<String, ElementInfo>> elements =
-			new IdentityHashMap<Class<? extends Element>, Map<String, ElementInfo>>();
+	private final Map<Class<? extends Element>, Map<String, ElementInfo>> elements = new IdentityHashMap<Class<? extends Element>, Map<String, ElementInfo>>();
 	
 	public ElementManager() {
 		elements.put(Element.CONDITION, new HashMap<String, ElementInfo>());
@@ -106,26 +104,25 @@ public class ElementManager {
 			String parent;
 			if(context.length() < ei.command.min()) {
 				parent = getParentArgs(context.getParentArgs());
-				throw new UsageException(context.getSenderLang().get("ERROR_CMD_ARGS_NOT_ENOUGH"),
-						parent + ei.usage);
+				throw new UsageException(context.getSenderLang().get("ERROR_CMD_ARGS_NOT_ENOUGH"), parent
+						+ ei.usage);
 			}
 			if(!(ei.command.max() < 0) && context.length() > ei.command.max()) {
 				parent = getParentArgs(context.getParentArgs());
-				throw new UsageException(context.getSenderLang().get("ERROR_CMD_ARGS_TOO_MANY"),
-						ei.usage);
+				throw new UsageException(context.getSenderLang().get("ERROR_CMD_ARGS_TOO_MANY"), ei.usage);
 			}
 			
 			obj = ei.commandMethod.invoke(null, context);
 		}
-		catch (final IllegalAccessException e) {
+		catch(final IllegalAccessException e) {
 			e.printStackTrace();
 		}
-		catch (final InvocationTargetException e) {
+		catch(final InvocationTargetException e) {
 			if(e.getCause() instanceof CommandException) {
-				throw (CommandException) e.getCause();
+				throw (CommandException)e.getCause();
 			}
 			else if(e.getCause() instanceof QuesterException) {
-				throw (QuesterException) e.getCause();
+				throw (QuesterException)e.getCause();
 			}
 			else if(e.getCause() instanceof IllegalArgumentException) {
 				throw new CommandException(e.getCause().getMessage());
@@ -134,7 +131,7 @@ public class ElementManager {
 				e.printStackTrace();
 			}
 		}
-		return (Element) obj;
+		return (Element)obj;
 	}
 	
 	public Element getElementFromCommand(final Class<? extends Element> elementclass, final String type, final QuesterCommandContext context) throws CommandException, QuesterException {
@@ -150,7 +147,7 @@ public class ElementManager {
 	@SuppressWarnings("unchecked")
 	public <T extends Element> T invokeLoadMethod(final Class<T> elementclass, final String type, final StorageKey key) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		final ElementInfo ei = elements.get(elementclass).get(type.toUpperCase());
-		return (T) ei.loadMethod.invoke(null, key);
+		return (T)ei.loadMethod.invoke(null, key);
 	}
 	
 	public void register(final Class<? extends Element> clss) throws ElementException {
@@ -168,10 +165,10 @@ public class ElementManager {
 			}
 			registerElement(elementClass, clss, force);
 		}
-		catch (final NoSuchMethodException e) {
+		catch(final NoSuchMethodException e) {
 			throw new ElementException("Missing fromCommand or load method.");
 		}
-		catch (final SecurityException e) {
+		catch(final SecurityException e) {
 			throw new ElementException("Element can't be accessed.");
 		}
 	}
@@ -189,16 +186,14 @@ public class ElementManager {
 		// check load method
 		final Method load = clss.getDeclaredMethod("load", StorageKey.class);
 		if(!Modifier.isStatic(load.getModifiers()) || !Modifier.isProtected(load.getModifiers())) {
-			throw new ElementException(
-					"Incorrect load method modifiers, expected \"protected static\".");
+			throw new ElementException("Incorrect load method modifiers, expected \"protected static\".");
 		}
 		if(load.getReturnType() != elementClass) {
 			throw new ElementException("Load method does not return "
 					+ elementClass.getSimpleName() + ".");
 		}
 		// check fromcommand method
-		final Method fromCommand =
-				clss.getDeclaredMethod("fromCommand", QuesterCommandContext.class);
+		final Method fromCommand = clss.getDeclaredMethod("fromCommand", QuesterCommandContext.class);
 		if(!Modifier.isStatic(fromCommand.getModifiers())) {
 			throw new ElementException("Incorrect fromCommand method modifiers, expected static.");
 		}

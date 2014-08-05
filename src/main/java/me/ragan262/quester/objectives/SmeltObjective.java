@@ -7,7 +7,6 @@ import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.SerUtils;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -21,7 +20,7 @@ public final class SmeltObjective extends Objective {
 	public SmeltObjective(final int amt, final Material mat, final int dat) {
 		material = mat;
 		amount = amt;
-		data = (short) dat;
+		data = (short)dat;
 	}
 	
 	@Override
@@ -71,7 +70,7 @@ public final class SmeltObjective extends Objective {
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
 		}
-		catch (final IllegalArgumentException e) {
+		catch(final IllegalArgumentException e) {
 			return null;
 		}
 		amt = key.getInt("amount", 1);

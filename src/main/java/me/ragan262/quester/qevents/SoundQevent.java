@@ -8,7 +8,6 @@ import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.SerUtils;
-
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -59,9 +58,9 @@ public final class SoundQevent extends Qevent {
 			loc = SerUtils.getLoc(context.getPlayer(), context.getString(1));
 		}
 		if(context.length() > 2) {
-			vol = (float) context.getDouble(2);
+			vol = (float)context.getDouble(2);
 			if(context.length() > 3) {
-				pit = (float) context.getDouble(3);
+				pit = (float)context.getDouble(3);
 			}
 			if(vol < 0) {
 				throw new CommandException(context.getSenderLang().get("ERROR_CMD_VOL_PIT"));
@@ -90,8 +89,8 @@ public final class SoundQevent extends Qevent {
 			return null;
 		}
 		final Location loc = SerUtils.deserializeLocString(key.getString("location", ""));
-		float vol = (float) key.getDouble("volume", 1F);
-		float pit = (float) key.getDouble("pitch", 1F);
+		float vol = (float)key.getDouble("volume", 1F);
+		float pit = (float)key.getDouble("pitch", 1F);
 		if(vol < 0F) {
 			vol = 1F;
 		}

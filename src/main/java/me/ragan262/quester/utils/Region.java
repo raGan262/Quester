@@ -1,10 +1,8 @@
 package me.ragan262.quester.utils;
 
 import java.util.regex.Pattern;
-
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.storage.StorageKey;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -36,7 +34,7 @@ public abstract class Region {
 			else if(strs[0].equalsIgnoreCase("WORLD")) {
 				if(sender instanceof Player
 						&& strs[1].equalsIgnoreCase(QConfiguration.worldLabelThis)) {
-					strs[1] = ((Player) sender).getWorld().getName();
+					strs[1] = ((Player)sender).getWorld().getName();
 				}
 				return new World(strs[1]);
 			}
@@ -44,7 +42,7 @@ public abstract class Region {
 				return Region.ANYWHERE;
 			}
 		}
-		catch (final Exception ignore) {}
+		catch(final Exception ignore) {}
 		return null;
 	}
 	
@@ -134,12 +132,8 @@ public abstract class Region {
 			if(loc1.getWorld().getUID() != loc2.getWorld().getUID()) {
 				throw new IllegalArgumentException("Locations must be within the same world.");
 			}
-			min =
-					new Location(loc1.getWorld(), Math.min(loc1.getX(), loc2.getX()), Math.min(
-							loc1.getY(), loc2.getY()), Math.min(loc1.getZ(), loc2.getZ()));
-			max =
-					new Location(loc1.getWorld(), Math.max(loc1.getX(), loc2.getX()), Math.max(
-							loc1.getY(), loc2.getY()), Math.max(loc1.getZ(), loc2.getZ()));
+			min = new Location(loc1.getWorld(), Math.min(loc1.getX(), loc2.getX()), Math.min(loc1.getY(), loc2.getY()), Math.min(loc1.getZ(), loc2.getZ()));
+			max = new Location(loc1.getWorld(), Math.max(loc1.getX(), loc2.getX()), Math.max(loc1.getY(), loc2.getY()), Math.max(loc1.getZ(), loc2.getZ()));
 		}
 		
 		@Override
@@ -160,7 +154,8 @@ public abstract class Region {
 		
 		@Override
 		public String toString() {
-			return getType() + " " + SerUtils.displayLocation(min) + " " + SerUtils.displayLocation(max);
+			return getType() + " " + SerUtils.displayLocation(min) + " "
+					+ SerUtils.displayLocation(max);
 		}
 		
 		@Override

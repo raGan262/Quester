@@ -7,7 +7,6 @@ import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.SerUtils;
-
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
@@ -22,7 +21,7 @@ public final class BreakObjective extends Objective {
 	public BreakObjective(final int amt, final Material mat, final int dat, final int hnd) {
 		amount = amt;
 		material = mat;
-		data = (byte) dat;
+		data = (byte)dat;
 		inHand = hnd;
 	}
 	
@@ -33,20 +32,19 @@ public final class BreakObjective extends Objective {
 	
 	@Override
 	protected String show(final int progress) {
-		final String matStr =
-				material == null ? "any block" : material.name().toLowerCase().replace('_', ' ');
+		final String matStr = material == null ? "any block"
+				: material.name().toLowerCase().replace('_', ' ');
 		final String datStr = data < 0 ? "" : " of given type(" + data + ")";
-		final String hand =
-				inHand < 0 ? " " : inHand == 0 ? "with empty hand " : "with "
-						+ Material.getMaterial(inHand).name().toLowerCase().replace('_', ' ') + " ";
+		final String hand = inHand < 0 ? " " : inHand == 0 ? "with empty hand " : "with "
+				+ Material.getMaterial(inHand).name().toLowerCase().replace('_', ' ') + " ";
 		return "Break " + matStr + datStr + hand + "- " + (amount - progress) + "x.";
 	}
 	
 	@Override
 	protected String info() {
 		final String dataStr = data < 0 ? "" : ":" + data;
-		final String matStr =
-				material == null ? "ANY" : material.name() + "[" + material.getId() + dataStr + "]";
+		final String matStr = material == null ? "ANY" : material.name() + "[" + material.getId()
+				+ dataStr + "]";
 		return matStr + "; AMT: " + amount + "; HND: " + inHand;
 	}
 	
@@ -59,7 +57,7 @@ public final class BreakObjective extends Objective {
 		if(!context.getString(0).equalsIgnoreCase("ANY")) {
 			itm = SerUtils.parseItem(context.getString(0));
 			mat = Material.getMaterial(itm[0]);
-			dat = (byte) itm[1];
+			dat = (byte)itm[1];
 			if(mat.getId() > 255) {
 				throw new CommandException(context.getSenderLang().get("ERROR_CMD_BLOCK_UNKNOWN"));
 			}
@@ -100,7 +98,7 @@ public final class BreakObjective extends Objective {
 				mat = Material.getMaterial(itm[0]);
 				dat = itm[1];
 			}
-			catch (final IllegalArgumentException e) {
+			catch(final IllegalArgumentException e) {
 				return null;
 			}
 		}
@@ -111,7 +109,7 @@ public final class BreakObjective extends Objective {
 		try {
 			hnd = SerUtils.parseItem(key.getString("inhand", ""))[0];
 		}
-		catch (final IllegalArgumentException e) {}
+		catch(final IllegalArgumentException e) {}
 		return new BreakObjective(amt, mat, dat, hnd);
 	}
 	

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import me.ragan262.commandmanager.annotations.Command;
 import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.Quester;
@@ -15,7 +14,6 @@ import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.SerUtils;
 import me.ragan262.quester.utils.Util;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -49,7 +47,7 @@ public final class ItemQevent extends Qevent {
 			data = 0;
 		}
 		else {
-			data = (short) dat;
+			data = (short)dat;
 		}
 		amount = amt;
 		if(enchs != null) {
@@ -62,8 +60,8 @@ public final class ItemQevent extends Qevent {
 	
 	@Override
 	public String info() {
-		final String itm =
-				material.name() + "[" + material.getId() + ":" + data + "]; AMT: " + amount;
+		final String itm = material.name() + "[" + material.getId() + ":" + data + "]; AMT: "
+				+ amount;
 		String enchs = enchants.isEmpty() ? "" : "\n -- ENCH:";
 		for(final Integer e : enchants.keySet()) {
 			enchs = enchs + " " + Enchantment.getById(e).getName() + ":" + enchants.get(e);
@@ -125,7 +123,7 @@ public final class ItemQevent extends Qevent {
 			}
 			given = Math.min(toGive, numSpaces);
 			toGive -= given;
-			numSpaces = (int) Math.ceil((double) given / (double) maxSize);
+			numSpaces = (int)Math.ceil((double)given / (double)maxSize);
 			int round;
 			final PlayerInventory inv = player.getInventory();
 			for(int k = 0; k < numSpaces; k++) {
@@ -136,7 +134,7 @@ public final class ItemQevent extends Qevent {
 			}
 			
 			if(toGive > 0) {
-				numSpaces = (int) Math.ceil((double) toGive / (double) maxSize);
+				numSpaces = (int)Math.ceil((double)toGive / (double)maxSize);
 				for(int k = 0; k < numSpaces; k++) {
 					given = Math.min(toGive, maxSize);
 					item = new ItemStack(material, given, data);
@@ -207,8 +205,7 @@ public final class ItemQevent extends Qevent {
 			enchs = SerUtils.parseEnchants(context.getString(2));
 		}
 		
-		return new ItemQevent(mat, dat, amt, enchs, context.hasFlag('i'), context.hasFlag('q'),
-				context.hasFlag('a'));
+		return new ItemQevent(mat, dat, amt, enchs, context.hasFlag('i'), context.hasFlag('q'), context.hasFlag('a'));
 	}
 	
 	@Override
@@ -239,7 +236,7 @@ public final class ItemQevent extends Qevent {
 			mat = Material.getMaterial(itm[0]);
 			dat = itm[1];
 		}
-		catch (final Exception e) {
+		catch(final Exception e) {
 			return null;
 		}
 		
@@ -252,9 +249,8 @@ public final class ItemQevent extends Qevent {
 		try {
 			enchs = SerUtils.parseEnchants(key.getString("enchants", ""));
 		}
-		catch (final IllegalArgumentException ignore) {}
+		catch(final IllegalArgumentException ignore) {}
 		
-		return new ItemQevent(mat, dat, amt, enchs, key.getBoolean("inverted", false),
-				key.getBoolean("quest", false), key.getBoolean("armor", false));
+		return new ItemQevent(mat, dat, amt, enchs, key.getBoolean("inverted", false), key.getBoolean("quest", false), key.getBoolean("armor", false));
 	}
 }

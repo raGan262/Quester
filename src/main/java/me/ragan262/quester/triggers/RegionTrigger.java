@@ -8,7 +8,6 @@ import me.ragan262.quester.elements.Trigger;
 import me.ragan262.quester.elements.TriggerContext;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Region;
-
 import org.bukkit.entity.Player;
 
 @QElement("REGION")

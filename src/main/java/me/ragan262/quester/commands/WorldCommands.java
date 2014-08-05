@@ -9,7 +9,6 @@ import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.exceptions.QuesterException;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.QuestManager;
-
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
@@ -33,8 +32,7 @@ public class WorldCommands {
 				world = context.getPlayer().getWorld();
 			}
 			else {
-				throw new CommandException(context.getSenderLang().get("ERROR_CMD_WORLD_THIS")
-						.replaceAll("%this", QConfiguration.worldLabelThis));
+				throw new CommandException(context.getSenderLang().get("ERROR_CMD_WORLD_THIS").replaceAll("%this", QConfiguration.worldLabelThis));
 			}
 		}
 		else {
@@ -43,8 +41,7 @@ public class WorldCommands {
 		if(world == null) {
 			throw new CommandException(context.getSenderLang().get("ERROR_CMD_WORLD_INVALID"));
 		}
-		qMan.addQuestWorld(profMan.getSenderProfile(sender), world.getName(),
-				context.getSenderLang());
+		qMan.addQuestWorld(profMan.getSenderProfile(sender), world.getName(), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_WORLD_ADDED"));
 	}
 	
@@ -57,12 +54,10 @@ public class WorldCommands {
 				worldName = context.getPlayer().getWorld().getName();
 			}
 			else {
-				throw new CommandException(context.getSenderLang().get("ERROR_CMD_WORLD_THIS")
-						.replaceAll("%this", QConfiguration.worldLabelThis));
+				throw new CommandException(context.getSenderLang().get("ERROR_CMD_WORLD_THIS").replaceAll("%this", QConfiguration.worldLabelThis));
 			}
 		}
-		if(qMan.removeQuestWorld(profMan.getSenderProfile(sender), worldName,
-				context.getSenderLang())) {
+		if(qMan.removeQuestWorld(profMan.getSenderProfile(sender), worldName, context.getSenderLang())) {
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_WORLD_REMOVED"));
 		}
 		else {

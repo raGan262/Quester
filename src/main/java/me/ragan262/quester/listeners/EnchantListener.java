@@ -2,7 +2,6 @@ package me.ragan262.quester.listeners;
 
 import java.util.List;
 import java.util.Map;
-
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.elements.Objective;
@@ -10,7 +9,6 @@ import me.ragan262.quester.objectives.EnchantObjective;
 import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.Quest;
-
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -43,7 +41,7 @@ public class EnchantListener implements Listener {
 					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
-					final EnchantObjective obj = (EnchantObjective) objs.get(i);
+					final EnchantObjective obj = (EnchantObjective)objs.get(i);
 					final ItemStack item = event.getItem();
 					final Map<Enchantment, Integer> enchs = event.getEnchantsToAdd();
 					if(obj.check(item, enchs)) {

@@ -8,7 +8,6 @@ import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
 import me.ragan262.quester.utils.SerUtils;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -51,7 +50,7 @@ public class EffectQevent extends Qevent {
 			try {
 				eff = SerUtils.parseEffect(key.getString("effect", ""));
 			}
-			catch (final IllegalArgumentException e) {
+			catch(final IllegalArgumentException e) {
 				Ql.severe("Error deserializing effect event: "
 						+ ChatColor.stripColor(e.getMessage()));
 				return null;

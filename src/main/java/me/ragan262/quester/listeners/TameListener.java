@@ -1,7 +1,6 @@
 package me.ragan262.quester.listeners;
 
 import java.util.List;
-
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.elements.Objective;
@@ -9,7 +8,6 @@ import me.ragan262.quester.objectives.TameObjective;
 import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.Quest;
-
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,7 +26,7 @@ public class TameListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onTame(final EntityTameEvent event) {
 		if(event.getOwner() instanceof Player) {
-			final Player player = (Player) event.getOwner();
+			final Player player = (Player)event.getOwner();
 			final PlayerProfile prof = profMan.getProfile(player);
 			final Quest quest = prof.getQuest();
 			if(quest != null) {
@@ -42,7 +40,7 @@ public class TameListener implements Listener {
 						if(!profMan.isObjectiveActive(prof, i)) {
 							continue;
 						}
-						final TameObjective obj = (TameObjective) objs.get(i);
+						final TameObjective obj = (TameObjective)objs.get(i);
 						if(obj.check(ent)) {
 							profMan.incProgress(player, ActionSource.listenerSource(event), i);
 							return;

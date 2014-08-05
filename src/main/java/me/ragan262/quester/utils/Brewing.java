@@ -2,7 +2,6 @@ package me.ragan262.quester.utils;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.bukkit.Material;
 
 public class Brewing {

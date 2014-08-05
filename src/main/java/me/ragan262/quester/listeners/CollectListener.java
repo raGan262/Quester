@@ -1,7 +1,6 @@
 package me.ragan262.quester.listeners;
 
 import java.util.List;
-
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
@@ -10,7 +9,6 @@ import me.ragan262.quester.objectives.CollectObjective;
 import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.Quest;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -46,7 +44,7 @@ public class CollectListener implements Listener {
 					if(!profMan.isObjectiveActive(prof, i)) {
 						continue;
 					}
-					final CollectObjective obj = (CollectObjective) objs.get(i);
+					final CollectObjective obj = (CollectObjective)objs.get(i);
 					final ItemStack item = event.getItem().getItemStack();
 					// compare block ID
 					if(item.getTypeId() == obj.getMaterial().getId()) {
@@ -64,8 +62,7 @@ public class CollectListener implements Listener {
 							if(more < 0) { // can't be less than 0
 								more = 0;
 							}
-							profMan.incProgress(player, ActionSource.listenerSource(event), i,
-									item.getAmount());
+							profMan.incProgress(player, ActionSource.listenerSource(event), i, item.getAmount());
 							if(QConfiguration.colRemPickup) {
 								final Location loc = event.getItem().getLocation();
 								event.getItem().remove();

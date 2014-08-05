@@ -9,7 +9,6 @@ import me.ragan262.quester.exceptions.QuesterException;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.QuestManager;
 import me.ragan262.quester.utils.SerUtils;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -36,14 +35,13 @@ public class LocationCommands {
 			if(range < 1) {
 				throw new NumberFormatException();
 			}
-			qMan.setQuestLocation(profMan.getSenderProfile(sender),
-					SerUtils.getLoc(sender, context.getString(0)), range, context.getSenderLang());
+			qMan.setQuestLocation(profMan.getSenderProfile(sender), SerUtils.getLoc(sender, context.getString(0)), range, context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("Q_LOC_SET"));
 		}
-		catch (final NumberFormatException e) {
+		catch(final NumberFormatException e) {
 			throw new CommandException(context.getSenderLang().get("ERROR_CMD_RANGE_INVALID"));
 		}
-		catch (final IllegalArgumentException e) {
+		catch(final IllegalArgumentException e) {
 			throw new CommandException(e.getMessage());
 		}
 	}

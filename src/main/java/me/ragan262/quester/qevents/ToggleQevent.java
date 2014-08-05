@@ -13,7 +13,6 @@ import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.quests.QuestManager;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.Ql;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -42,7 +41,7 @@ public final class ToggleQevent extends Qevent {
 				try {
 					q = qm.getQuest(Integer.valueOf(quest));
 				}
-				catch (final NumberFormatException ignore) {}
+				catch(final NumberFormatException ignore) {}
 				if(q == null) {
 					throw new QuestException(LanguageManager.defaultLang.get("ERROR_Q_NOT_EXIST"));
 				}
@@ -55,7 +54,7 @@ public final class ToggleQevent extends Qevent {
 			}
 			qm.toggleQuest(q, LanguageManager.defaultLang, plugin.getProfileManager());
 		}
-		catch (final QuesterException e) {
+		catch(final QuesterException e) {
 			Ql.warning("Event failed to toggle quest. Reason: "
 					+ ChatColor.stripColor(e.getMessage()));
 		}
@@ -63,12 +62,12 @@ public final class ToggleQevent extends Qevent {
 	
 	@Command(min = 1, max = 1, usage = "<quest name>")
 	public static Qevent fromCommand(final QuesterCommandContext context) throws CommandException {
-		final Quester plugin = (Quester) Bukkit.getPluginManager().getPlugin("Quester");
+		final Quester plugin = (Quester)Bukkit.getPluginManager().getPlugin("Quester");
 		
 		if(plugin.getQuestManager().getQuest(context.getString(0)) == null) {
 			
-			context.getSender().sendMessage(
-					ChatColor.YELLOW + context.getSenderLang().get("ERROR_Q_NOT_EXIST"));
+			context.getSender().sendMessage(ChatColor.YELLOW
+					+ context.getSenderLang().get("ERROR_Q_NOT_EXIST"));
 		}
 		return new ToggleQevent(context.getString(0));
 	}

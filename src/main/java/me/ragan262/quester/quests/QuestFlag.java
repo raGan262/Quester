@@ -21,7 +21,7 @@ public enum QuestFlag {
 		try {
 			return valueOf(name.toUpperCase());
 		}
-		catch (final Exception e) {}
+		catch(final Exception e) {}
 		
 		return null;
 	}

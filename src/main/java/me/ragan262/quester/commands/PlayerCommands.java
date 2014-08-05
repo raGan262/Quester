@@ -3,7 +3,6 @@ package me.ragan262.quester.commands;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
 import me.ragan262.commandmanager.annotations.Command;
 import me.ragan262.commandmanager.annotations.CommandLabels;
 import me.ragan262.commandmanager.annotations.NestedCommand;
@@ -24,7 +23,6 @@ import me.ragan262.quester.profiles.QuestProgress;
 import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.quests.QuestManager;
 import me.ragan262.quester.utils.Util;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -68,8 +66,7 @@ public class PlayerCommands {
 			max = 2,
 			usage = "<player> [language]")
 	public void lang(final QuesterCommandContext context, final CommandSender sender) throws CommandException, QuesterException {
-		final PlayerProfile prof =
-				profMan.getProfileSafe(context.getString(0), context.getSenderLang());
+		final PlayerProfile prof = profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 		if(context.length() > 1) {
 			final QuesterLang lang;
 			String langName = context.getString(1);
@@ -112,9 +109,8 @@ public class PlayerCommands {
 				prof = profMan.getSenderProfile(sender);
 			}
 			sender.sendMessage(ChatColor.BLUE
-					+ context.getSenderLang().get("INFO_PROFILE_COMPLETED")
-							.replaceAll("%p", prof.getName()) + ": \n" + ChatColor.WHITE
-					+ Util.implode(prof.getCompletedQuests(), ','));
+					+ context.getSenderLang().get("INFO_PROFILE_COMPLETED").replaceAll("%p", prof.getName())
+					+ ": \n" + ChatColor.WHITE + Util.implode(prof.getCompletedQuests(), ','));
 		}
 		
 		@CommandLabels({ "find", "f" })
@@ -136,13 +132,11 @@ public class PlayerCommands {
 				prof = profMan.getSenderProfile(sender);
 			}
 			sender.sendMessage(ChatColor.BLUE
-					+ context.getSenderLang().get("INFO_PROFILE_COMPLETED")
-							.replaceAll("%p", prof.getName()) + ":");
+					+ context.getSenderLang().get("INFO_PROFILE_COMPLETED").replaceAll("%p", prof.getName())
+					+ ":");
 			for(final String q : prof.getCompletedQuests()) {
 				if(q.contains(pattern)) {
-					final String completed =
-							new SimpleDateFormat("d.M.yy HH:mm:ss z").format(new Date(prof
-									.getCompletionTime(q) * 1000L));
+					final String completed = new SimpleDateFormat("d.M.yy HH:mm:ss z").format(new Date(prof.getCompletionTime(q) * 1000L));
 					sender.sendMessage(ChatColor.BLUE + "[" + ChatColor.GOLD + completed
 							+ ChatColor.BLUE + "] " + ChatColor.WHITE + q);
 				}
@@ -157,8 +151,7 @@ public class PlayerCommands {
 				max = 3,
 				usage = "<player> <quest> [time]")
 		public void add(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-			final PlayerProfile prof =
-					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
+			final PlayerProfile prof = profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			long time = System.currentTimeMillis();
 			if(context.length() > 2) {
 				final int totake = context.getInt(2) * 1000;
@@ -178,8 +171,7 @@ public class PlayerCommands {
 				max = 2,
 				usage = "<player> <quest>")
 		public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-			final PlayerProfile prof =
-					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
+			final PlayerProfile prof = profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			profMan.removeCompletedQuest(prof, context.getString(1));
 			if("ALL".equalsIgnoreCase(context.getString(1))) {
 				for(final String q : prof.getCompletedQuests()) {
@@ -226,21 +218,16 @@ public class PlayerCommands {
 				profMan.assignQuest(prof, quest);
 				if(player != null) {
 					player.sendMessage(Quester.LABEL
-							+ langMan
-									.getLang(prof.getLanguage())
-									.get("MSG_Q_STARTED")
-									.replaceAll("%q",
-											ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
+							+ langMan.getLang(prof.getLanguage()).get("MSG_Q_STARTED").replaceAll("%q", ChatColor.GOLD
+									+ quest.getName() + ChatColor.BLUE));
 				}
 			}
 			else {
 				if(player == null) {
-					throw new CommandException(lang.get("ERROR_CMD_PLAYER_OFFLINE").replaceAll(
-							"%p", context.getString(0)));
+					throw new CommandException(lang.get("ERROR_CMD_PLAYER_OFFLINE").replaceAll("%p", context.getString(0)));
 				}
 				final boolean disableAdminCheck = context.hasFlag('f');
-				profMan.startQuest(player, quest, ActionSource.adminSource(sender), lang,
-						disableAdminCheck);
+				profMan.startQuest(player, quest, ActionSource.adminSource(sender), lang, disableAdminCheck);
 			}
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("PROF_QUEST_STARTED"));
 		}
@@ -265,14 +252,13 @@ public class PlayerCommands {
 				profMan.unassignQuest(prof, index);
 				if(player != null) {
 					player.sendMessage(Quester.LABEL
-							+ langMan.getLang(prof.getLanguage()).get("MSG_Q_CANCELLED")
-									.replaceAll("%q", ChatColor.GOLD + quest + ChatColor.BLUE));
+							+ langMan.getLang(prof.getLanguage()).get("MSG_Q_CANCELLED").replaceAll("%q", ChatColor.GOLD
+									+ quest + ChatColor.BLUE));
 				}
 			}
 			else {
 				if(player == null) {
-					throw new CommandException(lang.get("ERROR_CMD_PLAYER_OFFLINE").replaceAll(
-							"%p", context.getString(0)));
+					throw new CommandException(lang.get("ERROR_CMD_PLAYER_OFFLINE").replaceAll("%p", context.getString(0)));
 				}
 				profMan.cancelQuest(player, index, ActionSource.adminSource(sender), lang);
 			}
@@ -299,8 +285,7 @@ public class PlayerCommands {
 			if(runEvents) {
 				player = Bukkit.getPlayerExact(context.getString(0));
 				if(player == null) {
-					throw new CommandException(lang.get("ERROR_CMD_PLAYER_OFFLINE").replaceAll(
-							"%p", context.getString(0)));
+					throw new CommandException(lang.get("ERROR_CMD_PLAYER_OFFLINE").replaceAll("%p", context.getString(0)));
 				}
 				prof = profMan.getProfile(player);
 			}
@@ -346,8 +331,7 @@ public class PlayerCommands {
 				max = 2,
 				usage = "<player> <points>")
 		public void set(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-			final PlayerProfile prof =
-					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
+			final PlayerProfile prof = profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			final int points = context.getInt(1);
 			profMan.addPoints(prof, points - prof.getPoints());
 			sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("PROF_REPUTATION_SET"));
@@ -361,8 +345,7 @@ public class PlayerCommands {
 				max = 2,
 				usage = "<player> <points>")
 		public void add(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-			final PlayerProfile prof =
-					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
+			final PlayerProfile prof = profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			final int points = context.getInt(1);
 			profMan.addPoints(prof, points);
 			sender.sendMessage(ChatColor.GREEN
@@ -388,8 +371,7 @@ public class PlayerCommands {
 				max = 2,
 				usage = "<player> [index]")
 		public void get(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-			final PlayerProfile prof =
-					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
+			final PlayerProfile prof = profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			final QuesterLang lang = context.getSenderLang();
 			final int index;
 			if(context.length() > 1) {
@@ -408,15 +390,13 @@ public class PlayerCommands {
 			final int[] prog = progress.getProgress();
 			
 			sender.sendMessage(ChatColor.BLUE
-					+ lang.get("PROF_PROGRESS")
-							.replaceAll("%p", ChatColor.GOLD + prof.getName() + ChatColor.BLUE)
-							.replaceAll("%q",
-									ChatColor.GOLD + progress.getQuest().getName() + ChatColor.BLUE));
+					+ lang.get("PROF_PROGRESS").replaceAll("%p", ChatColor.GOLD + prof.getName()
+							+ ChatColor.BLUE).replaceAll("%q", ChatColor.GOLD
+							+ progress.getQuest().getName() + ChatColor.BLUE));
 			
 			for(int i = 0; i < objectives.size(); i++) {
 				final Objective o = objectives.get(i);
-				sender.sendMessage(String.format("[%d] %s: %d/%d", i, o.getType(), prog[i],
-						o.getTargetAmount()));
+				sender.sendMessage(String.format("[%d] %s: %d/%d", i, o.getType(), prog[i], o.getTargetAmount()));
 			}
 		}
 		
@@ -428,8 +408,7 @@ public class PlayerCommands {
 				max = 4,
 				usage = "<player> [index] <obj id> <progress>")
 		public void set(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-			final PlayerProfile prof =
-					profMan.getProfileSafe(context.getString(0), context.getSenderLang());
+			final PlayerProfile prof = profMan.getProfileSafe(context.getString(0), context.getSenderLang());
 			final QuesterLang lang = context.getSenderLang();
 			final int offset;
 			final int index;

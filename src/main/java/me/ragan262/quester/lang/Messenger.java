@@ -2,7 +2,6 @@ package me.ragan262.quester.lang;
 
 import java.util.List;
 import java.util.Map;
-
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.elements.Condition;
@@ -21,7 +20,6 @@ import me.ragan262.quester.quests.QuestFlag;
 import me.ragan262.quester.quests.QuestManager;
 import me.ragan262.quester.utils.SerUtils;
 import me.ragan262.quester.utils.Util;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -59,7 +57,7 @@ public class Messenger {
 		}
 		Player player = null;
 		if(sender instanceof Player) {
-			player = (Player) sender;
+			player = (Player)sender;
 		}
 		sender.sendMessage(ChatColor.BLUE + lang.get("INFO_NAME") + ": " + ChatColor.GOLD
 				+ quest.getName());
@@ -102,9 +100,8 @@ public class Messenger {
 				+ "]" + ChatColor.GOLD + quest.getName());
 		String msgString = quest.getRawDescription();
 		if(!msgString.isEmpty()) {
-			final ChatColor color =
-					langMan.customMessageExists(LanguageManager.getCustomMessageKey(msgString))
-							? ChatColor.GREEN : ChatColor.RED;
+			final ChatColor color = langMan.customMessageExists(LanguageManager.getCustomMessageKey(msgString))
+					? ChatColor.GREEN : ChatColor.RED;
 			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_DESCRIPTION") + ": " + color
 					+ msgString);
 		}
@@ -157,7 +154,7 @@ public class Messenger {
 		Player player = null;
 		final PlayerProfile prof = profMan.getSenderProfile(sender);
 		if(sender instanceof Player) {
-			player = (Player) sender;
+			player = (Player)sender;
 		}
 		sender.sendMessage(Util.line(ChatColor.BLUE, lang.get("INFO_QUEST_LIST"), ChatColor.GOLD));
 		ChatColor color = ChatColor.RED;
@@ -178,7 +175,7 @@ public class Messenger {
 						color = ChatColor.RED;
 					}
 				}
-				catch (final Exception e) {
+				catch(final Exception e) {
 					e.printStackTrace();
 				}
 				sender.sendMessage(ChatColor.GOLD + "* " + color + quest.getName());
@@ -189,10 +186,10 @@ public class Messenger {
 	public void showFullQuestList(final CommandSender sender, final QuestManager qMan, final QuesterLang lang) {
 		sender.sendMessage(Util.line(ChatColor.BLUE, lang.get("INFO_QUEST_LIST"), ChatColor.GOLD));
 		for(final Quest quest : qMan.getQuests()) {
-			final ChatColor color =
-					quest.hasFlag(QuestFlag.ACTIVE) ? ChatColor.GREEN : ChatColor.RED;
-			final ChatColor color2 =
-					quest.hasFlag(QuestFlag.HIDDEN) ? ChatColor.YELLOW : ChatColor.BLUE;
+			final ChatColor color = quest.hasFlag(QuestFlag.ACTIVE) ? ChatColor.GREEN
+					: ChatColor.RED;
+			final ChatColor color2 = quest.hasFlag(QuestFlag.HIDDEN) ? ChatColor.YELLOW
+					: ChatColor.BLUE;
 			sender.sendMessage(color2 + "[" + quest.getID() + "]" + color + quest.getName());
 		}
 	}
@@ -230,8 +227,8 @@ public class Messenger {
 		quest = progress.getQuest();
 		
 		if(!quest.hasFlag(QuestFlag.HIDDENOBJS)) {
-			player.sendMessage(lang.get("INFO_PROGRESS").replaceAll("%q",
-					ChatColor.GOLD + quest.getName() + ChatColor.BLUE));
+			player.sendMessage(lang.get("INFO_PROGRESS").replaceAll("%q", ChatColor.GOLD
+					+ quest.getName() + ChatColor.BLUE));
 			final List<Objective> objs = quest.getObjectives();
 			for(int i = 0; i < objs.size(); i++) {
 				if(!objs.get(i).isHidden()) {
@@ -240,8 +237,7 @@ public class Messenger {
 								+ lang.get("INFO_PROGRESS_COMPLETED"));
 					}
 					else {
-						final boolean active =
-								progress.getObjectiveStatus(i) == ObjectiveStatus.ACTIVE;
+						final boolean active = progress.getObjectiveStatus(i) == ObjectiveStatus.ACTIVE;
 						if(active || !QConfiguration.ordOnlyCurrent) {
 							final ChatColor col = active ? ChatColor.YELLOW : ChatColor.RED;
 							player.sendMessage(col + " - "
@@ -303,8 +299,8 @@ public class Messenger {
 		final List<Integer> heldQuests = holder.getQuests();
 		final int selected = holder.getSelected(sender.getName());
 		for(int i = 0; i < heldQuests.size(); i++) {
-			final ChatColor col =
-					qMan.isQuestActive(heldQuests.get(i)) ? ChatColor.BLUE : ChatColor.RED;
+			final ChatColor col = qMan.isQuestActive(heldQuests.get(i)) ? ChatColor.BLUE
+					: ChatColor.RED;
 			
 			sender.sendMessage(i + ". " + (i == selected ? ChatColor.GREEN : ChatColor.BLUE) + "["
 					+ heldQuests.get(i) + "] " + col + qMan.getQuestName(heldQuests.get(i)));

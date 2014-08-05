@@ -8,7 +8,6 @@ import me.ragan262.quester.elements.Condition;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.storage.StorageKey;
-
 import org.bukkit.entity.Player;
 
 /* DEPRECATED - use inverted QUEST condition instead */

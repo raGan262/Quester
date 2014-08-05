@@ -1,7 +1,6 @@
 package me.ragan262.quester.commands;
 
 import java.util.Set;
-
 import me.ragan262.commandmanager.annotations.Command;
 import me.ragan262.commandmanager.annotations.CommandLabels;
 import me.ragan262.commandmanager.annotations.NestedCommand;
@@ -18,7 +17,6 @@ import me.ragan262.quester.lang.QuesterLang;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.QuestManager;
 import me.ragan262.quester.utils.SerUtils;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -37,13 +35,11 @@ public class ObjectiveCommands {
 	private Objective getObjective(final String type, final QuesterCommandContext subContext, final QuesterLang lang) throws CommandException, ObjectiveException, QuesterException {
 		if(!eMan.elementExists(Element.OBJECTIVE, type)) {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.get("ERROR_OBJ_NOT_EXIST"));
-			subContext.getSender().sendMessage(
-					ChatColor.RED + lang.get("OBJ_LIST") + ": " + ChatColor.WHITE
-							+ eMan.getElementList(Element.OBJECTIVE));
+			subContext.getSender().sendMessage(ChatColor.RED + lang.get("OBJ_LIST") + ": "
+					+ ChatColor.WHITE + eMan.getElementList(Element.OBJECTIVE));
 			throw new ObjectiveException(lang.get("ERROR_OBJ_NOT_EXIST"));
 		}
-		final Objective obj =
-				(Objective) eMan.getElementFromCommand(Element.OBJECTIVE, type, subContext);
+		final Objective obj = (Objective)eMan.getElementFromCommand(Element.OBJECTIVE, type, subContext);
 		if(obj == null) {
 			throw new ElementException(lang.get("ERROR_ELEMENT_FAIL"));
 		}
@@ -67,7 +63,7 @@ public class ObjectiveCommands {
 		try {
 			obj = getObjective(type, context.getSubContext(1), lang);
 		}
-		catch (final ObjectiveException e) {
+		catch(final ObjectiveException e) {
 			return;
 		}
 		qMan.addQuestObjective(profMan.getSenderProfile(sender), obj, context.getSenderLang());
@@ -89,11 +85,10 @@ public class ObjectiveCommands {
 		try {
 			obj = getObjective(type, context.getSubContext(2), lang);
 		}
-		catch (final ObjectiveException e) {
+		catch(final ObjectiveException e) {
 			return;
 		}
-		qMan.setQuestObjective(profMan.getSenderProfile(sender), objectiveID, obj,
-				context.getSenderLang());
+		qMan.setQuestObjective(profMan.getSenderProfile(sender), objectiveID, obj, context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ lang.get("OBJ_SET").replaceAll("%type", type.toUpperCase()));
 	}
@@ -106,8 +101,7 @@ public class ObjectiveCommands {
 			max = 1,
 			usage = "<objective ID>")
 	public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.removeQuestObjective(profMan.getSenderProfile(sender), context.getInt(0),
-				context.getSenderLang());
+		qMan.removeQuestObjective(profMan.getSenderProfile(sender), context.getInt(0), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
 				+ context.getSenderLang().get("OBJ_REMOVE").replaceAll("%id", context.getString(0)));
 	}
@@ -127,11 +121,9 @@ public class ObjectiveCommands {
 			desc = "swaps two objectives",
 			usage = "<obj ID 1> <obj ID 2>")
 	public void swap(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.swapQuestObjectives(profMan.getSenderProfile(sender), context.getInt(0),
-				context.getInt(1), context.getSenderLang());
+		qMan.swapQuestObjectives(profMan.getSenderProfile(sender), context.getInt(0), context.getInt(1), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
-				+ context.getSenderLang().get("OBJ_SWAP").replaceAll("%id1", context.getString(0))
-						.replaceAll("%id2", context.getString(1)));
+				+ context.getSenderLang().get("OBJ_SWAP").replaceAll("%id1", context.getString(0)).replaceAll("%id2", context.getString(1)));
 	}
 	
 	@CommandLabels({ "move" })
@@ -142,11 +134,9 @@ public class ObjectiveCommands {
 			desc = "moves an objective",
 			usage = "<ID from> <ID to>")
 	public void move(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-		qMan.moveQuestObjective(profMan.getSenderProfile(sender), context.getInt(0),
-				context.getInt(1), context.getSenderLang());
+		qMan.moveQuestObjective(profMan.getSenderProfile(sender), context.getInt(0), context.getInt(1), context.getSenderLang());
 		sender.sendMessage(ChatColor.GREEN
-				+ context.getSenderLang().get("OBJ_MOVE").replaceAll("%id1", context.getString(0))
-						.replaceAll("%id2", context.getString(1)));
+				+ context.getSenderLang().get("OBJ_MOVE").replaceAll("%id1", context.getString(0)).replaceAll("%id2", context.getString(1)));
 	}
 	
 	@CommandLabels({ "desc" })
@@ -182,11 +172,9 @@ public class ObjectiveCommands {
 				max = 2,
 				usage = "<objective ID> <description>")
 		public void add(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-			qMan.addObjectiveDescription(profMan.getSenderProfile(sender), context.getInt(0),
-					context.getString(1), context.getSenderLang());
+			qMan.addObjectiveDescription(profMan.getSenderProfile(sender), context.getInt(0), context.getString(1), context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
-					+ context.getSenderLang().get("OBJ_DESC_ADD")
-							.replaceAll("%id", context.getString(0)));
+					+ context.getSenderLang().get("OBJ_DESC_ADD").replaceAll("%id", context.getString(0)));
 		}
 		
 		@CommandLabels({ "remove", "r" })
@@ -197,11 +185,9 @@ public class ObjectiveCommands {
 				max = 1,
 				usage = "<objective ID>")
 		public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-			qMan.removeObjectiveDescription(profMan.getSenderProfile(sender), context.getInt(0),
-					context.getSenderLang());
+			qMan.removeObjectiveDescription(profMan.getSenderProfile(sender), context.getInt(0), context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
-					+ context.getSenderLang().get("OBJ_DESC_REMOVE")
-							.replaceAll("%id", context.getString(0)));
+					+ context.getSenderLang().get("OBJ_DESC_REMOVE").replaceAll("%id", context.getString(0)));
 		}
 	}
 	
@@ -223,11 +209,9 @@ public class ObjectiveCommands {
 				usage = "<objective ID> <prerequisite1>...")
 		public void add(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 			final Set<Integer> prereq = SerUtils.parseIntSet(context.getArgs(), 1);
-			qMan.addObjectivePrerequisites(profMan.getSenderProfile(sender), context.getInt(0),
-					prereq, context.getSenderLang());
+			qMan.addObjectivePrerequisites(profMan.getSenderProfile(sender), context.getInt(0), prereq, context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
-					+ context.getSenderLang().get("OBJ_PREREQ_ADD")
-							.replaceAll("%id", context.getString(0)));
+					+ context.getSenderLang().get("OBJ_PREREQ_ADD").replaceAll("%id", context.getString(0)));
 		}
 		
 		@CommandLabels({ "remove", "r" })
@@ -238,11 +222,9 @@ public class ObjectiveCommands {
 				usage = "<objective ID> <prerequisite1>...")
 		public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 			final Set<Integer> prereq = SerUtils.parseIntSet(context.getArgs(), 1);
-			qMan.removeObjectivePrerequisites(profMan.getSenderProfile(sender), context.getInt(0),
-					prereq, context.getSenderLang());
+			qMan.removeObjectivePrerequisites(profMan.getSenderProfile(sender), context.getInt(0), prereq, context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
-					+ context.getSenderLang().get("OBJ_PREREQ_REMOVE")
-							.replaceAll("%id", context.getString(0)));
+					+ context.getSenderLang().get("OBJ_PREREQ_REMOVE").replaceAll("%id", context.getString(0)));
 		}
 	}
 	
@@ -264,11 +246,9 @@ public class ObjectiveCommands {
 				usage = "<objective ID> <trigger ID1>...")
 		public void add(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 			final Set<Integer> prereq = SerUtils.parseIntSet(context.getArgs(), 1);
-			qMan.addObjectiveTriggers(profMan.getSenderProfile(sender), context.getInt(0), prereq,
-					context.getSenderLang());
+			qMan.addObjectiveTriggers(profMan.getSenderProfile(sender), context.getInt(0), prereq, context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
-					+ context.getSenderLang().get("OBJ_TRIG_ADD")
-							.replaceAll("%id", context.getString(0)));
+					+ context.getSenderLang().get("OBJ_TRIG_ADD").replaceAll("%id", context.getString(0)));
 		}
 		
 		@CommandLabels({ "remove", "r" })
@@ -279,11 +259,9 @@ public class ObjectiveCommands {
 				usage = "<objective ID> <trigger ID1>...")
 		public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 			final Set<Integer> prereq = SerUtils.parseIntSet(context.getArgs(), 1);
-			qMan.removeObjectiveTriggers(profMan.getSenderProfile(sender), context.getInt(0),
-					prereq, context.getSenderLang());
+			qMan.removeObjectiveTriggers(profMan.getSenderProfile(sender), context.getInt(0), prereq, context.getSenderLang());
 			sender.sendMessage(ChatColor.GREEN
-					+ context.getSenderLang().get("OBJ_TRIG_REMOVE")
-							.replaceAll("%id", context.getString(0)));
+					+ context.getSenderLang().get("OBJ_TRIG_REMOVE").replaceAll("%id", context.getString(0)));
 		}
 	}
 }
