@@ -27,20 +27,14 @@ public class ConfigStorage implements Storage {
 		}
 		config = new Utf8YamlConfiguration();
 		conFile = file;
-		if(!file.exists()) {
+		if(defaultStream != null && !file.exists()) {
 			create(defaultStream);
 			save();
 		}
 	}
 	
 	private void create(final InputStream defaultStream) {
-		try {
-			conFile.getParentFile().mkdirs();
-			conFile.createNewFile();
-		}
-		catch(final IOException ex) {
-			logger.severe("Could not create file: " + conFile.getName() + " !");
-		}
+		createFile();
 		if(defaultStream != null) {
 			try {
 				config.load(defaultStream);
@@ -55,8 +49,16 @@ public class ConfigStorage implements Storage {
 				e.printStackTrace();
 			}
 		}
-		else {
+	}
+	
+	private void createFile() {
+		try {
+			conFile.getParentFile().mkdirs();
+			conFile.createNewFile();
 			logger.info("Created empty file: " + conFile.getName() + " !");
+		}
+		catch(final IOException ex) {
+			logger.severe("Could not create file: " + conFile.getName() + " !");
 		}
 	}
 	
@@ -70,6 +72,9 @@ public class ConfigStorage implements Storage {
 	}
 	
 	public void saveToFile(final File file) {
+		if(!conFile.exists()) {
+			createFile();
+		}
 		try {
 			config.save(file);
 		}
@@ -80,6 +85,9 @@ public class ConfigStorage implements Storage {
 	
 	@Override
 	public boolean load() {
+		if(!conFile.exists()) {
+			createFile();
+		}
 		try {
 			config.load(conFile);
 			return true;
