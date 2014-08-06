@@ -74,7 +74,7 @@ public class PlayerProfile {
 		return dirty;
 	}
 	
-	public void setDirty(final boolean value) {
+	void setDirty(final boolean value) {
 		dirty = value;
 		if(dirty) {
 			lastTouch = System.currentTimeMillis();
