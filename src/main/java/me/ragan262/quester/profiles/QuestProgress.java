@@ -1,33 +1,48 @@
 package me.ragan262.quester.profiles;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import com.google.common.primitives.Ints;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.quests.Quest;
-import me.ragan262.quester.storage.StorageKey;
-import me.ragan262.quester.utils.Ql;
-import me.ragan262.quester.utils.Util;
 
 public class QuestProgress {
 	
 	final Quest quest;
-	int[] progress;
-	ObjectiveStatus[] objectiveStatuses;
+	final List<Integer> progress;
+	final ObjectiveStatus[] objectiveStatuses;
 	
 	public enum ObjectiveStatus {
 		INACTIVE, ACTIVE, COMPLETED, DISABLED;
 	}
 	
 	QuestProgress(final Quest quest) {
+		this(quest, null);
+	}
+	
+	QuestProgress(final Quest quest, final ProgressImage image) {
 		if(quest == null) {
 			throw new NullPointerException("Cannot create QuestProgress for null Quest.");
 		}
 		this.quest = quest;
-		progress = new int[quest.getObjectives().size()];
-		objectiveStatuses = new ObjectiveStatus[quest.getObjectives().size()];
+		final int questSize = quest.getObjectives().size();
+		if(image != null) {
+			progress = new ArrayList<>(image.asList());
+			if(questSize != progress.size()) {
+				throw new IllegalArgumentException("Number of objectives in quest and in progress not matching.");
+			}
+		}
+		else {
+			progress = new ArrayList<>(Collections.nCopies(questSize, 0));
+		}
+		
+		objectiveStatuses = new ObjectiveStatus[questSize];
 		for(int i = 0; i < objectiveStatuses.length; i++) {
 			objectiveStatuses[i] = ObjectiveStatus.INACTIVE;
 		}
+		
 		updateObjectives();
 	}
 	
@@ -39,19 +54,21 @@ public class QuestProgress {
 		if(objectiveID < 0 || objectiveID >= objectiveStatuses.length) {
 			return null;
 		}
+		
 		return objectiveStatuses[objectiveID];
 	}
 	
 	private void updateObjectives() {
 		final List<Objective> objectives = quest.getObjectives();
 		for(int i = 0; i < objectives.size(); i++) {
-			if(objectives.get(i).isComplete(progress[i])) {
+			if(objectives.get(i).isComplete(progress.get(i))) {
 				objectiveStatuses[i] = ObjectiveStatus.COMPLETED;
 			}
 			else {
 				objectiveStatuses[i] = ObjectiveStatus.INACTIVE;
 			}
 		}
+		
 		objectives:
 		for(int i = 0; i < objectives.size(); i++) {
 			if(objectiveStatuses[i] != ObjectiveStatus.COMPLETED) {
@@ -61,39 +78,36 @@ public class QuestProgress {
 						continue objectives;
 					}
 				}
+				
 				objectiveStatuses[i] = ObjectiveStatus.ACTIVE;
 			}
 		}
 	}
 	
 	public int getSize() {
-		return progress.length;
+		return progress.size();
 	}
 	
 	public Quest getQuest() {
 		return quest;
 	}
 	
-	void setProgressWithoutUpdate(final int objectiveID, final int newValue) {
-		if(objectiveID >= 0 && objectiveID < progress.length) {
-			progress[objectiveID] = newValue;
-		}
-	}
-	
 	boolean setProgress(final int objectiveID, final int newValue) {
-		if(objectiveID >= 0 && objectiveID < progress.length) {
-			progress[objectiveID] = newValue;
+		if(objectiveID >= 0 && objectiveID < progress.size()) {
+			progress.set(objectiveID, newValue);
 			// if objective status went from not complete to complete or vice versa
 			if(objectiveStatuses[objectiveID] == ObjectiveStatus.COMPLETED != quest.getObjective(objectiveID).isComplete(newValue)) {
 				updateObjectives();
 			}
+			
 			return true;
 		}
+		
 		return false;
 	}
 	
-	public int[] getProgress() {
-		return Arrays.copyOf(progress, progress.length);
+	public List<Integer> getProgress() {
+		return Collections.unmodifiableList(progress);
 	}
 	
 	public int getCurrentObjectiveID() {
@@ -102,6 +116,7 @@ public class QuestProgress {
 				return i;
 			}
 		}
+		
 		return -1;
 	}
 	
@@ -115,45 +130,31 @@ public class QuestProgress {
 			final QuestProgress prg = (QuestProgress)obj;
 			return quest.equals(prg.quest);
 		}
+		
 		return false;
 	}
 	
-	void serialize(final StorageKey key) {
-		key.setString("progress", Util.implodeInt(progress, "|"));
+	ProgressImage getProgressImage() {
+		return new ProgressImage(progress);
 	}
 	
-	static QuestProgress deserialize(final StorageKey key, final Quest quest) {
-		String progressString = null;
-		if(!key.getSubKeys().isEmpty()) {
-			progressString = key.getString("progress");
-		}
-		else if(key.getString("") != null) { // older format
-			progressString = key.getString("");
+	public static final class ProgressImage {
+		
+		private final List<Integer> list;
+		
+		public ProgressImage(final int[] progress) {
+			list = Collections.unmodifiableList(Ints.asList(progress));
 		}
 		
-		QuestProgress prog = null;
-		try {
-			prog = new QuestProgress(quest);
-			String[] strs = progressString.split("\\|");
-			if(strs[0].isEmpty()) {
-				strs = new String[0];
+		public ProgressImage(final List<Integer> list) {
+			if(list.contains(null)) {
+				throw new IllegalArgumentException("Progress list can't contain null elements.");
 			}
-			if(strs.length == prog.getSize()) {
-				for(int i = 0; i < strs.length; i++) {
-					prog.setProgressWithoutUpdate(i, Integer.parseInt(strs[i]));
-				}
-				prog.updateObjectives();
-			}
-			else {
-				throw new Exception("Number of objectives in quest and in progress not matching.");
-			}
-		}
-		catch(final Exception e) {
-			Ql.info("Invalid or missing progress for quest '" + key.getName() + "' in profile.");
-			Ql.debug("Exception", e);
-			return null;
+			this.list = Collections.unmodifiableList(new ArrayList<>(list));
 		}
 		
-		return prog;
+		public List<Integer> asList() {
+			return list;
+		}
 	}
 }

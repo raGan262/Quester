@@ -1,5 +1,6 @@
 package me.ragan262.quester.qevents;
 
+import java.util.List;
 import me.ragan262.commandmanager.annotations.Command;
 import me.ragan262.commandmanager.exceptions.CommandException;
 import me.ragan262.quester.ActionSource;
@@ -38,13 +39,13 @@ public final class ObjectiveCompleteQevent extends Qevent {
 		try {
 			final ProfileManager profMan = plugin.getProfileManager();
 			final PlayerProfile prof = profMan.getProfile(player);
-			final int[] prog = prof.getProgress().getProgress();
-			if(objective >= 0 && objective < prog.length) {
+			final List<Integer> prog = prof.getProgress().getProgress();
+			if(objective >= 0 && objective < prog.size()) {
 				final int req = prof.getQuest().getObjective(objective).getTargetAmount();
-				if(prog[objective] < req) {
+				if(prog.get(objective) < req) {
 					final ActionSource as = ActionSource.eventSource(this);
 					if(runEvents) {
-						profMan.incProgress(player, as, objective, req - prog[objective]);
+						profMan.incProgress(player, as, objective, req - prog.get(objective));
 					}
 					else {
 						profMan.setProgress(prof, objective, req);

@@ -1,0 +1,67 @@
+# ========== YAML Quester Profile Specification
+
+# ===== Version 0
+# OLD variation (0.6.3)
+{lowercase player name}:
+  name: {original player name}
+  # ALL FOLLOWING SECONDARY KEYS ARE OPTIONAL
+  points: {amount of points}
+  completed:
+    # dots in quest name are replaced with "#%#"
+    {quest name}: {completion time in seconds}
+    {quest name}: {completion time in seconds}
+    ...
+  active: {order index in quests key (e.g. 0 if it's the first one, 1 if second, etc...)}
+  quests:
+    # dots in quest name are replaced with "#%#"
+    # progress format - "(obj. 0)|(obj. 1)|(obj. 2)..."
+    {quest name}: {progress}
+    {quest name}: {progress}
+    ...
+  
+# NEW variation (0.7)
+{player UUID}:
+  # ALL SECONDARY KEYS ARE OPTIONAL
+  # default = 0
+  points: {amount of points}
+  # default = default language
+  language: {player language}
+  completed:
+    # dots in quest name are replaced with "#%#"
+    {quest name}: {completion time in seconds}
+    {quest name}: {completion time in seconds}
+    ...
+  # default = 0 (or none if there are no quests)
+  active: {order index in quests key (e.g. 0 if it's the first one, 1 if second, etc...)}
+  quests:
+    {quest ID}:
+      # progress format - "(obj. 0)|(obj. 1)|(obj. 2)..."
+      progress: {progress}
+    {quest ID}:
+      progress: {progress}
+    ...
+
+# ===== Version 1 (from 0.7-4)
+{player UUID}:
+  # ALL SECONDARY KEYS ARE OPTIONAL
+  # default = 1
+  version: {format version}
+  reputation:
+    # quest points - default = 0
+    default: {amount of points}
+  # default = default language
+  language: {player language}
+  completed:
+    # dots in quest name are replaced with "#%#"
+    {quest name}: {completion time in seconds}
+    {quest name}: {completion time in seconds}
+    ...
+  # default = lowest ID
+  active: {quest ID}
+  quests:
+    {quest ID}:
+      # progress format - "(obj. 0)|(obj. 1)|(obj. 2)..."
+      progress: {progress}
+    {quest ID}:
+      progress: {progress}
+    ...

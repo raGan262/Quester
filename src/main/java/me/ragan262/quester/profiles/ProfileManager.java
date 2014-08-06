@@ -1,24 +1,20 @@
 package me.ragan262.quester.profiles;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import javax.management.InstanceNotFoundException;
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.QConfiguration;
-import me.ragan262.quester.QConfiguration.StorageType;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.elements.Condition;
 import me.ragan262.quester.elements.Objective;
@@ -35,15 +31,13 @@ import me.ragan262.quester.exceptions.QuestException;
 import me.ragan262.quester.exceptions.QuesterException;
 import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.lang.QuesterLang;
-import me.ragan262.quester.profiles.PlayerProfile.SerializedPlayerProfile;
 import me.ragan262.quester.profiles.QuestProgress.ObjectiveStatus;
+import me.ragan262.quester.profiles.storage.ProfileStorage;
+import me.ragan262.quester.profiles.storage.YamlProfileStorage;
 import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.quests.QuestFlag;
 import me.ragan262.quester.quests.QuestManager;
-import me.ragan262.quester.storage.ConfigStorage;
-import me.ragan262.quester.storage.Storage;
 import me.ragan262.quester.storage.StorageKey;
-import me.ragan262.quester.utils.DatabaseConnection;
 import me.ragan262.quester.utils.Ql;
 import me.ragan262.quester.utils.Util;
 import org.apache.commons.lang.Validate;
@@ -52,15 +46,17 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 public class ProfileManager {
 	
 	// unfortunately, non-player senders share one profile 
 	//(CB always provides fake offline players with the same UUID)
+	private static final String CONSOLE_NAME = "Quester:Console";
 	private final OfflinePlayer senderPlayer;
 	private final PlayerProfile senderProfile;
 	
-	private File profileStorageFile = null;
 	private QuestManager qMan = null;
 	private LanguageManager langMan = null;
 	private Quester plugin = null;
@@ -70,13 +66,17 @@ public class ProfileManager {
 	private Map<Integer, String> ranks = new HashMap<Integer, String>();
 	private List<Integer> sortedRanks = new ArrayList<Integer>();
 	
-	public ProfileManager(final Quester plugin) {
+	private final ExecutorService storageExecutor = Executors.newSingleThreadExecutor();
+	private final ProfileStorage profileStorage;
+	private BukkitTask saveTask = null;
+	
+	public ProfileManager(final Quester plugin, final File profileFolder) {
 		this.plugin = plugin;
 		qMan = plugin.getQuestManager();
 		langMan = plugin.getLanguageManager();
-		profileStorageFile = new File(plugin.getDataFolder(), "profiles.yml");
-		senderPlayer = Bukkit.getOfflinePlayer("Quester:Console");
+		senderPlayer = Bukkit.getOfflinePlayer(CONSOLE_NAME);
 		senderProfile = new PlayerProfile(senderPlayer);
+		profileStorage = new YamlProfileStorage(profileFolder, plugin.getLogger());
 	}
 	
 	private PlayerProfile createProfile(final OfflinePlayer player) {
@@ -88,6 +88,16 @@ public class ProfileManager {
 		}
 		final PlayerProfile prof = new PlayerProfile(player);
 		profiles.put(player.getUniqueId(), prof);
+		return prof;
+	}
+	
+	private PlayerProfile loadProfile(final ProfileImage image) {
+		if(image == null) {
+			return null;
+		}
+		final PlayerProfile prof = new PlayerProfile(image, qMan);
+		updateRank(prof);
+		profiles.put(prof.getId(), prof);
 		return prof;
 	}
 	
@@ -120,30 +130,35 @@ public class ProfileManager {
 			return getProfile((Player)sender);
 		}
 		else {
-			return getProfile(null);
+			return senderProfile;
 		}
 	}
 	
 	public PlayerProfile getProfile(final OfflinePlayer player) {
-		if(player == null || !(player instanceof Player)) {
-			return senderProfile;
+		if(player == null) {
+			return null;
 		}
 		PlayerProfile prof = profiles.get(player.getUniqueId());
 		if(prof == null) {
+			// CURRENTLY ONLY SYNC
+			prof = loadProfile(profileStorage.retrieve(player.getUniqueId()));;
+		}
+		if(prof == null && player instanceof Player) {
 			prof = createProfile(player);
-			prof.setChanged();
 		}
 		return prof;
 	}
 	
 	public PlayerProfile getProfileSafe(final String player, final QuesterLang lang) throws ProfileException {
-		@SuppressWarnings("deprecation")
+		if(CONSOLE_NAME.equalsIgnoreCase(player)) {
+			return senderProfile;
+		}
 		final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(player);
-		if(!hasProfile(offlinePlayer)
-				|| offlinePlayer.getUniqueId().equals(senderPlayer.getUniqueId())) {
+		final PlayerProfile prof = getProfile(offlinePlayer);
+		if(prof == null) {
 			throw new ProfileException(lang.get("INFO_PROFILE_NOT_EXIST").replaceAll("%p", player));
 		}
-		return getProfile(offlinePlayer);
+		return prof;
 	}
 	
 	public boolean hasProfile(final OfflinePlayer player) {
@@ -162,7 +177,6 @@ public class ProfileManager {
 		final QuestProgress prog = profile.getProgress(index);
 		if(prog != null) {
 			prog.setProgress(objective, value);
-			profile.setChanged();
 			return true;
 		}
 		return false;
@@ -475,7 +489,7 @@ public class ProfileManager {
 		if(prog == null || objectiveId < 0 || objectiveId >= prog.getSize()) {
 			return;
 		}
-		final int newValue = prog.getProgress()[objectiveId] + amount;
+		final int newValue = prog.getProgress().get(objectiveId) + amount;
 		final Quest q = prof.getQuest();
 		final Objective obj = q.getObjectives().get(objectiveId);
 		setProgress(prof, objectiveId, newValue);
@@ -558,238 +572,298 @@ public class ProfileManager {
 		sortedRanks = sortedList;
 	}
 	
-	void loadProfile(final PlayerProfile prof) {
-		updateRank(prof);
-		profiles.put(prof.getId(), prof);
-	}
-	
-	public void loadProfiles() {
-		loadProfiles(QConfiguration.profileStorageType, true);
-	}
-	
-	public void loadProfiles(final StorageType loadFrom, final boolean async) {
-		switch(loadFrom) {
-			case MYSQL: {
-				loadFromDatabase(async);
-				break;
-			}
-			default: {
-				final Storage profileStorage = new ConfigStorage(profileStorageFile, plugin.getLogger(), null);
-				profileStorage.load();
-				final StorageKey mainKey = profileStorage.getKey("");
-				PlayerProfile prof;
-				int counter = 0;
-				for(final StorageKey subKey : mainKey.getSubKeys()) {
-					counter++;
-					prof = PlayerProfile.deserialize(subKey, qMan);
-					if(prof != null) {
-						loadProfile(prof);
-					}
-					else {
-						Ql.info("Invalid key in profiles.yml: " + subKey.getName());
-					}
-					if(counter % 10 == 0) {
-						Ql.debug(counter + " profiles processed.");
-					}
-				}
-				Ql.verbose(profiles.size() + " profiles loaded.");
-			}
-		}
-	}
-	
-	private void loadFromDatabase(final boolean async) {
-		final Runnable loadTask = new Runnable() {
-			
-			@Override
-			public void run() {
-				Connection conn = null;
-				PreparedStatement stmt = null;
-				ResultSet rs = null;
-				try {
-					Ql.debug("Loading profiles...");
-					final List<SerializedPlayerProfile> serps = new ArrayList<PlayerProfile.SerializedPlayerProfile>();
-					conn = DatabaseConnection.getConnection();
-					stmt = conn.prepareStatement("SELECT * FROM `quester-profiles`");
-					rs = stmt.executeQuery();
-					while(rs.next()) {
-						try {
-							serps.add(new SerializedPlayerProfile(rs));
-						}
-						catch(final SQLException ignore) {}
-					}
-					rs.close();
-					stmt.close();
-					Ql.debug("Loaded " + serps.size() + " profiles.");
-					final Runnable deserialization = new Runnable() {
-						
-						@Override
-						public void run() {
-							int count = 0;
-							for(final SerializedPlayerProfile sp : serps) {
-								final PlayerProfile prof = PlayerProfile.deserialize(sp.getStoragekey(), qMan);
-								if(prof != null) {
-									updateRank(prof);
-									profiles.put(prof.getId(), prof);
-									count++;
-								}
-								else {
-									Ql.info("Invalid profile '" + sp.uid.toString() + "'");
-								}
-							}
-							Ql.debug("Deserialized " + count + " profiles.");
-						}
-					};
-					
-					if(async) {
-						Bukkit.getScheduler().runTask(plugin, deserialization);
-					}
-					else {
-						deserialization.run();
-					}
-				}
-				catch(final SQLException e) {
-					e.printStackTrace();
-				}
-				finally {
-					if(conn != null) {
-						try {
-							conn.close();
-						}
-						catch(final SQLException ignore) {}
-					}
-					if(stmt != null) {
-						try {
-							stmt.close();
-						}
-						catch(final SQLException ignore) {}
-					}
-					if(rs != null) {
-						try {
-							rs.close();
-						}
-						catch(final SQLException ignore) {}
-					}
-				}
-			}
-		};
-		
-		if(async) {
-			new Thread(loadTask, "Quester Profile Loading Thread").start();
-		}
-		else {
-			loadTask.run();
-		}
-	}
-	
 	public void saveProfiles() {
-		saveProfiles(QConfiguration.profileStorageType, true);
-	}
-	
-	public void saveProfiles(final StorageType storeTo, final boolean async) {
-		switch(storeTo) {
-			case MYSQL: {
-				saveToDatabase(async);
-				break;
-			}
-			default: {
-				final Storage profileStorage = new ConfigStorage(profileStorageFile, plugin.getLogger(), null);
-				final StorageKey pKey = profileStorage.getKey("");
-				for(final UUID uid : profiles.keySet()) {
-					profiles.get(uid).serialize(pKey.getSubKey(uid.toString()));
-				}
-				profileStorage.save();
-			}
-		}
-	}
-	
-	private void saveToDatabase(final boolean async) {
-		final List<SerializedPlayerProfile> serps = new ArrayList<PlayerProfile.SerializedPlayerProfile>();
-		
 		for(final PlayerProfile prof : profiles.values()) {
-			serps.add(new PlayerProfile.SerializedPlayerProfile(prof));
-			prof.setUnchanged();
+			if(prof.isDirty()) {
+				saveProfile(prof);
+			}
+		}
+	}
+	
+	public void saveProfile(final PlayerProfile prof) {
+		if(prof == null) {
+			return;
+		}
+		storageExecutor.execute(new StoreProfile(prof.getProfileImage()));
+		prof.setDirty(false);
+	}
+	
+	class StoreProfile implements Runnable {
+		
+		final ProfileImage[] images;
+		
+		public StoreProfile(final ProfileImage... images) {
+			this.images = images;
 		}
 		
-		final Runnable saveTask = new Runnable() {
+		@Override
+		public void run() {
+			for(final ProfileImage i : images) {
+				profileStorage.store(i);
+			}
+		}
+	}
+	
+	public boolean startSaving() {
+		if(saveTask != null) {
+			return false;
+		}
+		
+		saveTask = new BukkitRunnable() {
 			
 			@Override
 			public void run() {
-				Connection conn = null;
-				PreparedStatement stmt = null;
-				ResultSet rs = null;
-				try {
-					final Set<String> stored = new HashSet<String>();
-					conn = DatabaseConnection.getConnection();
-					stmt = conn.prepareStatement("SELECT `name` FROM `quester-profiles`");
-					rs = stmt.executeQuery();
-					int saved = 0;
-					while(rs.next()) {
-						stored.add(rs.getString("name"));
-					}
-					rs.close();
-					stmt.close();
-					for(final SerializedPlayerProfile sp : serps) {
-						final boolean isStored = stored.contains(sp.uid.toString());
-						try {
-							if(!isStored || sp.changed) { // only save if it has changed, or is not stored
-								stmt = conn.prepareStatement(isStored
-										? sp.getUpdateQuerry("quester-profiles")
-										: sp.getInsertQuerry("quester-profiles"));
-								stmt.execute();
-								stmt.close();
-								saved++;
-							}
-						}
-						catch(final SQLException e) {
-							System.out.println("Failed to save profile " + sp.uid.toString());
-							if(QConfiguration.debug) {
-								e.printStackTrace();
-							}
-						}
-						finally {
-							if(stmt != null) {
-								try {
-									stmt.close();
-								}
-								catch(final SQLException ignore) {}
-							}
-						}
-					}
-					if(QConfiguration.verbose) {
-						System.out.println(saved + " profiles saved.");
-					}
-				}
-				catch(final SQLException e) {
-					e.printStackTrace();
-				}
-				finally {
-					if(conn != null) {
-						try {
-							conn.close();
-						}
-						catch(final SQLException ignore) {}
-					}
-					if(stmt != null) {
-						try {
-							stmt.close();
-						}
-						catch(final SQLException ignore) {}
-					}
-					if(rs != null) {
-						try {
-							rs.close();
-						}
-						catch(final SQLException ignore) {}
-					}
-				}
+				saveProfiles();
 			}
-		};
+		}.runTaskTimer(plugin, 60 * 20L, 60 * 20L);
 		
-		if(async) {
-			new Thread(saveTask, "Quester Profile Saving Thread").start();
+		return true;
+	}
+	
+	public boolean stopSaving() {
+		if(saveTask == null) {
+			return false;
 		}
-		else {
-			saveTask.run();
+		
+		saveTask.cancel();
+		return true;
+	}
+	
+	public boolean waitForSaving() {
+		storageExecutor.shutdown();
+		while(true) {
+			try {
+				return storageExecutor.awaitTermination(1, TimeUnit.MINUTES);
+			}
+			catch(final InterruptedException ignore) {}
 		}
 	}
+	
+	public void loadProfilesFromFile(final File file) {
+		if(file == null) {
+			return;
+		}
+		if(file.isFile()) {
+			Ql.verbose("Loading profiles...");
+			final List<ProfileImage> profs = ((YamlProfileStorage)profileStorage).retrieveAllFromFile(file);
+			Ql.verbose("Processing loaded profiles...");
+			for(final ProfileImage image : profs) {
+				loadProfile(image);
+			}
+		}
+	}
+	
+	//	public void loadProfiles() {
+	//		loadProfiles(QConfiguration.profileStorageType, true);
+	//	}
+	//	
+	//	public void loadProfiles(final StorageType loadFrom, final boolean async) {
+	//		switch(loadFrom) {
+	//			case MYSQL: {
+	//				loadFromDatabase(async);
+	//				break;
+	//			}
+	//			default: {
+	//				final Storage profileStorage = new ConfigStorage(profileStorageFile, plugin.getLogger(), null);
+	//				profileStorage.load();
+	//				final StorageKey mainKey = profileStorage.getKey("");
+	//				PlayerProfile prof;
+	//				int counter = 0;
+	//				for(final StorageKey subKey : mainKey.getSubKeys()) {
+	//					counter++;
+	//					prof = PlayerProfile.deserialize(subKey, qMan);
+	//					if(prof != null) {
+	//						loadProfile(prof);
+	//					}
+	//					else {
+	//						Ql.info("Invalid key in profiles.yml: " + subKey.getName());
+	//					}
+	//					if(counter % 10 == 0) {
+	//						Ql.debug(counter + " profiles processed.");
+	//					}
+	//				}
+	//				Ql.verbose(profiles.size() + " profiles loaded.");
+	//			}
+	//		}
+	//	}
+	//	
+	//	private void loadFromDatabase(final boolean async) {
+	//		final Runnable loadTask = new Runnable() {
+	//			
+	//			@Override
+	//			public void run() {
+	//				Connection conn = null;
+	//				PreparedStatement stmt = null;
+	//				ResultSet rs = null;
+	//				try {
+	//					Ql.debug("Loading profiles...");
+	//					final List<SerializedPlayerProfile> serps = new ArrayList<PlayerProfile.SerializedPlayerProfile>();
+	//					conn = DatabaseConnection.getConnection();
+	//					stmt = conn.prepareStatement("SELECT * FROM `quester-profiles`");
+	//					rs = stmt.executeQuery();
+	//					while(rs.next()) {
+	//						try {
+	//							serps.add(new SerializedPlayerProfile(rs));
+	//						}
+	//						catch(final SQLException ignore) {}
+	//					}
+	//					rs.close();
+	//					stmt.close();
+	//					Ql.debug("Loaded " + serps.size() + " profiles.");
+	//					final Runnable deserialization = new Runnable() {
+	//						
+	//						@Override
+	//						public void run() {
+	//							int count = 0;
+	//							for(final SerializedPlayerProfile sp : serps) {
+	//								final PlayerProfile prof = PlayerProfile.deserialize(sp.getStoragekey(), qMan);
+	//								if(prof != null) {
+	//									updateRank(prof);
+	//									profiles.put(prof.getId(), prof);
+	//									count++;
+	//								}
+	//								else {
+	//									Ql.info("Invalid profile '" + sp.uid.toString() + "'");
+	//								}
+	//							}
+	//							Ql.debug("Deserialized " + count + " profiles.");
+	//						}
+	//					};
+	//					
+	//					if(async) {
+	//						Bukkit.getScheduler().runTask(plugin, deserialization);
+	//					}
+	//					else {
+	//						deserialization.run();
+	//					}
+	//				}
+	//				catch(final SQLException e) {
+	//					e.printStackTrace();
+	//				}
+	//				finally {
+	//					if(conn != null) {
+	//						try {
+	//							conn.close();
+	//						}
+	//						catch(final SQLException ignore) {}
+	//					}
+	//					if(stmt != null) {
+	//						try {
+	//							stmt.close();
+	//						}
+	//						catch(final SQLException ignore) {}
+	//					}
+	//					if(rs != null) {
+	//						try {
+	//							rs.close();
+	//						}
+	//						catch(final SQLException ignore) {}
+	//					}
+	//				}
+	//			}
+	//		};
+	//		
+	//		if(async) {
+	//			new Thread(loadTask, "Quester Profile Loading Thread").start();
+	//		}
+	//		else {
+	//			loadTask.run();
+	//		}
+	//	}
+	//	
+	//	public void saveProfiles() {
+	//		saveProfiles(QConfiguration.profileStorageType, true);
+	//	}
+	//	
+	//	
+	//	private void saveToDatabase(final boolean async) {
+	//		final List<SerializedPlayerProfile> serps = new ArrayList<PlayerProfile.SerializedPlayerProfile>();
+	//		
+	//		for(final PlayerProfile prof : profiles.values()) {
+	//			serps.add(new PlayerProfile.SerializedPlayerProfile(prof));
+	//			prof.setUnchanged();
+	//		}
+	//		
+	//		final Runnable saveTask = new Runnable() {
+	//			
+	//			@Override
+	//			public void run() {
+	//				Connection conn = null;
+	//				PreparedStatement stmt = null;
+	//				ResultSet rs = null;
+	//				try {
+	//					final Set<String> stored = new HashSet<String>();
+	//					conn = DatabaseConnection.getConnection();
+	//					stmt = conn.prepareStatement("SELECT `name` FROM `quester-profiles`");
+	//					rs = stmt.executeQuery();
+	//					int saved = 0;
+	//					while(rs.next()) {
+	//						stored.add(rs.getString("name"));
+	//					}
+	//					rs.close();
+	//					stmt.close();
+	//					for(final SerializedPlayerProfile sp : serps) {
+	//						final boolean isStored = stored.contains(sp.uid.toString());
+	//						try {
+	//							if(!isStored || sp.changed) { // only save if it has changed, or is not stored
+	//								stmt = conn.prepareStatement(isStored
+	//										? sp.getUpdateQuerry("quester-profiles")
+	//										: sp.getInsertQuerry("quester-profiles"));
+	//								stmt.execute();
+	//								stmt.close();
+	//								saved++;
+	//							}
+	//						}
+	//						catch(final SQLException e) {
+	//							System.out.println("Failed to save profile " + sp.uid.toString());
+	//							if(QConfiguration.debug) {
+	//								e.printStackTrace();
+	//							}
+	//						}
+	//						finally {
+	//							if(stmt != null) {
+	//								try {
+	//									stmt.close();
+	//								}
+	//								catch(final SQLException ignore) {}
+	//							}
+	//						}
+	//					}
+	//					if(QConfiguration.verbose) {
+	//						System.out.println(saved + " profiles saved.");
+	//					}
+	//				}
+	//				catch(final SQLException e) {
+	//					e.printStackTrace();
+	//				}
+	//				finally {
+	//					if(conn != null) {
+	//						try {
+	//							conn.close();
+	//						}
+	//						catch(final SQLException ignore) {}
+	//					}
+	//					if(stmt != null) {
+	//						try {
+	//							stmt.close();
+	//						}
+	//						catch(final SQLException ignore) {}
+	//					}
+	//					if(rs != null) {
+	//						try {
+	//							rs.close();
+	//						}
+	//						catch(final SQLException ignore) {}
+	//					}
+	//				}
+	//			}
+	//		};
+	//		
+	//		if(async) {
+	//			new Thread(saveTask, "Quester Profile Saving Thread").start();
+	//		}
+	//		else {
+	//			saveTask.run();
+	//		}
+	//	}
 }

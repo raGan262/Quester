@@ -47,7 +47,7 @@ public class AdminCommands {
 			sender.sendMessage(ChatColor.RED + context.getSenderLang().get("MSG_AUTOSAVE_DISABLED"));
 			return;
 		}
-		if(plugin.startSaving()) {
+		if(profMan.startSaving()) {
 			sender.sendMessage(ChatColor.GREEN
 					+ context.getSenderLang().get("MSG_AUTOSAVE_STARTED").replaceAll("%interval", String.valueOf(QConfiguration.saveInterval)));
 		}
@@ -67,7 +67,7 @@ public class AdminCommands {
 			sender.sendMessage(ChatColor.RED + context.getSenderLang().get("MSG_AUTOSAVE_DISABLED"));
 			return;
 		}
-		if(plugin.stopSaving()) {
+		if(profMan.stopSaving()) {
 			sender.sendMessage(ChatColor.GREEN
 					+ context.getSenderLang().get("MSG_AUTOSAVE_STOPPED"));
 		}

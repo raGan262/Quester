@@ -18,7 +18,6 @@ public class QConfiguration {
 	public static boolean debug = false;
 	public static boolean useRank = true;
 	public static boolean useMetrics = true;
-	public static StorageType profileStorageType = StorageType.CONFIG;
 	public static String defaultLang = "english";
 	public static boolean autoBackup = true;
 	
@@ -142,16 +141,16 @@ public class QConfiguration {
 		mainKey.setBoolean(path, QConfiguration.useRank);
 		
 		// PROFILE STORAGE
-		path = "general.profile-storage";
-		temp = mainKey.getString(path, "");
-		StorageType type = StorageType.forName(temp);
-		if(type == null) {
-			type = StorageType.CONFIG;
-			mainKey.setString(path, "CONFIG");
-			wrongConfig(path, "CONFIG");
-		}
-		QConfiguration.profileStorageType = type;
-		mainKey.setString(path, profileStorageType.name());
+		//		path = "general.profile-storage";
+		//		temp = mainKey.getString(path, "");
+		//		StorageType type = StorageType.forName(temp);
+		//		if(type == null) {
+		//			type = StorageType.CONFIG;
+		//			mainKey.setString(path, "CONFIG");
+		//			wrongConfig(path, "CONFIG");
+		//		}
+		//		QConfiguration.profileStorageType = type;
+		//		mainKey.setString(path, profileStorageType.name());
 		
 		// USE METRICS
 		path = "general.use-metrics";
@@ -326,7 +325,7 @@ public class QConfiguration {
 			}
 		}
 		catch(final Exception ignore) {}
-		mainKey.setString(path, Util.implodeInt(QConfiguration.questItemInteractable.toArray(new Integer[0]), ","));
+		mainKey.setString(path, Util.implodeIterable(QConfiguration.questItemInteractable, ","));
 		
 		saveData();
 	}
@@ -336,18 +335,5 @@ public class QConfiguration {
 			throw new InstanceNotFoundException();
 		}
 		instance.storage.save();
-	}
-	
-	public static enum StorageType {
-		CONFIG, MYSQL, MEMORY;
-		
-		public static StorageType forName(final String name) {
-			try {
-				return valueOf(name.toUpperCase());
-			}
-			catch(final Exception e) {
-				return null;
-			}
-		}
 	}
 }

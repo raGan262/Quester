@@ -387,7 +387,7 @@ public class PlayerCommands {
 			}
 			
 			final List<Objective> objectives = progress.getQuest().getObjectives();
-			final int[] prog = progress.getProgress();
+			final List<Integer> prog = progress.getProgress();
 			
 			sender.sendMessage(ChatColor.BLUE
 					+ lang.get("PROF_PROGRESS").replaceAll("%p", ChatColor.GOLD + prof.getName()
@@ -396,7 +396,7 @@ public class PlayerCommands {
 			
 			for(int i = 0; i < objectives.size(); i++) {
 				final Objective o = objectives.get(i);
-				sender.sendMessage(String.format("[%d] %s: %d/%d", i, o.getType(), prog[i], o.getTargetAmount()));
+				sender.sendMessage(String.format("[%d] %s: %d/%d", i, o.getType(), prog.get(i), o.getTargetAmount()));
 			}
 		}
 		

@@ -58,7 +58,6 @@ public class ConfigStorage implements Storage {
 		try {
 			conFile.getParentFile().mkdirs();
 			conFile.createNewFile();
-			logger.info("Created empty file: " + conFile.getName() + " !");
 		}
 		catch(final IOException ex) {
 			logger.severe("Could not create file: " + conFile.getName() + " !");

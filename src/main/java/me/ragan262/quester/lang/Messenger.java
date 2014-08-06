@@ -241,7 +241,7 @@ public class Messenger {
 						if(active || !QConfiguration.ordOnlyCurrent) {
 							final ChatColor col = active ? ChatColor.YELLOW : ChatColor.RED;
 							player.sendMessage(col + " - "
-									+ objs.get(i).inShow(progress.getProgress()[i], lang));
+									+ objs.get(i).inShow(progress.getProgress().get(i), lang));
 						}
 					}
 				}

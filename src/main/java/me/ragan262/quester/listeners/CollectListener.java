@@ -38,7 +38,7 @@ public class CollectListener implements Listener {
 			}
 			final List<Objective> objs = quest.getObjectives();
 			for(int i = 0; i < objs.size(); i++) {
-				final int[] progress = prof.getProgress().getProgress();
+				final List<Integer> progress = prof.getProgress().getProgress();
 				// check if Objective is type COLLECT
 				if(objs.get(i).getType().equalsIgnoreCase("COLLECT")) {
 					if(!profMan.isObjectiveActive(prof, i)) {
@@ -52,8 +52,8 @@ public class CollectListener implements Listener {
 						if(obj.getData() < 0 || obj.getData() == item.getDurability()) {
 							final int rem = event.getRemaining(); // amount not picked up (full
 																	// inventory)
-							int req = obj.getTargetAmount() - progress[i]; // amount required by
-																			// objective
+							int req = obj.getTargetAmount() - progress.get(i); // amount required by
+																				// objective
 							if(req < 0) { // can't be less than 0
 								req = 0;
 							}

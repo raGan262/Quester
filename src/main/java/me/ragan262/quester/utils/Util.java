@@ -72,32 +72,17 @@ public class Util {
 	}
 	
 	// whatever
-	public static String implodeInt(final int[] ints, final String glue) {
+	public static String implodeIterable(final Iterable<?> list, final String glue) {
 		final StringBuilder result = new StringBuilder();
 		boolean first = true;
-		for(int i = 0; i < ints.length; i++) {
+		for(final Object o : list) {
 			if(first) {
 				first = false;
 			}
 			else {
 				result.append(glue);
 			}
-			result.append(ints[i]);
-		}
-		return result.toString();
-	}
-	
-	public static String implodeInt(final Integer[] ints, final String glue) {
-		final StringBuilder result = new StringBuilder();
-		boolean first = true;
-		for(int i = 0; i < ints.length; i++) {
-			if(first) {
-				first = false;
-			}
-			else {
-				result.append(glue);
-			}
-			result.append(ints[i]);
+			result.append(String.valueOf(o));
 		}
 		return result.toString();
 	}
