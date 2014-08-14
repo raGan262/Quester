@@ -249,9 +249,7 @@ public class ProfileManager {
 	}
 	
 	public boolean isObjectiveActive(final PlayerProfile profile, final int id) {
-		
-		final QuestProgress progress = profile.getProgress();
-		return progress.getObjectiveStatus(id) == ObjectiveStatus.ACTIVE;
+		return profile.getProgress().getObjectiveStatus(id) == ObjectiveStatus.ACTIVE;
 	}
 	
 	public boolean setProfileLanguage(final PlayerProfile profile, final String language) {
@@ -432,11 +430,12 @@ public class ProfileManager {
 		int i = 0;
 		boolean completed = false;
 		while(i < objs.size() && !completed) {
-			if(isObjectiveActive(prof, i)) {
-				if(objs.get(i).tryToComplete(player)) {
-					incProgress(player, as, i, false);
-					completed = true;
-				}
+			final Objective obj = objs.get(i);
+			if(isObjectiveActive(prof, i) && obj.tryToComplete(player)) {
+				final int increment = obj.getTargetAmount()
+						- prof.getProgress().getProgress().get(i);
+				incProgress(player, as, i, increment, false);
+				completed = true;
 			}
 			i++;
 		}
