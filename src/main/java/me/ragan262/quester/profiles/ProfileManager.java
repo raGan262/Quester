@@ -322,6 +322,10 @@ public class ProfileManager {
 				qv.execute(player, plugin);
 			}
 		}
+		
+		if(quest.getObjectives().isEmpty()) {
+			forceCompleteQuest(player, as, senderLang);
+		}
 	}
 	
 	public void startRandomQuest(final Player player, final ActionSource as, final QuesterLang lang) throws QuesterException {
@@ -415,7 +419,7 @@ public class ProfileManager {
 		}
 		
 		if(areObjectivesCompleted(prof)) {
-			completeQuest(player, as, lang);
+			forceCompleteQuest(player, as, lang);
 		}
 		else if(error) {
 			throw new ObjectiveException(lang.get("ERROR_OBJ_CANT_DO"));
@@ -443,7 +447,7 @@ public class ProfileManager {
 		return completed || i == 0;
 	}
 	
-	public void completeQuest(final Player player, final ActionSource as, final QuesterLang lang) throws QuesterException {
+	public void forceCompleteQuest(final Player player, final ActionSource as, final QuesterLang lang) throws QuesterException {
 		final PlayerProfile prof = getProfile(player);
 		final Quest quest = prof.getQuest();
 		
