@@ -47,7 +47,7 @@ public class SignHolderActionHandler extends QuestHolderActionHandler<QuesterSig
 		data.setHolderID(-1);
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onSignInteract(final PlayerInteractEvent event) {
 		final Player player = event.getPlayer();
 		if(event.getAction() != Action.LEFT_CLICK_BLOCK
