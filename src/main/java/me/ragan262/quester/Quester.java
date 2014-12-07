@@ -313,6 +313,7 @@ public class Quester extends JavaPlugin {
 				DropObjective.class,
 				ChatObjective.class,
 				DummyObjective.class,
+				CommandObjective.class,
 				
 				// triggers
 				NpcTrigger.class,

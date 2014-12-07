@@ -1,22 +1,28 @@
 package me.ragan262.quester.commands;
 
 import java.io.File;
+import java.util.List;
 import javax.management.InstanceNotFoundException;
 import me.ragan262.commandmanager.annotations.Command;
 import me.ragan262.commandmanager.annotations.CommandLabels;
 import me.ragan262.commandmanager.annotations.NestedCommand;
+import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.commandmanager.QuesterCommandContext;
+import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.holder.QuestHolderManager;
 import me.ragan262.quester.lang.LanguageManager;
+import me.ragan262.quester.objectives.CommandObjective;
 import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.profiles.ProfileManager;
+import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.quests.QuestManager;
 import me.ragan262.quester.utils.Ql;
 import me.ragan262.quester.utils.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -187,6 +193,44 @@ public class AdminCommands {
 		sender.sendMessage(Quester.LABEL + plugin.getDescription().getWebsite());
 		sender.sendMessage(Quester.LABEL + ChatColor.GRAY + "made by "
 				+ plugin.getDescription().getAuthors().get(0));
+	}
+	
+	// temporary method (TODO)
+	@CommandLabels({ "runaction" })
+	@Command(
+			section = "Admin",
+			desc = "used to complete command event",
+			usage = "<player> <index>",
+			min = 2,
+			max = 2,
+			permission = QConfiguration.PERM_ADMIN)
+	public void runaction(final QuesterCommandContext context, final CommandSender sender) {
+		final Player player = Bukkit.getPlayerExact(context.getString(0));
+		if(player == null) {
+			throw new CommandException("Player not online.");
+		}
+		final PlayerProfile prof = profMan.getProfile(player);
+		final Quest quest = prof.getQuest();
+		if(quest != null) {
+			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {
+				return;
+			}
+			final List<Objective> objs = quest.getObjectives();
+			for(int i = 0; i < objs.size(); i++) {
+				if(!profMan.isObjectiveActive(prof, i)) {
+					continue;
+				}
+				// check objectives
+				if(objs.get(i).getType().equalsIgnoreCase("CMD")) {
+					final CommandObjective obj = (CommandObjective)objs.get(i);
+					if(obj.evaluate0(context.getString(1))) {
+						profMan.incProgress(player, ActionSource.adminSource(sender), i);
+						return;
+					}
+				}
+			}
+			
+		}
 	}
 	
 	@CommandLabels({ "player", "pl" })
