@@ -77,9 +77,6 @@ public final class ShearObjective extends Objective {
 	// Custom methods
 	
 	public boolean check(final DyeColor col) {
-		if(col == color || color == null) {
-			return true;
-		}
-		return false;
+		return col == color || color == null;
 	}
 }

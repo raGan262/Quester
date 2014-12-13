@@ -64,7 +64,7 @@ public final class ExplosionQevent extends Qevent {
 	@Override
 	protected void save(final StorageKey key) {
 		if(damage) {
-			key.setBoolean("damage", damage);
+			key.setBoolean("damage", true);
 		}
 		if(location != null) {
 			key.setString("location", SerUtils.serializeLocString(location));

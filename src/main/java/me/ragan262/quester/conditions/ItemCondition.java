@@ -106,10 +106,10 @@ public final class ItemCondition extends Condition {
 		key.setString("item", SerUtils.serializeItem(material.getId(), data));
 		key.setInt("amount", amount);
 		if(inverted) {
-			key.setBoolean("inverted", inverted);
+			key.setBoolean("inverted", true);
 		}
 		if(questItem) {
-			key.setBoolean("questitem", questItem);
+			key.setBoolean("questitem", true);
 		}
 	}
 	

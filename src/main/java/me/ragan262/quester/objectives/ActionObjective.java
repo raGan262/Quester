@@ -58,7 +58,7 @@ public final class ActionObjective extends Objective {
 			blockStr = " pressure plate";
 		}
 		final String datStr = blockData < 0 ? "" : "(data" + blockData + ")";
-		final String handStr = inHand == null ? "" : inHand.getId() == 0 ? " with empty hand "
+		final String handStr = inHand == null ? "" : inHand == Material.AIR ? " with empty hand "
 				: " with " + inHand.name().toLowerCase().replace('_', ' ') + " in hand";
 		final String handDatStr = inHandData < 0 ? "" : "(data" + inHandData + ")";
 		final String locStr = location == null ? "" : " " + range + " blocks close to "
@@ -165,7 +165,7 @@ public final class ActionObjective extends Objective {
 		if(blck == null) {
 			return false;
 		}
-		if(block.getId() == blck.getTypeId()) {
+		if(block == blck.getType()) {
 			if(blockData == blck.getData() || blockData < 0) {
 				return true;
 			}
@@ -178,9 +178,9 @@ public final class ActionObjective extends Objective {
 			return true;
 		}
 		if(hand == null) {
-			return inHand.getId() == 0;
+			return inHand == Material.AIR;
 		}
-		if(inHand.getId() == hand.getTypeId()) {
+		if(inHand == hand.getType()) {
 			if(inHandData == hand.getDurability() || inHandData < 0) {
 				return true;
 			}
@@ -189,26 +189,13 @@ public final class ActionObjective extends Objective {
 	}
 	
 	public boolean checkLocation(final Location loc) {
-		if(location == null) {
-			return true;
-		}
-		if(location.getWorld().getName().equals(loc.getWorld().getName())) {
-			return location.distance(loc) <= range;
-		}
-		else {
-			return false;
-		}
+		return location == null
+				|| location.getWorld().getName().equals(loc.getWorld().getName()) && location.distance(loc) <= range;
 	}
 	
 	public boolean checkClick(final Action act) {
-		if(click == 0) {
-			return true;
-		}
-		if(click == 1 && (act == Action.LEFT_CLICK_AIR || act == Action.LEFT_CLICK_BLOCK)
-				|| click == 2 && (act == Action.RIGHT_CLICK_AIR || act == Action.RIGHT_CLICK_BLOCK)
-				|| click == 3 && act == Action.PHYSICAL) {
-			return true;
-		}
-		return false;
+		return click == 0 || click == 1 && (act == Action.LEFT_CLICK_AIR
+				|| act == Action.LEFT_CLICK_BLOCK) || click == 2 && (act == Action.RIGHT_CLICK_AIR
+				|| act == Action.RIGHT_CLICK_BLOCK) || click == 3 && act == Action.PHYSICAL;
 	}
 }

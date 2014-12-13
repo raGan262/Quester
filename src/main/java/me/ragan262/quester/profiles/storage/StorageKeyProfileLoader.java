@@ -29,9 +29,9 @@ public abstract class StorageKeyProfileLoader {
 		}
 	};
 	
-	public static int CURRENT_VERSION = 1;
+	public static final int CURRENT_VERSION = 1;
 	
-	public static StorageKeyProfileLoader CURRENT_LOADER = versions.get(CURRENT_VERSION);
+	public static final StorageKeyProfileLoader CURRENT_LOADER = versions.get(CURRENT_VERSION);
 	
 	public static StorageKeyProfileLoader version(final int version) {
 		if(!versions.containsKey(version)) {
@@ -205,13 +205,13 @@ public abstract class StorageKeyProfileLoader {
 					try {
 						quest = Integer.parseInt(subKey.getName());
 					}
-					catch(final NumberFormatException e) {
-						if(quest < 0) {
-							Ql.severe("Invalid quest ID '" + subKey.getName() + "' in profile "
-									+ player.getUniqueId().toString() + ". (" + player.getName()
-									+ ")");
-							continue;
-						}
+					catch(final NumberFormatException ignore) {}
+
+					if(quest < 0) {
+						Ql.severe("Invalid quest ID '" + subKey.getName() + "' in profile "
+								+ player.getUniqueId().toString() + ". (" + player.getName()
+								+ ")");
+						continue;
 					}
 					
 					try {

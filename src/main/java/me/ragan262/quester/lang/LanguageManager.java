@@ -29,7 +29,7 @@ public class LanguageManager {
 		}
 	}
 	
-	private final Map<String, QuesterLang> languages = new HashMap<String, QuesterLang>();
+	private final Map<String, QuesterLang> languages = new HashMap<>();
 	private final Logger logger;
 	private final File localFolder;
 	private String defaultLangName = "english";
@@ -88,7 +88,7 @@ public class LanguageManager {
 	}
 	
 	public Set<String> getLangSet() {
-		return new HashSet<String>(languages.keySet());
+		return new HashSet<>(languages.keySet());
 	}
 	
 	public boolean hasLang(final String name) {
@@ -124,13 +124,13 @@ public class LanguageManager {
 			// save regular messages
 			StorageKey storageKey = storage.getKey("");
 			Map<String, String> messages = lang.getMessages();
-			for(final String key : new TreeSet<String>(messages.keySet())) {
+			for(final String key : new TreeSet<>(messages.keySet())) {
 				storageKey.setString(key, messages.get(key));
 			}
 			// save user created messages
 			storageKey = storage.getKey(CUSTOM_KEY);
 			messages = lang.getCustomMessages();
-			for(final String key : new TreeSet<String>(messages.keySet())) {
+			for(final String key : new TreeSet<>(messages.keySet())) {
 				storageKey.setString(key, messages.get(key));
 			}
 			

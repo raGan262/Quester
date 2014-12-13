@@ -23,18 +23,14 @@ public class Utf8YamlConfiguration extends YamlConfiguration {
 		
 		final InputStreamReader reader = new InputStreamReader(stream, UTF8_CHARSET);
 		final StringBuilder builder = new StringBuilder();
-		final BufferedReader input = new BufferedReader(reader);
-		
-		try {
+
+		try(BufferedReader input = new BufferedReader(reader)) {
 			String line;
-			
+
 			while((line = input.readLine()) != null) {
 				builder.append(line);
 				builder.append('\n');
 			}
-		}
-		finally {
-			input.close();
 		}
 		
 		loadFromString(builder.toString());
@@ -49,13 +45,9 @@ public class Utf8YamlConfiguration extends YamlConfiguration {
 		final String data = saveToString();
 		
 		final FileOutputStream stream = new FileOutputStream(file);
-		final OutputStreamWriter writer = new OutputStreamWriter(stream, UTF8_CHARSET);
-		
-		try {
+
+		try(OutputStreamWriter writer = new OutputStreamWriter(stream, UTF8_CHARSET)) {
 			writer.write(data);
-		}
-		finally {
-			writer.close();
 		}
 	}
 }

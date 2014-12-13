@@ -24,16 +24,16 @@ public class ModifierCommands {
 	}
 	
 	private QuestFlag[] getModifiers(final String[] args) {
-		final Set<QuestFlag> modifiers = new HashSet<QuestFlag>();
-		
-		for(int i = 0; i < args.length; i++) {
-			final QuestFlag flag = QuestFlag.getByName(args[i]);
+		final Set<QuestFlag> modifiers = new HashSet<>();
+
+		for(String arg : args) {
+			final QuestFlag flag = QuestFlag.getByName(arg);
 			if(flag != null && flag != QuestFlag.ACTIVE) {
 				modifiers.add(flag);
 			}
 		}
 		
-		return modifiers.toArray(new QuestFlag[0]);
+		return modifiers.toArray(new QuestFlag[modifiers.size()]);
 	}
 	
 	@CommandLabels({ "add", "a" })

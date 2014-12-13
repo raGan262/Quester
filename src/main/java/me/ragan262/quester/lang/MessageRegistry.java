@@ -7,9 +7,9 @@ class MessageRegistry {
 	
 	static final int INITIAL_CAPACITY = 200;
 	
-	final Map<String, String> messages = new HashMap<String, String>(INITIAL_CAPACITY);
+	final Map<String, String> messages = new HashMap<>(INITIAL_CAPACITY);
 	
-	final Map<String, String> customMessages = new HashMap<String, String>();
+	final Map<String, String> customMessages = new HashMap<>();
 	
 	MessageRegistry() {
 		messages.put("MSG_UNKNOWN_MESSAGE", "UNKNOWN MESSAGE");

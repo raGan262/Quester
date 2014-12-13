@@ -54,7 +54,6 @@ public class ProfileManager {
 	// unfortunately, non-player senders share one profile 
 	//(CB always provides fake offline players with the same UUID)
 	private static final String CONSOLE_NAME = "Quester:Console";
-	private final OfflinePlayer senderPlayer;
 	private final PlayerProfile senderProfile;
 	
 	private QuestManager qMan = null;
@@ -62,9 +61,9 @@ public class ProfileManager {
 	private Quester plugin = null;
 	private final Random randGen = new Random();
 	
-	private final Map<UUID, PlayerProfile> profiles = new HashMap<UUID, PlayerProfile>();
-	private Map<Integer, String> ranks = new HashMap<Integer, String>();
-	private List<Integer> sortedRanks = new ArrayList<Integer>();
+	private final Map<UUID, PlayerProfile> profiles = new HashMap<>();
+	private Map<Integer, String> ranks = new HashMap<>();
+	private List<Integer> sortedRanks = new ArrayList<>();
 	
 	private final ExecutorService storageExecutor = Executors.newSingleThreadExecutor();
 	private final ProfileStorage profileStorage;
@@ -74,8 +73,7 @@ public class ProfileManager {
 		this.plugin = plugin;
 		qMan = plugin.getQuestManager();
 		langMan = plugin.getLanguageManager();
-		senderPlayer = Bukkit.getOfflinePlayer(CONSOLE_NAME);
-		senderProfile = new PlayerProfile(senderPlayer);
+		senderProfile = new PlayerProfile(Bukkit.getOfflinePlayer(CONSOLE_NAME));
 		profileStorage = new YamlProfileStorage(profileFolder, plugin.getLogger());
 	}
 	
@@ -122,7 +120,8 @@ public class ProfileManager {
 	}
 	
 	public PlayerProfile[] getProfiles() {
-		return profiles.values().toArray(new PlayerProfile[0]);
+		Collection<PlayerProfile> values = profiles.values();
+		return values.toArray(new PlayerProfile[values.size()]);
 	}
 	
 	public PlayerProfile getSenderProfile(final CommandSender sender) {
@@ -141,7 +140,7 @@ public class ProfileManager {
 		PlayerProfile prof = profiles.get(player.getUniqueId());
 		if(prof == null) {
 			// CURRENTLY ONLY SYNC
-			prof = loadProfile(profileStorage.retrieve(player.getUniqueId()));;
+			prof = loadProfile(profileStorage.retrieve(player.getUniqueId()));
 		}
 		if(prof == null && player instanceof Player) {
 			prof = createProfile(player);
@@ -212,7 +211,7 @@ public class ProfileManager {
 		profile.removeCompleted(questName);
 	}
 	
-	public void selectQuest(final PlayerProfile profile, final Quest newSelected) throws QuesterException {
+	public void selectQuest(final PlayerProfile profile, final Quest newSelected) {
 		profile.setSelected(newSelected);
 	}
 	
@@ -220,7 +219,7 @@ public class ProfileManager {
 		profile.setSelected(null);
 	}
 	
-	public void selectHolder(final PlayerProfile profile, final int id) throws QuesterException {
+	public void selectHolder(final PlayerProfile profile, final int id) {
 		profile.setHolderID(id);
 	}
 	
@@ -330,7 +329,7 @@ public class ProfileManager {
 	
 	public void startRandomQuest(final Player player, final ActionSource as, final QuesterLang lang) throws QuesterException {
 		Collection<Quest> allQuests = qMan.getQuests();
-		final ArrayList<Quest> chosenQuests = new ArrayList<Quest>();
+		final ArrayList<Quest> chosenQuests = new ArrayList<>();
 		for(final Quest quest : allQuests) {
 			if(quest.hasFlag(QuestFlag.ACTIVE) && !quest.hasFlag(QuestFlag.HIDDEN)
 					&& !getProfile(player).hasQuest(quest)
@@ -426,7 +425,7 @@ public class ProfileManager {
 		}
 	}
 	
-	private boolean completeObjective(final Player player, final ActionSource as, final QuesterLang lang) throws QuesterException {
+	private boolean completeObjective(final Player player, final ActionSource as, final QuesterLang lang) {
 		final PlayerProfile prof = getProfile(player);
 		final Quest quest = prof.getQuest();
 		final List<Objective> objs = quest.getObjectives();
@@ -447,7 +446,7 @@ public class ProfileManager {
 		return completed || i == 0;
 	}
 	
-	public void forceCompleteQuest(final Player player, final ActionSource as, final QuesterLang lang) throws QuesterException {
+	public void forceCompleteQuest(final Player player, final ActionSource as, final QuesterLang lang) {
 		final PlayerProfile prof = getProfile(player);
 		final Quest quest = prof.getQuest();
 		
@@ -525,7 +524,7 @@ public class ProfileManager {
 	public String[] validateProgress(final PlayerProfile profile) {
 		final QuestProgress[] progs = profile.getProgresses();
 		boolean localUnset = false;
-		final List<String> unset = new ArrayList<String>(QConfiguration.maxQuests);
+		final List<String> unset = new ArrayList<>(QConfiguration.maxQuests);
 		for(int i = progs.length - 1; i >= 0; i--) {
 			localUnset = false;
 			final Quest profileQuest = progs[i].getQuest();
@@ -538,14 +537,14 @@ public class ProfileManager {
 				unset.add(profileQuest.getName());
 			}
 		}
-		return unset.toArray(new String[0]);
+		return unset.toArray(new String[unset.size()]);
 	}
 	
 	// STORAGE
 	
 	public void loadRanks() {
-		final Map<Integer, String> rankMap = new HashMap<Integer, String>();
-		final List<Integer> sortedList = new ArrayList<Integer>();
+		final Map<Integer, String> rankMap = new HashMap<>();
+		final List<Integer> sortedList = new ArrayList<>();
 		
 		StorageKey rankKey = null;
 		try {

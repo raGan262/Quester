@@ -96,7 +96,7 @@ public class ModificationCommands {
 			max = 1,
 			usage = "[quest ID]",
 			permission = QConfiguration.PERM_MODIFY)
-	public void i(final QuesterCommandContext context, final CommandSender sender) throws CommandException, QuesterException {
+	public void i(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		boolean active;
 		if(context.length() > 0) {
 			active = qMan.toggleQuest(qMan.getQuest(context.getInt(0)), context.getSenderLang(), profMan);
@@ -133,7 +133,7 @@ public class ModificationCommands {
 			desc = "quest description manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@NestedCommand(DescCommands.class)
-	public void desc(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {}
+	public void desc(final QuesterCommandContext context, final CommandSender sender) {}
 	
 	@CommandLabels({ "location", "loc" })
 	@Command(
@@ -141,7 +141,7 @@ public class ModificationCommands {
 			desc = "quest location manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@NestedCommand(LocationCommands.class)
-	public void location(final QuesterCommandContext context, final CommandSender sender) throws CommandException {}
+	public void location(final QuesterCommandContext context, final CommandSender sender) {}
 	
 	@CommandLabels({ "modifier", "mod" })
 	@Command(
@@ -149,7 +149,7 @@ public class ModificationCommands {
 			desc = "quest modifier manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@NestedCommand(ModifierCommands.class)
-	public void modifier(final QuesterCommandContext context, final CommandSender sender) throws CommandException {}
+	public void modifier(final QuesterCommandContext context, final CommandSender sender) {}
 	
 	@CommandLabels({ "world" })
 	@Command(
@@ -157,7 +157,7 @@ public class ModificationCommands {
 			desc = "world restriction manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@NestedCommand(WorldCommands.class)
-	public void world(final QuesterCommandContext context, final CommandSender sender) throws CommandException {}
+	public void world(final QuesterCommandContext context, final CommandSender sender) {}
 	
 	@CommandLabels({ "holder", "hol" })
 	@Command(
@@ -165,7 +165,7 @@ public class ModificationCommands {
 			desc = "quest holder manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@NestedCommand(HolderCommands.class)
-	public void holder(final QuesterCommandContext context, final CommandSender sender) throws CommandException {}
+	public void holder(final QuesterCommandContext context, final CommandSender sender) {}
 	
 	@CommandLabels({ "condition", "con" })
 	@Command(
@@ -173,12 +173,12 @@ public class ModificationCommands {
 			desc = "condition manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@NestedCommand(ConditionCommands.class)
-	public void condition(final QuesterCommandContext context, final CommandSender sender) throws CommandException {}
+	public void condition(final QuesterCommandContext context, final CommandSender sender) {}
 	
 	@CommandLabels({ "event", "evt" })
 	@Command(section = "QMod", desc = "event manipulation", permission = QConfiguration.PERM_MODIFY)
 	@NestedCommand(QeventCommands.class)
-	public void event(final QuesterCommandContext context, final CommandSender sender) throws CommandException {}
+	public void event(final QuesterCommandContext context, final CommandSender sender) {}
 	
 	@CommandLabels({ "objective", "obj" })
 	@Command(
@@ -186,7 +186,7 @@ public class ModificationCommands {
 			desc = "objective manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@NestedCommand(ObjectiveCommands.class)
-	public void objective(final QuesterCommandContext context, final CommandSender sender) throws CommandException {}
+	public void objective(final QuesterCommandContext context, final CommandSender sender) {}
 	
 	@CommandLabels({ "trigger", "trig" })
 	@Command(
@@ -194,5 +194,5 @@ public class ModificationCommands {
 			desc = "trigger manipulation",
 			permission = QConfiguration.PERM_MODIFY)
 	@NestedCommand(TriggerCommands.class)
-	public void trigger(final QuesterCommandContext context, final CommandSender sender) throws CommandException {}
+	public void trigger(final QuesterCommandContext context, final CommandSender sender) {}
 }

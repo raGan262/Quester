@@ -104,7 +104,7 @@ public final class QuestCondition extends Condition {
 	}
 	
 	@Command(min = 1, max = 2, usage = "<quest name> [time in seconds] (-ri)")
-	public static Condition fromCommand(final QuesterCommandContext context) throws CommandException {
+	public static Condition fromCommand(final QuesterCommandContext context) {
 		final String qst = context.getString(0);
 		int t = 0;
 		if(context.length() > 1) {
@@ -120,10 +120,10 @@ public final class QuestCondition extends Condition {
 			key.setInt("time", time);
 		}
 		if(running) {
-			key.setBoolean("running", running);
+			key.setBoolean("running", true);
 		}
 		if(inverted) {
-			key.setBoolean("inverted", inverted);
+			key.setBoolean("inverted", true);
 		}
 	}
 	

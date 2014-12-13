@@ -7,7 +7,7 @@ public class OccasionGroup {
 	private HashSet<Integer> occasions = null;
 	
 	public OccasionGroup() {
-		occasions = new HashSet<Integer>();
+		occasions = new HashSet<>();
 	}
 	
 	public boolean add(final int occasion) {
@@ -16,8 +16,8 @@ public class OccasionGroup {
 	
 	public int add(final int[] occasions) {
 		int result = 0;
-		for(int i = 0; i < occasions.length; i++) {
-			if(this.occasions.add(occasions[i])) {
+		for(int occasion : occasions) {
+			if(this.occasions.add(occasion)) {
 				result++;
 			}
 		}
@@ -30,8 +30,8 @@ public class OccasionGroup {
 	
 	public int remove(final int[] occasions) {
 		int result = 0;
-		for(int i = 0; i < occasions.length; i++) {
-			if(this.occasions.remove(occasions[i])) {
+		for(int occasion : occasions) {
+			if(this.occasions.remove(occasion)) {
 				result++;
 			}
 		}

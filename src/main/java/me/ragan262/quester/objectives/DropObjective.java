@@ -89,7 +89,7 @@ public final class DropObjective extends Objective {
 			key.setDouble("range", range);
 		}
 		if(questItem) {
-			key.setBoolean("questitem", questItem);
+			key.setBoolean("questitem", true);
 		}
 	}
 	

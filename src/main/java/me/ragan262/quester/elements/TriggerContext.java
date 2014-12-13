@@ -9,7 +9,7 @@ public class TriggerContext {
 	public static final TriggerContext EMPTY = new EmptyTriggerContext();
 	
 	private final String type;
-	protected final Map<String, Object> map = new HashMap<String, Object>();
+	protected final Map<String, Object> map = new HashMap<>();
 	
 	public TriggerContext(final String type) {
 		Validate.notNull(type, "Trigger context type can't be null.");

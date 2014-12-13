@@ -83,12 +83,6 @@ public final class SmeltObjective extends Objective {
 	// Custom methods
 	
 	public boolean check(final ItemStack item) {
-		if(item.getTypeId() != material.getId()) {
-			return false;
-		}
-		if(item.getDurability() != data && data >= 0) {
-			return false;
-		}
-		return true;
+		return item.getType() == material && !(item.getDurability() != data && data >= 0);
 	}
 }

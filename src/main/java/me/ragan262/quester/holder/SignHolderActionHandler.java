@@ -108,7 +108,7 @@ public class SignHolderActionHandler extends QuestHolderActionHandler<QuesterSig
 				return;
 			}
 			holMan.removeSign(sign.getLocation());
-			p.sendMessage(Quester.LABEL + lang.get("SIGN_UNREGISTERED"));;
+			p.sendMessage(Quester.LABEL + lang.get("SIGN_UNREGISTERED"));
 		}
 	}
 	
@@ -123,7 +123,7 @@ public class SignHolderActionHandler extends QuestHolderActionHandler<QuesterSig
 			event.setLine(0, ChatColor.BLUE + "[Quester]");
 			final QuesterSign sign = new QuesterSign(block.getLocation());
 			holMan.addSign(sign);
-			event.getPlayer().sendMessage(Quester.LABEL + lang.get("SIGN_REGISTERED"));;
+			event.getPlayer().sendMessage(Quester.LABEL + lang.get("SIGN_REGISTERED"));
 		}
 	}
 }

@@ -22,7 +22,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class QuestItemListener implements Listener {
 	
-	private final Map<String, ItemStack[]> items = new HashMap<String, ItemStack[]>();
+	private final Map<String, ItemStack[]> items = new HashMap<>();
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onAction(final PlayerInteractEvent event) {
@@ -52,7 +52,7 @@ public class QuestItemListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onDeath(final PlayerDeathEvent event) {
 		if(Util.isPlayer(event.getEntity())) {
-			final List<ItemStack> itms = new ArrayList<ItemStack>();
+			final List<ItemStack> itms = new ArrayList<>();
 			final Iterator<ItemStack> it = event.getDrops().iterator();
 			while(it.hasNext()) {
 				final ItemStack i = it.next();
@@ -62,7 +62,7 @@ public class QuestItemListener implements Listener {
 				}
 			}
 			if(!itms.isEmpty()) {
-				items.put(event.getEntity().getName(), itms.toArray(new ItemStack[0]));
+				items.put(event.getEntity().getName(), itms.toArray(new ItemStack[itms.size()]));
 			}
 		}
 	}

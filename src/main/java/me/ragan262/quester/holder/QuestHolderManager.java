@@ -25,8 +25,8 @@ public class QuestHolderManager {
 	
 	private Storage holderStorage = null;
 	
-	private final Map<Integer, QuestHolder> holderIds = new HashMap<Integer, QuestHolder>();
-	private final Map<Location, QuesterSign> signs = new HashMap<Location, QuesterSign>();
+	private final Map<Integer, QuestHolder> holderIds = new HashMap<>();
+	private final Map<Location, QuesterSign> signs = new HashMap<>();
 	
 	private int holderID = -1;
 	

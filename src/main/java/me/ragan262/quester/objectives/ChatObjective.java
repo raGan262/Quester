@@ -36,7 +36,7 @@ public final class ChatObjective extends Objective {
 	}
 	
 	@Command(min = 1, max = 1, usage = "<regex> (-i)")
-	public static Objective fromCommand(final QuesterCommandContext context) throws CommandException {
+	public static Objective fromCommand(final QuesterCommandContext context) {
 		
 		return new ChatObjective(context.getString(0), context.hasFlag('i'));
 	}
@@ -45,7 +45,7 @@ public final class ChatObjective extends Objective {
 	protected void save(final StorageKey key) {
 		key.setString("regex", regex);
 		if(inverted) {
-			key.setBoolean("inverted", inverted);
+			key.setBoolean("inverted", true);
 		}
 	}
 	

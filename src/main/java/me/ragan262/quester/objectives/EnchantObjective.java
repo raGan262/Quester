@@ -28,7 +28,7 @@ public final class EnchantObjective extends Objective {
 			enchants = enchs;
 		}
 		else {
-			enchants = new HashMap<Integer, Integer>();
+			enchants = new HashMap<>();
 		}
 	}
 	

@@ -21,7 +21,7 @@ public enum QuestFlag {
 		try {
 			return valueOf(name.toUpperCase());
 		}
-		catch(final Exception e) {}
+		catch(final Exception ignored) {}
 		
 		return null;
 	}
@@ -46,7 +46,7 @@ public enum QuestFlag {
 	}
 	
 	public static String stringize(final Set<QuestFlag> flags) {
-		return stringize(flags.toArray(new QuestFlag[0]));
+		return stringize(flags.toArray(new QuestFlag[flags.size()]));
 	}
 	
 	public static String serialize(final Set<QuestFlag> flags) {
@@ -58,7 +58,7 @@ public enum QuestFlag {
 	}
 	
 	public static Set<QuestFlag> deserialize(final String input) {
-		final Set<QuestFlag> flags = new HashSet<QuestFlag>();
+		final Set<QuestFlag> flags = new HashSet<>();
 		
 		for(final String s : input.split(";")) {
 			final QuestFlag f = QuestFlag.getByName(s);

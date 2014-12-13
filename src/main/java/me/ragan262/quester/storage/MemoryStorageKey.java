@@ -46,7 +46,7 @@ public class MemoryStorageKey extends StorageKey {
 	
 	@Override
 	public List<StorageKey> getSubKeys() {
-		final List<StorageKey> result = new ArrayList<StorageKey>();
+		final List<StorageKey> result = new ArrayList<>();
 		if(root.isConfigurationSection(path)) {
 			for(final String key : root.getConfigurationSection(path).getKeys(false)) {
 				result.add(new MemoryStorageKey(root, createRelativeKey(key)));

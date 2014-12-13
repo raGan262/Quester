@@ -30,7 +30,7 @@ public class ConditionCommands {
 		profMan = plugin.getProfileManager();
 	}
 	
-	private Condition getCondition(final String type, final QuesterCommandContext subContext, final QuesterLang lang) throws ConditionException, CommandException, QuesterException {
+	private Condition getCondition(final String type, final QuesterCommandContext subContext, final QuesterLang lang) throws CommandException, QuesterException {
 		
 		if(!eMan.elementExists(Element.CONDITION, type)) {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.get("ERROR_CON_NOT_EXIST"));
@@ -104,11 +104,11 @@ public class ConditionCommands {
 	@CommandLabels({ "desc" })
 	@Command(section = "QMod", desc = "condition description manipulation")
 	@NestedCommand(ConditionDescCommands.class)
-	public void desc(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {}
+	public void desc(final QuesterCommandContext context, final CommandSender sender) {}
 	
 	@CommandLabels({ "list", "l" })
 	@Command(section = "QMod", max = 0, desc = "condition list")
-	public void list(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
+	public void list(final QuesterCommandContext context, final CommandSender sender) {
 		sender.sendMessage(ChatColor.RED + context.getSenderLang().get("CON_LIST") + ": "
 				+ ChatColor.WHITE + eMan.getElementList(Element.CONDITION));
 	}

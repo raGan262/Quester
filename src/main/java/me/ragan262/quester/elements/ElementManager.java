@@ -31,7 +31,7 @@ public class ElementManager {
 	
 	private static ElementManager instance = null;
 	
-	private final Map<Class<? extends Element>, Map<String, ElementInfo>> elements = new IdentityHashMap<Class<? extends Element>, Map<String, ElementInfo>>();
+	private final Map<Class<? extends Element>, Map<String, ElementInfo>> elements = new IdentityHashMap<>();
 	
 	public ElementManager() {
 		elements.put(Element.CONDITION, new HashMap<String, ElementInfo>());

@@ -8,9 +8,9 @@ import me.ragan262.quester.utils.Ql;
 
 public class QuesterLang {
 	
-	private final Map<String, String> messages = new HashMap<String, String>(MessageRegistry.INITIAL_CAPACITY);
+	private final Map<String, String> messages = new HashMap<>(MessageRegistry.INITIAL_CAPACITY);
 	
-	private final Map<String, String> customMessages = new HashMap<String, String>(MessageRegistry.INITIAL_CAPACITY);
+	private final Map<String, String> customMessages = new HashMap<>(MessageRegistry.INITIAL_CAPACITY);
 	
 	private final File file;
 	private final String fileName;

@@ -48,7 +48,7 @@ public abstract class Qevent extends Element {
 		return "Event (type=" + getType() + ")";
 	}
 	
-	public final static String parseOccasion(final int occ) {
+	public static String parseOccasion(final int occ) {
 		if(occ == -1) {
 			return "On start";
 		}
@@ -116,7 +116,7 @@ public abstract class Qevent extends Element {
 		}
 	}
 	
-	public static final Qevent deserialize(final StorageKey key) {
+	public static Qevent deserialize(final StorageKey key) {
 		if(!key.hasSubKeys()) {
 			Ql.severe("Qevent deserialization error: no sybkeys.");
 			return null;

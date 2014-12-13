@@ -17,8 +17,8 @@ public abstract class Objective extends Element {
 	private boolean isCustomMessage = false;
 	private boolean hidden = false;
 	private boolean displayProgress = true;
-	private final Set<Integer> prerequisites = new HashSet<Integer>();
-	private final Set<Integer> triggers = new HashSet<Integer>();
+	private final Set<Integer> prerequisites = new HashSet<>();
+	private final Set<Integer> triggers = new HashSet<>();
 	
 	public Set<Integer> getPrerequisites() {
 		return prerequisites;
@@ -182,14 +182,14 @@ public abstract class Objective extends Element {
 			key.setString("triggers", SerUtils.serializeIntSet(triggers));
 		}
 		if(hidden) {
-			key.setBoolean("hidden", hidden);
+			key.setBoolean("hidden", true);
 		}
 		if(!displayProgress) {
-			key.setBoolean("progress", hidden);
+			key.setBoolean("progress", false);
 		}
 	}
 	
-	public static final Objective deserialize(final StorageKey key) {
+	public static Objective deserialize(final StorageKey key) {
 		if(!key.hasSubKeys()) {
 			Ql.severe("Objective deserialization error: no subkeys");
 			return null;

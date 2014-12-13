@@ -9,7 +9,6 @@ import me.ragan262.quester.elements.Element;
 import me.ragan262.quester.elements.ElementManager;
 import me.ragan262.quester.elements.Trigger;
 import me.ragan262.quester.exceptions.ElementException;
-import me.ragan262.quester.exceptions.ObjectiveException;
 import me.ragan262.quester.exceptions.QuesterException;
 import me.ragan262.quester.exceptions.TriggerException;
 import me.ragan262.quester.lang.QuesterLang;
@@ -32,7 +31,7 @@ public class TriggerCommands {
 		this.plugin = plugin;
 	}
 	
-	private Trigger getTrigger(final String type, final QuesterCommandContext subContext, final QuesterLang lang) throws CommandException, ObjectiveException, QuesterException {
+	private Trigger getTrigger(final String type, final QuesterCommandContext subContext, final QuesterLang lang) throws CommandException, QuesterException {
 		if(!eMan.elementExists(Element.TRIGGER, type)) {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.get("ERROR_TRIG_NOT_EXIST"));
 			subContext.getSender().sendMessage(ChatColor.RED + lang.get("TRIG_LIST") + ": "
@@ -98,7 +97,7 @@ public class TriggerCommands {
 	
 	@CommandLabels({ "list", "l" })
 	@Command(section = "QMod", max = 0, desc = "trigger list")
-	public void list(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
+	public void list(final QuesterCommandContext context, final CommandSender sender) {
 		sender.sendMessage(ChatColor.RED + context.getSenderLang().get("TRIG_LIST") + ": "
 				+ ChatColor.WHITE + eMan.getElementList(Element.TRIGGER));
 	}

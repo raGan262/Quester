@@ -35,7 +35,7 @@ public class QeventCommands {
 		this.plugin = plugin;
 	}
 	
-	private Qevent getQevent(final String type, final String occassion, final QuesterCommandContext subContext, final QuesterLang lang) throws QeventException, CommandException, QuesterException {
+	private Qevent getQevent(final String type, final String occassion, final QuesterCommandContext subContext, final QuesterLang lang) throws CommandException, QuesterException {
 		int[] occasion;
 		try {
 			occasion = SerUtils.deserializeOccasion(occassion, lang);
@@ -162,7 +162,7 @@ public class QeventCommands {
 	
 	@CommandLabels({ "list", "l" })
 	@Command(section = "QMod", max = 0, desc = "event list")
-	public void list(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
+	public void list(final QuesterCommandContext context, final CommandSender sender) {
 		sender.sendMessage(ChatColor.RED + context.getSenderLang().get("EVT_LIST") + ": "
 				+ ChatColor.WHITE + eMan.getElementList(Element.QEVENT));
 	}

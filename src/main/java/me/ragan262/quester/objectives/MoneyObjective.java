@@ -54,7 +54,7 @@ public final class MoneyObjective extends Objective {
 	}
 	
 	@Command(min = 1, max = 1, usage = "<amount>")
-	public static Objective fromCommand(final QuesterCommandContext context) throws CommandException {
+	public static Objective fromCommand(final QuesterCommandContext context) {
 		final double amt = context.getDouble(0);
 		return new MoneyObjective(amt);
 	}

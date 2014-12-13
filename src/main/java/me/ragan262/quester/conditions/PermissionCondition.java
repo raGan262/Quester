@@ -39,7 +39,7 @@ public final class PermissionCondition extends Condition {
 	}
 	
 	@Command(min = 1, max = 1, usage = "<permission>")
-	public static Condition fromCommand(final QuesterCommandContext context) throws CommandException {
+	public static Condition fromCommand(final QuesterCommandContext context) {
 		final String perm = context.getString(0);
 		return new PermissionCondition(perm);
 	}

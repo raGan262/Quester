@@ -50,7 +50,7 @@ public final class RegionObjective extends Objective {
 	protected void save(final StorageKey key) {
 		region.serialize(key.getSubKey("region"));
 		if(inverted) {
-			key.setBoolean("inverted", inverted);
+			key.setBoolean("inverted", true);
 		}
 	}
 	

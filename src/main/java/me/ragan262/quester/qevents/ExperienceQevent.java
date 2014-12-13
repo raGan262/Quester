@@ -57,7 +57,7 @@ public final class ExperienceQevent extends Qevent {
 	protected void save(final StorageKey key) {
 		key.setInt("amount", amount);
 		if(isLevel) {
-			key.setBoolean("islevel", isLevel);
+			key.setBoolean("islevel", true);
 		}
 	}
 	

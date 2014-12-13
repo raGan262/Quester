@@ -44,7 +44,7 @@ public class DeathListener implements Listener {
 				try {
 					profMan.cancelQuest(player, ActionSource.listenerSource(event), langMan.getLang(prof.getLanguage()));
 				}
-				catch(final QuesterException e) {}
+				catch(final QuesterException ignored) {}
 				return;
 			}
 			if(!quest.allowedWorld(player.getWorld().getName().toLowerCase())) {

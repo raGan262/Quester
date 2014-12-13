@@ -69,7 +69,7 @@ public final class TameObjective extends Objective {
 		try {
 			ent = SerUtils.parseEntity(key.getString("entity"));
 		}
-		catch(final Exception e) {}
+		catch(final Exception ignored) {}
 		amt = key.getInt("amount", 1);
 		if(amt < 1) {
 			amt = 1;

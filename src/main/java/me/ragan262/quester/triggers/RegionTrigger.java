@@ -48,7 +48,7 @@ public class RegionTrigger extends Trigger {
 	protected void save(final StorageKey key) {
 		region.serialize(key.getSubKey("region"));
 		if(inverted) {
-			key.setBoolean("inverted", inverted);
+			key.setBoolean("inverted", true);
 		}
 	}
 	

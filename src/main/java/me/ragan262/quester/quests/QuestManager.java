@@ -43,9 +43,9 @@ public class QuestManager {
 	private final Logger logger;
 	private Storage questStorage = null;
 	
-	private final Map<Integer, Quest> quests = new TreeMap<Integer, Quest>();
-	private final Map<String, Integer> questNames = new HashMap<String, Integer>();
-	public Map<Integer, Location> questLocations = new HashMap<Integer, Location>();
+	private final Map<Integer, Quest> quests = new TreeMap<>();
+	private final Map<String, Integer> questNames = new HashMap<>();
+	public final Map<Integer, Location> questLocations = new HashMap<>();
 	
 	private int questID = -1;
 	
@@ -601,7 +601,7 @@ public class QuestManager {
 			questNames.clear();
 			questLocations.clear();
 		}
-		final List<Quest> onHold = new ArrayList<Quest>();
+		final List<Quest> onHold = new ArrayList<>();
 		int lastGeneric = 0;
 		boolean errorHappened = false;
 		for(final StorageKey questKey : storage.getKey("").getSubKeys()) {

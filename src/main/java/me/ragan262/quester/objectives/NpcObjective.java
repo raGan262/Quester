@@ -47,7 +47,7 @@ public final class NpcObjective extends Objective {
 	protected void save(final StorageKey key) {
 		key.setInt("index", index);
 		if(cancel) {
-			key.setBoolean("cancel", cancel);
+			key.setBoolean("cancel", true);
 		}
 	}
 	

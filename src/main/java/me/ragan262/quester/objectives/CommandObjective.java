@@ -32,7 +32,7 @@ public class CommandObjective extends Objective {
 	}
 	
 	@Command(min = 1, max = 1, usage = "<index>")
-	public static Objective fromCommand(final QuesterCommandContext context) throws CommandException {
+	public static Objective fromCommand(final QuesterCommandContext context) {
 		return new CommandObjective(context.getString(0));
 	}
 	

@@ -1,12 +1,9 @@
 package me.ragan262.quester.profiles;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.UUID;
+
 import me.ragan262.quester.profiles.ProfileImage.ProfileImageBuilder;
 import me.ragan262.quester.profiles.QuestProgress.ProgressImage;
 import me.ragan262.quester.quests.Quest;
@@ -18,11 +15,11 @@ public class PlayerProfile {
 	
 	private final String name;
 	private final UUID uid;
-	private final Map<String, Integer> completed = new HashMap<String, Integer>();
-	private WeakReference<Quest> selected = new WeakReference<Quest>(null);
+	private final Map<String, Integer> completed = new HashMap<>();
+	private WeakReference<Quest> selected = new WeakReference<>(null);
 	private int holder = -1;
 	private QuestProgress current = null;
-	private final List<QuestProgress> progresses = new ArrayList<QuestProgress>();
+	private final List<QuestProgress> progresses = new ArrayList<>();
 	private int points = 0;
 	private String rank = "";
 	private String language = "";
@@ -110,7 +107,8 @@ public class PlayerProfile {
 	}
 	
 	public String[] getCompletedQuests() {
-		return completed.keySet().toArray(new String[0]);
+		Set<String> compl = completed.keySet();
+		return compl.toArray(new String[compl.size()]);
 	}
 	
 	public boolean isCompleted(final String questName) {
@@ -177,7 +175,7 @@ public class PlayerProfile {
 	}
 	
 	void setSelected(final Quest newSelected) {
-		selected = new WeakReference<Quest>(newSelected);
+		selected = new WeakReference<>(newSelected);
 	}
 	
 	public Quest getSelected() {
@@ -265,7 +263,7 @@ public class PlayerProfile {
 	}
 	
 	public QuestProgress[] getProgresses() {
-		return progresses.toArray(new QuestProgress[0]);
+		return progresses.toArray(new QuestProgress[progresses.size()]);
 	}
 	
 	public String getLanguage() {

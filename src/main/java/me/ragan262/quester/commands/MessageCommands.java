@@ -31,7 +31,7 @@ public class MessageCommands {
 			max = 1,
 			usage = "[language]",
 			permission = QConfiguration.PERM_MODIFY)
-	public void list(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
+	public void list(final QuesterCommandContext context, final CommandSender sender) {
 		
 	}
 	
@@ -42,7 +42,7 @@ public class MessageCommands {
 			max = 1,
 			usage = "[quest ID]",
 			permission = QConfiguration.PERM_MODIFY)
-	public void sync(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
+	public void sync(final QuesterCommandContext context, final CommandSender sender) {
 		
 	}
 	
@@ -54,7 +54,7 @@ public class MessageCommands {
 			max = 1,
 			usage = "<key>",
 			permission = QConfiguration.PERM_MODIFY)
-	public void remove(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
+	public void remove(final QuesterCommandContext context, final CommandSender sender) {
 		
 	}
 	
@@ -66,7 +66,7 @@ public class MessageCommands {
 			max = 2,
 			usage = "<key> <message>",
 			permission = QConfiguration.PERM_MODIFY)
-	public void set(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
+	public void set(final QuesterCommandContext context, final CommandSender sender) {
 		
 	}
 	
@@ -78,7 +78,7 @@ public class MessageCommands {
 			max = 2,
 			usage = "<key> [language]",
 			permission = QConfiguration.PERM_MODIFY)
-	public void get(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
+	public void get(final QuesterCommandContext context, final CommandSender sender) {
 		
 	}
 }

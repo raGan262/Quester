@@ -10,10 +10,10 @@ import me.ragan262.quester.utils.Util;
 
 public class QuestHolder {
 	
-	private final List<Integer> heldQuests = new ArrayList<Integer>();
+	private final List<Integer> heldQuests = new ArrayList<>();
 	private String name;
-	private final Map<String, Long> interactions = new HashMap<String, Long>();
-	private final Map<String, Integer> selected = new HashMap<String, Integer>();
+	private final Map<String, Long> interactions = new HashMap<>();
+	private final Map<String, Integer> selected = new HashMap<>();
 	private int id = -1;
 	
 	public QuestHolder(final String name) {
@@ -85,7 +85,7 @@ public class QuestHolder {
 		}
 	}
 	
-	public void moveQuest(final int from, final int to) throws HolderException, IndexOutOfBoundsException {
+	public void moveQuest(final int from, final int to) throws IndexOutOfBoundsException {
 		heldQuests.get(from);
 		heldQuests.get(to);
 		Util.moveListUnit(heldQuests, from, to);
@@ -127,7 +127,7 @@ public class QuestHolder {
 					i = Integer.parseInt(s);
 					qHolder.addQuest(i);
 				}
-				catch(final NumberFormatException f) {}
+				catch(final NumberFormatException ignored) {}
 			}
 			
 		}

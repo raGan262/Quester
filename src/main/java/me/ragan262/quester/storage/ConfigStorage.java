@@ -43,11 +43,7 @@ public class ConfigStorage implements Storage {
 				config.load(defaultStream);
 				logger.info("Loaded default file: " + conFile.getName() + " !");
 			}
-			catch(final IOException e) {
-				logger.severe("Could not load default file: " + conFile.getName() + " !");
-				e.printStackTrace();
-			}
-			catch(final InvalidConfigurationException e) {
+			catch(final IOException | InvalidConfigurationException e) {
 				logger.severe("Could not load default file: " + conFile.getName() + " !");
 				e.printStackTrace();
 			}
@@ -151,7 +147,7 @@ public class ConfigStorage implements Storage {
 				}
 			}
 			if(keySet != null) {
-				final List<StorageKey> result = new ArrayList<StorageKey>();
+				final List<StorageKey> result = new ArrayList<>();
 				for(final String key : keySet) {
 					result.add(new ConfigKey(createRelativeKey(key)));
 				}

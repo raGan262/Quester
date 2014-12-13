@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 public abstract class Region {
 	
-	public static Region ANYWHERE = new Anywhere();
+	public static final Region ANYWHERE = new Anywhere();
 	static final String SEPARATOR = "|";
 	
 	public abstract String getType();

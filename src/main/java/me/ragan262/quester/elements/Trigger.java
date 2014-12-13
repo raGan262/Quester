@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 public abstract class Trigger extends Element {
 	
-	private final List<Condition> conditions = new ArrayList<Condition>();
+	private final List<Condition> conditions = new ArrayList<>();
 	
 	private boolean global = false;
 	
@@ -64,7 +64,7 @@ public abstract class Trigger extends Element {
 		save(key);
 		key.setString("type", type);
 		if(global) {
-			key.setBoolean("global", global);
+			key.setBoolean("global", true);
 		}
 		if(!conditions.isEmpty()) {
 			final StorageKey subKey = key.getSubKey("conditions");
@@ -74,7 +74,7 @@ public abstract class Trigger extends Element {
 		}
 	}
 	
-	public static final Trigger deserialize(final StorageKey key) {
+	public static Trigger deserialize(final StorageKey key) {
 		if(!key.hasSubKeys()) {
 			Ql.severe("Trigger deserialization error: no subkeys");
 			return null;

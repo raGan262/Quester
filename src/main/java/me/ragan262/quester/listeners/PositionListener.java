@@ -81,7 +81,7 @@ public class PositionListener implements Runnable {
 								profMan.startQuest(player, qst, ActionSource.otherSource(null), langMan.getLang(prof.getLanguage()));
 								break;
 							}
-							catch(final QuesterException e) {}
+							catch(final QuesterException ignored) {}
 						}
 					}
 				}

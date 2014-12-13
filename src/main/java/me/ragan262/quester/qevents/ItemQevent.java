@@ -54,7 +54,7 @@ public final class ItemQevent extends Qevent {
 			enchants = enchs;
 		}
 		else {
-			enchants = new HashMap<Integer, Integer>();
+			enchants = new HashMap<>();
 		}
 	}
 	
@@ -104,7 +104,7 @@ public final class ItemQevent extends Qevent {
 			final ItemStack[] contents = player.getInventory().getContents();
 			ItemStack item = new ItemStack(material, 1, data);
 			if(quest) {
-				final List<String> lore = new ArrayList<String>();
+				final List<String> lore = new ArrayList<>();
 				lore.add(ChatColor.BLUE + "Quest Item");
 				final ItemMeta im = item.getItemMeta();
 				im.setLore(lore);
@@ -184,7 +184,7 @@ public final class ItemQevent extends Qevent {
 	}
 	
 	@Command(min = 1, max = 3, usage = "{<item>} [amount] {[enchants]} (-i)")
-	public static Qevent fromCommand(final QuesterCommandContext context) throws CommandException {
+	public static Qevent fromCommand(final QuesterCommandContext context) {
 		Material mat = null;
 		int dat;
 		int amt = 1;
@@ -220,7 +220,7 @@ public final class ItemQevent extends Qevent {
 		if(inverted) {
 			key.setBoolean("inverted", true);
 			if(armor) {
-				key.setBoolean("armor", armor);
+				key.setBoolean("armor", true);
 			}
 		}
 		if(quest) {

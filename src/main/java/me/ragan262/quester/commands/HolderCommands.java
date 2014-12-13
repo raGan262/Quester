@@ -38,7 +38,7 @@ public class HolderCommands {
 	
 	@CommandLabels({ "delete", "d" })
 	@Command(section = "Mod", desc = "deletes a holder", min = 1, max = 1, usage = "<holder ID>")
-	public void delete(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
+	public void delete(final QuesterCommandContext context, final CommandSender sender) {
 		holMan.removeHolder(context.getInt(0));
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("HOL_REMOVED"));
 	}
@@ -81,7 +81,7 @@ public class HolderCommands {
 	
 	@CommandLabels({ "list", "l" })
 	@Command(section = "Mod", desc = "lists quest holders", max = 0)
-	public void list(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
+	public void list(final QuesterCommandContext context, final CommandSender sender) {
 		messenger.showHolderList(sender, holMan, context.getSenderLang());
 	}
 	
@@ -93,7 +93,7 @@ public class HolderCommands {
 			max = 1,
 			usage = "[holder ID]")
 	public void info(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
-		int id;;
+		int id;
 		if(context.length() > 0) {
 			id = context.getInt(0);
 		}

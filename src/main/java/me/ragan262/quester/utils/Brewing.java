@@ -58,7 +58,7 @@ public class Brewing {
 	public static final int SPLASH = 8192 + 16384;
 	
 	// format: Map<INGREDIENT ID, Map<ORIGINAL DATA, PRODUCT DATA>>
-	private static Map<Integer, Map<Integer, Integer>> recipes;
+	private static final Map<Integer, Map<Integer, Integer>> recipes;
 	
 	private Brewing() {
 		throw new IllegalAccessError();
@@ -73,57 +73,57 @@ public class Brewing {
 	}
 	
 	static {
-		recipes = new HashMap<Integer, Map<Integer, Integer>>();
+		recipes = new HashMap<>();
 		Map<Integer, Integer> tempMap;
 		
 		// NETHER WART
-		tempMap = new HashMap<Integer, Integer>();
+		tempMap = new HashMap<>();
 		tempMap.put(WATER, AWKWARD);
 		recipes.put(Material.NETHER_WARTS.getId(), tempMap);
 		
 		// SUGAR
-		tempMap = new HashMap<Integer, Integer>();
+		tempMap = new HashMap<>();
 		tempMap.put(WATER, MUNDANE);
 		tempMap.put(AWKWARD, SWIFTNESS);
 		recipes.put(Material.SUGAR.getId(), tempMap);
 		
 		// GOLDEN CARROT
-		tempMap = new HashMap<Integer, Integer>();
+		tempMap = new HashMap<>();
 		tempMap.put(AWKWARD, NIGHTVISION);
 		recipes.put(Material.NETHER_WARTS.getId(), tempMap);
 		
 		// MAGMA CREAM
-		tempMap = new HashMap<Integer, Integer>();
+		tempMap = new HashMap<>();
 		tempMap.put(WATER, MUNDANE);
 		tempMap.put(AWKWARD, FIRERESIST);
 		recipes.put(Material.MAGMA_CREAM.getId(), tempMap);
 		
 		// GLISTERING MELON
-		tempMap = new HashMap<Integer, Integer>();
+		tempMap = new HashMap<>();
 		tempMap.put(WATER, MUNDANE);
 		tempMap.put(AWKWARD, FIRERESIST);
 		recipes.put(Material.SPECKLED_MELON.getId(), tempMap);
 		
 		// SPIDER EYE
-		tempMap = new HashMap<Integer, Integer>();
+		tempMap = new HashMap<>();
 		tempMap.put(WATER, MUNDANE);
 		tempMap.put(AWKWARD, POISON);
 		recipes.put(Material.SPIDER_EYE.getId(), tempMap);
 		
 		// GHAST TEAR
-		tempMap = new HashMap<Integer, Integer>();
+		tempMap = new HashMap<>();
 		tempMap.put(WATER, MUNDANE);
 		tempMap.put(AWKWARD, REGENERATION);
 		recipes.put(Material.GHAST_TEAR.getId(), tempMap);
 		
 		// BLAZE POWDER
-		tempMap = new HashMap<Integer, Integer>();
+		tempMap = new HashMap<>();
 		tempMap.put(WATER, MUNDANE);
 		tempMap.put(AWKWARD, STRENGTH);
 		recipes.put(Material.BLAZE_POWDER.getId(), tempMap);
 		
 		// REDSTONE DUST
-		tempMap = new HashMap<Integer, Integer>();
+		tempMap = new HashMap<>();
 		tempMap.put(WATER, MUNDANE_E);
 		tempMap.put(NIGHTVISION, NIGHTVISION_E);
 		tempMap.put(INVISIBILITY, INVISIBILITY_E);
@@ -143,7 +143,7 @@ public class Brewing {
 		recipes.put(Material.REDSTONE.getId(), tempMap);
 		
 		// GLOWSTONE DUST
-		tempMap = new HashMap<Integer, Integer>();
+		tempMap = new HashMap<>();
 		tempMap.put(WATER, THICK);
 		tempMap.put(NIGHTVISION_E, NIGHTVISION);
 		tempMap.put(INVISIBILITY_E, INVISIBILITY);
@@ -163,7 +163,7 @@ public class Brewing {
 		recipes.put(Material.GLOWSTONE_DUST.getId(), tempMap);
 		
 		// FERMENTED SPIDER EYE
-		tempMap = new HashMap<Integer, Integer>();
+		tempMap = new HashMap<>();
 		tempMap.put(WATER, WEAKNESS);
 		tempMap.put(AWKWARD, WEAKNESS);
 		tempMap.put(THICK, WEAKNESS);
@@ -190,7 +190,7 @@ public class Brewing {
 		recipes.put(Material.FERMENTED_SPIDER_EYE.getId(), tempMap);
 		
 		// GUNPOWDER - SPLASH VERSIONS
-		tempMap = new HashMap<Integer, Integer>();
+		tempMap = new HashMap<>();
 		tempMap.put(MUNDANE, SPLASH ^ MUNDANE);
 		tempMap.put(REGENERATION, SPLASH ^ REGENERATION);
 		tempMap.put(REGENERATION_E, SPLASH ^ REGENERATION_E);

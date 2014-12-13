@@ -44,7 +44,7 @@ public class UserCommands {
 	
 	@CommandLabels({ "help" })
 	@Command(section = "User", desc = "displays help", usage = "[arg1] [arg2]...")
-	public void help(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
+	public void help(final QuesterCommandContext context, final CommandSender sender) {
 		final Map<String, List<CommandHelp>> cmds = plugin.getCommandManager().getHelp(context.getArgs(), sender, context.hasFlag('d'));
 		final QuesterLang lang = context.getSenderLang();
 		final String[][] keys = {
@@ -56,11 +56,11 @@ public class UserCommands {
 						Util.line(ChatColor.DARK_GRAY, lang.get("HELP_SECTION_MODIFY_HOLDER_SELECTED")) },
 				{ "Admin", Util.line(ChatColor.BLUE, lang.get("HELP_SECTION_ADMIN")) } };
 		StringBuilder sb;
-		for(int i = 0; i < keys.length; i++) {
-			if(cmds.containsKey(keys[i][0])) {
+		for(String[] key : keys) {
+			if(cmds.containsKey(key[0])) {
 				sb = new StringBuilder();
-				sb.append(keys[i][1]).append(ChatColor.RESET).append('\n');
-				for(final CommandHelp ch : cmds.remove(keys[i][0])) {
+				sb.append(key[1]).append(ChatColor.RESET).append('\n');
+				for(final CommandHelp ch : cmds.remove(key[0])) {
 					sb.append(ch.getFormattedHelp()).append(ChatColor.RESET).append('\n');
 				}
 				sender.sendMessage(sb.toString());
@@ -178,7 +178,7 @@ public class UserCommands {
 			max = 1,
 			usage = "[quest ID]",
 			permission = QConfiguration.PERM_USE_CANCEL)
-	public void cancel(final QuesterCommandContext context, final CommandSender sender) throws QuesterException, CommandException {
+	public void cancel(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		if(context.getPlayer() == null) {
 			sender.sendMessage(context.getSenderLang().get("MSG_ONLY_PLAYER"));
 			return;
@@ -199,7 +199,7 @@ public class UserCommands {
 			min = 1,
 			usage = "<index>",
 			permission = QConfiguration.PERM_USE_SWITCH)
-	public void switch0(final QuesterCommandContext context, final CommandSender sender) throws QuesterException, CommandException {
+	public void switch0(final QuesterCommandContext context, final CommandSender sender) {
 		if(context.getPlayer() == null) {
 			sender.sendMessage(context.getSenderLang().get("MSG_ONLY_PLAYER"));
 			return;
@@ -216,7 +216,7 @@ public class UserCommands {
 			max = 1,
 			usage = "[index]",
 			permission = QConfiguration.PERM_USE_PROGRESS)
-	public void progress(final QuesterCommandContext context, final CommandSender sender) throws QuesterException, CommandException {
+	public void progress(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
 		if(context.getPlayer() == null) {
 			sender.sendMessage(context.getSenderLang().get("MSG_ONLY_PLAYER"));
 			return;
@@ -264,7 +264,7 @@ public class UserCommands {
 			langSet.add(toAdd);
 		}
 		sender.sendMessage(ChatColor.GOLD + context.getSenderLang().get("AVAILABLE_LANGS") + ": "
-				+ ChatColor.RESET + Util.implode(langSet.toArray(new String[0]), ','));
+				+ ChatColor.RESET + Util.implode(langSet.toArray(new String[langSet.size()]), ','));
 	}
 	
 	@CommandLabels({ "lang" })

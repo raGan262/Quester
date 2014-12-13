@@ -57,7 +57,7 @@ public final class PointCondition extends Condition {
 	protected void save(final StorageKey key) {
 		key.setInt("amount", amount);
 		if(inverted) {
-			key.setBoolean("inverted", inverted);
+			key.setBoolean("inverted", true);
 		}
 	}
 	

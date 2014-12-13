@@ -50,7 +50,7 @@ public class ExpManager {
 			throw new IllegalArgumentException("Player cannot be null.");
 		}
 		
-		this.player = new WeakReference<Player>(player);
+		this.player = new WeakReference<>(player);
 		playerName = player.getName();
 	}
 	

@@ -56,7 +56,7 @@ public class QConfiguration {
 	
 	// QUEST ITEMS
 	
-	public static Set<Integer> questItemInteractable = new HashSet<Integer>();
+	public static final Set<Integer> questItemInteractable = new HashSet<>();
 	
 	public static final String PERM_USE_NPC = "quester.use.npc";
 	public static final String PERM_USE_SIGN = "quester.use.sign";
@@ -154,7 +154,7 @@ public class QConfiguration {
 		
 		// USE METRICS
 		path = "general.use-metrics";
-		QConfiguration.useRank = mainKey.getBoolean(path);
+		QConfiguration.useMetrics = mainKey.getBoolean(path);
 		mainKey.setBoolean(path, QConfiguration.useMetrics);
 		
 		// DEFAULT LANG

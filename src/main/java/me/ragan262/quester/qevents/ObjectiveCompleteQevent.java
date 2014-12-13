@@ -80,7 +80,7 @@ public final class ObjectiveCompleteQevent extends Qevent {
 	protected void save(final StorageKey key) {
 		key.setInt("objective", objective);
 		if(runEvents) {
-			key.setBoolean("runevents", runEvents);
+			key.setBoolean("runevents", true);
 		}
 	}
 	

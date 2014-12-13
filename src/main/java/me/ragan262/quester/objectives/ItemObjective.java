@@ -32,7 +32,7 @@ public final class ItemObjective extends Objective {
 			enchants = enchs;
 		}
 		else {
-			enchants = new HashMap<Integer, Integer>();
+			enchants = new HashMap<>();
 		}
 		this.questItem = questItem;
 	}
@@ -114,7 +114,7 @@ public final class ItemObjective extends Objective {
 			key.setInt("amount", amount);
 		}
 		if(questItem) {
-			key.setBoolean("questitem", questItem);
+			key.setBoolean("questitem", true);
 		}
 	}
 	

@@ -126,19 +126,10 @@ public class CraftSmeltListener implements Listener {
 	}
 	
 	public boolean checkHand(final ItemStack hand, final ItemStack item) {
-		if(hand.getTypeId() == 0) {
-			return true;
-		}
-		if(item.getTypeId() != hand.getTypeId()) {
-			return false;
-		}
-		if(item.getDurability() != hand.getDurability()) {
-			return false;
-		}
-		if(item.getAmount() + hand.getAmount() > item.getMaxStackSize()) {
-			return false;
-		}
-		return true;
+		return hand.getType() == Material.AIR
+				|| item.getType() == hand.getType()
+						&& item.getDurability() == hand.getDurability()
+						&& item.getAmount() + hand.getAmount() <= item.getMaxStackSize();
 	}
 	
 	private int getInvSpace(final Inventory inv, final ItemStack item, final int times) {

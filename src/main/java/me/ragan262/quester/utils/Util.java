@@ -16,7 +16,7 @@ import org.bukkit.util.Vector;
 
 public class Util {
 	
-	private static Random randGen = new Random();
+	private static final Random randGen = new Random();
 	
 	// LINE
 	public static String line(final ChatColor lineColor) {
@@ -215,8 +215,8 @@ public class Util {
 	public static boolean isQuestItem(final ItemStack item) {
 		try {
 			final List<String> lore = item.getItemMeta().getLore();
-			return ChatColor.stripColor(lore.get(0)).equalsIgnoreCase("Quest Item")
-					|| ChatColor.stripColor(lore.get(lore.size() - 1)).equalsIgnoreCase("Quest Item");
+			return "Quest Item".equalsIgnoreCase(ChatColor.stripColor(lore.get(0)))
+					|| "Quest Item".equalsIgnoreCase(ChatColor.stripColor(lore.get(lore.size() - 1)));
 		}
 		catch(final Exception e) {
 			return false;

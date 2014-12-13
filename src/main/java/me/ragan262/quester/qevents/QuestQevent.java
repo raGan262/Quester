@@ -62,7 +62,7 @@ public final class QuestQevent extends Qevent {
 	}
 	
 	@Command(min = 1, max = 1, usage = "<quest name>")
-	public static Qevent fromCommand(final QuesterCommandContext context) throws CommandException {
+	public static Qevent fromCommand(final QuesterCommandContext context) {
 		final Quester plugin = (Quester)Bukkit.getPluginManager().getPlugin("Quester");
 		
 		if(plugin.getQuestManager().getQuest(context.getString(0)) == null) {

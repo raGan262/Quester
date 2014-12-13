@@ -120,12 +120,12 @@ public class SerUtils {
 	
 	public static Map<Integer, Integer> parseEnchants(final String arg, final QuesterLang lang) throws IllegalArgumentException {
 		
-		final Map<Integer, Integer> enchs = new HashMap<Integer, Integer>();
+		final Map<Integer, Integer> enchs = new HashMap<>();
 		final String[] args = arg.split(",");
-		for(int i = 0; i < args.length; i++) {
+		for(String arg0 : args) {
 			Enchantment en = null;
 			int lvl = 0;
-			final String[] s = args[i].split(":");
+			final String[] s = arg0.split(":");
 			if(s.length != 2) {
 				throw new IllegalArgumentException(lang.get("ERROR_CMD_ENCH_INVALID"));
 			}
@@ -140,10 +140,10 @@ public class SerUtils {
 			if(lvl < 1) {
 				throw new IllegalArgumentException(lang.get("ERROR_CMD_ENCH_LEVEL"));
 			}
-			
+
 			enchs.put(en.getId(), lvl);
 		}
-		
+
 		return enchs;
 	}
 	
@@ -313,7 +313,7 @@ public class SerUtils {
 	}
 	
 	public static Set<Integer> parseIntSet(final String[] args, final int from) {
-		final Set<Integer> result = new HashSet<Integer>();
+		final Set<Integer> result = new HashSet<>();
 		for(int i = from; i < args.length; i++) {
 			try {
 				result.add(Integer.parseInt(args[i]));
@@ -324,10 +324,10 @@ public class SerUtils {
 	}
 	
 	public static Set<Integer> deserializeIntSet(final String arg) throws NumberFormatException {
-		final Set<Integer> result = new HashSet<Integer>();
+		final Set<Integer> result = new HashSet<>();
 		final String[] args = arg.split(";");
-		for(int i = 0; i < args.length; i++) {
-			result.add(Integer.parseInt(args[i]));
+		for(String arg0 : args) {
+			result.add(Integer.parseInt(arg0));
 		}
 		return result;
 	}

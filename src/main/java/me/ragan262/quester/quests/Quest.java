@@ -22,12 +22,12 @@ import org.bukkit.Location;
 
 public class Quest {
 	
-	private final List<Objective> objectives = new ArrayList<Objective>();
-	private final List<Condition> conditions = new ArrayList<Condition>();
-	private final List<Qevent> qevents = new ArrayList<Qevent>();
-	private final List<Trigger> triggers = new ArrayList<Trigger>();
-	private final Set<String> worlds = new HashSet<String>();
-	private final Set<QuestFlag> flags = new HashSet<QuestFlag>();
+	private final List<Objective> objectives = new ArrayList<>();
+	private final List<Condition> conditions = new ArrayList<>();
+	private final List<Qevent> qevents = new ArrayList<>();
+	private final List<Trigger> triggers = new ArrayList<>();
+	private final Set<String> worlds = new HashSet<>();
+	private final Set<QuestFlag> flags = new HashSet<>();
 	private String description = "";
 	private boolean isCustomMessage = false;
 	private String name = null;
@@ -58,7 +58,7 @@ public class Quest {
 	}
 	
 	public Set<QuestFlag> getFlags() {
-		return new HashSet<QuestFlag>(flags);
+		return new HashSet<>(flags);
 	}
 	
 	void addFlag(final QuestFlag flag) {
@@ -145,11 +145,11 @@ public class Quest {
 	}
 	
 	public List<Objective> getObjectives() {
-		return new ArrayList<Objective>(objectives);
+		return new ArrayList<>(objectives);
 	}
 	
 	public List<Objective> getObjectives(final String type) {
-		final List<Objective> result = new ArrayList<Objective>();
+		final List<Objective> result = new ArrayList<>();
 		for(final Objective o : objectives) {
 			if(o.getType().equalsIgnoreCase(type)) {
 				result.add(o);
@@ -186,7 +186,7 @@ public class Quest {
 	}
 	
 	public List<Condition> getConditions() {
-		return new ArrayList<Condition>(conditions);
+		return new ArrayList<>(conditions);
 	}
 	
 	boolean removeCondition(final int id) {
@@ -217,7 +217,7 @@ public class Quest {
 	}
 	
 	public List<Trigger> getTriggers() {
-		return new ArrayList<Trigger>(triggers);
+		return new ArrayList<>(triggers);
 	}
 	
 	Trigger removeTrigger(final int id) {
@@ -247,7 +247,7 @@ public class Quest {
 	}
 	
 	public List<Qevent> getQevents() {
-		return new ArrayList<Qevent>(qevents);
+		return new ArrayList<>(qevents);
 	}
 	
 	public Map<Integer, Map<Integer, Qevent>> getQeventMap() {
@@ -255,7 +255,7 @@ public class Quest {
 	}
 	
 	public Map<Integer, Map<Integer, Qevent>> getQeventMap(final String type) {
-		final Map<Integer, Map<Integer, Qevent>> result = new HashMap<Integer, Map<Integer, Qevent>>();
+		final Map<Integer, Map<Integer, Qevent>> result = new HashMap<>();
 		Qevent q = null;
 		int occ = 0;
 		for(int i = 0; i < qevents.size(); i++) {
@@ -290,11 +290,11 @@ public class Quest {
 	/* ----------------- */
 	
 	public String getWorldNames() {
-		return Util.implode(worlds.toArray(new String[0]), ',');
+		return Util.implode(worlds.toArray(new String[worlds.size()]), ',');
 	}
 	
 	public Set<String> getWorlds() {
-		return new HashSet<String>(worlds);
+		return new HashSet<>(worlds);
 	}
 	
 	void addWorld(final String worldName) {
@@ -327,7 +327,7 @@ public class Quest {
 			}
 		}
 		if(!worlds.isEmpty()) {
-			key.setRaw("worlds", worlds.toArray(new String[0]));
+			key.setRaw("worlds", worlds.toArray(new String[worlds.size()]));
 		}
 		if(!flags.isEmpty()) {
 			key.setString("flags", QuestFlag.serialize(flags));

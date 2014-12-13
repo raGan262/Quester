@@ -73,10 +73,10 @@ public final class ExperienceCondition extends Condition {
 	protected void save(final StorageKey key) {
 		key.setInt("amount", amount);
 		if(inverted) {
-			key.setBoolean("inverted", inverted);
+			key.setBoolean("inverted", true);
 		}
 		if(isLevel) {
-			key.setBoolean("islevel", isLevel);
+			key.setBoolean("islevel", true);
 		}
 	}
 	

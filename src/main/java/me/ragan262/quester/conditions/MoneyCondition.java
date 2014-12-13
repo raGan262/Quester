@@ -65,7 +65,7 @@ public final class MoneyCondition extends Condition {
 	protected void save(final StorageKey key) {
 		key.setDouble("amount", amount);
 		if(inverted) {
-			key.setBoolean("inverted", inverted);
+			key.setBoolean("inverted", true);
 		}
 	}
 	

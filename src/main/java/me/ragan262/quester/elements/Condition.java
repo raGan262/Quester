@@ -106,7 +106,7 @@ public abstract class Condition extends Element {
 		}
 	}
 	
-	public static final Condition deserialize(final StorageKey key) {
+	public static Condition deserialize(final StorageKey key) {
 		if(!key.hasSubKeys()) {
 			Ql.severe("Condition deserialization error: no subkeys");
 			return null;

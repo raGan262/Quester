@@ -109,7 +109,7 @@ public final class BreakObjective extends Objective {
 		try {
 			hnd = SerUtils.parseItem(key.getString("inhand", ""))[0];
 		}
-		catch(final IllegalArgumentException e) {}
+		catch(final IllegalArgumentException ignored) {}
 		return new BreakObjective(amt, mat, dat, hnd);
 	}
 	

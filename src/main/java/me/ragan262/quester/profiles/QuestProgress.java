@@ -15,7 +15,7 @@ public class QuestProgress {
 	final ObjectiveStatus[] objectiveStatuses;
 	
 	public enum ObjectiveStatus {
-		INACTIVE, ACTIVE, COMPLETED, DISABLED;
+		INACTIVE, ACTIVE, COMPLETED, DISABLED
 	}
 	
 	QuestProgress(final Quest quest) {

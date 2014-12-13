@@ -32,7 +32,7 @@ public class ObjectiveCommands {
 		profMan = plugin.getProfileManager();
 	}
 	
-	private Objective getObjective(final String type, final QuesterCommandContext subContext, final QuesterLang lang) throws CommandException, ObjectiveException, QuesterException {
+	private Objective getObjective(final String type, final QuesterCommandContext subContext, final QuesterLang lang) throws CommandException, QuesterException {
 		if(!eMan.elementExists(Element.OBJECTIVE, type)) {
 			subContext.getSender().sendMessage(ChatColor.RED + lang.get("ERROR_OBJ_NOT_EXIST"));
 			subContext.getSender().sendMessage(ChatColor.RED + lang.get("OBJ_LIST") + ": "
@@ -108,7 +108,7 @@ public class ObjectiveCommands {
 	
 	@CommandLabels({ "list", "l" })
 	@Command(section = "QMod", max = 0, desc = "objective list")
-	public void list(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {
+	public void list(final QuesterCommandContext context, final CommandSender sender) {
 		sender.sendMessage(ChatColor.RED + context.getSenderLang().get("OBJ_LIST") + ": "
 				+ ChatColor.WHITE + eMan.getElementList(Element.OBJECTIVE));
 	}
@@ -142,17 +142,17 @@ public class ObjectiveCommands {
 	@CommandLabels({ "desc" })
 	@Command(section = "QMod", desc = "objective description manipulation")
 	@NestedCommand(ObjectiveDescCommands.class)
-	public void desc(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {}
+	public void desc(final QuesterCommandContext context, final CommandSender sender) {}
 	
 	@CommandLabels({ "prereq" })
 	@Command(section = "QMod", desc = "objective prerequisites manipulation")
 	@NestedCommand(ObjectivePrereqCommands.class)
-	public void prereq(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {}
+	public void prereq(final QuesterCommandContext context, final CommandSender sender) {}
 	
 	@CommandLabels({ "trigger", "trig" })
 	@Command(section = "QMod", desc = "objective triggers manipulation")
 	@NestedCommand(ObjectiveTrigCommands.class)
-	public void trig(final QuesterCommandContext context, final CommandSender sender) throws QuesterException {}
+	public void trig(final QuesterCommandContext context, final CommandSender sender) {}
 	
 	public static class ObjectiveDescCommands {
 		

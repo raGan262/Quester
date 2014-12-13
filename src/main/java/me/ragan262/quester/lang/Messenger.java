@@ -71,19 +71,18 @@ public class Messenger {
 			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_CONDITIONS") + ":");
 		}
 		ChatColor color = ChatColor.WHITE;
-		for(int i = 0; i < cons.size(); i++) {
+		for(Condition con : cons) {
 			if(player != null) {
-				color = cons.get(i).isMet(player) ? ChatColor.GREEN : ChatColor.RED;
+				color = con.isMet(player) ? ChatColor.GREEN : ChatColor.RED;
 			}
-			sender.sendMessage(color + " - " + cons.get(i).inShow(player, lang));
+			sender.sendMessage(color + " - " + con.inShow(player, lang));
 		}
 		if(!quest.hasFlag(QuestFlag.HIDDENOBJS)) {
 			final List<Objective> objs = quest.getObjectives();
 			sender.sendMessage(ChatColor.BLUE + lang.get("INFO_OBJECTIVES") + ":");
-			for(int i = 0; i < objs.size(); i++) {
-				if(!objs.get(i).isHidden()
-						&& (objs.get(i).getPrerequisites().isEmpty() || !QConfiguration.ordOnlyCurrent)) {
-					sender.sendMessage(ChatColor.WHITE + " - " + objs.get(i).inShow(0, lang));
+			for(Objective obj : objs) {
+				if(!obj.isHidden() && (obj.getPrerequisites().isEmpty() || !QConfiguration.ordOnlyCurrent)) {
+					sender.sendMessage(ChatColor.WHITE + " - " + obj.inShow(0, lang));
 				}
 			}
 		}
