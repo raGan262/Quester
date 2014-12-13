@@ -3,6 +3,8 @@
 .project
 /buildNumber.properties
 /dependency-reduced-pom.xml
+/.idea/
+*.iml
 
 /bin
 /target
