@@ -73,6 +73,9 @@ public class QuestProgress {
 		for(int i = 0; i < objectives.size(); i++) {
 			if(objectiveStatuses[i] != ObjectiveStatus.COMPLETED) {
 				for(final int p : objectives.get(i).getPrerequisites()) {
+					if(p < 0 || p >= objectiveStatuses.length) {
+						continue;
+					}
 					if(objectiveStatuses[p] != ObjectiveStatus.COMPLETED) {
 						objectiveStatuses[i] = ObjectiveStatus.INACTIVE;
 						continue objectives;

@@ -613,10 +613,11 @@ public class QuestManager {
 					errorHappened = true;
 					continue;
 				}
+
 				if(questNames.containsKey(quest.getName().toLowerCase())) { // duplicate name, generating new one
 					quest.setName("");
 					String name = "";
-					while(questNames.containsKey(quest.getName()) || quest.getName().isEmpty()) {
+					while(quest.getName().isEmpty() || questNames.containsKey(quest.getName())) {
 						name = "generic" + lastGeneric;
 						quest.setName(name);
 						lastGeneric++;
@@ -625,6 +626,8 @@ public class QuestManager {
 							+ " detected, generated new name '" + name + "'.");
 					errorHappened = true;
 				}
+
+				checkPrerequisites(quest);
 				if(quest.hasID()) {
 					if(quests.get(quest.getID()) != null) { // duplicate ID
 						Ql.severe("Duplicate quest ID in quest " + questKey.getName()
@@ -644,6 +647,7 @@ public class QuestManager {
 				else { // quest has default ID, new needs to be generated
 					onHold.add(quest);
 				}
+
 				if(quest.error) {
 					errorHappened = true;
 					quest.error = false;
@@ -659,8 +663,9 @@ public class QuestManager {
 				questLocations.put(q.getID(), q.getLocation());
 			}
 		}
+
 		Ql.verbose(quests.size() + " quests loaded.");
-		
+
 		if(QConfiguration.autoBackup && errorHappened) {
 			try {
 				final File backupDir = new File(dataFolder + File.separator + "backups");
@@ -678,5 +683,16 @@ public class QuestManager {
 			}
 		}
 		return true;
+	}
+
+	private void checkPrerequisites(Quest quest) {
+		List<Objective> objectives = quest.getObjectives();
+		for(int o = 0; o<objectives.size(); o++) {
+			for(int p : objectives.get(o).getPrerequisites()) {
+				if(p < 0 || p >= objectives.size()) {
+					Ql.warning("Invalid prerequisite " + p + " in objective " + o + " in quest " + quest.getName() + ".");
+				}
+			}
+		}
 	}
 }
