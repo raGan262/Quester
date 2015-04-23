@@ -1,0 +1,38 @@
+# QUESTER DIALOGUE FORMAT
+
+exampletree:
+    message-prefix: '[NPC] '
+    user-prefix: '[You] '
+    cancel-message: 'Goodbye.'
+    # seconds
+    timeout: 30
+    # ticks
+    delay: 20
+    range: 5
+    nodes:
+       '0':
+           type: BRANCH
+           text: 'Yo, I''m npc and I''m testing this dialogue thing.'
+           options:
+               '1':
+               '2':
+       '1':
+           type: RESPONSE
+           text: 'So, do you want to go to third node?'
+           options:
+               '3':
+                   applicable: ['yes', 'yeah', 'sure', 'of course', 'yup']
+                   response: 'Yes I do.'
+               '4':
+                   applicable: ['no', 'nah', 'nope', 'NEIN', 'naa']
+                   response: 'No I don't.'
+       '2':
+           type: BRANCH
+           text: 'This will never appear, because there are no conditions for node 1.'
+           options:
+       '3':
+           type: BRANCH
+           text: 'Here you go; third node.'
+       '4':
+           type: BRANCH
+           text: 'No? Well, have fourth one then.'

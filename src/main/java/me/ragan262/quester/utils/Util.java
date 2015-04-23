@@ -226,7 +226,15 @@ public class Util {
 	public static boolean isPlayer(final Player player) {
 		return !player.hasMetadata("NPC");
 	}
-	
+
+	// basic string formatting
+	public static String fmt(String toFormat) {
+		if(toFormat == null) {
+			return null;
+		}
+		return ChatColor.translateAlternateColorCodes('&', toFormat).replaceAll("\\\\n", "\n");
+	}
+
 	// LOCATION SERIALIZATION
 	
 	// MOVE LOCATION

@@ -318,7 +318,7 @@ public class ProfileManager {
 		Ql.verbose(player.getName() + " started quest '" + quest.getName() + "'.");
 		for(final Qevent qv : quest.getQevents()) {
 			if(qv.getOccasion() == -1) {
-				qv.execute(player, plugin);
+				qv.execute(player);
 			}
 		}
 		
@@ -385,7 +385,7 @@ public class ProfileManager {
 				+ "(ActionSource: " + as.getType() + ")");
 		for(final Qevent qv : quest.getQevents()) {
 			if(qv.getOccasion() == -2) {
-				qv.execute(player, plugin);
+				qv.execute(player);
 			}
 		}
 	}
@@ -464,7 +464,7 @@ public class ProfileManager {
 		
 		for(final Qevent qv : quest.getQevents()) {
 			if(qv.getOccasion() == -3) {
-				qv.execute(player, plugin);
+				qv.execute(player);
 			}
 		}
 		if(quest.hasFlag(QuestFlag.ONLYFIRST)) {
@@ -506,7 +506,7 @@ public class ProfileManager {
 			
 			for(final Qevent qv : q.getQevents()) {
 				if(qv.getOccasion() == objectiveId) {
-					qv.execute(player, plugin);
+					qv.execute(player);
 				}
 			}
 			if(checkAll) {
