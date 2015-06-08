@@ -60,17 +60,19 @@ public class ResponseNode extends DialogueNode {
 		if(input == null) {
 			return this;
 		}
+		Player player = (Player)context.getForWhom();
 		DialogueNode result = null;
 		String response = null;
 		for(DialogueOption o : options) {
 			ResponseOption ro = ((ResponseOption)o);
-			if(ro.isApplicable(input) && ro.isAvailable((Player)context.getForWhom())) {
+			if(ro.isApplicable(input) && ro.isAvailable(player)) {
 				result = ro.getNode();
 				response = ro.response;
 			}
 		}
 		if(result != null) {
-			context.getForWhom().sendRawMessage(tree.getUserPrefix() + (response == null ? input : response));
+			context.getForWhom().sendRawMessage(tree.getUserPrefix().replace("%p", player.getName())
+					+ (response == null ? input : response));
 		}
 		return result == null ? this : result;
 	}
