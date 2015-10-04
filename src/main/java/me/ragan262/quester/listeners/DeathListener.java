@@ -13,11 +13,13 @@ import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.quests.QuestFlag;
 import me.ragan262.quester.utils.Util;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.projectiles.ProjectileSource;
 
 public class DeathListener implements Listener {
 	
@@ -69,11 +71,30 @@ public class DeathListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onKill(final PlayerDeathEvent event) {
 		// PLAYER KILL OBJECTIVE
-		final Player killer = event.getEntity().getKiller();
+		Player killer = event.getEntity().getKiller();
 		final Player victim = event.getEntity();
 		if(!Util.isPlayer(victim)) {
 			return;
 		}
+
+		// check for pet kills
+		if(killer == null && victim.getLastDamageCause() instanceof EntityDamageByEntityEvent) {
+			EntityDamageByEntityEvent ebet = (EntityDamageByEntityEvent)victim.getLastDamageCause();
+			Entity ent = ebet.getDamager();
+			if(ent instanceof Tameable) {
+				AnimalTamer owner = ((Tameable) ent).getOwner();
+				if(owner instanceof Player) {
+					killer = (Player)owner;
+				}
+			}
+			else if(ent instanceof Projectile) {
+				ProjectileSource shooter = ((Projectile)ent).getShooter();
+				if(shooter instanceof Player) {
+					killer = (Player)shooter;
+				}
+			}
+		}
+
 		if(killer != null) {
 			if(!Util.isPlayer(killer)) {
 				return;
