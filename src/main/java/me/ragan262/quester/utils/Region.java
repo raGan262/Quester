@@ -1,12 +1,13 @@
 package me.ragan262.quester.utils;
 
-import java.util.regex.Pattern;
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.storage.StorageKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.regex.Pattern;
 
 public abstract class Region {
 	
@@ -80,11 +81,11 @@ public abstract class Region {
 	
 	public static class Sphere extends Region {
 		
-		private final Location center;
+		private final QLocation center;
 		private final double range;
 		private final double powRange;
 		
-		public Sphere(final Location center, final double range) {
+		public Sphere(final QLocation center, final double range) {
 			if(center == null) {
 				throw new IllegalArgumentException("Location cannot be null.");
 			}
@@ -103,10 +104,11 @@ public abstract class Region {
 			if(location == null) {
 				return false;
 			}
-			if(location.getWorld().getUID() != center.getWorld().getUID()) {
+			Location loc = center.getLocation();
+			if(location.getWorld().getUID() != loc.getWorld().getUID()) {
 				return false;
 			}
-			return center.distanceSquared(location) <= powRange;
+			return loc.distanceSquared(location) <= powRange;
 		}
 		
 		@Override
@@ -122,18 +124,18 @@ public abstract class Region {
 	
 	public static class Cuboid extends Region {
 		
-		private final Location min;
-		private final Location max;
+		private final QLocation min;
+		private final QLocation max;
 		
-		public Cuboid(final Location loc1, final Location loc2) {
+		public Cuboid(final QLocation loc1, final QLocation loc2) {
 			if(loc1 == null || loc2 == null) {
 				throw new IllegalArgumentException("Locations cannot be null.");
 			}
-			if(loc1.getWorld().getUID() != loc2.getWorld().getUID()) {
+			if(!loc1.getWorldName().equalsIgnoreCase(loc2.getWorldName())) {
 				throw new IllegalArgumentException("Locations must be within the same world.");
 			}
-			min = new Location(loc1.getWorld(), Math.min(loc1.getX(), loc2.getX()), Math.min(loc1.getY(), loc2.getY()), Math.min(loc1.getZ(), loc2.getZ()));
-			max = new Location(loc1.getWorld(), Math.max(loc1.getX(), loc2.getX()), Math.max(loc1.getY(), loc2.getY()), Math.max(loc1.getZ(), loc2.getZ()));
+			min = new QLocation(loc1.getWorldName(), Math.min(loc1.getX(), loc2.getX()), Math.min(loc1.getY(), loc2.getY()), Math.min(loc1.getZ(), loc2.getZ()), 0, 0);
+			max = new QLocation(loc1.getWorldName(), Math.max(loc1.getX(), loc2.getX()), Math.max(loc1.getY(), loc2.getY()), Math.max(loc1.getZ(), loc2.getZ()), 0, 0);
 		}
 		
 		@Override
@@ -143,7 +145,7 @@ public abstract class Region {
 		
 		@Override
 		public boolean isWithin(final Location location) {
-			if(location == null || min.getWorld().getUID() != location.getWorld().getUID()) {
+			if(location == null || !min.getWorldName().equalsIgnoreCase(location.getWorld().getName())) {
 				return false;
 			}
 			

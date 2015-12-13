@@ -6,6 +6,7 @@ import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
+import me.ragan262.quester.utils.QLocation;
 import me.ragan262.quester.utils.SerUtils;
 import me.ragan262.quester.utils.Util;
 import org.bukkit.Location;
@@ -14,11 +15,11 @@ import org.bukkit.entity.Player;
 @QElement("LIGHTNING")
 public final class LightningQevent extends Qevent {
 	
-	private final Location location;
+	private final QLocation location;
 	private final boolean damage;
 	private final int range;
 	
-	public LightningQevent(final Location loc, final int rng, final boolean damage) {
+	public LightningQevent(final QLocation loc, final int rng, final boolean damage) {
 		location = loc;
 		this.damage = damage;
 		range = rng;
@@ -40,7 +41,7 @@ public final class LightningQevent extends Qevent {
 			loc = Util.move(player.getLocation(), range);
 		}
 		else {
-			loc = Util.move(location, range);
+			loc = Util.move(location.getLocation(), range);
 		}
 		
 		if(damage) {
@@ -53,7 +54,7 @@ public final class LightningQevent extends Qevent {
 	
 	@Command(min = 1, max = 2, usage = "{<location>} [range] (-d)")
 	public static Qevent fromCommand(final QuesterCommandContext context) {
-		final Location loc = SerUtils.getLoc(context.getPlayer(), context.getString(0));
+		final QLocation loc = SerUtils.getLoc(context.getPlayer(), context.getString(0));
 		int range = 0;
 		if(context.length() > 1) {
 			range = context.getInt(1);
@@ -75,7 +76,7 @@ public final class LightningQevent extends Qevent {
 	}
 	
 	protected static Qevent load(final StorageKey key) {
-		final Location loc = SerUtils.deserializeLocString(key.getString("location", ""));
+		final QLocation loc = SerUtils.deserializeLocString(key.getString("location", ""));
 		int rng = key.getInt("range", 0);
 		if(rng < 0) {
 			rng = 0;

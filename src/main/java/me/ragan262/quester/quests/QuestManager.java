@@ -1,16 +1,5 @@
 package me.ragan262.quester.quests;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.logging.Logger;
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.elements.Condition;
@@ -30,11 +19,23 @@ import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.storage.ConfigStorage;
 import me.ragan262.quester.storage.Storage;
 import me.ragan262.quester.storage.StorageKey;
+import me.ragan262.quester.utils.QLocation;
 import me.ragan262.quester.utils.Ql;
 import me.ragan262.quester.utils.Util;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.logging.Logger;
 
 public class QuestManager {
 	
@@ -45,7 +46,7 @@ public class QuestManager {
 	
 	private final Map<Integer, Quest> quests = new TreeMap<>();
 	private final Map<String, Integer> questNames = new HashMap<>();
-	public final Map<Integer, Location> questLocations = new HashMap<>();
+	public final Map<Integer, QLocation> questLocations = new HashMap<>();
 	
 	private int questID = -1;
 	
@@ -229,12 +230,12 @@ public class QuestManager {
 		quest.addDescription(descToAdd);
 	}
 	
-	public void setQuestLocation(final PlayerProfile issuer, final Location loc, final int range, final QuesterLang lang) throws QuesterException {
+	public void setQuestLocation(final PlayerProfile issuer, final QLocation location, final int range, final QuesterLang lang) throws QuesterException {
 		final Quest quest = issuer.getSelected();
 		modifyCheck(quest, lang);
-		quest.setLocation(loc);
+		quest.setLocation(location);
 		quest.setRange(range);
-		questLocations.put(quest.getID(), loc);
+		questLocations.put(quest.getID(), location);
 	}
 	
 	public void removeQuestLocation(final PlayerProfile issuer, final QuesterLang lang) throws QuesterException {
