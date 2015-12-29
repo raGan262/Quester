@@ -1,6 +1,5 @@
 package me.ragan262.quester.dialogue;
 
-import me.ragan262.quester.Quester;
 import me.ragan262.quester.elements.Condition;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
@@ -31,13 +30,9 @@ public class DialogueNodeFactory {
 		}
 		final DialogueNode node = loader.loadNode(parent, key);
 
-		System.out.println("  TYPE: " + type);
-
 		node.setPromptText(Util.fmt(key.getString("text")));
-		System.out.println("  TEXT: " + key.getString("text"));
 
 		if(key.keyExists("delay")) {
-			System.out.println("  DELAY: " + key.getInt("delay"));
 			node.setDelay(key.getInt("delay"));
 		}
 
@@ -49,7 +44,6 @@ public class DialogueNodeFactory {
 				con = Condition.deserialize(subKey.getSubKey(String.valueOf(i)));
 				if(con != null) {
 					node.addCondition(con);
-					System.out.println("  CONDITION: " + con.inInfo(Quester.getInstance().getLanguageManager()));
 				}
 				else {
 					Ql.severe("Error occured when deserializing condition ID " + i
@@ -67,7 +61,6 @@ public class DialogueNodeFactory {
 				qvt = Qevent.deserialize(subKey.getSubKey(String.valueOf(i)));
 				if(qvt != null) {
 					node.addEvent(qvt);
-					System.out.println("  EVENT: " + qvt.inInfo());
 				}
 				else {
 					Ql.severe("Error occured when deserializing event ID " + i

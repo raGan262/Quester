@@ -42,7 +42,6 @@ public abstract class DialogueNode implements Prompt {
 	protected void addOption(DialogueOption option) {
 		if(option.getNode() != null) {
 			options.add(option);
-			System.out.println("    SUCCESS");
 		}
 	}
 

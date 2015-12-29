@@ -185,18 +185,15 @@ public class DialogueTree {
 		List<DialogueNode> nodelist = new ArrayList<>();
 
 		for(StorageKey nodeKey : key.getSubKey("nodes").getSubKeys()) {
-			System.out.println("CREATING NODE " + nodeKey.getName());
 			nodelist.add(DialogueNodeFactory.createNode(tree, nodeKey));
 		}
 
 		int cursor = 0;
 		for(StorageKey nodeKey : key.getSubKey("nodes").getSubKeys()) {
-			System.out.println("ADDING OPTION TO " + cursor);
 			DialogueNode node = nodelist.get(cursor);
 			for(StorageKey optionKey : nodeKey.getSubKey("options").getSubKeys()) {
 				DialogueNode oNode = nodelist.get(Integer.parseInt(optionKey.getName()));
 				node.addOption(node.deserializeOption(oNode, optionKey));
-				System.out.println("  ADDED OPTION " + optionKey.getName());
 			}
 			cursor++;
 		}
