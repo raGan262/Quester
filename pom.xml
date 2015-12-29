@@ -16,10 +16,6 @@
 	
 	<repositories>
 		<repository>
-			<id>bukkit-repo</id>
-			<url>http://repo.bukkit.org/content/groups/public</url>
-		</repository>
-		<repository>
 			<id>vault-repo</id>
 			<url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
 		</repository>
@@ -33,7 +29,7 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.7.9-R0.2</version>
+			<version>1.7.10-R0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>me.ragan262</groupId>
@@ -43,7 +39,7 @@
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>VaultAPI</artifactId>
-			<version>1.4</version>
+			<version>1.5</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -89,13 +85,13 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
-					<archive>
-						<addMavenDescriptor>true</addMavenDescriptor>
-						<manifest>
-							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
-					</archive>
+					<!--<archive>-->
+						<!--<addMavenDescriptor>true</addMavenDescriptor>-->
+						<!--<manifest>-->
+							<!--<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>-->
+							<!--<addDefaultImplementationEntries>true</addDefaultImplementationEntries>-->
+						<!--</manifest>-->
+					<!--</archive>-->
 					<outputDirectory>${package.dir}</outputDirectory>
 					<finalName>${package.name}</finalName>
 				</configuration>

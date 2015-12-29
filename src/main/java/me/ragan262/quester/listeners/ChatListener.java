@@ -1,6 +1,5 @@
 package me.ragan262.quester.listeners;
 
-import java.util.List;
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.elements.Objective;
@@ -8,13 +7,14 @@ import me.ragan262.quester.objectives.ChatObjective;
 import me.ragan262.quester.profiles.PlayerProfile;
 import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.Quest;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.List;
 
 public class ChatListener implements Listener {
 	
@@ -28,7 +28,7 @@ public class ChatListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onChat(final AsyncPlayerChatEvent event) {
-		Bukkit.getScheduler().runTask(plugin, new ChatTask(event));
+		new ChatTask(event).runTask(plugin);
 	}
 	
 	class ChatTask extends BukkitRunnable {
