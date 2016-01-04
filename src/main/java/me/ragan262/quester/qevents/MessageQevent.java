@@ -7,6 +7,7 @@ import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.storage.StorageKey;
+import me.ragan262.quester.utils.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -46,9 +47,9 @@ public final class MessageQevent extends Qevent {
 		}
 	}
 	
-	@Command(min = 1, max = 1, usage = "<message>")
+	@Command(min = 1, usage = "<message>")
 	public static Qevent fromCommand(final QuesterCommandContext context) {
-		return new MessageQevent(context.getString(0));
+		return new MessageQevent(Util.implode(context.getArgs()));
 	}
 	
 	@Override
