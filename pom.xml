@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.ragan262</groupId>
-	<artifactId>quester-loc</artifactId>
-	<version>0.7-5-SNAPSHOT</version>
+	<artifactId>quester</artifactId>
+	<version>1.0.0</version>
 	<name>Quester</name>
 	<description>Quester provides ability to create highly customizable quests directly in game.</description>
 	
@@ -15,10 +15,6 @@
 	</properties>
 	
 	<repositories>
-		<repository>
-			<id>bukkit-repo</id>
-			<url>http://repo.bukkit.org/content/groups/public</url>
-		</repository>
 		<repository>
 			<id>vault-repo</id>
 			<url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
@@ -43,7 +39,7 @@
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>VaultAPI</artifactId>
-			<version>1.4</version>
+			<version>1.5</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -89,13 +85,13 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
-					<archive>
-						<addMavenDescriptor>true</addMavenDescriptor>
-						<manifest>
-							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
-					</archive>
+					<!--<archive>-->
+						<!--<addMavenDescriptor>true</addMavenDescriptor>-->
+						<!--<manifest>-->
+							<!--<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>-->
+							<!--<addDefaultImplementationEntries>true</addDefaultImplementationEntries>-->
+						<!--</manifest>-->
+					<!--</archive>-->
 					<outputDirectory>${package.dir}</outputDirectory>
 					<finalName>${package.name}</finalName>
 				</configuration>

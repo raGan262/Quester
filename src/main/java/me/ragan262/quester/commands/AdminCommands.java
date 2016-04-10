@@ -10,6 +10,8 @@ import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
 import me.ragan262.quester.commandmanager.QuesterCommandContext;
+import me.ragan262.quester.dialogue.DialogueManager;
+import me.ragan262.quester.dialogue.DialogueTree;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.holder.QuestHolderManager;
 import me.ragan262.quester.lang.LanguageManager;
@@ -33,6 +35,7 @@ public class AdminCommands {
 	final QuestManager qMan;
 	final QuestHolderManager holMan;
 	final LanguageManager langMan;
+	final DialogueManager dialMan;
 	
 	public AdminCommands(final Quester plugin) {
 		this.plugin = plugin;
@@ -40,6 +43,7 @@ public class AdminCommands {
 		qMan = plugin.getQuestManager();
 		holMan = plugin.getHolderManager();
 		langMan = plugin.getLanguageManager();
+		dialMan = plugin.getDialogueManager();
 	}
 	
 	@CommandLabels({ "startsave" })
@@ -55,7 +59,10 @@ public class AdminCommands {
 		}
 		if(profMan.startSaving()) {
 			sender.sendMessage(ChatColor.GREEN
-					+ context.getSenderLang().get("MSG_AUTOSAVE_STARTED").replaceAll("%interval", String.valueOf(QConfiguration.saveInterval)));
+					+ context.getSenderLang().get("MSG_AUTOSAVE_STARTED").replaceAll("%interval",
+																					 String
+																							 .valueOf(
+																							 QConfiguration.saveInterval)));
 		}
 		else {
 			sender.sendMessage(ChatColor.RED + context.getSenderLang().get("MSG_AUTOSAVE_RUNNING"));
@@ -78,8 +85,8 @@ public class AdminCommands {
 					+ context.getSenderLang().get("MSG_AUTOSAVE_STOPPED"));
 		}
 		else {
-			sender.sendMessage(ChatColor.RED
-					+ context.getSenderLang().get("MSG_AUTOSAVE_NOT_RUNNING"));
+			sender.sendMessage(
+					ChatColor.RED + context.getSenderLang().get("MSG_AUTOSAVE_NOT_RUNNING"));
 		}
 	}
 	
@@ -119,14 +126,15 @@ public class AdminCommands {
 	@Command(
 			section = "Admin",
 			desc = "reloads quests, config and languages",
-			usage = "(-clq)",
+			usage = "(-clqd)",
 			permission = QConfiguration.PERM_ADMIN)
 	public void reload(final QuesterCommandContext context, final CommandSender sender) {
-		boolean con, que, lang;
+		boolean con, que, lang, dial;
 		con = context.hasFlag('c');
 		que = context.hasFlag('q');
 		lang = context.hasFlag('l');
-		if(con || que || lang) {
+		dial = context.hasFlag('d');
+		if(con || que || lang || dial) {
 			if(con) {
 				reloadData();
 			}
@@ -138,6 +146,9 @@ public class AdminCommands {
 				langMan.loadCustomMessages(new File(plugin.getDataFolder(), "messages.yml"));
 				langMan.loadLangs();
 			}
+			if(dial) {
+				dialMan.loadDialogues();
+			}
 		}
 		else {
 			reloadData();
@@ -147,6 +158,8 @@ public class AdminCommands {
 			langMan.clearCustomMessages();
 			langMan.loadCustomMessages(new File(plugin.getDataFolder(), "messages.yml"));
 			langMan.loadLangs();
+			
+			dialMan.loadDialogues();
 		}
 		sender.sendMessage(ChatColor.GREEN + context.getSenderLang().get("MSG_DATA_RELOADED"));
 	}
@@ -194,6 +207,32 @@ public class AdminCommands {
 		sender.sendMessage(Quester.LABEL + ChatColor.GRAY + "made by "
 				+ plugin.getDescription().getAuthors().get(0));
 	}
+
+	@CommandLabels({ "startdialogue" })
+	@Command(
+			section = "Admin",
+			desc = "used to start a dialogue for a player",
+			usage = "<player> <dialogue>",
+			min = 2,
+			max = 2,
+			permission = QConfiguration.PERM_ADMIN)
+	public void startdialogue(final QuesterCommandContext context, final CommandSender sender) {
+		final Player player = Bukkit.getPlayerExact(context.getString(0));
+		if(player == null) {
+			throw new CommandException(context.getSenderLang().get("ERROR_CMD_PLAYER_OFFLINE")
+											  .replace("%p", context.getString(0)));
+		}
+		DialogueTree dialogue = dialMan.getDialogue(context.getString(1));
+		if(dialogue == null) {
+			sender.sendMessage(ChatColor.RED + context.getSenderLang().get("ERROR_DIAL_NOT_EXIST"));
+			return;
+		}
+		if(!dialogue.startDialogue(player)) {
+			player.sendRawMessage(ChatColor.RED + langMan.getLang(
+					profMan.getProfile(player).getLanguage()).get("ERROR_DIAL_IN_PROGRESS"));
+		}
+	}
+
 	
 	// temporary method (TODO)
 	@CommandLabels({ "runaction" })
@@ -207,7 +246,8 @@ public class AdminCommands {
 	public void runaction(final QuesterCommandContext context, final CommandSender sender) {
 		final Player player = Bukkit.getPlayerExact(context.getString(0));
 		if(player == null) {
-			throw new CommandException("Player not online.");
+			throw new CommandException(context.getSenderLang().get("ERROR_CMD_PLAYER_OFFLINE")
+											  .replace("%p", context.getString(0)));
 		}
 		final PlayerProfile prof = profMan.getProfile(player);
 		final Quest quest = prof.getQuest();

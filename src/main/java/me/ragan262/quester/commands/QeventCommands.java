@@ -79,7 +79,7 @@ public class QeventCommands {
 		catch(final QeventException e) {
 			return;
 		}
-		qevent.execute(context.getPlayer(), plugin);
+		qevent.execute(context.getPlayer());
 	}
 	
 	@CommandLabels({ "runas" })
@@ -106,7 +106,7 @@ public class QeventCommands {
 		catch(final Exception e) {
 			throw new QeventException(lang.get("ERROR_EVT_NOT_EXIST"));
 		}
-		qevent.execute(context.getPlayer(), plugin);
+		qevent.execute(context.getPlayer());
 	}
 	
 	@CommandLabels({ "add", "a" })

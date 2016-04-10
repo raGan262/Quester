@@ -7,6 +7,7 @@ import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.storage.StorageKey;
+import me.ragan262.quester.utils.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -26,7 +27,7 @@ public final class MessageQevent extends Qevent {
 		}
 		else {
 			isCustomMessage = false;
-			message = ChatColor.translateAlternateColorCodes('&', msg).replaceAll("\\\\n", "\n");
+			message = Util.fmt(msg);
 		}
 	}
 	
@@ -39,7 +40,7 @@ public final class MessageQevent extends Qevent {
 	protected void run(final Player player, final Quester plugin) {
 		if(isCustomMessage) {
 			final String msg = plugin.getLanguageManager().getLang(plugin.getProfileManager().getProfile(player).getLanguage()).getCustom(message);
-			player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg).replaceAll("\\\\n", "\n").replace("%p", player.getName()));
+			player.sendMessage(Util.fmt(msg).replace("%p", player.getName()));
 		}
 		else {
 			player.sendMessage(message.replace("%p", player.getName()));

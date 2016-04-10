@@ -199,9 +199,11 @@ class MessageRegistry {
 		messages.put("ERROR_OBJ_CANT_DO", "Not enough resources to complete objective.");
 		messages.put("ERROR_OCC_NOT_EXIST", "Occasion does not exist.");
 		messages.put("ERROR_REW_NOT_EXIST", "Reward does not exist.");
-		messages.put("ERROR_REW_CANT_DO", "Not enough space to recieve quest rewards.");
+		messages.put("ERROR_REW_CANT_DO", "Not enough space to receive quest rewards.");
 		messages.put("ERROR_EVT_NOT_EXIST", "Event does not exist.");
 		messages.put("ERROR_TRIG_NOT_EXIST", "Trigger does not exist.");
+		messages.put("ERROR_DIAL_IN_PROGRESS", "Other conversation already in progress.");
+		messages.put("ERROR_DIAL_NOT_EXIST", "Dialogue does not exist.");
 		messages.put("ERROR_PROF_Q_ALREADY_DONE", "Player already completed this quest.");
 		messages.put("ERROR_WHY", "Why would you want to do this ?");
 		messages.put("ERROR_INTERESTING", "Interesting error, you should definitely notify Quester developer.");

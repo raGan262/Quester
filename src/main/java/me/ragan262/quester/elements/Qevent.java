@@ -66,38 +66,33 @@ public abstract class Qevent extends Element {
 		}
 	}
 	
-	public final void execute(final Player player, final Quester plugin) {
-		
+	public final void execute(final Player player) {
+		final Quester plugin = Quester.getInstance();
 		if(delay > 0) {
 			new BukkitRunnable() {
-				
-				@Override
 				public void run() {
-					try {
-						if(!player.isOnline()) {
-							Ql.debug(getType() + " event failed to run: Player offline ["
-									+ occasion + ":" + delay + "]");
-							return;
-						}
-						Qevent.this.run(player, plugin);
-					}
-					catch(final Exception e) {
-						Ql.warning(getType() + " event external exception. [" + occasion + ":"
-								+ delay + "]");
-						Ql.debug("Exception", e);
-					}
+					execute0(player, plugin);
 				}
 			}.runTaskLater(plugin, delay * 20);
 		}
 		else {
-			try {
-				Qevent.this.run(player, plugin);
+			execute0(player, plugin);
+		}
+	}
+
+	private void execute0(final Player player, Quester plugin) {
+		try {
+			if(!player.isOnline()) {
+				Ql.debug(getType() + " event failed to run: Player offline ["
+								 + occasion + ":" + delay + "]");
+				return;
 			}
-			catch(final Exception e) {
-				Ql.warning(getType() + " event external exception. [" + occasion + ":" + delay
-						+ "]");
-				Ql.debug("Exception", e);
-			}
+			Qevent.this.run(player, plugin);
+		}
+		catch(final Exception e) {
+			Ql.warning(getType() + " event external exception. [" + occasion + ":"
+							   + delay + "]");
+			Ql.debug("Exception", e);
 		}
 	}
 	

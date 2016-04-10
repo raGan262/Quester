@@ -305,7 +305,7 @@ public class PlayerCommands {
 			if(runEvents) {
 				for(final Qevent qevent : quest.getQevents()) {
 					if(qevent.getOccasion() == -3) {
-						qevent.execute(player, plugin);
+						qevent.execute(player);
 					}
 				}
 			}

@@ -11,6 +11,10 @@ import me.ragan262.quester.commands.AdminCommands;
 import me.ragan262.quester.commands.ModificationCommands;
 import me.ragan262.quester.commands.UserCommands;
 import me.ragan262.quester.conditions.*;
+import me.ragan262.quester.dialogue.BranchNode;
+import me.ragan262.quester.dialogue.DialogueManager;
+import me.ragan262.quester.dialogue.DialogueNodeFactory;
+import me.ragan262.quester.dialogue.ResponseNode;
 import me.ragan262.quester.elements.Element;
 import me.ragan262.quester.elements.ElementManager;
 import me.ragan262.quester.exceptions.ElementException;
@@ -48,6 +52,7 @@ public class Quester extends JavaPlugin {
 	private Messenger messages = null;
 	private QuestManager quests = null;
 	private ProfileManager profiles = null;
+	private DialogueManager dialogues = null;
 	private QuestHolderManager holders = null;
 	private ElementManager elements = null;
 	private CommandManager commands = null;
@@ -75,6 +80,9 @@ public class Quester extends JavaPlugin {
 		elements = new ElementManager();
 		ElementManager.setInstance(elements);
 		registerElements();
+
+		DialogueNodeFactory.registerNodeLoader("BRANCH", new BranchNode.Loader());
+		DialogueNodeFactory.registerNodeLoader("RESPONSE", new ResponseNode.Loader());
 	}
 	
 	@Override
@@ -101,6 +109,7 @@ public class Quester extends JavaPlugin {
 		// create managers
 		messages = new Messenger(langs);
 		quests = new QuestManager(this);
+		dialogues = new DialogueManager(this);
 		final File profileFolder = new File(getDataFolder(), "profiles");
 		profiles = new ProfileManager(this, profileFolder);
 		holders = new QuestHolderManager(quests, getDataFolder(), getLogger());
@@ -139,6 +148,7 @@ public class Quester extends JavaPlugin {
 		}
 		holders.loadHolders();
 		quests.loadQuests();
+		dialogues.loadDialogues();
 		if(!profileFolder.isDirectory()) {
 			final File oldProfiles = new File(getDataFolder(), "profiles.yml");
 			if(oldProfiles.isFile()) {
@@ -197,6 +207,10 @@ public class Quester extends JavaPlugin {
 	
 	public ProfileManager getProfileManager() {
 		return profiles;
+	}
+
+	public DialogueManager getDialogueManager() {
+		return dialogues;
 	}
 	
 	public LanguageManager getLanguageManager() {
@@ -285,6 +299,7 @@ public class Quester extends JavaPlugin {
 				ItemQevent.class,
 				SoundQevent.class,
 				ProgressQevent.class,
+				MessagesQevent.class,
 				
 				// objectives
 				BreakObjective.class,
