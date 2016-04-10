@@ -3,19 +3,22 @@
 exampletree:
     message-prefix: '[NPC] '
     user-prefix: '[You] '
+    # message sent by npc when dialogue is cancelled
     cancel-message: 'Goodbye.'
-    # seconds
+    # number of seconds to wait for user response
     timeout: 30
-    # ticks
+    # number of ticks between messages
     delay: 20
+    # range in which dialogue will stay active
+    # range is centered on player when dialogue starts
     range: 5
     nodes:
        '0':
            type: BRANCH
            text: 'Yo, I''m npc and I''m testing this dialogue thing.'
            options:
-               '1':
-               '2':
+               '1': {}
+               '2': {}
        '1':
            type: RESPONSE
            text: 'So, do you want to go to third node?'
