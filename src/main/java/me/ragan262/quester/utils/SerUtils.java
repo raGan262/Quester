@@ -1,10 +1,5 @@
 package me.ragan262.quester.utils;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.lang.QuesterLang;
@@ -22,6 +17,12 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 public class SerUtils {
 	
@@ -48,7 +49,7 @@ public class SerUtils {
 		}
 		else if(args[0].equalsIgnoreCase(QConfiguration.locLabelBlock)) {
 			if(sender instanceof Player) {
-				final Block block = ((Player)sender).getTargetBlock(null, 5);
+				final Block block = ((Player)sender).getTargetBlock((Set<Material>)null, 5);
 				if(block == null) {
 					throw new IllegalArgumentException(ChatColor.RED
 							+ lang.get("ERROR_CMD_LOC_NOBLOCK"));

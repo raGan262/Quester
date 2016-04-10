@@ -51,6 +51,9 @@ public final class SoundQevent extends Qevent {
 	@Command(min = 1, max = 4, usage = "{<sound>} {[location]} [volume] [pitch]")
 	public static Qevent fromCommand(final QuesterCommandContext context) throws CommandException {
 		final Sound snd = SerUtils.parseSound(context.getString(0));
+		if(snd == null) {
+			throw new CommandException(context.getSenderLang().get("ERROR_CMD_SOUND_UNKNOWN"));
+		}
 		float vol = 1F;
 		float pit = 1F;
 		Location loc = null;
