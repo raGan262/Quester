@@ -6,6 +6,7 @@ import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
+import me.ragan262.quester.utils.QLocation;
 import me.ragan262.quester.utils.SerUtils;
 import me.ragan262.quester.utils.Util;
 import org.bukkit.Location;
@@ -19,18 +20,18 @@ public final class DropObjective extends Objective {
 	private final short data;
 	private final int amount;
 	private final boolean questItem;
-	private final Location location;
+	private final QLocation location;
 	private final double range;
-	private final double range2;
+	private final double rangeSquared;
 	
-	public DropObjective(final int amt, final Material mat, final int dat, final Location loc, final double rng, final boolean quest) {
+	public DropObjective(final int amt, final Material mat, final int dat, final QLocation loc, final double rng, final boolean quest) {
 		amount = amt;
 		material = mat;
 		data = (short)dat;
 		questItem = quest;
 		location = loc;
 		range = rng;
-		range2 = rng * rng;
+		rangeSquared = rng * rng;
 	}
 	
 	@Override
@@ -66,7 +67,7 @@ public final class DropObjective extends Objective {
 		if(amt < 1 || dat < -1) {
 			throw new CommandException(context.getSenderLang().get("ERROR_CMD_ITEM_NUMBERS"));
 		}
-		Location loc = null;
+		QLocation loc = null;
 		double rng = 2.0;
 		if(context.length() > 2) {
 			loc = SerUtils.getLoc(context.getPlayer(), context.getString(2));
@@ -96,7 +97,7 @@ public final class DropObjective extends Objective {
 	protected static Objective load(final StorageKey key) {
 		Material mat;
 		int dat, amt;
-		Location loc = null;
+		QLocation loc;
 		double rng = 2.0;
 		try {
 			final int[] itm = SerUtils.parseItem(key.getString("item", ""));
@@ -123,19 +124,12 @@ public final class DropObjective extends Objective {
 	// Custom methods
 	
 	public boolean isMatching(final ItemStack item) {
-		if(questItem != Util.isQuestItem(item)) {
-			return false;
-		}
-		return item.getType() == material && (data < 0 || item.getDurability() == data);
+		return questItem == Util.isQuestItem(item) && item.getType() == material
+				&& (data < 0 || item.getDurability() == data);
 	}
 	
 	public boolean isMatching(final Location loc) {
-		if(location == null) {
-			return true;
-		}
-		if(loc == null) {
-			return false;
-		}
-		return location.distanceSquared(loc) <= range2;
+		return location == null ||
+				loc != null && location.getLocation().distanceSquared(loc) <= rangeSquared;
 	}
 }

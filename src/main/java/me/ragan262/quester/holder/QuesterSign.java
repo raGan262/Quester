@@ -1,6 +1,7 @@
 package me.ragan262.quester.holder;
 
 import me.ragan262.quester.storage.StorageKey;
+import me.ragan262.quester.utils.QLocation;
 import me.ragan262.quester.utils.SerUtils;
 import org.bukkit.Location;
 
@@ -26,20 +27,19 @@ public class QuesterSign {
 	}
 	
 	public void serialize(final StorageKey key) {
-		key.setString("location", SerUtils.serializeLocString(location));
+		key.setString("location", SerUtils.serializeLocString(new QLocation(location)));
 		key.setInt("holder", holder);
 	}
 	
 	public static QuesterSign deserialize(final StorageKey key) {
-		Location loc;
 		QuesterSign sign = null;
 		
 		try {
-			loc = SerUtils.deserializeLocString(key.getString("location", ""));
+			QLocation loc = SerUtils.deserializeLocString(key.getString("location", ""));
 			if(loc == null) {
 				return null;
 			}
-			sign = new QuesterSign(loc);
+			sign = new QuesterSign(loc.getLocation());
 			sign.setHolderID(key.getInt("holder", -1));
 		}
 		catch(final Exception ignore) {}

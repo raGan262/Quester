@@ -1,6 +1,5 @@
 package me.ragan262.quester.listeners;
 
-import java.util.List;
 import me.ragan262.quester.ActionSource;
 import me.ragan262.quester.QConfiguration;
 import me.ragan262.quester.Quester;
@@ -15,9 +14,12 @@ import me.ragan262.quester.profiles.ProfileManager;
 import me.ragan262.quester.quests.Quest;
 import me.ragan262.quester.quests.QuestFlag;
 import me.ragan262.quester.quests.QuestManager;
+import me.ragan262.quester.utils.QLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class PositionListener implements Runnable {
 	
@@ -73,9 +75,9 @@ public class PositionListener implements Runnable {
 				final Location loc = player.getLocation();
 				for(final int ID : qMan.questLocations.keySet()) {
 					final Quest qst = qMan.getQuest(ID);
-					final Location loc2 = qMan.questLocations.get(ID);
-					if(loc2.getWorld().getName().equals(loc.getWorld().getName())) {
-						if(loc2.distanceSquared(loc) <= qst.getRange() * qst.getRange()
+					final QLocation loc2 = qMan.questLocations.get(ID);
+					if(loc2.getWorldName().equals(loc.getWorld().getName())) {
+						if(loc2.getLocation().distanceSquared(loc) <= qst.getRange() * qst.getRange()
 								&& qst.hasFlag(QuestFlag.ACTIVE)) {
 							try {
 								profMan.startQuest(player, qst, ActionSource.otherSource(null), langMan.getLang(prof.getLanguage()));

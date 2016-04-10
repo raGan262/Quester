@@ -7,6 +7,7 @@ import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
+import me.ragan262.quester.utils.QLocation;
 import me.ragan262.quester.utils.SerUtils;
 import me.ragan262.quester.utils.Util;
 import org.bukkit.Location;
@@ -16,12 +17,12 @@ import org.bukkit.entity.Player;
 @QElement("SPAWN")
 public final class SpawnQevent extends Qevent {
 	
-	private final Location location;
+	private final QLocation location;
 	private final EntityType entity;
 	private final int range;
 	private final int amount;
 	
-	public SpawnQevent(final Location loc, final int rng, final EntityType ent, final int amt) {
+	public SpawnQevent(final QLocation loc, final int rng, final EntityType ent, final int amt) {
 		location = loc;
 		range = rng;
 		entity = ent;
@@ -44,7 +45,7 @@ public final class SpawnQevent extends Qevent {
 			temp = player.getLocation();
 		}
 		else {
-			temp = location;
+			temp = location.getLocation();
 		}
 		for(int i = 0; i < amount; i++) {
 			temp.getWorld().spawnEntity(Util.move(temp, range), entity);
@@ -55,7 +56,7 @@ public final class SpawnQevent extends Qevent {
 	public static Qevent fromCommand(final QuesterCommandContext context) throws CommandException {
 		final EntityType ent = SerUtils.parseEntity(context.getString(0));
 		final int amt = context.getInt(1);
-		final Location loc = SerUtils.getLoc(context.getSender(), context.getString(2));
+		final QLocation loc = SerUtils.getLoc(context.getSender(), context.getString(2));
 		int rng = 0;
 		if(amt < 1) {
 			throw new CommandException(context.getSenderLang().get("ERROR_CMD_AMOUNT_POSITIVE"));
@@ -92,7 +93,7 @@ public final class SpawnQevent extends Qevent {
 			return null;
 		}
 		
-		final Location loc = SerUtils.deserializeLocString(key.getString("location", ""));
+		final QLocation loc = SerUtils.deserializeLocString(key.getString("location", ""));
 		
 		int rng = key.getInt("range", 0);
 		if(rng < 0) {

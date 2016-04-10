@@ -7,6 +7,7 @@ import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
+import me.ragan262.quester.utils.QLocation;
 import me.ragan262.quester.utils.SerUtils;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -15,12 +16,12 @@ import org.bukkit.entity.Player;
 @QElement("SOUND")
 public final class SoundQevent extends Qevent {
 	
-	private final Location location;
+	private final QLocation location;
 	private final Sound sound;
 	private final float volume;
 	private final float pitch;
 	
-	public SoundQevent(final Location loc, final Sound snd, final float vol, final float pit) {
+	public SoundQevent(final QLocation loc, final Sound snd, final float vol, final float pit) {
 		location = loc;
 		sound = snd;
 		volume = vol;
@@ -43,7 +44,7 @@ public final class SoundQevent extends Qevent {
 			temp = player.getLocation();
 		}
 		else {
-			temp = location;
+			temp = location.getLocation();
 		}
 		temp.getWorld().playSound(temp, sound, volume, pitch);
 	}
@@ -56,7 +57,7 @@ public final class SoundQevent extends Qevent {
 		}
 		float vol = 1F;
 		float pit = 1F;
-		Location loc = null;
+		QLocation loc = null;
 		if(context.length() > 1) {
 			loc = SerUtils.getLoc(context.getPlayer(), context.getString(1));
 		}
@@ -91,7 +92,7 @@ public final class SoundQevent extends Qevent {
 		if(snd == null) {
 			return null;
 		}
-		final Location loc = SerUtils.deserializeLocString(key.getString("location", ""));
+		final QLocation loc = SerUtils.deserializeLocString(key.getString("location", ""));
 		float vol = (float)key.getDouble("volume", 1F);
 		float pit = (float)key.getDouble("pitch", 1F);
 		if(vol < 0F) {

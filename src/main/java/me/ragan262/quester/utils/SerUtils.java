@@ -26,21 +26,21 @@ import java.util.Set;
 
 public class SerUtils {
 	
-	public static Location getLoc(final CommandSender sender, final String arg) throws IllegalArgumentException {
+	public static QLocation getLoc(final CommandSender sender, final String arg) throws IllegalArgumentException {
 		return getLoc(sender, arg, LanguageManager.defaultLang);
 	}
 	
-	public static Location getLoc(final CommandSender sender, final String arg, final QuesterLang lang) throws IllegalArgumentException {
+	public static QLocation getLoc(final CommandSender sender, final String arg, final QuesterLang lang) throws IllegalArgumentException {
 		
 		final String args[] = arg.split(";");
-		Location loc;
+		QLocation loc;
 		if(args.length < 1) {
 			throw new IllegalArgumentException(ChatColor.RED + lang.get("ERROR_CMD_LOC_INVALID"));
 		}
 		
 		if(args[0].equalsIgnoreCase(QConfiguration.locLabelHere)) {
 			if(sender instanceof Player) {
-				return ((Player)sender).getLocation();
+				return new QLocation(((Player)sender).getLocation());
 			}
 			else {
 				throw new IllegalArgumentException(ChatColor.RED
@@ -54,7 +54,7 @@ public class SerUtils {
 					throw new IllegalArgumentException(ChatColor.RED
 							+ lang.get("ERROR_CMD_LOC_NOBLOCK"));
 				}
-				return block.getLocation();
+				return new QLocation(block.getLocation());
 			}
 			else {
 				throw new IllegalArgumentException(ChatColor.RED
@@ -81,7 +81,7 @@ public class SerUtils {
 						+ lang.get("ERROR_CMD_COORDS_INVALID"));
 			}
 			if(sender instanceof Player && args[3].equalsIgnoreCase(QConfiguration.worldLabelThis)) {
-				loc = new Location(((Player)sender).getWorld(), x, y, z);
+				loc = new QLocation(new Location(((Player)sender).getWorld(), x, y, z));
 			}
 			else {
 				final World world = Bukkit.getServer().getWorld(args[3]);
@@ -89,7 +89,7 @@ public class SerUtils {
 					throw new IllegalArgumentException(ChatColor.RED
 							+ lang.get("ERROR_CMD_WORLD_INVALID"));
 				}
-				loc = new Location(world, x, y, z);
+				loc = new QLocation(new Location(world, x, y, z));
 			}
 			return loc;
 		}
@@ -405,36 +405,35 @@ public class SerUtils {
 		return 0;
 	}
 	
-	public static String displayLocation(final Location loc) {
-		String str = "";
+	public static String displayLocation(final QLocation loc) {
+		String str;
 		
 		if(loc == null) {
 			return null;
 		}
 		
-		str = String.format(Locale.ENGLISH, "%.1f;%.1f;%.1f;%s", loc.getX(), loc.getY(), loc.getZ(), loc.getWorld().getName());
+		str = String.format(Locale.ENGLISH, "%.1f;%.1f;%.1f;%s", loc.getX(), loc.getY(), loc.getZ(), loc.getWorldName());
 		
 		return str;
 	}
 	
-	public static String serializeLocString(final Location loc) {
-		String str = "";
+	public static String serializeLocString(final QLocation loc) {
+		String str;
 		
 		if(loc == null) {
 			return null;
 		}
 		
-		str = String.format(Locale.ENGLISH, "%.2f;%.2f;%.2f;%s;%.2f;%.2f;", loc.getX(), loc.getY(), loc.getZ(), loc.getWorld().getName(), loc.getYaw(), loc.getPitch());
+		str = String.format(Locale.ENGLISH, "%.2f;%.2f;%.2f;%s;%.2f;%.2f;", loc.getX(), loc.getY(), loc.getZ(), loc.getWorldName(), loc.getYaw(), loc.getPitch());
 		
 		return str;
 	}
 	
-	public static Location deserializeLocString(final String str) {
+	public static QLocation deserializeLocString(final String str) {
 		double x, y, z;
 		float yaw = 0;
 		float pitch = 0;
-		World world = null;
-		Location loc = null;
+		QLocation loc = null;
 		
 		final String[] split = str.split(";");
 		
@@ -446,17 +445,13 @@ public class SerUtils {
 			x = Double.parseDouble(split[0]);
 			y = Double.parseDouble(split[1]);
 			z = Double.parseDouble(split[2]);
-			world = Bukkit.getWorld(split[3]);
-			if(world == null) {
-				throw new IllegalArgumentException();
-			}
 			if(split.length > 4) {
 				yaw = Float.parseFloat(split[4]);
 			}
 			if(split.length > 5) {
 				pitch = Float.parseFloat(split[5]);
 			}
-			loc = new Location(world, x, y, z, yaw, pitch);
+			loc = new QLocation(split[3], x, y, z, yaw, pitch);
 		}
 		catch(final Exception e) {
 			Ql.debug("Error when deserializing location.", e);

@@ -7,18 +7,18 @@ import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
+import me.ragan262.quester.utils.QLocation;
 import me.ragan262.quester.utils.SerUtils;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 @QElement("BLOCK")
 public final class SetBlockQevent extends Qevent {
 	
-	private final Location location;
+	private final QLocation location;
 	public final int material;
 	public final byte data;
 	
-	public SetBlockQevent(final int mat, final int dat, final Location loc) {
+	public SetBlockQevent(final int mat, final int dat, final QLocation loc) {
 		location = loc;
 		material = mat;
 		data = (byte)dat;
@@ -31,7 +31,7 @@ public final class SetBlockQevent extends Qevent {
 	
 	@Override
 	protected void run(final Player player, final Quester plugin) {
-		location.getBlock().setTypeIdAndData(material, data, true);
+		location.getLocation().getBlock().setTypeIdAndData(material, data, true);
 	}
 	
 	@Command(min = 2, max = 2, usage = "{<block>} {<location>}")
@@ -41,7 +41,7 @@ public final class SetBlockQevent extends Qevent {
 			throw new CommandException(context.getSenderLang().get("ERROR_CMD_BLOCK_UNKNOWN"));
 		}
 		final int dat = itm[1] < 0 ? 0 : itm[1];
-		final Location loc = SerUtils.getLoc(context.getPlayer(), context.getString(1));
+		final QLocation loc = SerUtils.getLoc(context.getPlayer(), context.getString(1));
 		return new SetBlockQevent(itm[0], dat, loc);
 	}
 	
@@ -54,7 +54,7 @@ public final class SetBlockQevent extends Qevent {
 	
 	protected static Qevent load(final StorageKey key) {
 		int mat = 0, dat = 0;
-		Location loc = null;
+		QLocation loc = null;
 		try {
 			final int[] itm = SerUtils.parseItem(key.getString("block"));
 			mat = itm[0];

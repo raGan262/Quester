@@ -6,17 +6,18 @@ import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
+import me.ragan262.quester.utils.QLocation;
 import me.ragan262.quester.utils.SerUtils;
 import org.bukkit.Location;
 
 @QElement("DEATH")
 public final class DeathObjective extends Objective {
 	
-	private final Location location;
+	private final QLocation location;
 	private final int amount;
 	private final int range;
 	
-	public DeathObjective(final int amt, final Location loc, final int rng) {
+	public DeathObjective(final int amt, final QLocation loc, final int rng) {
 		amount = amt;
 		range = rng;
 		location = loc;
@@ -32,7 +33,7 @@ public final class DeathObjective extends Objective {
 		final String locStr = location == null
 				? "anywhere "
 				: String.format("max %d blocks from %.1f %.1f %.1f("
-						+ location.getWorld().getName() + ") ", range, location.getX(), location.getY(), location.getZ());
+						+ location.getWorldName() + ") ", range, location.getX(), location.getY(), location.getZ());
 		return "Die " + locStr + String.valueOf(amount - progress) + "x.";
 	}
 	
@@ -40,13 +41,14 @@ public final class DeathObjective extends Objective {
 	protected String info() {
 		final String locStr = location == null
 				? "ANY"
-				: String.format("%.1f %.1f %.1f(" + location.getWorld().getName() + ")", location.getX(), location.getY(), location.getZ());
+				: String.format("%.1f %.1f %.1f(" + location.getWorldName() + ")", location.getX(), location.getY(), location.getZ());
 		return "LOC: " + locStr + "; AMT: " + amount + "; RNG: " + range;
 	}
 	
 	@Command(min = 1, max = 3, usage = "<amount> {[location]} [range]")
-	public static Objective fromCommand(final QuesterCommandContext context) throws CommandException {
-		Location loc = null;
+	public static Objective fromCommand(final QuesterCommandContext context)
+			throws CommandException {
+		QLocation loc = null;
 		int rng = 5;
 		final int amt = Integer.parseInt(context.getString(0));
 		if(amt < 1) {
@@ -78,29 +80,24 @@ public final class DeathObjective extends Objective {
 	}
 	
 	protected static Objective load(final StorageKey key) {
-		Location loc = null;
-		int amt = 1, rng = 5;
-		loc = SerUtils.deserializeLocString(key.getString("location", ""));
-		amt = key.getInt("amount", 1);
-		if(amt < 1) {
-			amt = 1;
+		QLocation location;
+		int amount, range;
+		location = SerUtils.deserializeLocString(key.getString("location", ""));
+		amount = key.getInt("amount", 1);
+		if(amount < 1) {
+			amount = 1;
 		}
-		rng = key.getInt("range", 5);
-		if(rng < 1) {
-			rng = 5;
+		range = key.getInt("range", 5);
+		if(range < 1) {
+			range = 5;
 		}
-		return new DeathObjective(amt, loc, rng);
+		return new DeathObjective(amount, location, range);
 	}
 	
 	// Custom methods
 	
 	public boolean checkDeath(final Location loc) {
-		if(location == null) {
-			return true;
-		}
-		if(loc.getWorld().getName().equals(location.getWorld().getName())) {
-			return loc.distance(location) < range;
-		}
-		return false;
+		return location == null || loc.getWorld().getName().equalsIgnoreCase(location.getWorldName())
+				&& loc.distance(location.getLocation()) < range;
 	}
 }

@@ -6,6 +6,7 @@ import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
+import me.ragan262.quester.utils.QLocation;
 import me.ragan262.quester.utils.SerUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,10 +22,10 @@ public final class ActionObjective extends Objective {
 	private final Material inHand;
 	private final int inHandData;
 	private final byte click;
-	private final Location location;
+	private final QLocation location;
 	private final int range;
 	
-	public ActionObjective(final Material blck, final int blckdat, final Material hnd, final int hnddat, final int clck, final Location loc, final int rng) {
+	public ActionObjective(final Material blck, final int blckdat, final Material hnd, final int hnddat, final int clck, final QLocation loc, final int rng) {
 		block = blck;
 		if(block == null) {
 			blockData = -1;
@@ -84,7 +85,7 @@ public final class ActionObjective extends Objective {
 	public static Objective fromCommand(final QuesterCommandContext context) throws CommandException {
 		Material mat = null, hmat = null;
 		int dat = -1, hdat = -1, rng = 0, click = 0;
-		Location loc = null;
+		QLocation loc = null;
 		int[] itm;
 		click = SerUtils.parseAction(context.getString(0));
 		if(context.length() > 1) {
@@ -134,7 +135,7 @@ public final class ActionObjective extends Objective {
 	
 	protected static Objective load(final StorageKey key) {
 		Material mat = null, hnd = null;
-		Location loc = null;
+		QLocation loc = null;
 		int dat = -1, hdat = -1, rng = 0, clck = 0;
 		int[] itm;
 		try {
@@ -190,7 +191,7 @@ public final class ActionObjective extends Objective {
 	
 	public boolean checkLocation(final Location loc) {
 		return location == null
-				|| location.getWorld().getName().equals(loc.getWorld().getName()) && location.distance(loc) <= range;
+				|| location.getWorldName().equals(loc.getWorld().getName()) && location.getLocation().distanceSquared(loc) <= range*range;
 	}
 	
 	public boolean checkClick(final Action act) {

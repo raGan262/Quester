@@ -1,12 +1,5 @@
 package me.ragan262.quester.quests;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 import me.ragan262.quester.elements.Condition;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.Qevent;
@@ -14,11 +7,19 @@ import me.ragan262.quester.elements.Trigger;
 import me.ragan262.quester.lang.LanguageManager;
 import me.ragan262.quester.lang.QuesterLang;
 import me.ragan262.quester.storage.StorageKey;
+import me.ragan262.quester.utils.QLocation;
 import me.ragan262.quester.utils.Ql;
 import me.ragan262.quester.utils.SerUtils;
 import me.ragan262.quester.utils.Util;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 public class Quest {
 	
@@ -31,7 +32,7 @@ public class Quest {
 	private String description = "";
 	private boolean isCustomMessage = false;
 	private String name = null;
-	private Location location = null;
+	private QLocation location = null;
 	private int range = 1;
 	private int ID = -1;
 	
@@ -119,11 +120,11 @@ public class Quest {
 		return location != null;
 	}
 	
-	public Location getLocation() {
+	public QLocation getLocation() {
 		return location;
 	}
 	
-	void setLocation(final Location loc) {
+	void setLocation(final QLocation loc) {
 		location = loc;
 	}
 	

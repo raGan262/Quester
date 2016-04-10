@@ -6,6 +6,7 @@ import me.ragan262.quester.commandmanager.QuesterCommandContext;
 import me.ragan262.quester.elements.Objective;
 import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.storage.StorageKey;
+import me.ragan262.quester.utils.QLocation;
 import me.ragan262.quester.utils.Region;
 import me.ragan262.quester.utils.SerUtils;
 import org.bukkit.Location;
@@ -15,10 +16,10 @@ import org.bukkit.Location;
 @QElement("LOCATION")
 public final class LocObjective extends Objective {
 	
-	private final Location location;
+	private final QLocation location;
 	private final int range;
 	
-	public LocObjective(final Location loc, final int rng) {
+	public LocObjective(final QLocation loc, final int rng) {
 		location = loc;
 		range = rng;
 	}
@@ -31,7 +32,7 @@ public final class LocObjective extends Objective {
 	@Override
 	protected String show(final int progress) {
 		final String locStr = String.format("%d blocks close to %.1f %.1f %.1f("
-				+ location.getWorld().getName() + ")", range, location.getX(), location.getY(), location.getZ());
+				+ location.getWorldName() + ")", range, location.getX(), location.getY(), location.getZ());
 		return "Come at least " + locStr + ".";
 	}
 	
@@ -43,7 +44,7 @@ public final class LocObjective extends Objective {
 	@Command(min = 1, max = 2, usage = "{<location>} [range]")
 	public static Objective fromCommand(final QuesterCommandContext context) throws CommandException {
 		int rng = 3;
-		final Location loc = SerUtils.getLoc(context.getPlayer(), context.getString(0));
+		final QLocation loc = SerUtils.getLoc(context.getPlayer(), context.getString(0));
 		if(loc == null) {
 			throw new CommandException(context.getSenderLang().get("ERROR_CMD_LOC_INVALID"));
 		}
@@ -65,8 +66,8 @@ public final class LocObjective extends Objective {
 	}
 	
 	protected static Objective load(final StorageKey key) {
-		final Location location = SerUtils.deserializeLocString(key.getString("location", ""));
-		int range = 3;
+		final QLocation location = SerUtils.deserializeLocString(key.getString("location", ""));
+		int range;
 		if(location == null) {
 			return null;
 		}
@@ -82,8 +83,8 @@ public final class LocObjective extends Objective {
 	// Custom methods
 	
 	public boolean checkLocation(final Location loc) {
-		if(loc.getWorld().getName().equalsIgnoreCase(location.getWorld().getName())) {
-			return loc.distanceSquared(location) < range * range;
+		if(loc.getWorld().getName().equalsIgnoreCase(location.getWorldName())) {
+			return loc.distanceSquared(location.getLocation()) < range * range;
 		}
 		else {
 			return false;
