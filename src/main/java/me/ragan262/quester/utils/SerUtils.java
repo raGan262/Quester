@@ -304,15 +304,6 @@ public class SerUtils {
 		return ent;
 	}
 	
-	public static Sound parseSound(final String arg) {
-		Sound sound = null;
-		try {
-			sound = Sound.valueOf(arg.toUpperCase());
-		}
-		catch(final Exception ignore) {}
-		return sound;
-	}
-	
 	public static Set<Integer> parseIntSet(final String[] args, final int from) {
 		final Set<Integer> result = new HashSet<>();
 		for(int i = from; i < args.length; i++) {

@@ -8,6 +8,7 @@ import me.ragan262.quester.elements.QElement;
 import me.ragan262.quester.elements.Qevent;
 import me.ragan262.quester.storage.StorageKey;
 import me.ragan262.quester.utils.QLocation;
+import me.ragan262.quester.utils.Ql;
 import me.ragan262.quester.utils.SerUtils;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -17,11 +18,11 @@ import org.bukkit.entity.Player;
 public final class SoundQevent extends Qevent {
 	
 	private final QLocation location;
-	private final Sound sound;
+	private final String sound;
 	private final float volume;
 	private final float pitch;
 	
-	public SoundQevent(final QLocation loc, final Sound snd, final float vol, final float pit) {
+	public SoundQevent(final QLocation loc, final String snd, final float vol, final float pit) {
 		location = loc;
 		sound = snd;
 		volume = vol;
@@ -34,7 +35,7 @@ public final class SoundQevent extends Qevent {
 		if(location != null) {
 			locStr = SerUtils.displayLocation(location);
 		}
-		return sound.name() + "; LOC: " + locStr + "; VOL: " + volume + "; PIT: " + pitch;
+		return sound + "; LOC: " + locStr + "; VOL: " + volume + "; PIT: " + pitch;
 	}
 	
 	@Override
@@ -46,15 +47,21 @@ public final class SoundQevent extends Qevent {
 		else {
 			temp = location.getLocation();
 		}
-		temp.getWorld().playSound(temp, sound, volume, pitch);
+		try {
+			temp.getWorld().playSound(temp, sound, volume, pitch);
+		} catch(NoSuchMethodError sorryForThis) {
+			try {
+				Sound snd = Sound.valueOf(sound);
+				temp.getWorld().playSound(temp, snd, volume, pitch);
+			} catch(Exception oops) {
+				Ql.severe("Failed to play sound " + sound + ". Apparently it doesn't exist.");
+			}
+		}
 	}
 	
 	@Command(min = 1, max = 4, usage = "{<sound>} {[location]} [volume] [pitch]")
 	public static Qevent fromCommand(final QuesterCommandContext context) throws CommandException {
-		final Sound snd = SerUtils.parseSound(context.getString(0));
-		if(snd == null) {
-			throw new CommandException(context.getSenderLang().get("ERROR_CMD_SOUND_UNKNOWN"));
-		}
+		final String snd = context.getString(0).toUpperCase();
 		float vol = 1F;
 		float pit = 1F;
 		QLocation loc = null;
@@ -75,7 +82,7 @@ public final class SoundQevent extends Qevent {
 	
 	@Override
 	protected void save(final StorageKey key) {
-		key.setString("sound", sound.name());
+		key.setString("sound", sound);
 		if(location != null) {
 			key.setString("location", SerUtils.serializeLocString(location));
 		}
@@ -88,10 +95,7 @@ public final class SoundQevent extends Qevent {
 	}
 	
 	protected static Qevent load(final StorageKey key) {
-		final Sound snd = SerUtils.parseSound(key.getString("sound", ""));
-		if(snd == null) {
-			return null;
-		}
+		final String snd = key.getString("sound", "").toUpperCase();
 		final QLocation loc = SerUtils.deserializeLocString(key.getString("location", ""));
 		float vol = (float)key.getDouble("volume", 1F);
 		float pit = (float)key.getDouble("pitch", 1F);
