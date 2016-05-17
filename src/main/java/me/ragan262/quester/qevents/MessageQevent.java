@@ -47,9 +47,9 @@ public final class MessageQevent extends Qevent {
 		}
 	}
 	
-	@Command(min = 1, max = 1, usage = "<message>")
+	@Command(min = 1, usage = "<message>")
 	public static Qevent fromCommand(final QuesterCommandContext context) {
-		return new MessageQevent(context.getString(0));
+		return new MessageQevent(Util.implode(context.getArgs()));
 	}
 	
 	@Override
